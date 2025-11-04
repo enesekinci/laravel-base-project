@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\VariationController;
 use App\Http\Controllers\Admin\VariationTemplateController;
 use App\Http\Controllers\Admin\ProductOptionController;
 use App\Http\Controllers\Admin\TaxClassController;
+use App\Http\Controllers\Admin\ProductController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
@@ -58,6 +59,9 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
     // Vergi Sınıfları
     Route::resource('tax-classes', TaxClassController::class);
+
+    // Ürünler
+    Route::resource('products', ProductController::class);
 });
 
 require __DIR__ . '/settings.php';
