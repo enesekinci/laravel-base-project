@@ -17,18 +17,21 @@ import { Head, Link, router } from '@inertiajs/react';
 import { ArrowLeft, Edit, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 
+interface VariationValue {
+    id: number;
+    label: string;
+    value?: string;
+    color?: string;
+    image?: string;
+    sort_order: number;
+}
+
 interface Props {
     variation: {
         id: number;
         name: string;
-        slug: string;
-        description?: string;
-        sku?: string;
-        price: number;
-        compare_price?: number;
-        stock: number;
-        is_active: boolean;
-        sort_order: number;
+        type: 'text' | 'color' | 'image';
+        values?: VariationValue[];
         created_at: string;
         updated_at: string;
     };
@@ -40,17 +43,28 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Varyasyon Detayı', href: '#' },
 ];
 
+const typeLabels: Record<string, string> = {
+    text: 'Text',
+    color: 'Color',
+    image: 'Image',
+};
+
 export default function VariationsShow({ variation }: Props) {
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
     const handleDelete = () => {
         router.delete(destroy(variation.id).url, {
-            onSuccess: () => router.visit(index().url),
+            onSuccess: () => {
+                router.visit(index().url);
+            },
         });
         setShowDeleteDialog(false);
     };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={`${variation.name} - Varyasyon Detayı`} />
+
             <div className="flex-1 space-y-6 p-6">
                 <div className="flex items-center justify-between">
                     <div>
@@ -64,7 +78,8 @@ export default function VariationsShow({ variation }: Props) {
                     <div className="flex gap-2">
                         <Link href={edit(variation.id)}>
                             <Button>
-                                <Edit className="mr-2 h-4 w-4" /> Düzenle
+                                <Edit className="mr-2 h-4 w-4" />
+                                Düzenle
                             </Button>
                         </Link>
                         <Dialog
@@ -73,7 +88,8 @@ export default function VariationsShow({ variation }: Props) {
                         >
                             <DialogTrigger asChild>
                                 <Button variant="destructive">
-                                    <Trash2 className="mr-2 h-4 w-4" /> Sil
+                                    <Trash2 className="mr-2 h-4 w-4" />
+                                    Sil
                                 </Button>
                             </DialogTrigger>
                             <DialogContent>
@@ -104,11 +120,13 @@ export default function VariationsShow({ variation }: Props) {
                         </Dialog>
                         <Link href={index()}>
                             <Button variant="outline">
-                                <ArrowLeft className="mr-2 h-4 w-4" /> Geri Dön
+                                <ArrowLeft className="mr-2 h-4 w-4" />
+                                Geri Dön
                             </Button>
                         </Link>
                     </div>
                 </div>
+
                 <Card>
                     <CardHeader>
                         <CardTitle>Varyasyon Bilgileri</CardTitle>
@@ -116,88 +134,86 @@ export default function VariationsShow({ variation }: Props) {
                     <CardContent className="space-y-4">
                         <div>
                             <p className="text-sm font-medium text-muted-foreground">
-                                Varyasyon Adı
+                                Name
                             </p>
                             <p className="mt-1 text-lg">{variation.name}</p>
                         </div>
                         <div>
                             <p className="text-sm font-medium text-muted-foreground">
-                                Slug
-                            </p>
-                            <p className="mt-1 font-mono text-lg text-sm">
-                                {variation.slug}
-                            </p>
-                        </div>
-                        {variation.description && (
-                            <div>
-                                <p className="text-sm font-medium text-muted-foreground">
-                                    Açıklama
-                                </p>
-                                <p className="mt-1">{variation.description}</p>
-                            </div>
-                        )}
-                        {variation.sku && (
-                            <div>
-                                <p className="text-sm font-medium text-muted-foreground">
-                                    SKU
-                                </p>
-                                <p className="mt-1 font-mono text-lg text-sm">
-                                    {variation.sku}
-                                </p>
-                            </div>
-                        )}
-                        <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <p className="text-sm font-medium text-muted-foreground">
-                                    Fiyat
-                                </p>
-                                <p className="mt-1 text-lg font-semibold">
-                                    ₺{variation.price.toFixed(2)}
-                                </p>
-                            </div>
-                            {variation.compare_price && (
-                                <div>
-                                    <p className="text-sm font-medium text-muted-foreground">
-                                        Karşılaştırma Fiyatı
-                                    </p>
-                                    <p className="mt-1 text-lg text-muted-foreground line-through">
-                                        ₺{variation.compare_price.toFixed(2)}
-                                    </p>
-                                </div>
-                            )}
-                        </div>
-                        <div>
-                            <p className="text-sm font-medium text-muted-foreground">
-                                Stok
-                            </p>
-                            <p className="mt-1 text-lg">{variation.stock}</p>
-                        </div>
-                        <div>
-                            <p className="text-sm font-medium text-muted-foreground">
-                                Sıra
-                            </p>
-                            <p className="mt-1 text-lg">
-                                {variation.sort_order}
-                            </p>
-                        </div>
-                        <div>
-                            <p className="text-sm font-medium text-muted-foreground">
-                                Durum
+                                Type
                             </p>
                             <div className="mt-1">
-                                <Badge
-                                    variant={
-                                        variation.is_active
-                                            ? 'default'
-                                            : 'secondary'
-                                    }
-                                >
-                                    {variation.is_active ? 'Aktif' : 'Pasif'}
+                                <Badge>
+                                    {typeLabels[variation.type] ||
+                                        variation.type}
                                 </Badge>
                             </div>
                         </div>
                     </CardContent>
                 </Card>
+
+                {variation.values && variation.values.length > 0 && (
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>
+                                Values ({variation.values.length})
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="space-y-4">
+                                {variation.values.map((value) => (
+                                    <div
+                                        key={value.id}
+                                        className="rounded-lg border p-4"
+                                    >
+                                        <div className="flex items-start justify-between">
+                                            <div className="flex-1">
+                                                <div className="flex items-center gap-2">
+                                                    <p className="font-semibold">
+                                                        {value.label}
+                                                    </p>
+                                                    {value.value && (
+                                                        <Badge variant="outline">
+                                                            {value.value}
+                                                        </Badge>
+                                                    )}
+                                                </div>
+                                                {variation.type === 'color' &&
+                                                    value.color && (
+                                                        <div className="mt-2 flex items-center gap-2">
+                                                            <div
+                                                                className="h-6 w-6 rounded border"
+                                                                style={{
+                                                                    backgroundColor:
+                                                                        value.color,
+                                                                }}
+                                                            />
+                                                            <span className="text-sm text-muted-foreground">
+                                                                {value.color}
+                                                            </span>
+                                                        </div>
+                                                    )}
+                                                {variation.type === 'image' &&
+                                                    value.image && (
+                                                        <div className="mt-2">
+                                                            <img
+                                                                src={value.image}
+                                                                alt={value.label}
+                                                                className="h-16 w-16 rounded border object-cover"
+                                                            />
+                                                        </div>
+                                                    )}
+                                                <p className="mt-1 text-xs text-muted-foreground">
+                                                    Sıra: {value.sort_order}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </CardContent>
+                    </Card>
+                )}
             </div>
         </AppLayout>
     );
