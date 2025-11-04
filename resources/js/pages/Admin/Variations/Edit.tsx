@@ -37,7 +37,7 @@ import {
     sortableKeyboardCoordinates,
     verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Head, Link, router, useForm } from '@inertiajs/react';
 import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -155,14 +155,14 @@ export default function VariationsEdit({ variation }: Props) {
 
         // Values'ı setData ile ayarla
         setData('values', values);
-        
+
         // setData senkron değil, bu yüzden values'ı direkt put ile gönderiyoruz
         // useForm'un data'sını kopyalayıp values'ı ekliyoruz
         const formData = {
             ...data,
             values: values,
         };
-        
+
         // router.put kullanarak direkt data gönder
         router.put(update(variation.id).url, formData);
     };

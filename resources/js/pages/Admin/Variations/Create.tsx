@@ -56,7 +56,7 @@ interface VariationValue {
 }
 
 export default function VariationsCreate() {
-    const { data, setData, post, processing, errors } = useForm<{
+    const { data, setData, processing, errors } = useForm<{
         name: string;
         type: 'text' | 'color' | 'image';
         values: VariationValue[];
@@ -137,14 +137,14 @@ export default function VariationsCreate() {
 
         // Values'ı setData ile ayarla
         setData('values', values);
-        
+
         // setData senkron değil, bu yüzden values'ı direkt post ile gönderiyoruz
         // useForm'un data'sını kopyalayıp values'ı ekliyoruz
         const formData = {
             ...data,
             values: values,
         };
-        
+
         // router.post kullanarak direkt data gönder
         router.post(store().url, formData);
     };
