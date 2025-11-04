@@ -131,8 +131,14 @@ export default function VariationsCreate() {
             sort_order: index,
         }));
 
-        setData('values', values);
-        post(store().url);
+        // Values'ı direkt data ile birlikte gönder
+        post(store().url, {
+            data: {
+                name: data.name,
+                type: data.type,
+                values: values,
+            },
+        });
     };
 
     return (

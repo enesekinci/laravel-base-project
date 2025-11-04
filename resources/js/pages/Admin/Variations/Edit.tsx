@@ -153,8 +153,14 @@ export default function VariationsEdit({ variation }: Props) {
             sort_order: index,
         }));
 
-        setData('values', values);
-        put(update(variation.id).url);
+        // Values'ı direkt data ile birlikte gönder
+        put(update(variation.id).url, {
+            data: {
+                name: data.name,
+                type: data.type,
+                values: values,
+            },
+        });
     };
 
     return (
