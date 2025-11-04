@@ -16,19 +16,20 @@ import { Head, Link, router } from '@inertiajs/react';
 import { Eye, Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 
+interface VariationValue {
+    id: number;
+    label: string;
+    value?: string;
+    color?: string;
+    image?: string;
+    sort_order: number;
+}
+
 interface Variation {
     id: number;
     name: string;
-    slug: string;
-    description?: string;
-    attribute_values?: Record<string, unknown>;
-    sku?: string;
-    price: number;
-    compare_price?: number;
-    stock: number;
-    image?: string;
-    is_active: boolean;
-    sort_order: number;
+    type: 'text' | 'color' | 'image';
+    values?: VariationValue[];
 }
 
 interface Props {
@@ -97,18 +98,32 @@ export default function VariationsIndex({ variations }: Props) {
                                                     <h3 className="font-semibold">
                                                         {variation.name}
                                                     </h3>
-                                                    {variation.sku && (
-                                                        <span className="text-sm text-muted-foreground">
-                                                            SKU: {variation.sku}
-                                                        </span>
-                                                    )}
-                                                </div>
-                                                <div className="mt-1 flex items-center gap-4 text-sm text-muted-foreground">
-                                                    <span>
-                                                        Fiyat: ₺{variation.price.toFixed(2)}
+                                                    <span className="rounded-full bg-muted px-2 py-1 text-xs font-medium capitalize">
+                                                        {variation.type}
                                                     </span>
-                                                    <span>Stok: {variation.stock}</span>
                                                 </div>
+                                                {variation.values && variation.values.length > 0 && (
+                                                    <div className="mt-2 flex flex-wrap gap-2">
+                                                        {variation.values.map((value) => (
+                                                            <span
+                                                                key={value.id}
+                                                                className="rounded-md bg-muted px-2 py-1 text-xs text-muted-foreground"
+                                                            >
+                                                                {value.label}
+                                                                {variation.type === 'color' &&
+                                                                    value.color && (
+                                                                        <span
+                                                                            className="ml-1 inline-block h-3 w-3 rounded-full border"
+                                                                            style={{
+                                                                                backgroundColor:
+                                                                                    value.color,
+                                                                            }}
+                                                                        />
+                                                                    )}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                )}
                                             </div>
                                             <div className="flex items-center gap-2">
                                                 <Link href={show(variation.id)}>
