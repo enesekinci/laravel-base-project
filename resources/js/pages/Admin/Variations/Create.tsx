@@ -383,16 +383,83 @@ export default function VariationsCreate() {
                                                                                 if (
                                                                                     file
                                                                                 ) {
-                                                                                    // TODO: File upload implementation
-                                                                                    updateValue(
-                                                                                        index,
+                                                                                    // Dosyayı hemen upload et
+                                                                                    const formData = new FormData();
+                                                                                    formData.append(
                                                                                         'image',
-                                                                                        file.name,
+                                                                                        file,
                                                                                     );
+
+                                                                                    fetch(
+                                                                                        '/admin/variations/upload-image',
+                                                                                        {
+                                                                                            method: 'POST',
+                                                                                            headers: {
+                                                                                                'X-CSRF-TOKEN': document
+                                                                                                    .querySelector(
+                                                                                                        'meta[name="csrf-token"]',
+                                                                                                    )
+                                                                                                    ?.getAttribute(
+                                                                                                        'content',
+                                                                                                    ) || '',
+                                                                                            },
+                                                                                            body: formData,
+                                                                                        },
+                                                                                    )
+                                                                                        .then(
+                                                                                            (
+                                                                                                response,
+                                                                                            ) =>
+                                                                                                response.json(),
+                                                                                        )
+                                                                                        .then(
+                                                                                            (
+                                                                                                data,
+                                                                                            ) => {
+                                                                                                if (
+                                                                                                    data
+                                                                                                        .path
+                                                                                                ) {
+                                                                                                    updateValue(
+                                                                                                        index,
+                                                                                                        'image',
+                                                                                                        data.path,
+                                                                                                    );
+                                                                                                }
+                                                                                            },
+                                                                                        )
+                                                                                        .catch(
+                                                                                            (
+                                                                                                error,
+                                                                                            ) => {
+                                                                                                console.error(
+                                                                                                    'Upload error:',
+                                                                                                    error,
+                                                                                                );
+                                                                                            },
+                                                                                        );
                                                                                 }
                                                                             }}
                                                                             className="w-full"
                                                                         />
+                                                                        {value.image && (
+                                                                            <div className="mt-2">
+                                                                                <img
+                                                                                    src={
+                                                                                        value.image.startsWith(
+                                                                                            'http',
+                                                                                        ) ||
+                                                                                        value.image.startsWith(
+                                                                                            '/',
+                                                                                        )
+                                                                                            ? value.image
+                                                                                            : `/storage/variations/${value.image}`
+                                                                                    }
+                                                                                    alt="Preview"
+                                                                                    className="h-16 w-16 rounded border object-cover"
+                                                                                />
+                                                                            </div>
+                                                                        )}
                                                                     </TableCell>
                                                                 )}
                                                                 <TableCell className="text-center">

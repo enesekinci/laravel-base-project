@@ -97,4 +97,20 @@ class VariationController extends Controller
             ->route('admin.variations.index')
             ->with('success', 'Varyasyon başarıyla silindi.');
     }
+
+    /**
+     * Upload image for variation value
+     */
+    public function uploadImage(\Illuminate\Http\Request $request): \Illuminate\Http\JsonResponse
+    {
+        $request->validate([
+            'image' => ['required', 'image', 'max:2048'], // Max 2MB
+        ]);
+
+        $path = $request->file('image')->store('variations', 'public');
+
+        return response()->json([
+            'path' => basename($path), // Sadece dosya adını döndür
+        ]);
+    }
 }

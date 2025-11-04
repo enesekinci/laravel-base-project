@@ -50,6 +50,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
     // Varyasyonlar
     Route::resource('variations', VariationController::class);
+    Route::post('variations/upload-image', [VariationController::class, 'uploadImage'])->name('variations.upload-image');
 
     // Varyasyon Şablonları
     Route::resource('variation-templates', VariationTemplateController::class);
