@@ -15,8 +15,7 @@ class VariationController extends Controller
 {
     public function __construct(
         private VariationService $variationService
-    ) {
-    }
+    ) {}
 
     /**
      * Display a listing of the resource.

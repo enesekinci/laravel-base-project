@@ -38,6 +38,7 @@ interface ProductOptionValue {
     label: string;
     value?: string;
     price_adjustment: number;
+    price_type?: 'fixed' | 'percentage';
     sort_order: number;
 }
 
@@ -46,7 +47,8 @@ interface Props {
         id: number;
         name: string;
         description?: string;
-        type: 'select' | 'radio' | 'checkbox';
+        type: 'select' | 'radio' | 'checkbox' | 'textarea';
+        required?: boolean;
         sort_order: number;
         is_active: boolean;
         values?: ProductOptionValue[];
@@ -58,6 +60,7 @@ export default function ProductOptionsEdit({ option }: Props) {
         name: option.name,
         description: option.description || '',
         type: option.type,
+        required: option.required || false,
         sort_order: option.sort_order,
         is_active: option.is_active,
         values: [] as ProductOptionValue[],
@@ -73,17 +76,47 @@ export default function ProductOptionsEdit({ option }: Props) {
             setLocalValues(
                 option.values.map((v) => ({
                     ...v,
+                    price_type: v.price_type || 'fixed',
                     tempId: v.id ? `existing-${v.id}` : undefined,
                 })),
             );
         }
     }, [option.values]);
 
+    // Type değiştiğinde values'ı sıfırla veya tek value oluştur
+    const handleTypeChange = (newType: string) => {
+        setData('type', newType as any);
+        
+        // Textarea gibi tekil seçimler için tek value oluştur
+        if (newType === 'textarea') {
+            if (localValues.length === 0) {
+                setLocalValues([{
+                    label: '',
+                    value: '',
+                    price_adjustment: 0,
+                    price_type: 'fixed' as const,
+                    sort_order: 0,
+                    tempId: `temp-${Date.now()}-${Math.random()}`,
+                }]);
+            } else {
+                // Sadece ilk value'yu tut
+                setLocalValues([localValues[0]]);
+            }
+        }
+        // Çoğul seçimler için mevcut values korunur
+    };
+
     const addValue = () => {
+        // Textarea için sadece 1 value olabilir
+        if (data.type === 'textarea' && localValues.length > 0) {
+            return;
+        }
+
         const newValue: ProductOptionValue & { tempId?: string } = {
             label: '',
             value: '',
             price_adjustment: 0,
+            price_type: 'fixed',
             sort_order: localValues.length,
             tempId: `temp-${Date.now()}-${Math.random()}`,
         };
@@ -116,6 +149,7 @@ export default function ProductOptionsEdit({ option }: Props) {
             label: v.label,
             value: v.value || '',
             price_adjustment: v.price_adjustment,
+            price_type: v.price_type || 'fixed',
             sort_order: v.sort_order,
         }));
 
@@ -185,15 +219,7 @@ export default function ProductOptionsEdit({ option }: Props) {
                                 </Label>
                                 <Select
                                     value={data.type}
-                                    onValueChange={(value) =>
-                                        setData(
-                                            'type',
-                                            value as
-                                                | 'select'
-                                                | 'radio'
-                                                | 'checkbox',
-                                        )
-                                    }
+                                    onValueChange={handleTypeChange}
                                 >
                                     <SelectTrigger>
                                         <SelectValue placeholder="Tip seçin" />
@@ -206,9 +232,25 @@ export default function ProductOptionsEdit({ option }: Props) {
                                         <SelectItem value="checkbox">
                                             Checkbox
                                         </SelectItem>
+                                        <SelectItem value="textarea">
+                                            Textarea
+                                        </SelectItem>
                                     </SelectContent>
                                 </Select>
                                 <InputError message={errors.type} />
+                            </div>
+
+                            <div className="flex items-center space-x-2">
+                                <Checkbox
+                                    id="required"
+                                    checked={data.required}
+                                    onCheckedChange={(checked) =>
+                                        setData('required', checked === true)
+                                    }
+                                />
+                                <Label htmlFor="required">
+                                    Bu seçenek zorunludur
+                                </Label>
                             </div>
 
                             <div className="space-y-2">
@@ -246,15 +288,17 @@ export default function ProductOptionsEdit({ option }: Props) {
                         <CardHeader>
                             <div className="flex items-center justify-between">
                                 <CardTitle>Değerler</CardTitle>
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={addValue}
-                                >
-                                    <Plus className="mr-2 h-4 w-4" />
-                                    Değer Ekle
-                                </Button>
+                                {data.type !== 'textarea' && (
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={addValue}
+                                    >
+                                        <Plus className="mr-2 h-4 w-4" />
+                                        Değer Ekle
+                                    </Button>
+                                )}
                             </div>
                         </CardHeader>
                         <CardContent className="space-y-4">
@@ -307,10 +351,10 @@ export default function ProductOptionsEdit({ option }: Props) {
                                                     </div>
                                                 </div>
 
-                                                <div className="grid grid-cols-2 gap-4">
+                                                <div className="grid grid-cols-3 gap-4">
                                                     <div className="space-y-2">
                                                         <Label>
-                                                            Fiyat Farkı (₺)
+                                                            Fiyat
                                                         </Label>
                                                         <Input
                                                             type="number"
@@ -328,6 +372,33 @@ export default function ProductOptionsEdit({ option }: Props) {
                                                             }
                                                             placeholder="0.00"
                                                         />
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <Label>
+                                                            Fiyat Tipi
+                                                        </Label>
+                                                        <Select
+                                                            value={value.price_type || 'fixed'}
+                                                            onValueChange={(val) =>
+                                                                updateValue(
+                                                                    index,
+                                                                    'price_type',
+                                                                    val as 'fixed' | 'percentage',
+                                                                )
+                                                            }
+                                                        >
+                                                            <SelectTrigger>
+                                                                <SelectValue />
+                                                            </SelectTrigger>
+                                                            <SelectContent>
+                                                                <SelectItem value="fixed">
+                                                                    Fixed
+                                                                </SelectItem>
+                                                                <SelectItem value="percentage">
+                                                                    Percentage
+                                                                </SelectItem>
+                                                            </SelectContent>
+                                                        </Select>
                                                     </div>
                                                     <div className="space-y-2">
                                                         <Label>Sıralama</Label>
@@ -348,24 +419,27 @@ export default function ProductOptionsEdit({ option }: Props) {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <Button
-                                                type="button"
-                                                variant="destructive"
-                                                size="sm"
-                                                className="ml-4"
-                                                onClick={() =>
-                                                    removeValue(index)
-                                                }
-                                            >
-                                                <Trash2 className="h-4 w-4" />
-                                            </Button>
+                                            {data.type !== 'textarea' && (
+                                                <Button
+                                                    type="button"
+                                                    variant="destructive"
+                                                    size="sm"
+                                                    className="ml-4"
+                                                    onClick={() =>
+                                                        removeValue(index)
+                                                    }
+                                                >
+                                                    <Trash2 className="h-4 w-4" />
+                                                </Button>
+                                            )}
                                         </div>
                                     </div>
                                 ))
                             ) : (
                                 <div className="py-8 text-center text-muted-foreground">
-                                    Henüz değer eklenmemiş. Değer eklemek için
-                                    yukarıdaki butonu kullanın.
+                                    {data.type === 'textarea'
+                                        ? 'Textarea tipi için tek bir değer oluşturulacak.'
+                                        : 'Henüz değer eklenmemiş. Değer eklemek için yukarıdaki butonu kullanın.'}
                                 </div>
                             )}
                             {errors.values && (

@@ -15,6 +15,7 @@ class ProductOptionValue extends Model
         'label',
         'value',
         'price_adjustment',
+        'price_type',
         'sort_order',
     ];
 

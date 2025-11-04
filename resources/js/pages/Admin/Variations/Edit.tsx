@@ -406,7 +406,8 @@ export default function VariationsEdit({ variation }: Props) {
                                                                                     file
                                                                                 ) {
                                                                                     // Dosyayı hemen upload et
-                                                                                    const formData = new FormData();
+                                                                                    const formData =
+                                                                                        new FormData();
                                                                                     formData.append(
                                                                                         'image',
                                                                                         file,
@@ -416,15 +417,18 @@ export default function VariationsEdit({ variation }: Props) {
                                                                                         '/admin/variations/upload-image',
                                                                                         {
                                                                                             method: 'POST',
-                                                                                            headers: {
-                                                                                                'X-CSRF-TOKEN': document
-                                                                                                    .querySelector(
-                                                                                                        'meta[name="csrf-token"]',
-                                                                                                    )
-                                                                                                    ?.getAttribute(
-                                                                                                        'content',
-                                                                                                    ) || '',
-                                                                                            },
+                                                                                            headers:
+                                                                                                {
+                                                                                                    'X-CSRF-TOKEN':
+                                                                                                        document
+                                                                                                            .querySelector(
+                                                                                                                'meta[name="csrf-token"]',
+                                                                                                            )
+                                                                                                            ?.getAttribute(
+                                                                                                                'content',
+                                                                                                            ) ||
+                                                                                                        '',
+                                                                                                },
                                                                                             body: formData,
                                                                                         },
                                                                                     )
@@ -439,8 +443,7 @@ export default function VariationsEdit({ variation }: Props) {
                                                                                                 data,
                                                                                             ) => {
                                                                                                 if (
-                                                                                                    data
-                                                                                                        .path
+                                                                                                    data.path
                                                                                                 ) {
                                                                                                     updateValue(
                                                                                                         index,

@@ -384,7 +384,8 @@ export default function VariationsCreate() {
                                                                                     file
                                                                                 ) {
                                                                                     // Dosyayı hemen upload et
-                                                                                    const formData = new FormData();
+                                                                                    const formData =
+                                                                                        new FormData();
                                                                                     formData.append(
                                                                                         'image',
                                                                                         file,
@@ -394,15 +395,18 @@ export default function VariationsCreate() {
                                                                                         '/admin/variations/upload-image',
                                                                                         {
                                                                                             method: 'POST',
-                                                                                            headers: {
-                                                                                                'X-CSRF-TOKEN': document
-                                                                                                    .querySelector(
-                                                                                                        'meta[name="csrf-token"]',
-                                                                                                    )
-                                                                                                    ?.getAttribute(
-                                                                                                        'content',
-                                                                                                    ) || '',
-                                                                                            },
+                                                                                            headers:
+                                                                                                {
+                                                                                                    'X-CSRF-TOKEN':
+                                                                                                        document
+                                                                                                            .querySelector(
+                                                                                                                'meta[name="csrf-token"]',
+                                                                                                            )
+                                                                                                            ?.getAttribute(
+                                                                                                                'content',
+                                                                                                            ) ||
+                                                                                                        '',
+                                                                                                },
                                                                                             body: formData,
                                                                                         },
                                                                                     )
@@ -417,8 +421,7 @@ export default function VariationsCreate() {
                                                                                                 data,
                                                                                             ) => {
                                                                                                 if (
-                                                                                                    data
-                                                                                                        .path
+                                                                                                    data.path
                                                                                                 ) {
                                                                                                     updateValue(
                                                                                                         index,

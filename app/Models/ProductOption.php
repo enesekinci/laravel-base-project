@@ -15,6 +15,7 @@ class ProductOption extends Model
         'name',
         'description',
         'type',
+        'required',
         'sort_order',
         'is_active',
     ];
