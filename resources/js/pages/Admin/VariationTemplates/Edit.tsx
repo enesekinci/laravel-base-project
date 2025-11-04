@@ -11,11 +11,19 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
 import { index, update } from '@/routes/admin/variation-templates';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
+import { ArrowLeft, GripVertical, Plus, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 interface VariationTemplateValue {
@@ -240,27 +248,47 @@ export default function VariationTemplatesEdit({ template }: Props) {
                                     onClick={addValue}
                                 >
                                     <Plus className="mr-2 h-4 w-4" />
-                                    Değer Ekle
+                                    Satır Ekle
                                 </Button>
                             </div>
                         </CardHeader>
-                        <CardContent className="space-y-4">
+                        <CardContent>
                             {localValues.length > 0 ? (
-                                localValues.map((value, index) => (
-                                    <div
-                                        key={value.tempId || value.id || index}
-                                        className="rounded-lg border p-4"
-                                    >
-                                        <div className="flex items-start justify-between">
-                                            <div className="flex-1 space-y-4">
-                                                <div className="grid grid-cols-2 gap-4">
-                                                    <div className="space-y-2">
-                                                        <Label>
-                                                            Etiket{' '}
-                                                            <span className="text-red-500">
-                                                                *
-                                                            </span>
-                                                        </Label>
+                                <div className="overflow-x-auto">
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead className="w-12"></TableHead>
+                                                <TableHead>
+                                                    Etiket{' '}
+                                                    <span className="text-red-500">
+                                                        *
+                                                    </span>
+                                                </TableHead>
+                                                {data.type === 'color' && (
+                                                    <TableHead>Renk</TableHead>
+                                                )}
+                                                {data.type === 'image' && (
+                                                    <TableHead>Resim</TableHead>
+                                                )}
+                                                <TableHead className="w-12"></TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {localValues.map((value, index) => (
+                                                <TableRow
+                                                    key={
+                                                        value.tempId ||
+                                                        value.id ||
+                                                        index
+                                                    }
+                                                >
+                                                    <TableCell className="text-center">
+                                                        <div className="flex cursor-grab items-center justify-center text-muted-foreground">
+                                                            <GripVertical className="h-4 w-4" />
+                                                        </div>
+                                                    </TableCell>
+                                                    <TableCell>
                                                         <Input
                                                             value={value.label}
                                                             onChange={(e) =>
@@ -272,123 +300,87 @@ export default function VariationTemplatesEdit({ template }: Props) {
                                                                 )
                                                             }
                                                             placeholder="Örn: Kırmızı, M"
+                                                            className="w-full"
                                                         />
-                                                    </div>
-                                                    <div className="space-y-2">
-                                                        <Label>Değer</Label>
-                                                        <Input
-                                                            value={
-                                                                value.value ||
-                                                                ''
-                                                            }
-                                                            onChange={(e) =>
-                                                                updateValue(
-                                                                    index,
-                                                                    'value',
-                                                                    e.target
-                                                                        .value,
-                                                                )
-                                                            }
-                                                            placeholder="Opsiyonel değer"
-                                                        />
-                                                    </div>
-                                                </div>
-
-                                                {data.type === 'color' && (
-                                                    <div className="space-y-2">
-                                                        <Label>
-                                                            Renk (HEX)
-                                                        </Label>
-                                                        <div className="flex gap-2">
+                                                    </TableCell>
+                                                    {data.type === 'color' && (
+                                                        <TableCell>
+                                                            <div className="flex gap-2">
+                                                                <Input
+                                                                    type="color"
+                                                                    value={
+                                                                        value.color ||
+                                                                        '#000000'
+                                                                    }
+                                                                    onChange={(e) =>
+                                                                        updateValue(
+                                                                            index,
+                                                                            'color',
+                                                                            e.target
+                                                                                .value,
+                                                                        )
+                                                                    }
+                                                                    className="h-10 w-20"
+                                                                />
+                                                                <Input
+                                                                    value={
+                                                                        value.color ||
+                                                                        ''
+                                                                    }
+                                                                    onChange={(e) =>
+                                                                        updateValue(
+                                                                            index,
+                                                                            'color',
+                                                                            e.target
+                                                                                .value,
+                                                                        )
+                                                                    }
+                                                                    placeholder="#000000"
+                                                                    maxLength={7}
+                                                                    className="flex-1"
+                                                                />
+                                                            </div>
+                                                        </TableCell>
+                                                    )}
+                                                    {data.type === 'image' && (
+                                                        <TableCell>
                                                             <Input
-                                                                type="color"
                                                                 value={
-                                                                    value.color ||
-                                                                    '#000000'
-                                                                }
-                                                                onChange={(e) =>
-                                                                    updateValue(
-                                                                        index,
-                                                                        'color',
-                                                                        e.target
-                                                                            .value,
-                                                                    )
-                                                                }
-                                                                className="h-10 w-20"
-                                                            />
-                                                            <Input
-                                                                value={
-                                                                    value.color ||
+                                                                    value.image ||
                                                                     ''
                                                                 }
                                                                 onChange={(e) =>
                                                                     updateValue(
                                                                         index,
-                                                                        'color',
+                                                                        'image',
                                                                         e.target
                                                                             .value,
                                                                     )
                                                                 }
-                                                                placeholder="#000000"
-                                                                maxLength={7}
+                                                                placeholder="Resim URL'si"
+                                                                className="w-full"
                                                             />
-                                                        </div>
-                                                    </div>
-                                                )}
-
-                                                {data.type === 'image' && (
-                                                    <div className="space-y-2">
-                                                        <Label>Resim URL</Label>
-                                                        <Input
-                                                            value={
-                                                                value.image ||
-                                                                ''
-                                                            }
-                                                            onChange={(e) =>
-                                                                updateValue(
+                                                        </TableCell>
+                                                    )}
+                                                    <TableCell className="text-center">
+                                                        <Button
+                                                            type="button"
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            onClick={() =>
+                                                                removeValue(
                                                                     index,
-                                                                    'image',
-                                                                    e.target
-                                                                        .value,
                                                                 )
                                                             }
-                                                            placeholder="Resim URL'si"
-                                                        />
-                                                    </div>
-                                                )}
-
-                                                <div className="space-y-2">
-                                                    <Label>Sıralama</Label>
-                                                    <Input
-                                                        type="number"
-                                                        value={value.sort_order}
-                                                        onChange={(e) =>
-                                                            updateValue(
-                                                                index,
-                                                                'sort_order',
-                                                                parseInt(
-                                                                    e.target
-                                                                        .value,
-                                                                ) || 0,
-                                                            )
-                                                        }
-                                                    />
-                                                </div>
-                                            </div>
-                                            <Button
-                                                type="button"
-                                                variant="destructive"
-                                                size="sm"
-                                                className="ml-4"
-                                                onClick={() =>
-                                                    removeValue(index)
-                                                }
-                                            >
-                                                <Trash2 className="h-4 w-4" />
-                                            </Button>
-                                        </div>
-                                    </div>
-                                ))
+                                                        >
+                                                            <Trash2 className="h-4 w-4 text-destructive" />
+                                                        </Button>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </div>
                             ) : (
                                 <div className="py-8 text-center text-muted-foreground">
                                     Henüz değer eklenmemiş. Değer eklemek için
