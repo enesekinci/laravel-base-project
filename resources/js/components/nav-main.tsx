@@ -42,13 +42,12 @@ function saveMenuState(state: Record<string, boolean>) {
 
 export function NavMain({ items = [] }: { items: NavItem[] }) {
     const page = usePage();
-    const [menuState, setMenuState] = useState<Record<string, boolean>>(
-        getMenuState,
-    );
 
-    useEffect(() => {
-        // Sayfa değiştiğinde aktif menüleri açık tut
-        const newState: Record<string, boolean> = { ...menuState };
+    // İlk state'i hesapla: localStorage + aktif sayfalar
+    const getInitialMenuState = (): Record<string, boolean> => {
+        const storedState = getMenuState();
+        const newState: Record<string, boolean> = { ...storedState };
+
         items.forEach((item) => {
             if (item.items && item.items.length > 0) {
                 const isActive = item.href
@@ -73,10 +72,23 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                 });
             }
         });
-        if (JSON.stringify(newState) !== JSON.stringify(menuState)) {
+
+        return newState;
+    };
+
+    const [menuState, setMenuState] =
+        useState<Record<string, boolean>>(getInitialMenuState);
+
+    // Sayfa değiştiğinde aktif menüleri açık tut
+    useEffect(() => {
+        const newState = getInitialMenuState();
+        const hasChanges =
+            JSON.stringify(newState) !== JSON.stringify(menuState);
+        if (hasChanges) {
             setMenuState(newState);
             saveMenuState(newState);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [page.url]);
 
     const handleMenuToggle = (menuKey: string, isOpen: boolean) => {

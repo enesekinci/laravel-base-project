@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\MannequinController;
 use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\VariationController;
+use App\Http\Controllers\Admin\VariationTemplateController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
@@ -46,6 +47,9 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
     // Varyasyonlar
     Route::resource('variations', VariationController::class);
+
+    // Varyasyon Şablonları
+    Route::resource('variation-templates', VariationTemplateController::class);
 });
 
 require __DIR__.'/settings.php';
