@@ -92,17 +92,17 @@ export const menuItems: NavItem[] = [
                 items: [
                     {
                         title: 'Manken',
-                        href: '/admin/products/mannequins',
+                        href: '/admin/mannequins',
                         icon: Camera,
                     },
                     {
                         title: 'Özellik',
-                        href: '/admin/products/attributes',
+                        href: '/admin/attributes',
                         icon: Palette,
                     },
                     {
                         title: 'Varyasyon',
-                        href: '/admin/products/variations',
+                        href: '/admin/variations',
                         icon: Boxes,
                     },
                 ],
