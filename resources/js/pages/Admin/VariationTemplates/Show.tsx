@@ -232,7 +232,14 @@ export default function VariationTemplatesShow({ template }: Props) {
                                                         <div className="mt-2">
                                                             <img
                                                                 src={
-                                                                    value.image
+                                                                    value.image.startsWith(
+                                                                        'http',
+                                                                    ) ||
+                                                                    value.image.startsWith(
+                                                                        '/',
+                                                                    )
+                                                                        ? value.image
+                                                                        : `/storage/${value.image}`
                                                                 }
                                                                 alt={
                                                                     value.label

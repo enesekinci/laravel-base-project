@@ -197,8 +197,19 @@ export default function VariationsShow({ variation }: Props) {
                                                     value.image && (
                                                         <div className="mt-2">
                                                             <img
-                                                                src={value.image}
-                                                                alt={value.label}
+                                                                src={
+                                                                    value.image.startsWith(
+                                                                        'http',
+                                                                    ) ||
+                                                                    value.image.startsWith(
+                                                                        '/',
+                                                                    )
+                                                                        ? value.image
+                                                                        : `/storage/${value.image}`
+                                                                }
+                                                                alt={
+                                                                    value.label
+                                                                }
                                                                 className="h-16 w-16 rounded border object-cover"
                                                             />
                                                         </div>
