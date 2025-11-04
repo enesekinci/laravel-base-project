@@ -153,15 +153,18 @@ export default function VariationsEdit({ variation }: Props) {
             sort_order: index,
         }));
 
-        // Values'ı setData ile ayarla, sonra put çağır
-        // Inertia'nın transform callback'i ile values'ı merge ediyoruz
+        // Values'ı setData ile ayarla
         setData('values', values);
-        put(update(variation.id).url, {
-            transform: (data) => ({
-                ...data,
-                values: values,
-            }),
-        });
+        
+        // setData senkron değil, bu yüzden values'ı direkt put ile gönderiyoruz
+        // useForm'un data'sını kopyalayıp values'ı ekliyoruz
+        const formData = {
+            ...data,
+            values: values,
+        };
+        
+        // router.put kullanarak direkt data gönder
+        router.put(update(variation.id).url, formData);
     };
 
     return (

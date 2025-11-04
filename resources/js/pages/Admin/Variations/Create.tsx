@@ -135,15 +135,18 @@ export default function VariationsCreate() {
             sort_order: index,
         }));
 
-        // Values'ı setData ile ayarla, sonra post çağır
-        // Inertia'nın transform callback'i ile values'ı merge ediyoruz
+        // Values'ı setData ile ayarla
         setData('values', values);
-        post(store().url, {
-            transform: (data) => ({
-                ...data,
-                values: values,
-            }),
-        });
+        
+        // setData senkron değil, bu yüzden values'ı direkt post ile gönderiyoruz
+        // useForm'un data'sını kopyalayıp values'ı ekliyoruz
+        const formData = {
+            ...data,
+            values: values,
+        };
+        
+        // router.post kullanarak direkt data gönder
+        router.post(store().url, formData);
     };
 
     return (
