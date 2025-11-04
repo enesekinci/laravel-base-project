@@ -56,7 +56,11 @@ interface VariationValue {
 }
 
 export default function VariationsCreate() {
-    const { data, setData, post, processing, errors } = useForm({
+    const { data, setData, post, processing, errors } = useForm<{
+        name: string;
+        type: 'text' | 'color' | 'image';
+        values: VariationValue[];
+    }>({
         name: '',
         type: 'text' as 'text' | 'color' | 'image',
         values: [] as VariationValue[],
@@ -131,13 +135,14 @@ export default function VariationsCreate() {
             sort_order: index,
         }));
 
-        // Values'ı direkt data ile birlikte gönder
+        // Values'ı setData ile ayarla, sonra post çağır
+        // Inertia'nın transform callback'i ile values'ı merge ediyoruz
+        setData('values', values);
         post(store().url, {
-            data: {
-                name: data.name,
-                type: data.type,
+            transform: (data) => ({
+                ...data,
                 values: values,
-            },
+            }),
         });
     };
 

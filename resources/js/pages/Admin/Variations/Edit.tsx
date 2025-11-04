@@ -23,8 +23,8 @@ import AppLayout from '@/layouts/app-layout';
 import { index, update } from '@/routes/admin/variations';
 import { type BreadcrumbItem } from '@/types';
 import {
-    DndContext,
     closestCenter,
+    DndContext,
     KeyboardSensor,
     PointerSensor,
     useSensor,
@@ -153,13 +153,14 @@ export default function VariationsEdit({ variation }: Props) {
             sort_order: index,
         }));
 
-        // Values'ı direkt data ile birlikte gönder
+        // Values'ı setData ile ayarla, sonra put çağır
+        // Inertia'nın transform callback'i ile values'ı merge ediyoruz
+        setData('values', values);
         put(update(variation.id).url, {
-            data: {
-                name: data.name,
-                type: data.type,
+            transform: (data) => ({
+                ...data,
                 values: values,
-            },
+            }),
         });
     };
 
@@ -223,7 +224,9 @@ export default function VariationsEdit({ variation }: Props) {
                                         <SelectValue placeholder="Type seçin" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="text">Text</SelectItem>
+                                        <SelectItem value="text">
+                                            Text
+                                        </SelectItem>
                                         <SelectItem value="color">
                                             Color
                                         </SelectItem>
@@ -328,9 +331,9 @@ export default function VariationsEdit({ variation }: Props) {
                                                                             'color'
                                                                                 ? 'Örn: Mavi'
                                                                                 : data.type ===
-                                                                                  'image'
-                                                                                ? 'Örn: Kırmızı'
-                                                                                : 'Örn: XS, S, M, L, XL'
+                                                                                    'image'
+                                                                                  ? 'Örn: Kırmızı'
+                                                                                  : 'Örn: XS, S, M, L, XL'
                                                                         }
                                                                         className="w-full"
                                                                     />
