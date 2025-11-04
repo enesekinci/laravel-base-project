@@ -102,28 +102,34 @@ export default function VariationsIndex({ variations }: Props) {
                                                         {variation.type}
                                                     </span>
                                                 </div>
-                                                {variation.values && variation.values.length > 0 && (
-                                                    <div className="mt-2 flex flex-wrap gap-2">
-                                                        {variation.values.map((value) => (
-                                                            <span
-                                                                key={value.id}
-                                                                className="rounded-md bg-muted px-2 py-1 text-xs text-muted-foreground"
-                                                            >
-                                                                {value.label}
-                                                                {variation.type === 'color' &&
-                                                                    value.color && (
-                                                                        <span
-                                                                            className="ml-1 inline-block h-3 w-3 rounded-full border"
-                                                                            style={{
-                                                                                backgroundColor:
-                                                                                    value.color,
-                                                                            }}
-                                                                        />
-                                                                    )}
-                                                            </span>
-                                                        ))}
-                                                    </div>
-                                                )}
+                                                <div className="mt-2">
+                                                    {variation.values && variation.values.length > 0 ? (
+                                                        <div className="flex flex-wrap gap-2">
+                                                            {variation.values.map((value) => (
+                                                                <span
+                                                                    key={value.id}
+                                                                    className="rounded-md bg-muted px-2 py-1 text-xs text-muted-foreground"
+                                                                >
+                                                                    {value.label}
+                                                                    {variation.type === 'color' &&
+                                                                        value.color && (
+                                                                            <span
+                                                                                className="ml-1 inline-block h-3 w-3 rounded-full border"
+                                                                                style={{
+                                                                                    backgroundColor:
+                                                                                        value.color,
+                                                                                }}
+                                                                            />
+                                                                        )}
+                                                                </span>
+                                                            ))}
+                                                        </div>
+                                                    ) : (
+                                                        <p className="text-sm text-muted-foreground">
+                                                            Henüz değer eklenmemiş
+                                                        </p>
+                                                    )}
+                                                </div>
                                             </div>
                                             <div className="flex items-center gap-2">
                                                 <Link href={show(variation.id)}>
