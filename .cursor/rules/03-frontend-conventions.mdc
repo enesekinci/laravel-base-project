@@ -1,0 +1,53 @@
+---
+alwaysApply: true
+---
+
+# FRONTEND CONVENTIONS
+
+- React componentleri feature bazlı klasörlensin: `resources/js/Pages/Admin/Products/...`
+- shadcn componentleri `resources/js/components/ui` altında.
+- Formlarda react-hook-form + zod kullan.
+- API isteklerinde axios kullan ve CSRF'i ayarla.
+- Tablo, modal, drawer gibi şeyler reusable olacak.
+- Component isimleri PascalCase olmalı.
+- Props'ları type-safe yap (TypeScript kullan).
+
+# REACT COMPONENT GENERATION
+
+- Eğer React component üretiyorsan shadcn stiline göre üret.
+- Form varsa react-hook-form + zod kullan.
+- TypeScript kullan, any kullanma.
+- Component'leri feature bazlı organize et.
+
+```tsx
+// ✅ İyi - Product Form Component
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+
+const productSchema = z.object({
+    name: z.string().min(1, 'Ürün adı gereklidir'),
+    sku: z.string().min(1, 'SKU gereklidir'),
+    price: z.number().min(0, "Fiyat 0'dan büyük olmalıdır"),
+});
+
+type ProductFormData = z.infer<typeof productSchema>;
+
+export function ProductForm({
+    onSubmit,
+}: {
+    onSubmit: (data: ProductFormData) => void;
+}) {
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<ProductFormData>({
+        resolver: zodResolver(productSchema),
+    });
+
+    return <form onSubmit={handleSubmit(onSubmit)}>{/* form fields */}</form>;
+}
+```

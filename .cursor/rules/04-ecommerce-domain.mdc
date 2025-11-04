@@ -1,0 +1,42 @@
+---
+alwaysApply: true
+---
+
+# E-COMMERCE DOMAIN RULES
+
+- products: id, name, slug, sku, price, currency, status (draft,published), stock, description (longtext), images via media library.
+- categories: tree yapısı (parent_id).
+- orders: order_number, user_id, status, totals, items ayrı tabloda.
+- migrations always use unsignedBigInteger for fks.
+- Foreign key'ler için index'ler ekle.
+- Timestamps kullan (mümkünse).
+
+```php
+// ✅ İyi - Product Migration
+Schema::create('products', function (Blueprint $table) {
+    $table->id();
+    $table->string('name');
+    $table->string('slug')->unique();
+    $table->string('sku')->unique();
+    $table->decimal('price', 10, 2);
+    $table->string('currency', 3)->default('TRY');
+    $table->enum('status', ['draft', 'published'])->default('draft');
+    $table->integer('stock')->default(0);
+    $table->text('description')->nullable();
+    $table->unsignedBigInteger('category_id')->nullable();
+    $table->timestamps();
+    $table->softDeletes();
+
+    $table->foreign('category_id')->references('id')->on('categories')->onDelete('set null');
+    $table->index('category_id');
+    $table->index('status');
+});
+```
+
+# TASK STYLE
+
+- Bir dosya istersem tek dosya üret.
+- Yeni feature istersem migration + model + request + controller + route + react page şeklinde üretim sırası kullan.
+- Migration yazarken timestamps ekle ve softDeletes ürünle ilgili tablolara ekle.
+- Laravel controller üretirken ilgili FormRequest'i de üret.
+- E-ticaret modeli üretirken SKU alanı ekle.
