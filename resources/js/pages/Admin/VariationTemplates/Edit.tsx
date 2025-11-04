@@ -312,11 +312,14 @@ export default function VariationTemplatesEdit({ template }: Props) {
                                                                         value.color ||
                                                                         '#000000'
                                                                     }
-                                                                    onChange={(e) =>
+                                                                    onChange={(
+                                                                        e,
+                                                                    ) =>
                                                                         updateValue(
                                                                             index,
                                                                             'color',
-                                                                            e.target
+                                                                            e
+                                                                                .target
                                                                                 .value,
                                                                         )
                                                                     }
@@ -327,16 +330,21 @@ export default function VariationTemplatesEdit({ template }: Props) {
                                                                         value.color ||
                                                                         ''
                                                                     }
-                                                                    onChange={(e) =>
+                                                                    onChange={(
+                                                                        e,
+                                                                    ) =>
                                                                         updateValue(
                                                                             index,
                                                                             'color',
-                                                                            e.target
+                                                                            e
+                                                                                .target
                                                                                 .value,
                                                                         )
                                                                     }
                                                                     placeholder="#000000"
-                                                                    maxLength={7}
+                                                                    maxLength={
+                                                                        7
+                                                                    }
                                                                     className="flex-1"
                                                                 />
                                                             </div>

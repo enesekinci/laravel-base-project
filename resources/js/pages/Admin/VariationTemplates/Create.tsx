@@ -1,7 +1,7 @@
 import InputError from '@/components/input-error';
+import { SortableTableRow } from '@/components/SortableTableRow';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -11,9 +11,32 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
 import { index, store } from '@/routes/admin/variation-templates';
 import { type BreadcrumbItem } from '@/types';
+import {
+    DndContext,
+    closestCenter,
+    KeyboardSensor,
+    PointerSensor,
+    useSensor,
+    useSensors,
+    type DragEndEvent,
+} from '@dnd-kit/core';
+import {
+    arrayMove,
+    SortableContext,
+    sortableKeyboardCoordinates,
+    verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
@@ -45,8 +68,6 @@ export default function VariationTemplatesCreate() {
     const { data, setData, post, processing, errors } = useForm({
         name: '',
         type: 'text' as 'text' | 'color' | 'image',
-        sort_order: 0,
-        is_active: true,
         values: [] as VariationTemplateValue[],
     });
 
@@ -64,6 +85,30 @@ export default function VariationTemplatesCreate() {
             tempId: `temp-${Date.now()}-${Math.random()}`,
         };
         setLocalValues([...localValues, newValue]);
+    };
+
+    const sensors = useSensors(
+        useSensor(PointerSensor),
+        useSensor(KeyboardSensor, {
+            coordinateGetter: sortableKeyboardCoordinates,
+        }),
+    );
+
+    const handleDragEnd = (event: DragEndEvent) => {
+        const { active, over } = event;
+
+        if (over && active.id !== over.id) {
+            setLocalValues((items) => {
+                const oldIndex = items.findIndex(
+                    (item) => item.tempId === active.id,
+                );
+                const newIndex = items.findIndex(
+                    (item) => item.tempId === over.id,
+                );
+
+                return arrayMove(items, oldIndex, newIndex);
+            });
+        }
     };
 
     const removeValue = (index: number) => {
@@ -86,13 +131,13 @@ export default function VariationTemplatesCreate() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        // Local values'ı form data'ya aktar
-        const values = localValues.map((v) => ({
+        // Local values'ı form data'ya aktar ve sort_order'ı index'e göre ayarla
+        const values = localValues.map((v, index) => ({
             label: v.label,
             value: v.value || '',
             color: v.color || '',
             image: v.image || '',
-            sort_order: v.sort_order,
+            sort_order: index,
         }));
 
         setData('values', values);
@@ -172,33 +217,6 @@ export default function VariationTemplatesCreate() {
                                 </Select>
                                 <InputError message={errors.type} />
                             </div>
-
-                            <div className="space-y-2">
-                                <Label htmlFor="sort_order">Sıralama</Label>
-                                <Input
-                                    id="sort_order"
-                                    type="number"
-                                    value={data.sort_order}
-                                    onChange={(e) =>
-                                        setData(
-                                            'sort_order',
-                                            parseInt(e.target.value) || 0,
-                                        )
-                                    }
-                                />
-                                <InputError message={errors.sort_order} />
-                            </div>
-
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="is_active"
-                                    checked={data.is_active}
-                                    onCheckedChange={(checked) =>
-                                        setData('is_active', checked === true)
-                                    }
-                                />
-                                <Label htmlFor="is_active">Aktif</Label>
-                            </div>
                         </CardContent>
                     </Card>
 
@@ -220,135 +238,183 @@ export default function VariationTemplatesCreate() {
                         <CardContent>
                             {localValues.length > 0 ? (
                                 <div className="overflow-x-auto">
-                                    <Table>
-                                        <TableHeader>
-                                            <TableRow>
-                                                <TableHead className="w-12"></TableHead>
-                                                <TableHead>
-                                                    Etiket{' '}
-                                                    <span className="text-red-500">
-                                                        *
-                                                    </span>
-                                                </TableHead>
-                                                {data.type === 'color' && (
-                                                    <TableHead>Renk</TableHead>
-                                                )}
-                                                {data.type === 'image' && (
-                                                    <TableHead>Resim</TableHead>
-                                                )}
-                                                <TableHead className="w-12"></TableHead>
-                                            </TableRow>
-                                        </TableHeader>
-                                        <TableBody>
-                                            {localValues.map((value, index) => (
-                                                <TableRow
-                                                    key={value.tempId || index}
-                                                >
-                                                    <TableCell className="text-center">
-                                                        <div className="flex cursor-grab items-center justify-center text-muted-foreground">
-                                                            <GripVertical className="h-4 w-4" />
-                                                        </div>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Input
-                                                            value={value.label}
-                                                            onChange={(e) =>
-                                                                updateValue(
-                                                                    index,
-                                                                    'label',
-                                                                    e.target
-                                                                        .value,
-                                                                )
-                                                            }
-                                                            placeholder="Örn: Kırmızı, M"
-                                                            className="w-full"
-                                                        />
-                                                    </TableCell>
+                                    <DndContext
+                                        sensors={sensors}
+                                        collisionDetection={closestCenter}
+                                        onDragEnd={handleDragEnd}
+                                    >
+                                        <Table>
+                                            <TableHeader>
+                                                <TableRow>
+                                                    <TableHead className="w-12"></TableHead>
+                                                    <TableHead>
+                                                        Label{' '}
+                                                        <span className="text-red-500">
+                                                            *
+                                                        </span>
+                                                    </TableHead>
                                                     {data.type === 'color' && (
-                                                        <TableCell>
-                                                            <div className="flex gap-2">
-                                                                <Input
-                                                                    type="color"
-                                                                    value={
-                                                                        value.color ||
-                                                                        '#000000'
-                                                                    }
-                                                                    onChange={(
-                                                                        e,
-                                                                    ) =>
-                                                                        updateValue(
-                                                                            index,
-                                                                            'color',
-                                                                            e
-                                                                                .target
-                                                                                .value,
-                                                                        )
-                                                                    }
-                                                                    className="h-10 w-20"
-                                                                />
-                                                                <Input
-                                                                    value={
-                                                                        value.color ||
-                                                                        ''
-                                                                    }
-                                                                    onChange={(
-                                                                        e,
-                                                                    ) =>
-                                                                        updateValue(
-                                                                            index,
-                                                                            'color',
-                                                                            e
-                                                                                .target
-                                                                                .value,
-                                                                        )
-                                                                    }
-                                                                    placeholder="#000000"
-                                                                    maxLength={
-                                                                        7
-                                                                    }
-                                                                    className="flex-1"
-                                                                />
-                                                            </div>
-                                                        </TableCell>
+                                                        <TableHead>
+                                                            Renk
+                                                        </TableHead>
                                                     )}
                                                     {data.type === 'image' && (
-                                                        <TableCell>
-                                                            <Input
-                                                                value={
-                                                                    value.image ||
-                                                                    ''
+                                                        <TableHead>
+                                                            Resim
+                                                        </TableHead>
+                                                    )}
+                                                    <TableHead className="w-12"></TableHead>
+                                                </TableRow>
+                                            </TableHeader>
+                                            <TableBody>
+                                                <SortableContext
+                                                    items={localValues.map(
+                                                        (v) => v.tempId || '',
+                                                    )}
+                                                    strategy={
+                                                        verticalListSortingStrategy
+                                                    }
+                                                >
+                                                    {localValues.map(
+                                                        (value, index) => (
+                                                            <SortableTableRow
+                                                                key={
+                                                                    value.tempId ||
+                                                                    index
                                                                 }
-                                                                onChange={(e) =>
-                                                                    updateValue(
+                                                                id={
+                                                                    value.tempId ||
+                                                                    String(
                                                                         index,
-                                                                        'image',
-                                                                        e.target
-                                                                            .value,
                                                                     )
                                                                 }
-                                                                placeholder="Resim URL'si"
-                                                                className="w-full"
-                                                            />
-                                                        </TableCell>
+                                                            >
+                                                                <TableCell>
+                                                                    <Input
+                                                                        value={
+                                                                            value.label
+                                                                        }
+                                                                        onChange={(
+                                                                            e,
+                                                                        ) =>
+                                                                            updateValue(
+                                                                                index,
+                                                                                'label',
+                                                                                e
+                                                                                    .target
+                                                                                    .value,
+                                                                            )
+                                                                        }
+                                                                        placeholder={
+                                                                            data.type ===
+                                                                            'color'
+                                                                                ? 'Örn: Mavi'
+                                                                                : data.type ===
+                                                                                    'image'
+                                                                                  ? 'Örn: Kırmızı'
+                                                                                  : 'Örn: XS, S, M, L, XL'
+                                                                        }
+                                                                        className="w-full"
+                                                                    />
+                                                                </TableCell>
+                                                                {data.type ===
+                                                                    'color' && (
+                                                                    <TableCell>
+                                                                        <div className="flex gap-2">
+                                                                            <Input
+                                                                                type="color"
+                                                                                value={
+                                                                                    value.color ||
+                                                                                    '#000000'
+                                                                                }
+                                                                                onChange={(
+                                                                                    e,
+                                                                                ) =>
+                                                                                    updateValue(
+                                                                                        index,
+                                                                                        'color',
+                                                                                        e
+                                                                                            .target
+                                                                                            .value,
+                                                                                    )
+                                                                                }
+                                                                                className="h-10 w-20"
+                                                                            />
+                                                                            <Input
+                                                                                value={
+                                                                                    value.color ||
+                                                                                    ''
+                                                                                }
+                                                                                onChange={(
+                                                                                    e,
+                                                                                ) =>
+                                                                                    updateValue(
+                                                                                        index,
+                                                                                        'color',
+                                                                                        e
+                                                                                            .target
+                                                                                            .value,
+                                                                                    )
+                                                                                }
+                                                                                placeholder="#000000"
+                                                                                maxLength={
+                                                                                    7
+                                                                                }
+                                                                                className="flex-1"
+                                                                            />
+                                                                        </div>
+                                                                    </TableCell>
+                                                                )}
+                                                                {data.type ===
+                                                                    'image' && (
+                                                                    <TableCell>
+                                                                        <Input
+                                                                            type="file"
+                                                                            accept="image/*"
+                                                                            onChange={(
+                                                                                e,
+                                                                            ) => {
+                                                                                const file =
+                                                                                    e
+                                                                                        .target
+                                                                                        .files?.[0];
+                                                                                if (
+                                                                                    file
+                                                                                ) {
+                                                                                    // TODO: File upload implementation
+                                                                                    // For now, just store the filename
+                                                                                    updateValue(
+                                                                                        index,
+                                                                                        'image',
+                                                                                        file.name,
+                                                                                    );
+                                                                                }
+                                                                            }}
+                                                                            className="w-full"
+                                                                        />
+                                                                    </TableCell>
+                                                                )}
+                                                                <TableCell className="text-center">
+                                                                    <Button
+                                                                        type="button"
+                                                                        variant="ghost"
+                                                                        size="sm"
+                                                                        onClick={() =>
+                                                                            removeValue(
+                                                                                index,
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        <Trash2 className="h-4 w-4 text-destructive" />
+                                                                    </Button>
+                                                                </TableCell>
+                                                            </SortableTableRow>
+                                                        ),
                                                     )}
-                                                    <TableCell className="text-center">
-                                                        <Button
-                                                            type="button"
-                                                            variant="ghost"
-                                                            size="sm"
-                                                            onClick={() =>
-                                                                removeValue(
-                                                                    index,
-                                                                )
-                                                            }
-                                                        >
-                                                            <Trash2 className="h-4 w-4 text-destructive" />
-                                                        </Button>
-                                                    </TableCell>
-                                                </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
+                                                </SortableContext>
+                                            </TableBody>
+                                        </Table>
+                                    </DndContext>
                                 </div>
                             ) : (
                                 <div className="py-8 text-center text-muted-foreground">
