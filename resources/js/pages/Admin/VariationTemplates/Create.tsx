@@ -23,8 +23,8 @@ import AppLayout from '@/layouts/app-layout';
 import { index, store } from '@/routes/admin/variation-templates';
 import { type BreadcrumbItem } from '@/types';
 import {
-    DndContext,
     closestCenter,
+    DndContext,
     KeyboardSensor,
     PointerSensor,
     useSensor,
