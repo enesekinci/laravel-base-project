@@ -12,18 +12,18 @@ class VariationService
      */
     public function list(array $filters = []): LengthAwarePaginator
     {
-        $query = Variation::query()->ordered();
+        $query = Variation::query()
+            ->with('values')
+            ->ordered();
 
         if (isset($filters['search'])) {
             $query->where(function ($q) use ($filters) {
-                $q->where('name', 'like', '%' . $filters['search'] . '%')
-                    ->orWhere('slug', 'like', '%' . $filters['search'] . '%')
-                    ->orWhere('sku', 'like', '%' . $filters['search'] . '%');
+                $q->where('name', 'like', '%' . $filters['search'] . '%');
             });
         }
 
-        if (isset($filters['is_active'])) {
-            $query->where('is_active', $filters['is_active']);
+        if (isset($filters['type'])) {
+            $query->where('type', $filters['type']);
         }
 
         return $query->paginate($filters['per_page'] ?? 15);
@@ -34,7 +34,18 @@ class VariationService
      */
     public function create(array $data): Variation
     {
-        return Variation::create($data);
+        $values = $data['values'] ?? [];
+        unset($data['values']);
+
+        $variation = Variation::create($data);
+
+        if (!empty($values)) {
+            foreach ($values as $valueData) {
+                $variation->values()->create($valueData);
+            }
+        }
+
+        return $variation->load('values');
     }
 
     /**
@@ -42,9 +53,23 @@ class VariationService
      */
     public function update(Variation $variation, array $data): Variation
     {
+        $values = $data['values'] ?? [];
+        unset($data['values']);
+
         $variation->update($data);
 
-        return $variation->fresh();
+        // Değerleri güncelle
+        if (isset($values)) {
+            // Mevcut değerleri sil
+            $variation->values()->delete();
+
+            // Yeni değerleri ekle
+            foreach ($values as $valueData) {
+                $variation->values()->create($valueData);
+            }
+        }
+
+        return $variation->fresh(['values']);
     }
 
     /**

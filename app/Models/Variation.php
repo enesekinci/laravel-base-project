@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Variation extends Model
@@ -12,33 +13,21 @@ class Variation extends Model
 
     protected $fillable = [
         'name',
-        'slug',
-        'description',
-        'attribute_values',
-        'sku',
-        'price',
-        'compare_price',
-        'stock',
-        'image',
-        'is_active',
-        'sort_order',
+        'type',
     ];
 
     protected $casts = [
-        'attribute_values' => 'array',
-        'price' => 'decimal:2',
-        'compare_price' => 'decimal:2',
-        'stock' => 'integer',
-        'is_active' => 'boolean',
-        'sort_order' => 'integer',
+        'type' => 'string',
     ];
 
     /**
-     * Aktif varyasyonlar
+     * Varyasyon değerleri
      */
-    public function scopeActive($query)
+    public function values(): HasMany
     {
-        return $query->where('is_active', true);
+        return $this->hasMany(VariationValue::class, 'variation_id')
+            ->orderBy('sort_order')
+            ->orderBy('label');
     }
 
     /**
@@ -46,6 +35,6 @@ class Variation extends Model
      */
     public function scopeOrdered($query)
     {
-        return $query->orderBy('sort_order')->orderBy('name');
+        return $query->orderBy('name');
     }
 }

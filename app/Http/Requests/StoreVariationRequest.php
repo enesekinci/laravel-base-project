@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreVariationRequest extends FormRequest
 {
@@ -23,16 +24,13 @@ class StoreVariationRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'slug' => ['required', 'string', 'max:255', 'unique:variations,slug'],
-            'description' => ['nullable', 'string'],
-            'attribute_values' => ['nullable', 'array'],
-            'sku' => ['nullable', 'string', 'max:255', 'unique:variations,sku'],
-            'price' => ['required', 'numeric', 'min:0'],
-            'compare_price' => ['nullable', 'numeric', 'min:0'],
-            'stock' => ['nullable', 'integer', 'min:0'],
-            'image' => ['nullable', 'string'],
-            'is_active' => ['nullable', 'boolean'],
-            'sort_order' => ['nullable', 'integer', 'min:0'],
+            'type' => ['required', 'string', Rule::in(['text', 'color', 'image'])],
+            'values' => ['nullable', 'array'],
+            'values.*.label' => ['required', 'string', 'max:255'],
+            'values.*.value' => ['nullable', 'string', 'max:255'],
+            'values.*.color' => ['nullable', 'string', 'max:7'],
+            'values.*.image' => ['nullable', 'string'],
+            'values.*.sort_order' => ['nullable', 'integer', 'min:0'],
         ];
     }
 }

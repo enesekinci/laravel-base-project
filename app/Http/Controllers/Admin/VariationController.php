@@ -23,7 +23,7 @@ class VariationController extends Controller
      */
     public function index(): Response
     {
-        $variations = $this->variationService->list(request()->only(['search', 'is_active', 'per_page']));
+        $variations = $this->variationService->list(request()->only(['search', 'type', 'per_page']));
 
         return Inertia::render('Admin/Variations/Index', [
             'variations' => $variations,
@@ -55,6 +55,8 @@ class VariationController extends Controller
      */
     public function show(Variation $variation): Response
     {
+        $variation->load('values');
+
         return Inertia::render('Admin/Variations/Show', [
             'variation' => $variation,
         ]);
@@ -65,6 +67,8 @@ class VariationController extends Controller
      */
     public function edit(Variation $variation): Response
     {
+        $variation->load('values');
+
         return Inertia::render('Admin/Variations/Edit', [
             'variation' => $variation,
         ]);

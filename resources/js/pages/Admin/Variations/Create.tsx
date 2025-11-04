@@ -23,8 +23,8 @@ import AppLayout from '@/layouts/app-layout';
 import { index, store } from '@/routes/admin/variations';
 import { type BreadcrumbItem } from '@/types';
 import {
-    DndContext,
     closestCenter,
+    DndContext,
     KeyboardSensor,
     PointerSensor,
     useSensor,
@@ -162,8 +162,7 @@ export default function VariationsCreate() {
                         <CardContent className="space-y-4">
                             <div className="space-y-2">
                                 <Label htmlFor="name">
-                                    Name{' '}
-                                    <span className="text-red-500">*</span>
+                                    Name <span className="text-red-500">*</span>
                                 </Label>
                                 <Input
                                     id="name"
@@ -178,8 +177,7 @@ export default function VariationsCreate() {
 
                             <div className="space-y-2">
                                 <Label htmlFor="type">
-                                    Type{' '}
-                                    <span className="text-red-500">*</span>
+                                    Type <span className="text-red-500">*</span>
                                 </Label>
                                 <Select
                                     value={data.type}
@@ -194,9 +192,15 @@ export default function VariationsCreate() {
                                         <SelectValue placeholder="Type seçin" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="text">Text</SelectItem>
-                                        <SelectItem value="color">Color</SelectItem>
-                                        <SelectItem value="image">Image</SelectItem>
+                                        <SelectItem value="text">
+                                            Text
+                                        </SelectItem>
+                                        <SelectItem value="color">
+                                            Color
+                                        </SelectItem>
+                                        <SelectItem value="image">
+                                            Image
+                                        </SelectItem>
                                     </SelectContent>
                                 </Select>
                                 <InputError message={errors.type} />
@@ -238,10 +242,14 @@ export default function VariationsCreate() {
                                                         </span>
                                                     </TableHead>
                                                     {data.type === 'color' && (
-                                                        <TableHead>Color</TableHead>
+                                                        <TableHead>
+                                                            Color
+                                                        </TableHead>
                                                     )}
                                                     {data.type === 'image' && (
-                                                        <TableHead>Image</TableHead>
+                                                        <TableHead>
+                                                            Image
+                                                        </TableHead>
                                                     )}
                                                     <TableHead className="w-12"></TableHead>
                                                 </TableRow>
@@ -251,7 +259,9 @@ export default function VariationsCreate() {
                                                     items={localValues.map(
                                                         (v) => v.tempId || '',
                                                     )}
-                                                    strategy={verticalListSortingStrategy}
+                                                    strategy={
+                                                        verticalListSortingStrategy
+                                                    }
                                                 >
                                                     {localValues.map(
                                                         (value, index) => (
@@ -288,9 +298,9 @@ export default function VariationsCreate() {
                                                                             'color'
                                                                                 ? 'Örn: Mavi'
                                                                                 : data.type ===
-                                                                                  'image'
-                                                                                ? 'Örn: Kırmızı'
-                                                                                : 'Örn: XS, S, M, L, XL'
+                                                                                    'image'
+                                                                                  ? 'Örn: Kırmızı'
+                                                                                  : 'Örn: XS, S, M, L, XL'
                                                                         }
                                                                         className="w-full"
                                                                     />
@@ -353,7 +363,8 @@ export default function VariationsCreate() {
                                                                                 e,
                                                                             ) => {
                                                                                 const file =
-                                                                                    e.target
+                                                                                    e
+                                                                                        .target
                                                                                         .files?.[0];
                                                                                 if (
                                                                                     file
