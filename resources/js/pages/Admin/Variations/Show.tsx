@@ -205,7 +205,7 @@ export default function VariationsShow({ variation }: Props) {
                                                                         '/',
                                                                     )
                                                                         ? value.image
-                                                                        : `/storage/${value.image}`
+                                                                        : `/storage/variations/${value.image}`
                                                                 }
                                                                 alt={
                                                                     value.label
