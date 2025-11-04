@@ -55,34 +55,34 @@
 
 ### 3. Product Attributes Modülü (Mevcut - Kontrol)
 
-- [ ] Attributes modülünün ürünlerle ilişkilendirilmesi kontrol et
-- [ ] Gerekirse `product_attributes` pivot tablosu
+- [x] Attributes modülünün ürünlerle ilişkilendirilmesi kontrol et
+- [x] Gerekirse `product_attributes` pivot tablosu (Products modülünde oluşturulacak)
 
 ### 4. Product Options Modülü (Yeni)
 
-- [ ] Migration: `product_options` tablosu
+- [x] Migration: `product_options` tablosu
     - id, name, description, type, sort_order, is_active, timestamps
-- [ ] Migration: `product_option_values` tablosu
+- [x] Migration: `product_option_values` tablosu
     - id, product_option_id, label, value, price_adjustment, sort_order, timestamps
-- [ ] Model: `ProductOption` (relationships: values)
-- [ ] Model: `ProductOptionValue`
-- [ ] FormRequest: `StoreProductOptionRequest`, `UpdateProductOptionRequest`
-- [ ] Service: `ProductOptionService`
-- [ ] Controller: `ProductOptionController` (CRUD)
-- [ ] Routes: Resource routes
-- [ ] Frontend: Index, Create, Edit, Show sayfaları
-- [ ] Frontend: Values yönetimi (Label, Price Adjustment)
+- [x] Model: `ProductOption` (relationships: values)
+- [x] Model: `ProductOptionValue`
+- [x] FormRequest: `StoreProductOptionRequest`, `UpdateProductOptionRequest`
+- [x] Service: `ProductOptionService`
+- [x] Controller: `ProductOptionController` (CRUD)
+- [x] Routes: Resource routes
+- [x] Frontend: Index, Create, Edit, Show sayfaları
+- [x] Frontend: Values yönetimi (Label, Price Adjustment)
 
 ### 5. Tax Classes Modülü (Yeni)
 
-- [ ] Migration: `tax_classes` tablosu
+- [x] Migration: `tax_classes` tablosu
     - id, name, rate (decimal), is_active, timestamps
-- [ ] Model: `TaxClass`
-- [ ] FormRequest: `StoreTaxClassRequest`, `UpdateTaxClassRequest`
-- [ ] Service: `TaxClassService`
-- [ ] Controller: `TaxClassController` (CRUD)
-- [ ] Routes: Resource routes
-- [ ] Frontend: Index, Create, Edit, Show sayfaları
+- [x] Model: `TaxClass`
+- [x] FormRequest: `StoreTaxClassRequest`, `UpdateTaxClassRequest`
+- [x] Service: `TaxClassService`
+- [x] Controller: `TaxClassController` (CRUD)
+- [x] Routes: Resource routes
+- [x] Frontend: Index, Create, Edit, Show sayfaları
 
 ### 6. Products Modülü (Ana Modül)
 

@@ -8,6 +8,8 @@ use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\VariationController;
 use App\Http\Controllers\Admin\VariationTemplateController;
+use App\Http\Controllers\Admin\ProductOptionController;
+use App\Http\Controllers\Admin\TaxClassController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
@@ -50,6 +52,12 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
     // Varyasyon Şablonları
     Route::resource('variation-templates', VariationTemplateController::class);
+
+    // Ürün Seçenekleri
+    Route::resource('product-options', ProductOptionController::class);
+
+    // Vergi Sınıfları
+    Route::resource('tax-classes', TaxClassController::class);
 });
 
-require __DIR__.'/settings.php';
+require __DIR__ . '/settings.php';

@@ -11,29 +11,29 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog';
 import AppLayout from '@/layouts/app-layout';
-import { destroy, edit, index } from '@/routes/admin/variation-templates';
+import { destroy, edit, index } from '@/routes/admin/product-options';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
 import { ArrowLeft, Edit, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 
-interface VariationTemplateValue {
+interface ProductOptionValue {
     id: number;
     label: string;
     value?: string;
-    color?: string;
-    image?: string;
+    price_adjustment: number;
     sort_order: number;
 }
 
 interface Props {
-    template: {
+    option: {
         id: number;
         name: string;
-        type: 'text' | 'color' | 'image';
+        description?: string;
+        type: 'select' | 'radio' | 'checkbox';
         sort_order: number;
         is_active: boolean;
-        values?: VariationTemplateValue[];
+        values?: ProductOptionValue[];
         created_at: string;
         updated_at: string;
     };
@@ -45,26 +45,26 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/admin/dashboard',
     },
     {
-        title: 'Varyasyon Şablonları',
-        href: '/admin/variation-templates',
+        title: 'Ürün Seçenekleri',
+        href: '/admin/product-options',
     },
     {
-        title: 'Şablon Detayı',
+        title: 'Seçenek Detayı',
         href: '#',
     },
 ];
 
 const typeLabels: Record<string, string> = {
-    text: 'Metin',
-    color: 'Renk',
-    image: 'Resim',
+    select: 'Select',
+    radio: 'Radio',
+    checkbox: 'Checkbox',
 };
 
-export default function VariationTemplatesShow({ template }: Props) {
+export default function ProductOptionsShow({ option }: Props) {
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
     const handleDelete = () => {
-        router.delete(destroy(template.id).url, {
+        router.delete(destroy(option.id).url, {
             onSuccess: () => {
                 router.visit(index().url);
             },
@@ -74,20 +74,20 @@ export default function VariationTemplatesShow({ template }: Props) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title={`${template.name} - Şablon Detayı`} />
+            <Head title={`${option.name} - Seçenek Detayı`} />
 
             <div className="flex-1 space-y-6 p-6">
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">
-                            {template.name}
+                            {option.name}
                         </h1>
                         <p className="mt-1 text-muted-foreground">
-                            Varyasyon şablonu detay bilgileri
+                            Ürün seçeneği detay bilgileri
                         </p>
                     </div>
                     <div className="flex gap-2">
-                        <Link href={edit(template.id)}>
+                        <Link href={edit(option.id)}>
                             <Button>
                                 <Edit className="mr-2 h-4 w-4" />
                                 Düzenle
@@ -105,9 +105,9 @@ export default function VariationTemplatesShow({ template }: Props) {
                             </DialogTrigger>
                             <DialogContent>
                                 <DialogHeader>
-                                    <DialogTitle>Şablonu Sil</DialogTitle>
+                                    <DialogTitle>Seçeneği Sil</DialogTitle>
                                     <DialogDescription>
-                                        Bu şablonu silmek istediğinizden emin
+                                        Bu seçeneği silmek istediğinizden emin
                                         misiniz? Bu işlem geri alınamaz.
                                     </DialogDescription>
                                 </DialogHeader>
@@ -140,22 +140,30 @@ export default function VariationTemplatesShow({ template }: Props) {
 
                 <Card>
                     <CardHeader>
-                        <CardTitle>Şablon Bilgileri</CardTitle>
+                        <CardTitle>Seçenek Bilgileri</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div>
                             <p className="text-sm font-medium text-muted-foreground">
                                 Ad
                             </p>
-                            <p className="mt-1 text-lg">{template.name}</p>
+                            <p className="mt-1 text-lg">{option.name}</p>
                         </div>
+                        {option.description && (
+                            <div>
+                                <p className="text-sm font-medium text-muted-foreground">
+                                    Açıklama
+                                </p>
+                                <p className="mt-1">{option.description}</p>
+                            </div>
+                        )}
                         <div>
                             <p className="text-sm font-medium text-muted-foreground">
                                 Tip
                             </p>
                             <div className="mt-1">
                                 <Badge>
-                                    {typeLabels[template.type] || template.type}
+                                    {typeLabels[option.type] || option.type}
                                 </Badge>
                             </div>
                         </div>
@@ -166,12 +174,12 @@ export default function VariationTemplatesShow({ template }: Props) {
                             <div className="mt-1">
                                 <Badge
                                     variant={
-                                        template.is_active
+                                        option.is_active
                                             ? 'default'
                                             : 'secondary'
                                     }
                                 >
-                                    {template.is_active ? 'Aktif' : 'Pasif'}
+                                    {option.is_active ? 'Aktif' : 'Pasif'}
                                 </Badge>
                             </div>
                         </div>
@@ -179,23 +187,21 @@ export default function VariationTemplatesShow({ template }: Props) {
                             <p className="text-sm font-medium text-muted-foreground">
                                 Sıra
                             </p>
-                            <p className="mt-1 text-lg">
-                                {template.sort_order}
-                            </p>
+                            <p className="mt-1 text-lg">{option.sort_order}</p>
                         </div>
                     </CardContent>
                 </Card>
 
-                {template.values && template.values.length > 0 && (
+                {option.values && option.values.length > 0 && (
                     <Card>
                         <CardHeader>
                             <CardTitle>
-                                Değerler ({template.values.length})
+                                Değerler ({option.values.length})
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="space-y-4">
-                                {template.values.map((value) => (
+                                {option.values.map((value) => (
                                     <div
                                         key={value.id}
                                         className="rounded-lg border p-4"
@@ -211,36 +217,27 @@ export default function VariationTemplatesShow({ template }: Props) {
                                                             {value.value}
                                                         </Badge>
                                                     )}
+                                                    {value.price_adjustment !==
+                                                        0 && (
+                                                        <Badge
+                                                            variant={
+                                                                value.price_adjustment >
+                                                                0
+                                                                    ? 'default'
+                                                                    : 'secondary'
+                                                            }
+                                                        >
+                                                            {value.price_adjustment >
+                                                            0
+                                                                ? '+'
+                                                                : ''}
+                                                            {value.price_adjustment.toFixed(
+                                                                2,
+                                                            )}{' '}
+                                                            ₺
+                                                        </Badge>
+                                                    )}
                                                 </div>
-                                                {template.type === 'color' &&
-                                                    value.color && (
-                                                        <div className="mt-2 flex items-center gap-2">
-                                                            <div
-                                                                className="h-6 w-6 rounded border"
-                                                                style={{
-                                                                    backgroundColor:
-                                                                        value.color,
-                                                                }}
-                                                            />
-                                                            <span className="text-sm text-muted-foreground">
-                                                                {value.color}
-                                                            </span>
-                                                        </div>
-                                                    )}
-                                                {template.type === 'image' &&
-                                                    value.image && (
-                                                        <div className="mt-2">
-                                                            <img
-                                                                src={
-                                                                    value.image
-                                                                }
-                                                                alt={
-                                                                    value.label
-                                                                }
-                                                                className="h-16 w-16 rounded border object-cover"
-                                                            />
-                                                        </div>
-                                                    )}
                                                 <p className="mt-1 text-xs text-muted-foreground">
                                                     Sıra: {value.sort_order}
                                                 </p>
@@ -256,3 +253,4 @@ export default function VariationTemplatesShow({ template }: Props) {
         </AppLayout>
     );
 }
+

@@ -12,7 +12,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
-import { index, show, update } from '@/routes/admin/variation-templates';
+import { index, update } from '@/routes/admin/variation-templates';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
@@ -184,8 +184,12 @@ export default function VariationTemplatesEdit({ template }: Props) {
                                         <SelectValue placeholder="Tip seçin" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="text">Metin</SelectItem>
-                                        <SelectItem value="color">Renk</SelectItem>
+                                        <SelectItem value="text">
+                                            Metin
+                                        </SelectItem>
+                                        <SelectItem value="color">
+                                            Renk
+                                        </SelectItem>
                                         <SelectItem value="image">
                                             Resim
                                         </SelectItem>
@@ -213,12 +217,11 @@ export default function VariationTemplatesEdit({ template }: Props) {
                             <div className="flex items-center space-x-2">
                                 <Checkbox
                                     id="is_active"
-                                    checked={data.is_active ?? template.is_active}
+                                    checked={
+                                        data.is_active ?? template.is_active
+                                    }
                                     onCheckedChange={(checked) =>
-                                        setData(
-                                            'is_active',
-                                            checked === true,
-                                        )
+                                        setData('is_active', checked === true)
                                     }
                                 />
                                 <Label htmlFor="is_active">Aktif</Label>
@@ -274,7 +277,10 @@ export default function VariationTemplatesEdit({ template }: Props) {
                                                     <div className="space-y-2">
                                                         <Label>Değer</Label>
                                                         <Input
-                                                            value={value.value || ''}
+                                                            value={
+                                                                value.value ||
+                                                                ''
+                                                            }
                                                             onChange={(e) =>
                                                                 updateValue(
                                                                     index,
@@ -290,7 +296,9 @@ export default function VariationTemplatesEdit({ template }: Props) {
 
                                                 {data.type === 'color' && (
                                                     <div className="space-y-2">
-                                                        <Label>Renk (HEX)</Label>
+                                                        <Label>
+                                                            Renk (HEX)
+                                                        </Label>
                                                         <div className="flex gap-2">
                                                             <Input
                                                                 type="color"
@@ -333,7 +341,8 @@ export default function VariationTemplatesEdit({ template }: Props) {
                                                         <Label>Resim URL</Label>
                                                         <Input
                                                             value={
-                                                                value.image || ''
+                                                                value.image ||
+                                                                ''
                                                             }
                                                             onChange={(e) =>
                                                                 updateValue(
@@ -407,4 +416,3 @@ export default function VariationTemplatesEdit({ template }: Props) {
         </AppLayout>
     );
 }
-

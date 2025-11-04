@@ -12,11 +12,11 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
-import { index, store } from '@/routes/admin/variation-templates';
+import { index, update } from '@/routes/admin/product-options';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -24,42 +24,66 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/admin/dashboard',
     },
     {
-        title: 'Varyasyon Şablonları',
-        href: '/admin/variation-templates',
+        title: 'Ürün Seçenekleri',
+        href: '/admin/product-options',
     },
     {
-        title: 'Yeni Şablon',
-        href: '/admin/variation-templates/create',
+        title: 'Seçenek Düzenle',
+        href: '#',
     },
 ];
 
-interface VariationTemplateValue {
+interface ProductOptionValue {
+    id?: number;
     label: string;
     value?: string;
-    color?: string;
-    image?: string;
+    price_adjustment: number;
     sort_order: number;
 }
 
-export default function VariationTemplatesCreate() {
-    const { data, setData, post, processing, errors } = useForm({
-        name: '',
-        type: 'text' as 'text' | 'color' | 'image',
-        sort_order: 0,
-        is_active: true,
-        values: [] as VariationTemplateValue[],
+interface Props {
+    option: {
+        id: number;
+        name: string;
+        description?: string;
+        type: 'select' | 'radio' | 'checkbox';
+        sort_order: number;
+        is_active: boolean;
+        values?: ProductOptionValue[];
+    };
+}
+
+export default function ProductOptionsEdit({ option }: Props) {
+    const { data, setData, put, processing, errors } = useForm({
+        name: option.name,
+        description: option.description || '',
+        type: option.type,
+        sort_order: option.sort_order,
+        is_active: option.is_active,
+        values: [] as ProductOptionValue[],
     });
 
     const [localValues, setLocalValues] = useState<
-        (VariationTemplateValue & { tempId?: string })[]
+        (ProductOptionValue & { tempId?: string })[]
     >([]);
 
+    // Option values'ları local state'e yükle
+    useEffect(() => {
+        if (option.values) {
+            setLocalValues(
+                option.values.map((v) => ({
+                    ...v,
+                    tempId: v.id ? `existing-${v.id}` : undefined,
+                })),
+            );
+        }
+    }, [option.values]);
+
     const addValue = () => {
-        const newValue: VariationTemplateValue & { tempId?: string } = {
+        const newValue: ProductOptionValue & { tempId?: string } = {
             label: '',
             value: '',
-            color: '',
-            image: '',
+            price_adjustment: 0,
             sort_order: localValues.length,
             tempId: `temp-${Date.now()}-${Math.random()}`,
         };
@@ -72,7 +96,7 @@ export default function VariationTemplatesCreate() {
 
     const updateValue = (
         index: number,
-        field: keyof VariationTemplateValue,
+        field: keyof ProductOptionValue,
         value: string | number,
     ) => {
         const updated = [...localValues];
@@ -88,29 +112,29 @@ export default function VariationTemplatesCreate() {
 
         // Local values'ı form data'ya aktar
         const values = localValues.map((v) => ({
+            id: v.id,
             label: v.label,
             value: v.value || '',
-            color: v.color || '',
-            image: v.image || '',
+            price_adjustment: v.price_adjustment,
             sort_order: v.sort_order,
         }));
 
         setData('values', values);
-        post(store().url);
+        put(update.form(option.id).url);
     };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Yeni Varyasyon Şablonu" />
+            <Head title="Ürün Seçeneği Düzenle" />
 
             <div className="flex-1 space-y-6 p-6">
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">
-                            Yeni Varyasyon Şablonu
+                            Ürün Seçeneği Düzenle
                         </h1>
                         <p className="mt-1 text-muted-foreground">
-                            Yeni bir varyasyon şablonu oluşturun
+                            Ürün seçeneğini düzenleyin
                         </p>
                     </div>
                     <Link href={index()}>
@@ -137,9 +161,22 @@ export default function VariationTemplatesCreate() {
                                     onChange={(e) =>
                                         setData('name', e.target.value)
                                     }
-                                    placeholder="Örn: Renk, Beden"
+                                    placeholder="Örn: RAM, Depolama"
                                 />
                                 <InputError message={errors.name} />
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label htmlFor="description">Açıklama</Label>
+                                <Input
+                                    id="description"
+                                    value={data.description}
+                                    onChange={(e) =>
+                                        setData('description', e.target.value)
+                                    }
+                                    placeholder="Seçenek açıklaması"
+                                />
+                                <InputError message={errors.description} />
                             </div>
 
                             <div className="space-y-2">
@@ -151,7 +188,10 @@ export default function VariationTemplatesCreate() {
                                     onValueChange={(value) =>
                                         setData(
                                             'type',
-                                            value as 'text' | 'color' | 'image',
+                                            value as
+                                                | 'select'
+                                                | 'radio'
+                                                | 'checkbox',
                                         )
                                     }
                                 >
@@ -159,14 +199,12 @@ export default function VariationTemplatesCreate() {
                                         <SelectValue placeholder="Tip seçin" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="text">
-                                            Metin
+                                        <SelectItem value="select">
+                                            Select
                                         </SelectItem>
-                                        <SelectItem value="color">
-                                            Renk
-                                        </SelectItem>
-                                        <SelectItem value="image">
-                                            Resim
+                                        <SelectItem value="radio">Radio</SelectItem>
+                                        <SelectItem value="checkbox">
+                                            Checkbox
                                         </SelectItem>
                                     </SelectContent>
                                 </Select>
@@ -192,7 +230,9 @@ export default function VariationTemplatesCreate() {
                             <div className="flex items-center space-x-2">
                                 <Checkbox
                                     id="is_active"
-                                    checked={data.is_active}
+                                    checked={
+                                        data.is_active ?? option.is_active
+                                    }
                                     onCheckedChange={(checked) =>
                                         setData('is_active', checked === true)
                                     }
@@ -221,7 +261,7 @@ export default function VariationTemplatesCreate() {
                             {localValues.length > 0 ? (
                                 localValues.map((value, index) => (
                                     <div
-                                        key={value.tempId || index}
+                                        key={value.tempId || value.id || index}
                                         className="rounded-lg border p-4"
                                     >
                                         <div className="flex items-start justify-between">
@@ -244,7 +284,7 @@ export default function VariationTemplatesCreate() {
                                                                         .value,
                                                                 )
                                                             }
-                                                            placeholder="Örn: Kırmızı, M"
+                                                            placeholder="Örn: 8GB, 256GB"
                                                         />
                                                     </div>
                                                     <div className="space-y-2">
@@ -267,85 +307,45 @@ export default function VariationTemplatesCreate() {
                                                     </div>
                                                 </div>
 
-                                                {data.type === 'color' && (
+                                                <div className="grid grid-cols-2 gap-4">
                                                     <div className="space-y-2">
                                                         <Label>
-                                                            Renk (HEX)
+                                                            Fiyat Farkı (₺)
                                                         </Label>
-                                                        <div className="flex gap-2">
-                                                            <Input
-                                                                type="color"
-                                                                value={
-                                                                    value.color ||
-                                                                    '#000000'
-                                                                }
-                                                                onChange={(e) =>
-                                                                    updateValue(
-                                                                        index,
-                                                                        'color',
-                                                                        e.target
-                                                                            .value,
-                                                                    )
-                                                                }
-                                                                className="h-10 w-20"
-                                                            />
-                                                            <Input
-                                                                value={
-                                                                    value.color ||
-                                                                    ''
-                                                                }
-                                                                onChange={(e) =>
-                                                                    updateValue(
-                                                                        index,
-                                                                        'color',
-                                                                        e.target
-                                                                            .value,
-                                                                    )
-                                                                }
-                                                                placeholder="#000000"
-                                                                maxLength={7}
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                )}
-
-                                                {data.type === 'image' && (
-                                                    <div className="space-y-2">
-                                                        <Label>Resim URL</Label>
                                                         <Input
-                                                            value={
-                                                                value.image ||
-                                                                ''
-                                                            }
+                                                            type="number"
+                                                            step="0.01"
+                                                            value={value.price_adjustment}
                                                             onChange={(e) =>
                                                                 updateValue(
                                                                     index,
-                                                                    'image',
-                                                                    e.target
-                                                                        .value,
+                                                                    'price_adjustment',
+                                                                    parseFloat(
+                                                                        e.target
+                                                                            .value,
+                                                                    ) || 0,
                                                                 )
                                                             }
-                                                            placeholder="Resim URL'si"
+                                                            placeholder="0.00"
                                                         />
                                                     </div>
-                                                )}
-
-                                                <div className="space-y-2">
-                                                    <Label>Sıralama</Label>
-                                                    <Input
-                                                        type="number"
-                                                        value={value.sort_order}
-                                                        onChange={(e) =>
-                                                            updateValue(
-                                                                index,
-                                                                'sort_order',
-                                                                parseInt(
-                                                                    e.target
-                                                                        .value,
-                                                                ) || 0,
-                                                            )
-                                                        }
-                                                    />
+                                                    <div className="space-y-2">
+                                                        <Label>Sıralama</Label>
+                                                        <Input
+                                                            type="number"
+                                                            value={value.sort_order}
+                                                            onChange={(e) =>
+                                                                updateValue(
+                                                                    index,
+                                                                    'sort_order',
+                                                                    parseInt(
+                                                                        e.target
+                                                                            .value,
+                                                                    ) || 0,
+                                                                )
+                                                            }
+                                                        />
+                                                    </div>
                                                 </div>
                                             </div>
                                             <Button
@@ -389,3 +389,4 @@ export default function VariationTemplatesCreate() {
         </AppLayout>
     );
 }
+

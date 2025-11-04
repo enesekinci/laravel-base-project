@@ -10,32 +10,21 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog';
 import AppLayout from '@/layouts/app-layout';
-import { destroy, show } from '@/routes/admin/variation-templates';
+import { destroy, show } from '@/routes/admin/tax-classes';
 import { type BreadcrumbItem, type PaginatedResponse } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
 import { Eye, Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 
-interface VariationTemplateValue {
-    id: number;
-    label: string;
-    value?: string;
-    color?: string;
-    image?: string;
-    sort_order: number;
-}
-
-interface VariationTemplate {
+interface TaxClass {
     id: number;
     name: string;
-    type: 'text' | 'color' | 'image';
-    sort_order: number;
+    rate: number;
     is_active: boolean;
-    values?: VariationTemplateValue[];
 }
 
 interface Props {
-    templates: PaginatedResponse<VariationTemplate>;
+    taxClasses: PaginatedResponse<TaxClass>;
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -44,96 +33,76 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/admin/dashboard',
     },
     {
-        title: 'Varyasyon Şablonları',
-        href: '/admin/variation-templates',
+        title: 'Vergi Sınıfları',
+        href: '/admin/tax-classes',
     },
 ];
 
-const typeLabels: Record<string, string> = {
-    text: 'Metin',
-    color: 'Renk',
-    image: 'Resim',
-};
-
-export default function VariationTemplatesIndex({ templates }: Props) {
-    const [deleteTemplateId, setDeleteTemplateId] = useState<number | null>(
+export default function TaxClassesIndex({ taxClasses }: Props) {
+    const [deleteTaxClassId, setDeleteTaxClassId] = useState<number | null>(
         null,
     );
 
-    const handleDelete = (templateId: number) => {
-        router.delete(destroy(templateId).url, {
+    const handleDelete = (taxClassId: number) => {
+        router.delete(destroy(taxClassId).url, {
             onSuccess: () => {
-                setDeleteTemplateId(null);
+                setDeleteTaxClassId(null);
             },
         });
     };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Varyasyon Şablonları" />
+            <Head title="Vergi Sınıfları" />
 
             <div className="flex-1 space-y-6 p-6">
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">
-                            Varyasyon Şablonları
+                            Vergi Sınıfları
                         </h1>
                         <p className="mt-1 text-muted-foreground">
-                            Ürün varyasyon şablonlarını yönetin (Renk, Beden,
-                            vb.)
+                            Ürün vergi sınıflarını yönetin
                         </p>
                     </div>
-                    <Link href="/admin/variation-templates/create">
+                    <Link href="/admin/tax-classes/create">
                         <Button>
                             <Plus className="mr-2 h-4 w-4" />
-                            Yeni Şablon
+                            Yeni Vergi Sınıfı
                         </Button>
                     </Link>
                 </div>
 
                 <Card>
                     <CardHeader>
-                        <CardTitle>Şablon Listesi</CardTitle>
+                        <CardTitle>Vergi Sınıfı Listesi</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="space-y-4">
-                            {templates.data.length > 0 ? (
+                            {taxClasses.data.length > 0 ? (
                                 <div className="space-y-2">
-                                    {templates.data.map((template) => (
+                                    {taxClasses.data.map((taxClass) => (
                                         <div
-                                            key={template.id}
+                                            key={taxClass.id}
                                             className="flex items-center justify-between rounded-lg border p-4"
                                         >
                                             <div className="flex-1">
                                                 <div className="flex items-center gap-2">
                                                     <h3 className="font-semibold">
-                                                        {template.name}
+                                                        {taxClass.name}
                                                     </h3>
                                                     <span className="rounded-full bg-muted px-2 py-1 text-xs">
-                                                        {typeLabels[
-                                                            template.type
-                                                        ] || template.type}
+                                                        %{taxClass.rate.toFixed(2)}
                                                     </span>
-                                                    {!template.is_active && (
+                                                    {!taxClass.is_active && (
                                                         <span className="rounded-full bg-red-100 px-2 py-1 text-xs text-red-600">
                                                             Pasif
                                                         </span>
                                                     )}
                                                 </div>
-                                                {template.values &&
-                                                    template.values.length >
-                                                        0 && (
-                                                        <p className="mt-1 text-sm text-muted-foreground">
-                                                            {
-                                                                template.values
-                                                                    .length
-                                                            }{' '}
-                                                            değer
-                                                        </p>
-                                                    )}
                                             </div>
                                             <div className="flex items-center gap-2">
-                                                <Link href={show(template.id)}>
+                                                <Link href={show(taxClass.id)}>
                                                     <Button
                                                         variant="outline"
                                                         size="sm"
@@ -143,7 +112,7 @@ export default function VariationTemplatesIndex({ templates }: Props) {
                                                     </Button>
                                                 </Link>
                                                 <Link
-                                                    href={`/admin/variation-templates/${template.id}/edit`}
+                                                    href={`/admin/tax-classes/${taxClass.id}/edit`}
                                                 >
                                                     <Button
                                                         variant="outline"
@@ -154,13 +123,13 @@ export default function VariationTemplatesIndex({ templates }: Props) {
                                                 </Link>
                                                 <Dialog
                                                     open={
-                                                        deleteTemplateId ===
-                                                        template.id
+                                                        deleteTaxClassId ===
+                                                        taxClass.id
                                                     }
                                                     onOpenChange={(open) =>
-                                                        setDeleteTemplateId(
+                                                        setDeleteTaxClassId(
                                                             open
-                                                                ? template.id
+                                                                ? taxClass.id
                                                                 : null,
                                                         )
                                                     }
@@ -177,22 +146,20 @@ export default function VariationTemplatesIndex({ templates }: Props) {
                                                     <DialogContent>
                                                         <DialogHeader>
                                                             <DialogTitle>
-                                                                Şablonu Sil
+                                                                Vergi Sınıfını Sil
                                                             </DialogTitle>
                                                             <DialogDescription>
-                                                                Bu şablonu
-                                                                silmek
-                                                                istediğinizden
+                                                                Bu vergi sınıfını
+                                                                silmek istediğinizden
                                                                 emin misiniz? Bu
-                                                                işlem geri
-                                                                alınamaz.
+                                                                işlem geri alınamaz.
                                                             </DialogDescription>
                                                         </DialogHeader>
                                                         <DialogFooter>
                                                             <Button
                                                                 variant="outline"
                                                                 onClick={() =>
-                                                                    setDeleteTemplateId(
+                                                                    setDeleteTaxClassId(
                                                                         null,
                                                                     )
                                                                 }
@@ -203,7 +170,7 @@ export default function VariationTemplatesIndex({ templates }: Props) {
                                                                 variant="destructive"
                                                                 onClick={() =>
                                                                     handleDelete(
-                                                                        template.id,
+                                                                        taxClass.id,
                                                                     )
                                                                 }
                                                             >
@@ -218,7 +185,7 @@ export default function VariationTemplatesIndex({ templates }: Props) {
                                 </div>
                             ) : (
                                 <div className="py-8 text-center text-muted-foreground">
-                                    Henüz şablon eklenmemiş.
+                                    Henüz vergi sınıfı eklenmemiş.
                                 </div>
                             )}
                         </div>
@@ -228,3 +195,4 @@ export default function VariationTemplatesIndex({ templates }: Props) {
         </AppLayout>
     );
 }
+
