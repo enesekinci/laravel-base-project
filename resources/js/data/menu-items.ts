@@ -54,7 +54,7 @@ import {
 export const menuItems: NavItem[] = [
     {
         title: 'Dashboard',
-        href: '/admin',
+        href: '/admin/dashboard',
         icon: Layout,
     },
     {

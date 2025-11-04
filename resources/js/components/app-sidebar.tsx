@@ -9,8 +9,8 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard } from '@/routes';
 import { menuItems } from '@/data/menu-items';
+import { dashboard } from '@/routes/admin';
 import { Link } from '@inertiajs/react';
 import AppLogo from './app-logo';
 

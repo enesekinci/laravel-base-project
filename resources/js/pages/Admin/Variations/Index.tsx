@@ -1,0 +1,196 @@
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
+import AppLayout from '@/layouts/app-layout';
+import { destroy, show } from '@/routes/admin/variations';
+import { type BreadcrumbItem, type PaginatedResponse } from '@/types';
+import { Head, Link, router } from '@inertiajs/react';
+import { Eye, Plus, Trash2 } from 'lucide-react';
+import { useState } from 'react';
+
+interface Variation {
+    id: number;
+    name: string;
+    slug: string;
+    description?: string;
+    attribute_values?: Record<string, unknown>;
+    sku?: string;
+    price: number;
+    compare_price?: number;
+    stock: number;
+    image?: string;
+    is_active: boolean;
+    sort_order: number;
+}
+
+interface Props {
+    variations: PaginatedResponse<Variation>;
+}
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Dashboard',
+        href: '/admin/dashboard',
+    },
+    {
+        title: 'Varyasyonlar',
+        href: '/admin/variations',
+    },
+];
+
+export default function VariationsIndex({ variations }: Props) {
+    const [deleteVariationId, setDeleteVariationId] = useState<number | null>(null);
+
+    const handleDelete = (variationId: number) => {
+        router.delete(destroy(variationId).url, {
+            onSuccess: () => {
+                setDeleteVariationId(null);
+            },
+        });
+    };
+
+    return (
+        <AppLayout breadcrumbs={breadcrumbs}>
+            <Head title="Varyasyonlar" />
+
+            <div className="flex-1 space-y-6 p-6">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <h1 className="text-3xl font-bold tracking-tight">
+                            Varyasyonlar
+                        </h1>
+                        <p className="mt-1 text-muted-foreground">
+                            Ürün varyasyonlarını yönetin
+                        </p>
+                    </div>
+                    <Link href="/admin/variations/create">
+                        <Button>
+                            <Plus className="mr-2 h-4 w-4" />
+                            Yeni Varyasyon
+                        </Button>
+                    </Link>
+                </div>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Varyasyon Listesi</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="space-y-4">
+                            {variations.data.length > 0 ? (
+                                <div className="space-y-2">
+                                    {variations.data.map((variation) => (
+                                        <div
+                                            key={variation.id}
+                                            className="flex items-center justify-between rounded-lg border p-4"
+                                        >
+                                            <div className="flex-1">
+                                                <div className="flex items-center gap-2">
+                                                    <h3 className="font-semibold">
+                                                        {variation.name}
+                                                    </h3>
+                                                    {variation.sku && (
+                                                        <span className="text-sm text-muted-foreground">
+                                                            SKU: {variation.sku}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                <div className="mt-1 flex items-center gap-4 text-sm text-muted-foreground">
+                                                    <span>
+                                                        Fiyat: ₺{variation.price.toFixed(2)}
+                                                    </span>
+                                                    <span>Stok: {variation.stock}</span>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <Link href={show(variation.id)}>
+                                                    <Button variant="outline" size="sm">
+                                                        <Eye className="mr-2 h-4 w-4" />
+                                                        Görüntüle
+                                                    </Button>
+                                                </Link>
+                                                <Link
+                                                    href={`/admin/variations/${variation.id}/edit`}
+                                                >
+                                                    <Button variant="outline" size="sm">
+                                                        Düzenle
+                                                    </Button>
+                                                </Link>
+                                                <Dialog
+                                                    open={deleteVariationId === variation.id}
+                                                    onOpenChange={(open) =>
+                                                        setDeleteVariationId(
+                                                            open ? variation.id : null,
+                                                        )
+                                                    }
+                                                >
+                                                    <DialogTrigger asChild>
+                                                        <Button
+                                                            variant="destructive"
+                                                            size="sm"
+                                                        >
+                                                            <Trash2 className="mr-2 h-4 w-4" />
+                                                            Sil
+                                                        </Button>
+                                                    </DialogTrigger>
+                                                    <DialogContent>
+                                                        <DialogHeader>
+                                                            <DialogTitle>
+                                                                Varyasyonu Sil
+                                                            </DialogTitle>
+                                                            <DialogDescription>
+                                                                Bu varyasyonu silmek
+                                                                istediğinizden emin
+                                                                misiniz? Bu işlem
+                                                                geri alınamaz.
+                                                            </DialogDescription>
+                                                        </DialogHeader>
+                                                        <DialogFooter>
+                                                            <Button
+                                                                variant="outline"
+                                                                onClick={() =>
+                                                                    setDeleteVariationId(
+                                                                        null,
+                                                                    )
+                                                                }
+                                                            >
+                                                                İptal
+                                                            </Button>
+                                                            <Button
+                                                                variant="destructive"
+                                                                onClick={() =>
+                                                                    handleDelete(
+                                                                        variation.id,
+                                                                    )
+                                                                }
+                                                            >
+                                                                Sil
+                                                            </Button>
+                                                        </DialogFooter>
+                                                    </DialogContent>
+                                                </Dialog>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="py-8 text-center text-muted-foreground">
+                                    Henüz varyasyon eklenmemiş.
+                                </div>
+                            )}
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+        </AppLayout>
+    );
+}
+
