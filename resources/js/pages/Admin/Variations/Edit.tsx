@@ -66,7 +66,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function VariationsEdit({ variation }: Props) {
-    const { data, setData, put, processing, errors } = useForm({
+    const { data, setData, processing, errors } = useForm({
         name: variation.name,
         type: variation.type,
         values: [] as VariationValue[],
