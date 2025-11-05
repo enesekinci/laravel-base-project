@@ -267,7 +267,7 @@ export default function AttributesCreate({
                                                         ? String(
                                                               data.attribute_set_id,
                                                           )
-                                                        : ''
+                                                        : undefined
                                                 }
                                                 onValueChange={(value) =>
                                                     setData(
@@ -282,9 +282,6 @@ export default function AttributesCreate({
                                                     <SelectValue placeholder="Please Select" />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    <SelectItem value="">
-                                                        Please Select
-                                                    </SelectItem>
                                                     {attributeSets.map(
                                                         (set) => (
                                                             <SelectItem
