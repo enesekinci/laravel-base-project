@@ -52,25 +52,25 @@ interface Props {
 }
 
 export default function CategoriesIndex({ categories }: Props) {
-    // Tree görünümü için kategorileri hazırla
-    const buildTree = (
+    // Tree görünümü için kategorileri flat listeye çevir
+    const flattenTree = (
         items: Category[],
         parentId: number | null = null,
         level = 0,
-    ): Category[] => {
-        return items
-            .filter((item) => item.parent_id === parentId)
-            .map((item) => {
-                const children = buildTree(items, item.id, level + 1);
-                return {
-                    ...item,
-                    children,
-                    level,
-                };
-            });
+    ): (Category & { level: number })[] => {
+        const result: (Category & { level: number })[] = [];
+        const children = items.filter((item) => item.parent_id === parentId);
+
+        children.forEach((item) => {
+            result.push({ ...item, level });
+            const grandChildren = flattenTree(items, item.id, level + 1);
+            result.push(...grandChildren);
+        });
+
+        return result;
     };
 
-    const treeCategories = buildTree(categories.data);
+    const flatCategories = flattenTree(categories.data);
 
     const [deleteCategoryId, setDeleteCategoryId] = useState<number | null>(
         null,
@@ -230,7 +230,7 @@ export default function CategoriesIndex({ categories }: Props) {
                 <div className="rounded-md border">
                     <DataTable
                         columns={columns}
-                        data={treeCategories}
+                        data={flatCategories}
                         pagination={{
                             currentPage: categories.current_page,
                             lastPage: categories.last_page,
