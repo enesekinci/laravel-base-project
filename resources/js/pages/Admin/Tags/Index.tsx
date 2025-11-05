@@ -1,5 +1,5 @@
+import { DataTable } from '@/components/data-table';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
     Dialog,
     DialogContent,
@@ -7,14 +7,33 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from '@/components/ui/dialog';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import AppLayout from '@/layouts/app-layout';
 import { destroy, show } from '@/routes/admin/tags';
 import { type BreadcrumbItem, type PaginatedResponse } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
-import { Eye, Plus, Trash2 } from 'lucide-react';
+import { type ColumnDef } from '@tanstack/react-table';
+import { ArrowUpDown, Eye, MoreHorizontal, Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Dashboard',
+        href: '/admin/dashboard',
+    },
+    {
+        title: 'Etiketler',
+        href: '/admin/tags',
+    },
+];
 
 interface Tag {
     id: number;
@@ -28,17 +47,6 @@ interface Props {
     tags: PaginatedResponse<Tag>;
 }
 
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Dashboard',
-        href: '/admin/dashboard',
-    },
-    {
-        title: 'Etiketler',
-        href: '/admin/tags',
-    },
-];
-
 export default function TagsIndex({ tags }: Props) {
     const [deleteTagId, setDeleteTagId] = useState<number | null>(null);
 
@@ -49,6 +57,110 @@ export default function TagsIndex({ tags }: Props) {
             },
         });
     };
+
+    const handlePageChange = (page: number) => {
+        router.get('/admin/tags', { page }, { preserveState: true });
+    };
+
+    const columns: ColumnDef<Tag>[] = [
+        {
+            accessorKey: 'name',
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        onClick={() =>
+                            column.toggleSorting(column.getIsSorted() === 'asc')
+                        }
+                    >
+                        Name
+                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                    </Button>
+                );
+            },
+            cell: ({ row }) => {
+                const tag = row.original;
+                return (
+                    <div className="flex items-center gap-2">
+                        {tag.color && (
+                            <div
+                                className="h-4 w-4 rounded-full border"
+                                style={{ backgroundColor: tag.color }}
+                            />
+                        )}
+                        <span className="font-medium">{tag.name}</span>
+                    </div>
+                );
+            },
+        },
+        {
+            accessorKey: 'slug',
+            header: 'Slug',
+            cell: ({ row }) => (
+                <span className="font-mono text-sm text-muted-foreground">
+                    {row.getValue('slug')}
+                </span>
+            ),
+        },
+        {
+            accessorKey: 'is_active',
+            header: 'Status',
+            cell: ({ row }) => {
+                const isActive = row.getValue('is_active') as boolean;
+                return isActive ? (
+                    <span className="rounded bg-green-100 px-2 py-1 text-xs text-green-800 dark:bg-green-900 dark:text-green-200">
+                        Aktif
+                    </span>
+                ) : (
+                    <span className="rounded bg-gray-100 px-2 py-1 text-xs text-gray-800 dark:bg-gray-900 dark:text-gray-200">
+                        Pasif
+                    </span>
+                );
+            },
+        },
+        {
+            id: 'actions',
+            enableHiding: false,
+            cell: ({ row }) => {
+                const tag = row.original;
+
+                return (
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                                <span className="sr-only">Menüyü aç</span>
+                                <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>İşlemler</DropdownMenuLabel>
+                            <DropdownMenuItem
+                                onClick={() => router.visit(show(tag.id))}
+                            >
+                                <Eye className="mr-2 h-4 w-4" />
+                                Görüntüle
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                                onClick={() =>
+                                    router.visit(`/admin/tags/${tag.id}/edit`)
+                                }
+                            >
+                                Düzenle
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                                onClick={() => setDeleteTagId(tag.id)}
+                                className="text-destructive"
+                            >
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                Sil
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                );
+            },
+        },
+    ];
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -72,114 +184,56 @@ export default function TagsIndex({ tags }: Props) {
                     </Link>
                 </div>
 
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Etiket Listesi</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="space-y-4">
-                            {tags.data.length > 0 ? (
-                                <div className="space-y-2">
-                                    {tags.data.map((tag) => (
-                                        <div
-                                            key={tag.id}
-                                            className="flex items-center justify-between rounded-lg border p-4"
-                                        >
-                                            <div className="flex items-center gap-3">
-                                                {tag.color && (
-                                                    <div
-                                                        className="h-4 w-4 rounded-full"
-                                                        style={{
-                                                            backgroundColor:
-                                                                tag.color,
-                                                        }}
-                                                    />
-                                                )}
-                                                <h3 className="font-semibold">
-                                                    {tag.name}
-                                                </h3>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <Link href={show(tag.id)}>
-                                                    <Button variant="outline" size="sm">
-                                                        <Eye className="mr-2 h-4 w-4" />
-                                                        Görüntüle
-                                                    </Button>
-                                                </Link>
-                                                <Link
-                                                    href={`/admin/tags/${tag.id}/edit`}
-                                                >
-                                                    <Button variant="outline" size="sm">
-                                                        Düzenle
-                                                    </Button>
-                                                </Link>
-                                                <Dialog
-                                                    open={deleteTagId === tag.id}
-                                                    onOpenChange={(open) =>
-                                                        setDeleteTagId(
-                                                            open ? tag.id : null,
-                                                        )
-                                                    }
-                                                >
-                                                    <DialogTrigger asChild>
-                                                        <Button
-                                                            variant="destructive"
-                                                            size="sm"
-                                                        >
-                                                            <Trash2 className="mr-2 h-4 w-4" />
-                                                            Sil
-                                                        </Button>
-                                                    </DialogTrigger>
-                                                    <DialogContent>
-                                                        <DialogHeader>
-                                                            <DialogTitle>
-                                                                Etiketi Sil
-                                                            </DialogTitle>
-                                                            <DialogDescription>
-                                                                Bu etiketi silmek
-                                                                istediğinizden emin
-                                                                misiniz? Bu işlem
-                                                                geri alınamaz.
-                                                            </DialogDescription>
-                                                        </DialogHeader>
-                                                        <DialogFooter>
-                                                            <Button
-                                                                variant="outline"
-                                                                onClick={() =>
-                                                                    setDeleteTagId(
-                                                                        null,
-                                                                    )
-                                                                }
-                                                            >
-                                                                İptal
-                                                            </Button>
-                                                            <Button
-                                                                variant="destructive"
-                                                                onClick={() =>
-                                                                    handleDelete(
-                                                                        tag.id,
-                                                                    )
-                                                                }
-                                                            >
-                                                                Sil
-                                                            </Button>
-                                                        </DialogFooter>
-                                                    </DialogContent>
-                                                </Dialog>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            ) : (
-                                <div className="py-8 text-center text-muted-foreground">
-                                    Henüz etiket eklenmemiş.
-                                </div>
-                            )}
-                        </div>
-                    </CardContent>
-                </Card>
+                <div className="rounded-md border">
+                    <DataTable
+                        columns={columns}
+                        data={tags.data}
+                        pagination={{
+                            currentPage: tags.current_page,
+                            lastPage: tags.last_page,
+                            perPage: tags.per_page,
+                            total: tags.total,
+                            from: tags.from,
+                            to: tags.to,
+                            links: tags.links,
+                        }}
+                        onPageChange={handlePageChange}
+                    />
+                </div>
+
+                <Dialog
+                    open={deleteTagId !== null}
+                    onOpenChange={(open) =>
+                        setDeleteTagId(open ? deleteTagId : null)
+                    }
+                >
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Etiketi Sil</DialogTitle>
+                            <DialogDescription>
+                                Bu etiketi silmek istediğinizden emin misiniz?
+                                Bu işlem geri alınamaz.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <DialogFooter>
+                            <Button
+                                variant="outline"
+                                onClick={() => setDeleteTagId(null)}
+                            >
+                                İptal
+                            </Button>
+                            <Button
+                                variant="destructive"
+                                onClick={() =>
+                                    deleteTagId && handleDelete(deleteTagId)
+                                }
+                            >
+                                Sil
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
             </div>
         </AppLayout>
     );
 }
-

@@ -1,5 +1,5 @@
+import { DataTable } from '@/components/data-table';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
     Dialog,
     DialogContent,
@@ -7,14 +7,33 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from '@/components/ui/dialog';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import AppLayout from '@/layouts/app-layout';
 import { destroy, show } from '@/routes/admin/products';
 import { type BreadcrumbItem, type PaginatedResponse } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
-import { Eye, Plus, Trash2 } from 'lucide-react';
+import { type ColumnDef } from '@tanstack/react-table';
+import { ArrowUpDown, Eye, MoreHorizontal, Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Dashboard',
+        href: '/admin/dashboard',
+    },
+    {
+        title: 'Ürünler',
+        href: '/admin/products',
+    },
+];
 
 interface Product {
     id: number;
@@ -36,17 +55,6 @@ interface Props {
     products: PaginatedResponse<Product>;
 }
 
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Dashboard',
-        href: '/admin/dashboard',
-    },
-    {
-        title: 'Ürünler',
-        href: '/admin/products',
-    },
-];
-
 const statusLabels: Record<string, string> = {
     draft: 'Taslak',
     published: 'Yayınlandı',
@@ -64,6 +72,129 @@ export default function ProductsIndex({ products }: Props) {
             },
         });
     };
+
+    const handlePageChange = (page: number) => {
+        router.get('/admin/products', { page }, { preserveState: true });
+    };
+
+    const columns: ColumnDef<Product>[] = [
+        {
+            accessorKey: 'name',
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        onClick={() =>
+                            column.toggleSorting(column.getIsSorted() === 'asc')
+                        }
+                    >
+                        Name
+                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                    </Button>
+                );
+            },
+            cell: ({ row }) => (
+                <div className="font-medium">{row.getValue('name')}</div>
+            ),
+        },
+        {
+            accessorKey: 'sku',
+            header: 'SKU',
+            cell: ({ row }) => (
+                <span className="font-mono text-sm text-muted-foreground">
+                    {row.getValue('sku')}
+                </span>
+            ),
+        },
+        {
+            accessorKey: 'status',
+            header: 'Status',
+            cell: ({ row }) => {
+                const status = row.getValue('status') as string;
+                return (
+                    <span
+                        className={`rounded-full px-2 py-1 text-xs ${
+                            status === 'published'
+                                ? 'bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-200'
+                                : 'bg-gray-100 text-gray-600 dark:bg-gray-900 dark:text-gray-200'
+                        }`}
+                    >
+                        {statusLabels[status] || status}
+                    </span>
+                );
+            },
+        },
+        {
+            accessorKey: 'brand',
+            header: 'Brand',
+            cell: ({ row }) => {
+                const brand = row.original.brand;
+                return brand ? (
+                    <span className="text-sm">{brand.name}</span>
+                ) : (
+                    <span className="text-sm text-muted-foreground">-</span>
+                );
+            },
+        },
+        {
+            accessorKey: 'categories',
+            header: 'Categories',
+            cell: ({ row }) => {
+                const categories = row.original.categories || [];
+                return categories.length > 0 ? (
+                    <span className="text-sm">
+                        {categories.map((c) => c.name).join(', ')}
+                    </span>
+                ) : (
+                    <span className="text-sm text-muted-foreground">-</span>
+                );
+            },
+        },
+        {
+            id: 'actions',
+            enableHiding: false,
+            cell: ({ row }) => {
+                const product = row.original;
+
+                return (
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                                <span className="sr-only">Menüyü aç</span>
+                                <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>İşlemler</DropdownMenuLabel>
+                            <DropdownMenuItem
+                                onClick={() => router.visit(show(product.id))}
+                            >
+                                <Eye className="mr-2 h-4 w-4" />
+                                Görüntüle
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                                onClick={() =>
+                                    router.visit(
+                                        `/admin/products/${product.id}/edit`,
+                                    )
+                                }
+                            >
+                                Düzenle
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                                onClick={() => setDeleteProductId(product.id)}
+                                className="text-destructive"
+                            >
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                Sil
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                );
+            },
+        },
+    ];
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -87,150 +218,57 @@ export default function ProductsIndex({ products }: Props) {
                     </Link>
                 </div>
 
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Ürün Listesi</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="space-y-4">
-                            {products.data.length > 0 ? (
-                                <div className="space-y-2">
-                                    {products.data.map((product) => (
-                                        <div
-                                            key={product.id}
-                                            className="flex items-center justify-between rounded-lg border p-4"
-                                        >
-                                            <div className="flex-1">
-                                                <div className="flex items-center gap-2">
-                                                    <h3 className="font-semibold">
-                                                        {product.name}
-                                                    </h3>
-                                                    <span className="rounded-full bg-muted px-2 py-1 text-xs">
-                                                        {product.sku}
-                                                    </span>
-                                                    <span
-                                                        className={`rounded-full px-2 py-1 text-xs ${
-                                                            product.status ===
-                                                            'published'
-                                                                ? 'bg-green-100 text-green-600'
-                                                                : 'bg-gray-100 text-gray-600'
-                                                        }`}
-                                                    >
-                                                        {
-                                                            statusLabels[
-                                                                product.status
-                                                            ]
-                                                        }
-                                                    </span>
-                                                </div>
-                                                {product.brand && (
-                                                    <p className="mt-1 text-sm text-muted-foreground">
-                                                        Marka: {product.brand.name}
-                                                    </p>
-                                                )}
-                                                {product.categories &&
-                                                    product.categories.length >
-                                                        0 && (
-                                                        <p className="mt-1 text-sm text-muted-foreground">
-                                                            Kategoriler:{' '}
-                                                            {product.categories
-                                                                .map((c) => c.name)
-                                                                .join(', ')}
-                                                        </p>
-                                                    )}
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <Link href={show(product.id)}>
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                    >
-                                                        <Eye className="mr-2 h-4 w-4" />
-                                                        Görüntüle
-                                                    </Button>
-                                                </Link>
-                                                <Link
-                                                    href={`/admin/products/${product.id}/edit`}
-                                                >
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                    >
-                                                        Düzenle
-                                                    </Button>
-                                                </Link>
-                                                <Dialog
-                                                    open={
-                                                        deleteProductId ===
-                                                        product.id
-                                                    }
-                                                    onOpenChange={(open) =>
-                                                        setDeleteProductId(
-                                                            open
-                                                                ? product.id
-                                                                : null,
-                                                        )
-                                                    }
-                                                >
-                                                    <DialogTrigger asChild>
-                                                        <Button
-                                                            variant="destructive"
-                                                            size="sm"
-                                                        >
-                                                            <Trash2 className="mr-2 h-4 w-4" />
-                                                            Sil
-                                                        </Button>
-                                                    </DialogTrigger>
-                                                    <DialogContent>
-                                                        <DialogHeader>
-                                                            <DialogTitle>
-                                                                Ürünü Sil
-                                                            </DialogTitle>
-                                                            <DialogDescription>
-                                                                Bu ürünü silmek
-                                                                istediğinizden emin
-                                                                misiniz? Bu işlem
-                                                                geri alınamaz.
-                                                            </DialogDescription>
-                                                        </DialogHeader>
-                                                        <DialogFooter>
-                                                            <Button
-                                                                variant="outline"
-                                                                onClick={() =>
-                                                                    setDeleteProductId(
-                                                                        null,
-                                                                    )
-                                                                }
-                                                            >
-                                                                İptal
-                                                            </Button>
-                                                            <Button
-                                                                variant="destructive"
-                                                                onClick={() =>
-                                                                    handleDelete(
-                                                                        product.id,
-                                                                    )
-                                                                }
-                                                            >
-                                                                Sil
-                                                            </Button>
-                                                        </DialogFooter>
-                                                    </DialogContent>
-                                                </Dialog>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            ) : (
-                                <div className="py-8 text-center text-muted-foreground">
-                                    Henüz ürün eklenmemiş.
-                                </div>
-                            )}
-                        </div>
-                    </CardContent>
-                </Card>
+                <div className="rounded-md border">
+                    <DataTable
+                        columns={columns}
+                        data={products.data}
+                        pagination={{
+                            currentPage: products.current_page,
+                            lastPage: products.last_page,
+                            perPage: products.per_page,
+                            total: products.total,
+                            from: products.from,
+                            to: products.to,
+                            links: products.links,
+                        }}
+                        onPageChange={handlePageChange}
+                    />
+                </div>
+
+                <Dialog
+                    open={deleteProductId !== null}
+                    onOpenChange={(open) =>
+                        setDeleteProductId(open ? deleteProductId : null)
+                    }
+                >
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Ürünü Sil</DialogTitle>
+                            <DialogDescription>
+                                Bu ürünü silmek istediğinizden emin misiniz? Bu
+                                işlem geri alınamaz.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <DialogFooter>
+                            <Button
+                                variant="outline"
+                                onClick={() => setDeleteProductId(null)}
+                            >
+                                İptal
+                            </Button>
+                            <Button
+                                variant="destructive"
+                                onClick={() =>
+                                    deleteProductId &&
+                                    handleDelete(deleteProductId)
+                                }
+                            >
+                                Sil
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
             </div>
         </AppLayout>
     );
 }
-

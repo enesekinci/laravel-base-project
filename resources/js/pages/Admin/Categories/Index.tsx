@@ -1,5 +1,5 @@
+import { DataTable } from '@/components/data-table';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
     Dialog,
     DialogContent,
@@ -7,14 +7,33 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from '@/components/ui/dialog';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import AppLayout from '@/layouts/app-layout';
 import { destroy, show } from '@/routes/admin/categories';
 import { type BreadcrumbItem, type PaginatedResponse } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
-import { Eye, Plus, Trash2 } from 'lucide-react';
+import { type ColumnDef } from '@tanstack/react-table';
+import { ArrowUpDown, Eye, MoreHorizontal, Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Dashboard',
+        href: '/admin/dashboard',
+    },
+    {
+        title: 'Kategoriler',
+        href: '/admin/categories',
+    },
+];
 
 interface Category {
     id: number;
@@ -32,29 +51,23 @@ interface Props {
     categories: PaginatedResponse<Category>;
 }
 
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Dashboard',
-        href: '/admin/dashboard',
-    },
-    {
-        title: 'Kategoriler',
-        href: '/admin/categories',
-    },
-];
-
 export default function CategoriesIndex({ categories }: Props) {
     // Tree görünümü için kategorileri hazırla
     const buildTree = (
         items: Category[],
         parentId: number | null = null,
+        level = 0,
     ): Category[] => {
         return items
             .filter((item) => item.parent_id === parentId)
-            .map((item) => ({
-                ...item,
-                children: buildTree(items, item.id),
-            }));
+            .map((item) => {
+                const children = buildTree(items, item.id, level + 1);
+                return {
+                    ...item,
+                    children,
+                    level,
+                };
+            });
     };
 
     const treeCategories = buildTree(categories.data);
@@ -71,99 +84,126 @@ export default function CategoriesIndex({ categories }: Props) {
         });
     };
 
-    const renderCategoryTree = (cats: Category[], level = 0) => {
-        return cats.map((category) => (
-            <div key={category.id}>
-                <div
-                    className="flex items-center justify-between rounded-lg border p-4"
-                    style={{ marginLeft: `${level * 24}px` }}
-                >
-                    <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                            <h3 className="font-semibold">{category.name}</h3>
+    const handlePageChange = (page: number) => {
+        router.get('/admin/categories', { page }, { preserveState: true });
+    };
+
+    const columns: ColumnDef<Category & { level?: number }>[] = [
+        {
+            accessorKey: 'name',
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        onClick={() =>
+                            column.toggleSorting(column.getIsSorted() === 'asc')
+                        }
+                    >
+                        Name
+                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                    </Button>
+                );
+            },
+            cell: ({ row }) => {
+                const category = row.original;
+                const level = category.level || 0;
+                return (
+                    <div
+                        className="flex items-center gap-2"
+                        style={{ paddingLeft: `${level * 24}px` }}
+                    >
+                        {level > 0 && (
+                            <span className="text-muted-foreground">└─</span>
+                        )}
+                        <div>
+                            <div className="font-medium">{category.name}</div>
                             {category.parent && (
-                                <span className="text-sm text-muted-foreground">
-                                    (← {category.parent.name})
-                                </span>
+                                <div className="text-xs text-muted-foreground">
+                                    ← {category.parent.name}
+                                </div>
                             )}
                         </div>
-                        {category.description && (
-                            <p className="mt-1 text-sm text-muted-foreground">
-                                {category.description}
-                            </p>
-                        )}
                     </div>
-                    <div className="flex items-center gap-2">
-                        <Link href={show(category.id)}>
-                            <Button variant="outline" size="sm">
+                );
+            },
+        },
+        {
+            accessorKey: 'slug',
+            header: 'Slug',
+            cell: ({ row }) => (
+                <span className="font-mono text-sm text-muted-foreground">
+                    {row.getValue('slug')}
+                </span>
+            ),
+        },
+        {
+            accessorKey: 'is_active',
+            header: 'Status',
+            cell: ({ row }) => {
+                const isActive = row.getValue('is_active') as boolean;
+                return isActive ? (
+                    <span className="rounded bg-green-100 px-2 py-1 text-xs text-green-800 dark:bg-green-900 dark:text-green-200">
+                        Aktif
+                    </span>
+                ) : (
+                    <span className="rounded bg-gray-100 px-2 py-1 text-xs text-gray-800 dark:bg-gray-900 dark:text-gray-200">
+                        Pasif
+                    </span>
+                );
+            },
+        },
+        {
+            accessorKey: 'sort_order',
+            header: 'Sıra',
+            cell: ({ row }) => (
+                <span className="text-sm">{row.getValue('sort_order')}</span>
+            ),
+        },
+        {
+            id: 'actions',
+            enableHiding: false,
+            cell: ({ row }) => {
+                const category = row.original;
+
+                return (
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                                <span className="sr-only">Menüyü aç</span>
+                                <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>İşlemler</DropdownMenuLabel>
+                            <DropdownMenuItem
+                                onClick={() => router.visit(show(category.id))}
+                            >
                                 <Eye className="mr-2 h-4 w-4" />
                                 Görüntüle
-                            </Button>
-                        </Link>
-                        <Link href={`/admin/categories/${category.id}/edit`}>
-                            <Button variant="outline" size="sm">
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                                onClick={() =>
+                                    router.visit(
+                                        `/admin/categories/${category.id}/edit`,
+                                    )
+                                }
+                            >
                                 Düzenle
-                            </Button>
-                        </Link>
-                        <Dialog
-                            open={deleteCategoryId === category.id}
-                            onOpenChange={(open) =>
-                                setDeleteCategoryId(open ? category.id : null)
-                            }
-                        >
-                            <DialogTrigger asChild>
-                                <Button variant="destructive" size="sm">
-                                    <Trash2 className="mr-2 h-4 w-4" />
-                                    Sil
-                                </Button>
-                            </DialogTrigger>
-                            <DialogContent>
-                                <DialogHeader>
-                                    <DialogTitle>Kategoriyi Sil</DialogTitle>
-                                    <DialogDescription>
-                                        Bu kategoriyi silmek istediğinizden emin
-                                        misiniz? Bu işlem geri alınamaz.
-                                        {category.children &&
-                                            category.children.length > 0 && (
-                                                <span className="mt-2 block text-red-500">
-                                                    Uyarı: Bu kategorinin{' '}
-                                                    {category.children.length}{' '}
-                                                    alt kategorisi var. Alt
-                                                    kategoriler de silinecek.
-                                                </span>
-                                            )}
-                                    </DialogDescription>
-                                </DialogHeader>
-                                <DialogFooter>
-                                    <Button
-                                        variant="outline"
-                                        onClick={() =>
-                                            setDeleteCategoryId(null)
-                                        }
-                                    >
-                                        İptal
-                                    </Button>
-                                    <Button
-                                        variant="destructive"
-                                        onClick={() =>
-                                            handleDelete(category.id)
-                                        }
-                                    >
-                                        Sil
-                                    </Button>
-                                </DialogFooter>
-                            </DialogContent>
-                        </Dialog>
-                    </div>
-                </div>
-                {category.children && category.children.length > 0 && (
-                    <div className="mt-1">
-                        {renderCategoryTree(category.children, level + 1)}
-                    </div>
-                )}
-            </div>
-        ));
-    };
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                                onClick={() => setDeleteCategoryId(category.id)}
+                                className="text-destructive"
+                            >
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                Sil
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                );
+            },
+        },
+    ];
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -187,24 +227,56 @@ export default function CategoriesIndex({ categories }: Props) {
                     </Link>
                 </div>
 
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Kategori Listesi</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="space-y-4">
-                            {treeCategories.length > 0 ? (
-                                <div className="space-y-2">
-                                    {renderCategoryTree(treeCategories)}
-                                </div>
-                            ) : (
-                                <div className="py-8 text-center text-muted-foreground">
-                                    Henüz kategori eklenmemiş.
-                                </div>
-                            )}
-                        </div>
-                    </CardContent>
-                </Card>
+                <div className="rounded-md border">
+                    <DataTable
+                        columns={columns}
+                        data={treeCategories}
+                        pagination={{
+                            currentPage: categories.current_page,
+                            lastPage: categories.last_page,
+                            perPage: categories.per_page,
+                            total: categories.total,
+                            from: categories.from,
+                            to: categories.to,
+                            links: categories.links,
+                        }}
+                        onPageChange={handlePageChange}
+                    />
+                </div>
+
+                <Dialog
+                    open={deleteCategoryId !== null}
+                    onOpenChange={(open) =>
+                        setDeleteCategoryId(open ? deleteCategoryId : null)
+                    }
+                >
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Kategoriyi Sil</DialogTitle>
+                            <DialogDescription>
+                                Bu kategoriyi silmek istediğinizden emin
+                                misiniz? Bu işlem geri alınamaz.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <DialogFooter>
+                            <Button
+                                variant="outline"
+                                onClick={() => setDeleteCategoryId(null)}
+                            >
+                                İptal
+                            </Button>
+                            <Button
+                                variant="destructive"
+                                onClick={() =>
+                                    deleteCategoryId &&
+                                    handleDelete(deleteCategoryId)
+                                }
+                            >
+                                Sil
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
             </div>
         </AppLayout>
     );

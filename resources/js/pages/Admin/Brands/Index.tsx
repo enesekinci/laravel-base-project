@@ -1,5 +1,5 @@
+import { DataTable } from '@/components/data-table';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
     Dialog,
     DialogContent,
@@ -7,14 +7,33 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from '@/components/ui/dialog';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import AppLayout from '@/layouts/app-layout';
 import { destroy, show } from '@/routes/admin/brands';
 import { type BreadcrumbItem, type PaginatedResponse } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
-import { Eye, Plus, Trash2 } from 'lucide-react';
+import { type ColumnDef } from '@tanstack/react-table';
+import { ArrowUpDown, Eye, MoreHorizontal, Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Dashboard',
+        href: '/admin/dashboard',
+    },
+    {
+        title: 'Markalar',
+        href: '/admin/brands',
+    },
+];
 
 interface Brand {
     id: number;
@@ -31,17 +50,6 @@ interface Props {
     brands: PaginatedResponse<Brand>;
 }
 
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Dashboard',
-        href: '/admin/dashboard',
-    },
-    {
-        title: 'Markalar',
-        href: '/admin/brands',
-    },
-];
-
 export default function BrandsIndex({ brands }: Props) {
     const [deleteBrandId, setDeleteBrandId] = useState<number | null>(null);
 
@@ -52,6 +60,108 @@ export default function BrandsIndex({ brands }: Props) {
             },
         });
     };
+
+    const handlePageChange = (page: number) => {
+        router.get('/admin/brands', { page }, { preserveState: true });
+    };
+
+    const columns: ColumnDef<Brand>[] = [
+        {
+            accessorKey: 'name',
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        onClick={() =>
+                            column.toggleSorting(column.getIsSorted() === 'asc')
+                        }
+                    >
+                        Name
+                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                    </Button>
+                );
+            },
+            cell: ({ row }) => (
+                <div className="font-medium">{row.getValue('name')}</div>
+            ),
+        },
+        {
+            accessorKey: 'slug',
+            header: 'Slug',
+            cell: ({ row }) => (
+                <span className="font-mono text-sm text-muted-foreground">
+                    {row.getValue('slug')}
+                </span>
+            ),
+        },
+        {
+            accessorKey: 'is_active',
+            header: 'Status',
+            cell: ({ row }) => {
+                const isActive = row.getValue('is_active') as boolean;
+                return isActive ? (
+                    <span className="rounded bg-green-100 px-2 py-1 text-xs text-green-800 dark:bg-green-900 dark:text-green-200">
+                        Aktif
+                    </span>
+                ) : (
+                    <span className="rounded bg-gray-100 px-2 py-1 text-xs text-gray-800 dark:bg-gray-900 dark:text-gray-200">
+                        Pasif
+                    </span>
+                );
+            },
+        },
+        {
+            accessorKey: 'sort_order',
+            header: 'Sıra',
+            cell: ({ row }) => (
+                <span className="text-sm">{row.getValue('sort_order')}</span>
+            ),
+        },
+        {
+            id: 'actions',
+            enableHiding: false,
+            cell: ({ row }) => {
+                const brand = row.original;
+
+                return (
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                                <span className="sr-only">Menüyü aç</span>
+                                <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>İşlemler</DropdownMenuLabel>
+                            <DropdownMenuItem
+                                onClick={() => router.visit(show(brand.id))}
+                            >
+                                <Eye className="mr-2 h-4 w-4" />
+                                Görüntüle
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                                onClick={() =>
+                                    router.visit(
+                                        `/admin/brands/${brand.id}/edit`,
+                                    )
+                                }
+                            >
+                                Düzenle
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                                onClick={() => setDeleteBrandId(brand.id)}
+                                className="text-destructive"
+                            >
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                Sil
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                );
+            },
+        },
+    ];
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -75,110 +185,56 @@ export default function BrandsIndex({ brands }: Props) {
                     </Link>
                 </div>
 
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Marka Listesi</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="space-y-4">
-                            {brands.data.length > 0 ? (
-                                <div className="space-y-2">
-                                    {brands.data.map((brand) => (
-                                        <div
-                                            key={brand.id}
-                                            className="flex items-center justify-between rounded-lg border p-4"
-                                        >
-                                            <div className="flex-1">
-                                                <h3 className="font-semibold">
-                                                    {brand.name}
-                                                </h3>
-                                                {brand.description && (
-                                                    <p className="mt-1 text-sm text-muted-foreground">
-                                                        {brand.description}
-                                                    </p>
-                                                )}
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <Link href={show(brand.id)}>
-                                                    <Button variant="outline" size="sm">
-                                                        <Eye className="mr-2 h-4 w-4" />
-                                                        Görüntüle
-                                                    </Button>
-                                                </Link>
-                                                <Link
-                                                    href={`/admin/brands/${brand.id}/edit`}
-                                                >
-                                                    <Button variant="outline" size="sm">
-                                                        Düzenle
-                                                    </Button>
-                                                </Link>
-                                                <Dialog
-                                                    open={deleteBrandId === brand.id}
-                                                    onOpenChange={(open) =>
-                                                        setDeleteBrandId(
-                                                            open ? brand.id : null,
-                                                        )
-                                                    }
-                                                >
-                                                    <DialogTrigger asChild>
-                                                        <Button
-                                                            variant="destructive"
-                                                            size="sm"
-                                                        >
-                                                            <Trash2 className="mr-2 h-4 w-4" />
-                                                            Sil
-                                                        </Button>
-                                                    </DialogTrigger>
-                                                    <DialogContent>
-                                                        <DialogHeader>
-                                                            <DialogTitle>
-                                                                Markayı Sil
-                                                            </DialogTitle>
-                                                            <DialogDescription>
-                                                                Bu markayı silmek
-                                                                istediğinizden emin
-                                                                misiniz? Bu işlem
-                                                                geri alınamaz.
-                                                            </DialogDescription>
-                                                        </DialogHeader>
-                                                        <DialogFooter>
-                                                            <Button
-                                                                variant="outline"
-                                                                onClick={() =>
-                                                                    setDeleteBrandId(
-                                                                        null,
-                                                                    )
-                                                                }
-                                                            >
-                                                                İptal
-                                                            </Button>
-                                                            <Button
-                                                                variant="destructive"
-                                                                onClick={() =>
-                                                                    handleDelete(
-                                                                        brand.id,
-                                                                    )
-                                                                }
-                                                            >
-                                                                Sil
-                                                            </Button>
-                                                        </DialogFooter>
-                                                    </DialogContent>
-                                                </Dialog>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            ) : (
-                                <div className="py-8 text-center text-muted-foreground">
-                                    Henüz marka eklenmemiş.
-                                </div>
-                            )}
-                        </div>
-                    </CardContent>
-                </Card>
+                <div className="rounded-md border">
+                    <DataTable
+                        columns={columns}
+                        data={brands.data}
+                        pagination={{
+                            currentPage: brands.current_page,
+                            lastPage: brands.last_page,
+                            perPage: brands.per_page,
+                            total: brands.total,
+                            from: brands.from,
+                            to: brands.to,
+                            links: brands.links,
+                        }}
+                        onPageChange={handlePageChange}
+                    />
+                </div>
+
+                <Dialog
+                    open={deleteBrandId !== null}
+                    onOpenChange={(open) =>
+                        setDeleteBrandId(open ? deleteBrandId : null)
+                    }
+                >
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Markayı Sil</DialogTitle>
+                            <DialogDescription>
+                                Bu markayı silmek istediğinizden emin misiniz?
+                                Bu işlem geri alınamaz.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <DialogFooter>
+                            <Button
+                                variant="outline"
+                                onClick={() => setDeleteBrandId(null)}
+                            >
+                                İptal
+                            </Button>
+                            <Button
+                                variant="destructive"
+                                onClick={() =>
+                                    deleteBrandId && handleDelete(deleteBrandId)
+                                }
+                            >
+                                Sil
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
             </div>
         </AppLayout>
     );
 }
-

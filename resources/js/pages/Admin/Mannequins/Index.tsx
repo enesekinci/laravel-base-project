@@ -1,5 +1,5 @@
+import { DataTable } from '@/components/data-table';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
     Dialog,
     DialogContent,
@@ -7,14 +7,33 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from '@/components/ui/dialog';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import AppLayout from '@/layouts/app-layout';
 import { destroy, show } from '@/routes/admin/mannequins';
 import { type BreadcrumbItem, type PaginatedResponse } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
-import { Eye, Plus, Trash2 } from 'lucide-react';
+import { type ColumnDef } from '@tanstack/react-table';
+import { ArrowUpDown, Eye, MoreHorizontal, Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Dashboard',
+        href: '/admin/dashboard',
+    },
+    {
+        title: 'Mankenler',
+        href: '/admin/mannequins',
+    },
+];
 
 interface Mannequin {
     id: number;
@@ -30,19 +49,10 @@ interface Props {
     mannequins: PaginatedResponse<Mannequin>;
 }
 
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Dashboard',
-        href: '/admin/dashboard',
-    },
-    {
-        title: 'Mankenler',
-        href: '/admin/mannequins',
-    },
-];
-
 export default function MannequinsIndex({ mannequins }: Props) {
-    const [deleteMannequinId, setDeleteMannequinId] = useState<number | null>(null);
+    const [deleteMannequinId, setDeleteMannequinId] = useState<number | null>(
+        null,
+    );
 
     const handleDelete = (mannequinId: number) => {
         router.delete(destroy(mannequinId).url, {
@@ -51,6 +61,105 @@ export default function MannequinsIndex({ mannequins }: Props) {
             },
         });
     };
+
+    const handlePageChange = (page: number) => {
+        router.get('/admin/mannequins', { page }, { preserveState: true });
+    };
+
+    const columns: ColumnDef<Mannequin>[] = [
+        {
+            accessorKey: 'name',
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        onClick={() =>
+                            column.toggleSorting(column.getIsSorted() === 'asc')
+                        }
+                    >
+                        Name
+                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                    </Button>
+                );
+            },
+            cell: ({ row }) => (
+                <div className="font-medium">{row.getValue('name')}</div>
+            ),
+        },
+        {
+            accessorKey: 'code',
+            header: 'Code',
+            cell: ({ row }) => (
+                <span className="font-mono text-sm text-muted-foreground">
+                    {row.getValue('code')}
+                </span>
+            ),
+        },
+        {
+            accessorKey: 'is_active',
+            header: 'Status',
+            cell: ({ row }) => {
+                const isActive = row.getValue('is_active') as boolean;
+                return isActive ? (
+                    <span className="rounded bg-green-100 px-2 py-1 text-xs text-green-800 dark:bg-green-900 dark:text-green-200">
+                        Aktif
+                    </span>
+                ) : (
+                    <span className="rounded bg-gray-100 px-2 py-1 text-xs text-gray-800 dark:bg-gray-900 dark:text-gray-200">
+                        Pasif
+                    </span>
+                );
+            },
+        },
+        {
+            id: 'actions',
+            enableHiding: false,
+            cell: ({ row }) => {
+                const mannequin = row.original;
+
+                return (
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                                <span className="sr-only">Menüyü aç</span>
+                                <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>İşlemler</DropdownMenuLabel>
+                            <DropdownMenuItem
+                                onClick={() =>
+                                    router.visit(show(mannequin.id))
+                                }
+                            >
+                                <Eye className="mr-2 h-4 w-4" />
+                                Görüntüle
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                                onClick={() =>
+                                    router.visit(
+                                        `/admin/mannequins/${mannequin.id}/edit`,
+                                    )
+                                }
+                            >
+                                Düzenle
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                                onClick={() =>
+                                    setDeleteMannequinId(mannequin.id)
+                                }
+                                className="text-destructive"
+                            >
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                Sil
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                );
+            },
+        },
+    ];
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -74,115 +183,57 @@ export default function MannequinsIndex({ mannequins }: Props) {
                     </Link>
                 </div>
 
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Manken Listesi</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="space-y-4">
-                            {mannequins.data.length > 0 ? (
-                                <div className="space-y-2">
-                                    {mannequins.data.map((mannequin) => (
-                                        <div
-                                            key={mannequin.id}
-                                            className="flex items-center justify-between rounded-lg border p-4"
-                                        >
-                                            <div className="flex-1">
-                                                <div className="flex items-center gap-2">
-                                                    <h3 className="font-semibold">
-                                                        {mannequin.name}
-                                                    </h3>
-                                                    <span className="text-sm text-muted-foreground">
-                                                        ({mannequin.code})
-                                                    </span>
-                                                </div>
-                                                {mannequin.description && (
-                                                    <p className="mt-1 text-sm text-muted-foreground">
-                                                        {mannequin.description}
-                                                    </p>
-                                                )}
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <Link href={show(mannequin.id)}>
-                                                    <Button variant="outline" size="sm">
-                                                        <Eye className="mr-2 h-4 w-4" />
-                                                        Görüntüle
-                                                    </Button>
-                                                </Link>
-                                                <Link
-                                                    href={`/admin/mannequins/${mannequin.id}/edit`}
-                                                >
-                                                    <Button variant="outline" size="sm">
-                                                        Düzenle
-                                                    </Button>
-                                                </Link>
-                                                <Dialog
-                                                    open={deleteMannequinId === mannequin.id}
-                                                    onOpenChange={(open) =>
-                                                        setDeleteMannequinId(
-                                                            open ? mannequin.id : null,
-                                                        )
-                                                    }
-                                                >
-                                                    <DialogTrigger asChild>
-                                                        <Button
-                                                            variant="destructive"
-                                                            size="sm"
-                                                        >
-                                                            <Trash2 className="mr-2 h-4 w-4" />
-                                                            Sil
-                                                        </Button>
-                                                    </DialogTrigger>
-                                                    <DialogContent>
-                                                        <DialogHeader>
-                                                            <DialogTitle>
-                                                                Manken'i Sil
-                                                            </DialogTitle>
-                                                            <DialogDescription>
-                                                                Bu mankeni silmek
-                                                                istediğinizden emin
-                                                                misiniz? Bu işlem
-                                                                geri alınamaz.
-                                                            </DialogDescription>
-                                                        </DialogHeader>
-                                                        <DialogFooter>
-                                                            <Button
-                                                                variant="outline"
-                                                                onClick={() =>
-                                                                    setDeleteMannequinId(
-                                                                        null,
-                                                                    )
-                                                                }
-                                                            >
-                                                                İptal
-                                                            </Button>
-                                                            <Button
-                                                                variant="destructive"
-                                                                onClick={() =>
-                                                                    handleDelete(
-                                                                        mannequin.id,
-                                                                    )
-                                                                }
-                                                            >
-                                                                Sil
-                                                            </Button>
-                                                        </DialogFooter>
-                                                    </DialogContent>
-                                                </Dialog>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            ) : (
-                                <div className="py-8 text-center text-muted-foreground">
-                                    Henüz manken eklenmemiş.
-                                </div>
-                            )}
-                        </div>
-                    </CardContent>
-                </Card>
+                <div className="rounded-md border">
+                    <DataTable
+                        columns={columns}
+                        data={mannequins.data}
+                        pagination={{
+                            currentPage: mannequins.current_page,
+                            lastPage: mannequins.last_page,
+                            perPage: mannequins.per_page,
+                            total: mannequins.total,
+                            from: mannequins.from,
+                            to: mannequins.to,
+                            links: mannequins.links,
+                        }}
+                        onPageChange={handlePageChange}
+                    />
+                </div>
+
+                <Dialog
+                    open={deleteMannequinId !== null}
+                    onOpenChange={(open) =>
+                        setDeleteMannequinId(open ? deleteMannequinId : null)
+                    }
+                >
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Manken'i Sil</DialogTitle>
+                            <DialogDescription>
+                                Bu mankeni silmek istediğinizden emin misiniz?
+                                Bu işlem geri alınamaz.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <DialogFooter>
+                            <Button
+                                variant="outline"
+                                onClick={() => setDeleteMannequinId(null)}
+                            >
+                                İptal
+                            </Button>
+                            <Button
+                                variant="destructive"
+                                onClick={() =>
+                                    deleteMannequinId &&
+                                    handleDelete(deleteMannequinId)
+                                }
+                            >
+                                Sil
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
             </div>
         </AppLayout>
     );
 }
-
