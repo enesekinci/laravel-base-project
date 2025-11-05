@@ -19,13 +19,8 @@ class AttributeService
 
         if (isset($filters['search'])) {
             $query->where(function ($q) use ($filters) {
-                $q->where('name', 'like', '%' . $filters['search'] . '%')
-                    ->orWhere('slug', 'like', '%' . $filters['search'] . '%');
+                $q->where('name', 'like', '%' . $filters['search'] . '%');
             });
-        }
-
-        if (isset($filters['type'])) {
-            $query->where('type', $filters['type']);
         }
 
         if (isset($filters['is_filterable'])) {

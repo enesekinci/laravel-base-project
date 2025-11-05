@@ -46,8 +46,6 @@ interface AttributeValue {
 interface Attribute {
     id: number;
     name: string;
-    slug: string;
-    type: string;
     is_filterable: boolean;
     is_required: boolean;
     sort_order: number;
@@ -114,15 +112,6 @@ export default function AttributesIndex({ attributes }: Props) {
                     <span className="text-sm text-muted-foreground">-</span>
                 );
             },
-        },
-        {
-            accessorKey: 'type',
-            header: 'Type',
-            cell: ({ row }) => (
-                <span className="rounded bg-muted px-2 py-1 text-xs">
-                    {row.getValue('type')}
-                </span>
-            ),
         },
         {
             accessorKey: 'is_filterable',

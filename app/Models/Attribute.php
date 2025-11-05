@@ -15,9 +15,7 @@ class Attribute extends Model
 
     protected $fillable = [
         'name',
-        'slug',
         'attribute_set_id',
-        'type',
         'is_filterable',
         'is_required',
         'sort_order',
