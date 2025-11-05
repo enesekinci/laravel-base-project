@@ -40,7 +40,7 @@ import {
 } from '@dnd-kit/sortable';
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import { ArrowLeft, Plus, Trash2, X } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: '/admin/dashboard' },
@@ -97,29 +97,17 @@ export default function AttributesEdit({
 
     const [localValues, setLocalValues] = useState<
         (AttributeValue & { tempId?: string })[]
-    >([]);
+    >(
+        attribute.values && attribute.values.length > 0
+            ? attribute.values.map((v) => ({
+                  ...v,
+                  tempId: v.id ? `existing-${v.id}` : undefined,
+              }))
+            : [],
+    );
     const [selectedCategories, setSelectedCategories] = useState<number[]>(
         attribute.categories?.map((c) => c.id) || [],
     );
-
-    // Mevcut values'ı local state'e yükle
-    useEffect(() => {
-        if (attribute.values && attribute.values.length > 0) {
-            setLocalValues(
-                attribute.values.map((v) => ({
-                    ...v,
-                    tempId: v.id ? `existing-${v.id}` : undefined,
-                })),
-            );
-        }
-    }, [attribute.values]);
-
-    // Mevcut categories'ı yükle
-    useEffect(() => {
-        if (attribute.categories) {
-            setSelectedCategories(attribute.categories.map((c) => c.id));
-        }
-    }, [attribute.categories]);
 
     const addValue = () => {
         const newValue: AttributeValue & { tempId?: string } = {

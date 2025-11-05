@@ -89,7 +89,6 @@ export default function AttributesCreate({
         (AttributeValue & { tempId?: string })[]
     >([]);
     const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
-    const isSlugManuallyEdited = useRef(false);
 
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
