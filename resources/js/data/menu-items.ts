@@ -97,6 +97,11 @@ export const menuItems: NavItem[] = [
                         icon: Camera,
                     },
                     {
+                        title: 'Özellik Seti',
+                        href: '/admin/attribute-sets',
+                        icon: FileText,
+                    },
+                    {
                         title: 'Özellik',
                         href: '/admin/attributes',
                         icon: Palette,

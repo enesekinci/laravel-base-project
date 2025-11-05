@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AttributeController;
+use App\Http\Controllers\Admin\AttributeSetController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\MannequinController;
@@ -44,6 +45,9 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
     // Mankenler
     Route::resource('mannequins', MannequinController::class);
+
+    // Özellik Setleri
+    Route::resource('attribute-sets', AttributeSetController::class);
 
     // Özellikler
     Route::resource('attributes', AttributeController::class);
