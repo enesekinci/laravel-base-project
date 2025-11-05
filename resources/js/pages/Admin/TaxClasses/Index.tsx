@@ -128,9 +128,7 @@ export default function TaxClassesIndex({ taxClasses }: Props) {
                         <DropdownMenuContent align="end">
                             <DropdownMenuLabel>İşlemler</DropdownMenuLabel>
                             <DropdownMenuItem
-                                onClick={() =>
-                                    router.visit(show(taxClass.id))
-                                }
+                                onClick={() => router.visit(show(taxClass.id))}
                             >
                                 <Eye className="mr-2 h-4 w-4" />
                                 Görüntüle
@@ -146,9 +144,7 @@ export default function TaxClassesIndex({ taxClasses }: Props) {
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem
-                                onClick={() =>
-                                    setDeleteTaxClassId(taxClass.id)
-                                }
+                                onClick={() => setDeleteTaxClassId(taxClass.id)}
                                 className="text-destructive"
                             >
                                 <Trash2 className="mr-2 h-4 w-4" />

@@ -1,5 +1,5 @@
+import { DataTable } from '@/components/data-table';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
     Dialog,
     DialogContent,
@@ -7,14 +7,33 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from '@/components/ui/dialog';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import AppLayout from '@/layouts/app-layout';
 import { destroy, show } from '@/routes/admin/attribute-sets';
 import { type BreadcrumbItem, type PaginatedResponse } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
-import { Eye, Plus, Trash2 } from 'lucide-react';
+import { type ColumnDef } from '@tanstack/react-table';
+import { ArrowUpDown, Eye, MoreHorizontal, Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Dashboard',
+        href: '/admin/dashboard',
+    },
+    {
+        title: 'Özellik Setleri',
+        href: '/admin/attribute-sets',
+    },
+];
 
 interface AttributeSet {
     id: number;
@@ -28,17 +47,6 @@ interface AttributeSet {
 interface Props {
     attributeSets: PaginatedResponse<AttributeSet>;
 }
-
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Dashboard',
-        href: '/admin/dashboard',
-    },
-    {
-        title: 'Özellik Setleri',
-        href: '/admin/attribute-sets',
-    },
-];
 
 export default function AttributeSetsIndex({
     attributeSets,
@@ -54,6 +62,133 @@ export default function AttributeSetsIndex({
             },
         });
     };
+
+    const handlePageChange = (page: number) => {
+        router.get('/admin/attribute-sets', { page }, {
+            preserveState: true,
+        });
+    };
+
+    const columns: ColumnDef<AttributeSet>[] = [
+        {
+            accessorKey: 'name',
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        onClick={() =>
+                            column.toggleSorting(column.getIsSorted() === 'asc')
+                        }
+                    >
+                        Name
+                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                    </Button>
+                );
+            },
+            cell: ({ row }) => (
+                <div className="font-medium">{row.getValue('name')}</div>
+            ),
+        },
+        {
+            accessorKey: 'slug',
+            header: 'Slug',
+            cell: ({ row }) => {
+                const slug = row.getValue('slug') as string | undefined;
+                return slug ? (
+                    <span className="font-mono text-sm text-muted-foreground">
+                        {slug}
+                    </span>
+                ) : (
+                    <span className="text-sm text-muted-foreground">-</span>
+                );
+            },
+        },
+        {
+            accessorKey: 'attributes_count',
+            header: 'Özellik Sayısı',
+            cell: ({ row }) => {
+                const count = row.getValue('attributes_count') as
+                    | number
+                    | undefined;
+                return (
+                    <span className="text-sm text-muted-foreground">
+                        {count ?? 0} özellik
+                    </span>
+                );
+            },
+        },
+        {
+            accessorKey: 'is_active',
+            header: 'Status',
+            cell: ({ row }) => {
+                const isActive = row.getValue('is_active') as boolean;
+                return isActive ? (
+                    <span className="rounded bg-green-100 px-2 py-1 text-xs text-green-800 dark:bg-green-900 dark:text-green-200">
+                        Aktif
+                    </span>
+                ) : (
+                    <span className="rounded bg-red-100 px-2 py-1 text-xs text-red-800 dark:bg-red-900 dark:text-red-200">
+                        Pasif
+                    </span>
+                );
+            },
+        },
+        {
+            accessorKey: 'sort_order',
+            header: 'Sıra',
+            cell: ({ row }) => (
+                <span className="text-sm">{row.getValue('sort_order')}</span>
+            ),
+        },
+        {
+            id: 'actions',
+            enableHiding: false,
+            cell: ({ row }) => {
+                const attributeSet = row.original;
+
+                return (
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                                <span className="sr-only">Menüyü aç</span>
+                                <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>İşlemler</DropdownMenuLabel>
+                            <DropdownMenuItem
+                                onClick={() =>
+                                    router.visit(show(attributeSet.id))
+                                }
+                            >
+                                <Eye className="mr-2 h-4 w-4" />
+                                Görüntüle
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                                onClick={() =>
+                                    router.visit(
+                                        `/admin/attribute-sets/${attributeSet.id}/edit`,
+                                    )
+                                }
+                            >
+                                Düzenle
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                                onClick={() =>
+                                    setDeleteAttributeSetId(attributeSet.id)
+                                }
+                                className="text-destructive"
+                            >
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                Sil
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                );
+            },
+        },
+    ];
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -77,135 +212,59 @@ export default function AttributeSetsIndex({
                     </Link>
                 </div>
 
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Özellik Seti Listesi</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="space-y-4">
-                            {attributeSets.data.length > 0 ? (
-                                <div className="space-y-2">
-                                    {attributeSets.data.map((attributeSet) => (
-                                        <div
-                                            key={attributeSet.id}
-                                            className="flex items-center justify-between rounded-lg border p-4"
-                                        >
-                                            <div className="flex-1">
-                                                <h3 className="font-semibold">
-                                                    {attributeSet.name}
-                                                </h3>
-                                                {attributeSet.slug && (
-                                                    <p className="mt-1 font-mono text-sm text-muted-foreground">
-                                                        {attributeSet.slug}
-                                                    </p>
-                                                )}
-                                                {attributeSet.attributes_count !==
-                                                    undefined && (
-                                                    <p className="mt-1 text-sm text-muted-foreground">
-                                                        {
-                                                            attributeSet.attributes_count
-                                                        }{' '}
-                                                        özellik
-                                                    </p>
-                                                )}
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <Link
-                                                    href={show(
-                                                        attributeSet.id,
-                                                    )}
-                                                >
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                    >
-                                                        <Eye className="mr-2 h-4 w-4" />
-                                                        Görüntüle
-                                                    </Button>
-                                                </Link>
-                                                <Link
-                                                    href={`/admin/attribute-sets/${attributeSet.id}/edit`}
-                                                >
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                    >
-                                                        Düzenle
-                                                    </Button>
-                                                </Link>
-                                                <Dialog
-                                                    open={
-                                                        deleteAttributeSetId ===
-                                                        attributeSet.id
-                                                    }
-                                                    onOpenChange={(open) =>
-                                                        setDeleteAttributeSetId(
-                                                            open
-                                                                ? attributeSet.id
-                                                                : null,
-                                                        )
-                                                    }
-                                                >
-                                                    <DialogTrigger asChild>
-                                                        <Button
-                                                            variant="destructive"
-                                                            size="sm"
-                                                        >
-                                                            <Trash2 className="mr-2 h-4 w-4" />
-                                                            Sil
-                                                        </Button>
-                                                    </DialogTrigger>
-                                                    <DialogContent>
-                                                        <DialogHeader>
-                                                            <DialogTitle>
-                                                                Özellik Setini
-                                                                Sil
-                                                            </DialogTitle>
-                                                            <DialogDescription>
-                                                                Bu özellik setini
-                                                                silmek istediğinizden
-                                                                emin misiniz? Bu
-                                                                işlem geri alınamaz.
-                                                            </DialogDescription>
-                                                        </DialogHeader>
-                                                        <DialogFooter>
-                                                            <Button
-                                                                variant="outline"
-                                                                onClick={() =>
-                                                                    setDeleteAttributeSetId(
-                                                                        null,
-                                                                    )
-                                                                }
-                                                            >
-                                                                İptal
-                                                            </Button>
-                                                            <Button
-                                                                variant="destructive"
-                                                                onClick={() =>
-                                                                    handleDelete(
-                                                                        attributeSet.id,
-                                                                    )
-                                                                }
-                                                            >
-                                                                Sil
-                                                            </Button>
-                                                        </DialogFooter>
-                                                    </DialogContent>
-                                                </Dialog>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            ) : (
-                                <div className="py-8 text-center text-muted-foreground">
-                                    Henüz özellik seti eklenmemiş.
-                                </div>
-                            )}
-                        </div>
-                    </CardContent>
-                </Card>
+                <div className="rounded-md border">
+                    <DataTable
+                        columns={columns}
+                        data={attributeSets.data}
+                        pagination={{
+                            currentPage: attributeSets.current_page,
+                            lastPage: attributeSets.last_page,
+                            perPage: attributeSets.per_page,
+                            total: attributeSets.total,
+                            from: attributeSets.from,
+                            to: attributeSets.to,
+                            links: attributeSets.links,
+                        }}
+                        onPageChange={handlePageChange}
+                    />
+                </div>
+
+                <Dialog
+                    open={deleteAttributeSetId !== null}
+                    onOpenChange={(open) =>
+                        setDeleteAttributeSetId(
+                            open ? deleteAttributeSetId : null,
+                        )
+                    }
+                >
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Özellik Setini Sil</DialogTitle>
+                            <DialogDescription>
+                                Bu özellik setini silmek istediğinizden emin
+                                misiniz? Bu işlem geri alınamaz.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <DialogFooter>
+                            <Button
+                                variant="outline"
+                                onClick={() => setDeleteAttributeSetId(null)}
+                            >
+                                İptal
+                            </Button>
+                            <Button
+                                variant="destructive"
+                                onClick={() =>
+                                    deleteAttributeSetId &&
+                                    handleDelete(deleteAttributeSetId)
+                                }
+                            >
+                                Sil
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
             </div>
         </AppLayout>
     );
 }
-

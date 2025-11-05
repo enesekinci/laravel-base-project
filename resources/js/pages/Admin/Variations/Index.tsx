@@ -167,9 +167,7 @@ export default function VariationsIndex({ variations }: Props) {
                         <DropdownMenuContent align="end">
                             <DropdownMenuLabel>İşlemler</DropdownMenuLabel>
                             <DropdownMenuItem
-                                onClick={() =>
-                                    router.visit(show(variation.id))
-                                }
+                                onClick={() => router.visit(show(variation.id))}
                             >
                                 <Eye className="mr-2 h-4 w-4" />
                                 Görüntüle
@@ -249,8 +247,8 @@ export default function VariationsIndex({ variations }: Props) {
                         <DialogHeader>
                             <DialogTitle>Varyasyonu Sil</DialogTitle>
                             <DialogDescription>
-                                Bu varyasyonu silmek istediğinizden emin misiniz?
-                                Bu işlem geri alınamaz.
+                                Bu varyasyonu silmek istediğinizden emin
+                                misiniz? Bu işlem geri alınamaz.
                             </DialogDescription>
                         </DialogHeader>
                         <DialogFooter>
