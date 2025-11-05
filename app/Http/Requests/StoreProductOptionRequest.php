@@ -25,7 +25,19 @@ class StoreProductOptionRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
-            'type' => ['required', 'string', Rule::in(['select', 'radio', 'checkbox', 'textarea'])],
+            'type' => ['required', 'string', Rule::in([
+                'field',
+                'textarea', // Text
+                'dropdown',
+                'checkbox',
+                'checkbox_custom',
+                'radio',
+                'radio_custom',
+                'multiple_select', // Select
+                'date',
+                'date_time',
+                'time', // Date
+            ])],
             'required' => ['nullable', 'boolean'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
             'is_active' => ['nullable', 'boolean'],

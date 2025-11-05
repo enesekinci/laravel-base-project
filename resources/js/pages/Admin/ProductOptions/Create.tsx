@@ -41,11 +41,31 @@ interface ProductOptionValue {
     sort_order: number;
 }
 
+// Type grupları
+const TEXT_TYPES = ['field', 'textarea'] as const;
+const SELECT_TYPES = [
+    'dropdown',
+    'checkbox',
+    'checkbox_custom',
+    'radio',
+    'radio_custom',
+    'multiple_select',
+] as const;
+const DATE_TYPES = ['date', 'date_time', 'time'] as const;
+
+type TextType = (typeof TEXT_TYPES)[number];
+type SelectType = (typeof SELECT_TYPES)[number];
+type DateType = (typeof DATE_TYPES)[number];
+type OptionType = TextType | SelectType | DateType;
+
+// Tekil value gerektiren tipler
+const SINGLE_VALUE_TYPES = [...TEXT_TYPES, ...DATE_TYPES] as const;
+
 export default function ProductOptionsCreate() {
     const { data, setData, post, processing, errors } = useForm({
         name: '',
         description: '',
-        type: 'select' as 'select' | 'radio' | 'checkbox' | 'textarea',
+        type: 'dropdown' as OptionType,
         required: false,
         sort_order: 0,
         is_active: true,
@@ -56,34 +76,37 @@ export default function ProductOptionsCreate() {
         (ProductOptionValue & { tempId?: string })[]
     >([]);
 
+    // Seçilen tip tekil value gerektiriyor mu?
+    const isSingleValueType = SINGLE_VALUE_TYPES.includes(data.type as any);
+
     // Type değiştiğinde values'ı sıfırla veya tek value oluştur
     const handleTypeChange = (newType: string) => {
-        setData('type', newType as any);
-        
-        // Textarea gibi tekil seçimler için tek value oluştur
-        if (newType === 'textarea') {
+        setData('type', newType as OptionType);
+
+        // Tekil value gerektiren tipler için tek value oluştur
+        if (SINGLE_VALUE_TYPES.includes(newType as any)) {
             if (localValues.length === 0) {
-                setLocalValues([{
-                    label: '',
-                    value: '',
-                    price_adjustment: 0,
-                    price_type: 'fixed' as const,
-                    sort_order: 0,
-                    tempId: `temp-${Date.now()}-${Math.random()}`,
-                }]);
+                setLocalValues([
+                    {
+                        label: '',
+                        value: '',
+                        price_adjustment: 0,
+                        price_type: 'fixed' as const,
+                        sort_order: 0,
+                        tempId: `temp-${Date.now()}-${Math.random()}`,
+                    },
+                ]);
             } else {
                 // Sadece ilk value'yu tut
                 setLocalValues([localValues[0]]);
             }
-        } else {
-            // Çoğul seçimler için values boş olabilir
-            // Mevcut values varsa koru
         }
+        // Çoğul seçimler için mevcut values korunur
     };
 
     const addValue = () => {
-        // Textarea için sadece 1 value olabilir
-        if (data.type === 'textarea' && localValues.length > 0) {
+        // Tekil value gerektiren tipler için sadece 1 value olabilir
+        if (isSingleValueType && localValues.length > 0) {
             return;
         }
 
@@ -202,7 +225,9 @@ export default function ProductOptionsCreate() {
                                         <SelectItem value="select">
                                             Select
                                         </SelectItem>
-                                        <SelectItem value="radio">Radio</SelectItem>
+                                        <SelectItem value="radio">
+                                            Radio
+                                        </SelectItem>
                                         <SelectItem value="checkbox">
                                             Checkbox
                                         </SelectItem>
@@ -260,7 +285,7 @@ export default function ProductOptionsCreate() {
                         <CardHeader>
                             <div className="flex items-center justify-between">
                                 <CardTitle>Değerler</CardTitle>
-                                {data.type !== 'textarea' && (
+                                {!isSingleValueType && (
                                     <Button
                                         type="button"
                                         variant="outline"
@@ -282,56 +307,60 @@ export default function ProductOptionsCreate() {
                                     >
                                         <div className="flex items-start justify-between">
                                             <div className="flex-1 space-y-4">
-                                                <div className="grid grid-cols-2 gap-4">
-                                                    <div className="space-y-2">
-                                                        <Label>
-                                                            Etiket{' '}
-                                                            <span className="text-red-500">
-                                                                *
-                                                            </span>
-                                                        </Label>
-                                                        <Input
-                                                            value={value.label}
-                                                            onChange={(e) =>
-                                                                updateValue(
-                                                                    index,
-                                                                    'label',
-                                                                    e.target
-                                                                        .value,
-                                                                )
-                                                            }
-                                                            placeholder="Örn: 8GB, 256GB"
-                                                        />
+                                                {!isSingleValueType && (
+                                                    <div className="grid grid-cols-2 gap-4">
+                                                        <div className="space-y-2">
+                                                            <Label>
+                                                                Etiket{' '}
+                                                                <span className="text-red-500">
+                                                                    *
+                                                                </span>
+                                                            </Label>
+                                                            <Input
+                                                                value={
+                                                                    value.label
+                                                                }
+                                                                onChange={(e) =>
+                                                                    updateValue(
+                                                                        index,
+                                                                        'label',
+                                                                        e.target
+                                                                            .value,
+                                                                    )
+                                                                }
+                                                                placeholder="Örn: 8GB, 256GB"
+                                                            />
+                                                        </div>
+                                                        <div className="space-y-2">
+                                                            <Label>Değer</Label>
+                                                            <Input
+                                                                value={
+                                                                    value.value ||
+                                                                    ''
+                                                                }
+                                                                onChange={(e) =>
+                                                                    updateValue(
+                                                                        index,
+                                                                        'value',
+                                                                        e.target
+                                                                            .value,
+                                                                    )
+                                                                }
+                                                                placeholder="Opsiyonel değer"
+                                                            />
+                                                        </div>
                                                     </div>
-                                                    <div className="space-y-2">
-                                                        <Label>Değer</Label>
-                                                        <Input
-                                                            value={
-                                                                value.value ||
-                                                                ''
-                                                            }
-                                                            onChange={(e) =>
-                                                                updateValue(
-                                                                    index,
-                                                                    'value',
-                                                                    e.target
-                                                                        .value,
-                                                                )
-                                                            }
-                                                            placeholder="Opsiyonel değer"
-                                                        />
-                                                    </div>
-                                                </div>
+                                                )}
 
                                                 <div className="grid grid-cols-3 gap-4">
                                                     <div className="space-y-2">
-                                                        <Label>
-                                                            Fiyat
-                                                        </Label>
+                                                        <Label>Fiyat</Label>
                                                         <Input
                                                             type="number"
                                                             step="0.01"
-                                                            value={value.price_adjustment}
+                                                            value={
+                                                                value.price_adjustment
+                                                            }
                                                             onChange={(e) =>
                                                                 updateValue(
                                                                     index,
@@ -350,12 +379,19 @@ export default function ProductOptionsCreate() {
                                                             Fiyat Tipi
                                                         </Label>
                                                         <Select
-                                                            value={value.price_type || 'fixed'}
-                                                            onValueChange={(val) =>
+                                                            value={
+                                                                value.price_type ||
+                                                                'fixed'
+                                                            }
+                                                            onValueChange={(
+                                                                val,
+                                                            ) =>
                                                                 updateValue(
                                                                     index,
                                                                     'price_type',
-                                                                    val as 'fixed' | 'percentage',
+                                                                    val as
+                                                                        | 'fixed'
+                                                                        | 'percentage',
                                                                 )
                                                             }
                                                         >
@@ -376,7 +412,9 @@ export default function ProductOptionsCreate() {
                                                         <Label>Sıralama</Label>
                                                         <Input
                                                             type="number"
-                                                            value={value.sort_order}
+                                                            value={
+                                                                value.sort_order
+                                                            }
                                                             onChange={(e) =>
                                                                 updateValue(
                                                                     index,
@@ -391,7 +429,7 @@ export default function ProductOptionsCreate() {
                                                     </div>
                                                 </div>
                                             </div>
-                                            {data.type !== 'textarea' && (
+                                            {!isSingleValueType && (
                                                 <Button
                                                     type="button"
                                                     variant="destructive"
@@ -409,8 +447,8 @@ export default function ProductOptionsCreate() {
                                 ))
                             ) : (
                                 <div className="py-8 text-center text-muted-foreground">
-                                    {data.type === 'textarea'
-                                        ? 'Textarea tipi için tek bir değer oluşturulacak.'
+                                    {isSingleValueType
+                                        ? 'Bu tip için tek bir değer oluşturulacak (Price ve Price Type).'
                                         : 'Henüz değer eklenmemiş. Değer eklemek için yukarıdaki butonu kullanın.'}
                                 </div>
                             )}
@@ -435,4 +473,3 @@ export default function ProductOptionsCreate() {
         </AppLayout>
     );
 }
-

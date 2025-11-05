@@ -29,6 +29,7 @@ import {
     Languages,
     Layout,
     Link as LinkIcon,
+    List,
     Mail,
     MapPin,
     Menu,
@@ -49,7 +50,6 @@ import {
     TrendingUp,
     Truck,
     Users,
-    List,
 } from 'lucide-react';
 
 export const menuItems: NavItem[] = [
