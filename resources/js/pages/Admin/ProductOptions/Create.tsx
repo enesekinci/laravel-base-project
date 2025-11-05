@@ -43,20 +43,11 @@ interface ProductOptionValue {
 
 // Type grupları
 const TEXT_TYPES = ['field', 'textarea'] as const;
-const SELECT_TYPES = [
-    'dropdown',
-    'checkbox',
-    'checkbox_custom',
-    'radio',
-    'radio_custom',
-    'multiple_select',
-] as const;
 const DATE_TYPES = ['date', 'date_time', 'time'] as const;
 
 type TextType = (typeof TEXT_TYPES)[number];
-type SelectType = (typeof SELECT_TYPES)[number];
 type DateType = (typeof DATE_TYPES)[number];
-type OptionType = TextType | SelectType | DateType;
+type OptionType = TextType | 'dropdown' | 'checkbox' | 'checkbox_custom' | 'radio' | 'radio_custom' | 'multiple_select' | DateType;
 
 // Tekil value gerektiren tipler
 const SINGLE_VALUE_TYPES = [...TEXT_TYPES, ...DATE_TYPES] as const;
