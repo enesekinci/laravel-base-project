@@ -46,12 +46,19 @@ interface ProductOptionValue {
 
 // Type grupları
 const TEXT_TYPES = ['field', 'textarea'] as const;
-const SELECT_TYPES = ['dropdown', 'checkbox', 'checkbox_custom', 'radio', 'radio_custom', 'multiple_select'] as const;
+const SELECT_TYPES = [
+    'dropdown',
+    'checkbox',
+    'checkbox_custom',
+    'radio',
+    'radio_custom',
+    'multiple_select',
+] as const;
 const DATE_TYPES = ['date', 'date_time', 'time'] as const;
 
-type TextType = typeof TEXT_TYPES[number];
-type SelectType = typeof SELECT_TYPES[number];
-type DateType = typeof DATE_TYPES[number];
+type TextType = (typeof TEXT_TYPES)[number];
+type SelectType = (typeof SELECT_TYPES)[number];
+type DateType = (typeof DATE_TYPES)[number];
 type OptionType = TextType | SelectType | DateType;
 
 // Tekil value gerektiren tipler
@@ -99,23 +106,27 @@ export default function ProductOptionsEdit({ option }: Props) {
     }, [option.values]);
 
     // Seçilen tip tekil value gerektiriyor mu?
-    const isSingleValueType = (SINGLE_VALUE_TYPES as readonly string[]).includes(data.type);
+    const isSingleValueType = (
+        SINGLE_VALUE_TYPES as readonly string[]
+    ).includes(data.type);
 
     // Type değiştiğinde values'ı sıfırla veya tek value oluştur
     const handleTypeChange = (newType: string) => {
         setData('type', newType as OptionType);
-        
+
         // Tekil value gerektiren tipler için tek value oluştur
         if ((SINGLE_VALUE_TYPES as readonly string[]).includes(newType)) {
             if (localValues.length === 0) {
-                setLocalValues([{
-                    label: '',
-                    value: '',
-                    price_adjustment: 0,
-                    price_type: 'fixed' as const,
-                    sort_order: 0,
-                    tempId: `temp-${Date.now()}-${Math.random()}`,
-                }]);
+                setLocalValues([
+                    {
+                        label: '',
+                        value: '',
+                        price_adjustment: 0,
+                        price_type: 'fixed' as const,
+                        sort_order: 0,
+                        tempId: `temp-${Date.now()}-${Math.random()}`,
+                    },
+                ]);
             } else {
                 // Sadece ilk value'yu tut
                 setLocalValues([localValues[0]]);
@@ -322,9 +333,7 @@ export default function ProductOptionsEdit({ option }: Props) {
                             <div className="flex items-center space-x-2">
                                 <Checkbox
                                     id="is_active"
-                                    checked={
-                                        data.is_active ?? option.is_active
-                                    }
+                                    checked={data.is_active ?? option.is_active}
                                     onCheckedChange={(checked) =>
                                         setData('is_active', checked === true)
                                     }
@@ -370,7 +379,9 @@ export default function ProductOptionsEdit({ option }: Props) {
                                                                 </span>
                                                             </Label>
                                                             <Input
-                                                                value={value.label}
+                                                                value={
+                                                                    value.label
+                                                                }
                                                                 onChange={(e) =>
                                                                     updateValue(
                                                                         index,
@@ -405,13 +416,13 @@ export default function ProductOptionsEdit({ option }: Props) {
 
                                                 <div className="grid grid-cols-3 gap-4">
                                                     <div className="space-y-2">
-                                                        <Label>
-                                                            Fiyat
-                                                        </Label>
+                                                        <Label>Fiyat</Label>
                                                         <Input
                                                             type="number"
                                                             step="0.01"
-                                                            value={value.price_adjustment}
+                                                            value={
+                                                                value.price_adjustment
+                                                            }
                                                             onChange={(e) =>
                                                                 updateValue(
                                                                     index,
@@ -430,12 +441,19 @@ export default function ProductOptionsEdit({ option }: Props) {
                                                             Fiyat Tipi
                                                         </Label>
                                                         <Select
-                                                            value={value.price_type || 'fixed'}
-                                                            onValueChange={(val) =>
+                                                            value={
+                                                                value.price_type ||
+                                                                'fixed'
+                                                            }
+                                                            onValueChange={(
+                                                                val,
+                                                            ) =>
                                                                 updateValue(
                                                                     index,
                                                                     'price_type',
-                                                                    val as 'fixed' | 'percentage',
+                                                                    val as
+                                                                        | 'fixed'
+                                                                        | 'percentage',
                                                                 )
                                                             }
                                                         >
@@ -456,7 +474,9 @@ export default function ProductOptionsEdit({ option }: Props) {
                                                         <Label>Sıralama</Label>
                                                         <Input
                                                             type="number"
-                                                            value={value.sort_order}
+                                                            value={
+                                                                value.sort_order
+                                                            }
                                                             onChange={(e) =>
                                                                 updateValue(
                                                                     index,
@@ -515,4 +535,3 @@ export default function ProductOptionsEdit({ option }: Props) {
         </AppLayout>
     );
 }
-

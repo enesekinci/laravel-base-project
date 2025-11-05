@@ -6,7 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreAttributeRequest;
 use App\Http\Requests\UpdateAttributeRequest;
 use App\Models\Attribute;
+use App\Models\AttributeSet;
+use App\Models\Category;
 use App\Services\AttributeService;
+use App\Services\CategoryService;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -14,7 +17,8 @@ use Inertia\Response;
 class AttributeController extends Controller
 {
     public function __construct(
-        private AttributeService $attributeService
+        private AttributeService $attributeService,
+        private CategoryService $categoryService
     ) {}
 
     /**
@@ -34,7 +38,18 @@ class AttributeController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('Admin/Attributes/Create');
+        $attributeSets = AttributeSet::query()
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        $categories = $this->categoryService->allTree();
+
+        return Inertia::render('Admin/Attributes/Create', [
+            'attributeSets' => $attributeSets,
+            'categories' => $categories,
+        ]);
     }
 
     /**
@@ -66,10 +81,20 @@ class AttributeController extends Controller
      */
     public function edit(Attribute $attribute): Response
     {
-        $attribute->load('values');
+        $attribute->load(['values', 'attributeSet', 'categories']);
+
+        $attributeSets = AttributeSet::query()
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        $categories = $this->categoryService->allTree();
 
         return Inertia::render('Admin/Attributes/Edit', [
             'attribute' => $attribute,
+            'attributeSets' => $attributeSets,
+            'categories' => $categories,
         ]);
     }
 

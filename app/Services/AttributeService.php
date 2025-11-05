@@ -13,7 +13,7 @@ class AttributeService
     public function list(array $filters = []): LengthAwarePaginator
     {
         $query = Attribute::query()
-            ->with('values')
+            ->with(['values', 'attributeSet', 'categories'])
             ->orderBy('sort_order')
             ->orderBy('name');
 
@@ -40,7 +40,25 @@ class AttributeService
      */
     public function create(array $data): Attribute
     {
-        return Attribute::create($data);
+        $values = $data['values'] ?? [];
+        $categoryIds = $data['category_ids'] ?? [];
+        unset($data['values'], $data['category_ids']);
+
+        $attribute = Attribute::create($data);
+
+        // Kategorileri ekle
+        if (!empty($categoryIds)) {
+            $attribute->categories()->sync($categoryIds);
+        }
+
+        // Değerleri ekle
+        if (!empty($values)) {
+            foreach ($values as $valueData) {
+                $attribute->values()->create($valueData);
+            }
+        }
+
+        return $attribute->load(['values', 'attributeSet', 'categories']);
     }
 
     /**
@@ -48,9 +66,29 @@ class AttributeService
      */
     public function update(Attribute $attribute, array $data): Attribute
     {
+        $values = $data['values'] ?? [];
+        $categoryIds = $data['category_ids'] ?? [];
+        unset($data['values'], $data['category_ids']);
+
         $attribute->update($data);
 
-        return $attribute->fresh()->load('values');
+        // Kategorileri güncelle
+        if (isset($categoryIds)) {
+            $attribute->categories()->sync($categoryIds);
+        }
+
+        // Değerleri güncelle
+        if (isset($values)) {
+            // Mevcut değerleri sil
+            $attribute->values()->delete();
+
+            // Yeni değerleri ekle
+            foreach ($values as $valueData) {
+                $attribute->values()->create($valueData);
+            }
+        }
+
+        return $attribute->fresh(['values', 'attributeSet', 'categories']);
     }
 
     /**

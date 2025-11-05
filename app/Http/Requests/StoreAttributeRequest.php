@@ -23,11 +23,16 @@ class StoreAttributeRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'slug' => ['required', 'string', 'max:255', 'unique:attributes,slug'],
-            'type' => ['required', 'string', 'in:text,select,multiselect,color,size'],
+            'attribute_set_id' => ['nullable', 'exists:attribute_sets,id'],
+            'category_ids' => ['nullable', 'array'],
+            'category_ids.*' => ['exists:categories,id'],
             'is_filterable' => ['nullable', 'boolean'],
-            'is_required' => ['nullable', 'boolean'],
-            'sort_order' => ['nullable', 'integer', 'min:0'],
+            'values' => ['nullable', 'array'],
+            'values.*.value' => ['required', 'string', 'max:255'],
+            'values.*.slug' => ['nullable', 'string', 'max:255'],
+            'values.*.color' => ['nullable', 'string', 'max:7'],
+            'values.*.image' => ['nullable', 'string'],
+            'values.*.sort_order' => ['nullable', 'integer', 'min:0'],
         ];
     }
 }

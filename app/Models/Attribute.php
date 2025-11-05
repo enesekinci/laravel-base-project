@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -14,6 +16,7 @@ class Attribute extends Model
     protected $fillable = [
         'name',
         'slug',
+        'attribute_set_id',
         'type',
         'is_filterable',
         'is_required',
@@ -25,6 +28,23 @@ class Attribute extends Model
         'is_required' => 'boolean',
         'sort_order' => 'integer',
     ];
+
+    /**
+     * Özellik seti
+     */
+    public function attributeSet(): BelongsTo
+    {
+        return $this->belongsTo(AttributeSet::class);
+    }
+
+    /**
+     * Kategoriler
+     */
+    public function categories(): BelongsToMany
+    {
+        return $this->belongsToMany(Category::class, 'attribute_categories')
+            ->withTimestamps();
+    }
 
     /**
      * Özellik değerleri

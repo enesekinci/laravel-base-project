@@ -47,7 +47,15 @@ const DATE_TYPES = ['date', 'date_time', 'time'] as const;
 
 type TextType = (typeof TEXT_TYPES)[number];
 type DateType = (typeof DATE_TYPES)[number];
-type OptionType = TextType | 'dropdown' | 'checkbox' | 'checkbox_custom' | 'radio' | 'radio_custom' | 'multiple_select' | DateType;
+type OptionType =
+    | TextType
+    | 'dropdown'
+    | 'checkbox'
+    | 'checkbox_custom'
+    | 'radio'
+    | 'radio_custom'
+    | 'multiple_select'
+    | DateType;
 
 // Tekil value gerektiren tipler
 const SINGLE_VALUE_TYPES = [...TEXT_TYPES, ...DATE_TYPES] as const;
@@ -68,12 +76,14 @@ export default function ProductOptionsCreate() {
     >([]);
 
     // Seçilen tip tekil value gerektiriyor mu?
-    const isSingleValueType = (SINGLE_VALUE_TYPES as readonly string[]).includes(data.type);
+    const isSingleValueType = (
+        SINGLE_VALUE_TYPES as readonly string[]
+    ).includes(data.type);
 
     // Type değiştiğinde values'ı sıfırla veya tek value oluştur
     const handleTypeChange = (newType: string) => {
         setData('type', newType as OptionType);
-        
+
         // Tekil value gerektiren tipler için tek value oluştur
         if ((SINGLE_VALUE_TYPES as readonly string[]).includes(newType)) {
             if (localValues.length === 0) {
