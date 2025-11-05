@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('product_options', function (Blueprint $table) {
             $table->boolean('required')->default(false)->after('type');
         });
-        
+
         // Type enum'unu genişletmek için textarea ekliyoruz
         // SQLite'de enum değiştirme zor olduğu için sadece boolean ekliyoruz
         // Type string olarak kalacak

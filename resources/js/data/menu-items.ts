@@ -49,6 +49,7 @@ import {
     TrendingUp,
     Truck,
     Users,
+    List,
 } from 'lucide-react';
 
 export const menuItems: NavItem[] = [
@@ -104,6 +105,11 @@ export const menuItems: NavItem[] = [
                         title: 'Varyasyon',
                         href: '/admin/variations',
                         icon: Boxes,
+                    },
+                    {
+                        title: 'Seçenekler',
+                        href: '/admin/product-options',
+                        icon: List,
                     },
                 ],
             },
