@@ -77,14 +77,14 @@ export default function ProductOptionsCreate() {
     >([]);
 
     // Seçilen tip tekil value gerektiriyor mu?
-    const isSingleValueType = SINGLE_VALUE_TYPES.includes(data.type as any);
+    const isSingleValueType = (SINGLE_VALUE_TYPES as readonly string[]).includes(data.type);
 
     // Type değiştiğinde values'ı sıfırla veya tek value oluştur
     const handleTypeChange = (newType: string) => {
         setData('type', newType as OptionType);
-
+        
         // Tekil value gerektiren tipler için tek value oluştur
-        if (SINGLE_VALUE_TYPES.includes(newType as any)) {
+        if ((SINGLE_VALUE_TYPES as readonly string[]).includes(newType)) {
             if (localValues.length === 0) {
                 setLocalValues([
                     {
