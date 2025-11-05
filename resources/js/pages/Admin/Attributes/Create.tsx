@@ -40,7 +40,7 @@ import {
 } from '@dnd-kit/sortable';
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import { ArrowLeft, Plus, Trash2, X } from 'lucide-react';
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: '/admin/dashboard' },
