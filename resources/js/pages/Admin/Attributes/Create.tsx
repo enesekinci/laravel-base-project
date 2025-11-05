@@ -21,7 +21,6 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
-import { slugify } from '@/lib/slugify';
 import { index, store } from '@/routes/admin/attributes';
 import { type BreadcrumbItem } from '@/types';
 import {
@@ -213,7 +212,7 @@ export default function AttributesCreate({
                     />
                     <Label
                         htmlFor={`category-${category.id}`}
-                        className="text-sm font-normal cursor-pointer"
+                        className="cursor-pointer text-sm font-normal"
                     >
                         {prefix}
                         {prefix && ' '}
@@ -255,7 +254,7 @@ export default function AttributesCreate({
                         <CardContent className="space-y-6">
                             <div className="space-y-4">
                                 <div>
-                                    <h3 className="text-sm font-medium mb-3">
+                                    <h3 className="mb-3 text-sm font-medium">
                                         General
                                     </h3>
                                     <div className="space-y-4">
@@ -287,18 +286,24 @@ export default function AttributesCreate({
                                                     <SelectItem value="">
                                                         Please Select
                                                     </SelectItem>
-                                                    {attributeSets.map((set) => (
-                                                        <SelectItem
-                                                            key={set.id}
-                                                            value={String(set.id)}
-                                                        >
-                                                            {set.name}
-                                                        </SelectItem>
-                                                    ))}
+                                                    {attributeSets.map(
+                                                        (set) => (
+                                                            <SelectItem
+                                                                key={set.id}
+                                                                value={String(
+                                                                    set.id,
+                                                                )}
+                                                            >
+                                                                {set.name}
+                                                            </SelectItem>
+                                                        ),
+                                                    )}
                                                 </SelectContent>
                                             </Select>
                                             <InputError
-                                                message={errors.attribute_set_id}
+                                                message={
+                                                    errors.attribute_set_id
+                                                }
                                             />
                                         </div>
 
@@ -321,10 +326,10 @@ export default function AttributesCreate({
                                 </div>
 
                                 <div>
-                                    <h3 className="text-sm font-medium mb-3">
+                                    <h3 className="mb-3 text-sm font-medium">
                                         Categories
                                     </h3>
-                                    <div className="border rounded-md p-4 max-h-60 overflow-y-auto">
+                                    <div className="max-h-60 overflow-y-auto rounded-md border p-4">
                                         {treeCategories.length > 0 ? (
                                             treeCategories.map((category) =>
                                                 renderCategoryTree(category),
@@ -407,7 +412,8 @@ export default function AttributesCreate({
                                         </Label>
                                     </div>
                                     <p className="mt-1 text-xs text-muted-foreground">
-                                        Use this attribute for filtering products
+                                        Use this attribute for filtering
+                                        products
                                     </p>
                                     <InputError
                                         message={errors.is_filterable}
@@ -434,12 +440,12 @@ export default function AttributesCreate({
                         </CardHeader>
                         <CardContent>
                             {localValues.length > 0 ? (
-                                <div className="overflow-x-auto">
-                                    <DndContext
-                                        sensors={sensors}
-                                        collisionDetection={closestCenter}
-                                        onDragEnd={handleDragEnd}
-                                    >
+                                <DndContext
+                                    sensors={sensors}
+                                    collisionDetection={closestCenter}
+                                    onDragEnd={handleDragEnd}
+                                >
+                                    <div className="rounded-md border">
                                         <Table>
                                             <TableHeader>
                                                 <TableRow>
@@ -450,7 +456,7 @@ export default function AttributesCreate({
                                                             *
                                                         </span>
                                                     </TableHead>
-                                                    <TableHead className="w-12"></TableHead>
+                                                    <TableHead className="w-24"></TableHead>
                                                 </TableRow>
                                             </TableHeader>
                                             <TableBody>
@@ -476,7 +482,7 @@ export default function AttributesCreate({
                                                                     )
                                                                 }
                                                             >
-                                                                <TableCell>
+                                                                <TableCell className="w-full">
                                                                     <Input
                                                                         value={
                                                                             value.value
@@ -493,20 +499,22 @@ export default function AttributesCreate({
                                                                             )
                                                                         }
                                                                         placeholder="Value"
+                                                                        className="w-full"
                                                                     />
                                                                 </TableCell>
-                                                                <TableCell>
+                                                                <TableCell className="text-right">
                                                                     <Button
                                                                         type="button"
-                                                                        variant="destructive"
+                                                                        variant="ghost"
                                                                         size="sm"
                                                                         onClick={() =>
                                                                             removeValue(
                                                                                 index,
                                                                             )
                                                                         }
+                                                                        className="h-8 w-8 p-0"
                                                                     >
-                                                                        <Trash2 className="h-4 w-4" />
+                                                                        <Trash2 className="h-4 w-4 text-destructive" />
                                                                     </Button>
                                                                 </TableCell>
                                                             </SortableTableRow>
@@ -515,8 +523,8 @@ export default function AttributesCreate({
                                                 </SortableContext>
                                             </TableBody>
                                         </Table>
-                                    </DndContext>
-                                </div>
+                                    </div>
+                                </DndContext>
                             ) : (
                                 <div className="py-8 text-center text-muted-foreground">
                                     Henüz değer eklenmemiş. Değer eklemek için
