@@ -81,11 +81,26 @@ class ProductService
             $product->options()->attach($options);
         }
 
-        if (!empty($variations)) {
-            foreach ($variations as $variationData) {
-                $variation = $product->variations()->create($variationData);
-                if (isset($variationData['values'])) {
-                    $variation->values()->attach($variationData['values']);
+        // Variation IDs (product variations table için değil, sadece ilişki)
+        // Bu kısım şimdilik boş bırakılıyor, çünkü variation_ids sadece hangi variation'ların seçildiğini gösteriyor
+
+        // Product Variants (kombinasyonlar)
+        if (!empty($variants)) {
+            foreach ($variants as $variantData) {
+                $variationValues = $variantData['variation_values'] ?? [];
+                unset($variantData['variation_values']);
+
+                $variant = $product->variations()->create($variantData);
+                
+                // Variation values'ları pivot tabloya ekle
+                if (!empty($variationValues)) {
+                    $pivotData = [];
+                    foreach ($variationValues as $vv) {
+                        $pivotData[$vv['variation_value_id']] = [
+                            'variation_template_id' => null, // Gerekirse eklenebilir
+                        ];
+                    }
+                    $variant->values()->attach($pivotData);
                 }
             }
         }
