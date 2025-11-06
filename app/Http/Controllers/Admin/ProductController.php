@@ -5,7 +5,16 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Models\Attribute;
+use App\Models\Brand;
+use App\Models\Category;
 use App\Models\Product;
+use App\Models\ProductOption;
+use App\Models\Tag;
+use App\Models\TaxClass;
+use App\Models\Variation;
+use App\Models\VariationTemplate;
+use App\Services\CategoryService;
 use App\Services\ProductService;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
@@ -14,7 +23,8 @@ use Inertia\Response;
 class ProductController extends Controller
 {
     public function __construct(
-        private ProductService $productService
+        private ProductService $productService,
+        private CategoryService $categoryService
     ) {}
 
     /**
@@ -36,7 +46,68 @@ class ProductController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('Admin/Products/Create');
+        $brands = Brand::query()
+            ->where('is_active', true)
+            ->ordered()
+            ->get(['id', 'name']);
+
+        $categories = $this->categoryService->allTree();
+
+        $tags = Tag::query()
+            ->where('is_active', true)
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        $taxClasses = TaxClass::query()
+            ->where('is_active', true)
+            ->orderBy('name')
+            ->get(['id', 'name', 'rate']);
+
+        $attributes = Attribute::query()
+            ->with([
+                'values' => function ($query) {
+                    $query->orderBy('sort_order')->orderBy('value');
+                },
+                'attributeSet:id,name',
+            ])
+            ->active()
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get(['id', 'name', 'attribute_set_id']);
+
+        $variations = Variation::query()
+            ->with(['values' => function ($query) {
+                $query->orderBy('sort_order')->orderBy('label');
+            }])
+            ->ordered()
+            ->get(['id', 'name', 'type']);
+
+        $productOptions = ProductOption::query()
+            ->with(['values' => function ($query) {
+                $query->orderBy('sort_order')->orderBy('label');
+            }])
+            ->active()
+            ->ordered()
+            ->get(['id', 'name', 'type', 'required']);
+
+        $variationTemplates = VariationTemplate::query()
+            ->with(['values' => function ($query) {
+                $query->orderBy('sort_order')->orderBy('label');
+            }])
+            ->where('is_active', true)
+            ->ordered()
+            ->get(['id', 'name', 'type']);
+
+        return Inertia::render('Admin/Products/Create', [
+            'brands' => $brands,
+            'categories' => $categories,
+            'tags' => $tags,
+            'taxClasses' => $taxClasses,
+            'attributes' => $attributes,
+            'variations' => $variations,
+            'productOptions' => $productOptions,
+            'variationTemplates' => $variationTemplates,
+        ]);
     }
 
     /**
@@ -90,8 +161,59 @@ class ProductController extends Controller
             'links',
         ]);
 
+        $brands = Brand::query()
+            ->where('is_active', true)
+            ->ordered()
+            ->get(['id', 'name']);
+
+        $categories = $this->categoryService->allTree();
+
+        $tags = Tag::query()
+            ->where('is_active', true)
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        $taxClasses = TaxClass::query()
+            ->where('is_active', true)
+            ->orderBy('name')
+            ->get(['id', 'name', 'rate']);
+
+        $attributes = Attribute::query()
+            ->with([
+                'values' => function ($query) {
+                    $query->orderBy('sort_order')->orderBy('value');
+                },
+                'attributeSet:id,name',
+            ])
+            ->active()
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get(['id', 'name', 'attribute_set_id']);
+
+        $variations = Variation::query()
+            ->with(['values' => function ($query) {
+                $query->orderBy('sort_order')->orderBy('label');
+            }])
+            ->ordered()
+            ->get(['id', 'name', 'type']);
+
+        $productOptions = ProductOption::query()
+            ->with(['values' => function ($query) {
+                $query->orderBy('sort_order')->orderBy('label');
+            }])
+            ->active()
+            ->ordered()
+            ->get(['id', 'name', 'type', 'required']);
+
         return Inertia::render('Admin/Products/Edit', [
             'product' => $product,
+            'brands' => $brands,
+            'categories' => $categories,
+            'tags' => $tags,
+            'taxClasses' => $taxClasses,
+            'attributes' => $attributes,
+            'variations' => $variations,
+            'productOptions' => $productOptions,
         ]);
     }
 
