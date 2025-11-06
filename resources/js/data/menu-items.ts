@@ -178,12 +178,12 @@ export const menuItems: NavItem[] = [
             },
             {
                 title: 'Grup',
-                href: '/admin/customers/groups',
+                href: '/admin/customer-groups',
                 icon: Users,
             },
             {
                 title: 'Temsilciler',
-                href: '/admin/customers/representatives',
+                href: '/admin/customer-representatives',
                 icon: Users,
             },
         ],
@@ -231,12 +231,12 @@ export const menuItems: NavItem[] = [
             },
             {
                 title: 'Mail Taslakları',
-                href: '/admin/notifications/email-templates',
+                href: '/admin/email-templates',
                 icon: Mail,
             },
             {
                 title: 'SMS Taslakları',
-                href: '/admin/notifications/sms-templates',
+                href: '/admin/sms-templates',
                 icon: MessageSquare,
             },
         ],
@@ -247,17 +247,17 @@ export const menuItems: NavItem[] = [
         items: [
             {
                 title: 'İletişim',
-                href: '/admin/forms/contact',
+                href: '/admin/contact-forms',
                 icon: Mail,
             },
             {
                 title: 'Ödeme Bildirim',
-                href: '/admin/forms/payment-notification',
+                href: '/admin/payment-notifications',
                 icon: CreditCard,
             },
             {
                 title: 'E-Bülten',
-                href: '/admin/forms/newsletter',
+                href: '/admin/newsletters',
                 icon: Mail,
             },
         ],
@@ -272,49 +272,49 @@ export const menuItems: NavItem[] = [
                 items: [
                     {
                         title: 'Slider',
-                        href: '/admin/content/design/sliders',
+                        href: '/admin/sliders',
                         icon: Image,
                     },
                     {
                         title: 'Banner',
-                        href: '/admin/content/design/banners',
+                        href: '/admin/banners',
                         icon: Image,
                     },
                     {
                         title: 'Popup',
-                        href: '/admin/content/design/popups',
+                        href: '/admin/popups',
                         icon: Image,
                     },
                     {
                         title: 'Sık Sorulan Sorular',
-                        href: '/admin/content/design/faq',
+                        href: '/admin/faqs',
                         icon: HelpCircle,
                     },
                     {
                         title: 'Vitrin',
-                        href: '/admin/content/design/showcases',
+                        href: '/admin/showcases',
                         icon: Layout,
                     },
                 ],
             },
             {
                 title: 'Blog',
-                href: '/admin/content/blog',
+                href: '/admin/blogs',
                 icon: Newspaper,
             },
             {
                 title: 'Sayfa',
-                href: '/admin/content/pages',
+                href: '/admin/pages',
                 icon: FileText,
             },
             {
                 title: 'Çeviri',
-                href: '/admin/content/translations',
+                href: '/admin/translations',
                 icon: Languages,
             },
             {
                 title: 'Dil',
-                href: '/admin/content/languages',
+                href: '/admin/languages',
                 icon: Globe,
             },
         ],
@@ -329,7 +329,7 @@ export const menuItems: NavItem[] = [
                 icon: Menu,
             },
             {
-                title: 'Mağaza Ayarları',
+                title: 'Mağaza',
                 icon: ShoppingBag,
                 items: [
                     {
@@ -377,22 +377,17 @@ export const menuItems: NavItem[] = [
         items: [
             {
                 title: 'Url Yönlendirme',
-                href: '/admin/tools/redirects',
+                href: '/admin/redirects',
                 icon: LinkIcon,
             },
             {
-                title: 'Depolama Aracı',
-                href: '/admin/tools/storage',
-                icon: HardDrive,
-            },
-            {
                 title: 'Google Analytics',
-                href: '/admin/tools/analytics',
+                href: '/admin/analytics',
                 icon: BarChart3,
             },
             {
                 title: 'Özel Kod',
-                href: '/admin/tools/custom-code',
+                href: '/admin/custom-codes',
                 icon: FileCode,
             },
         ],
@@ -413,19 +408,14 @@ export const menuItems: NavItem[] = [
             },
             {
                 title: 'Grup',
-                href: '/admin/users/groups',
-                icon: Users,
-            },
-            {
-                title: 'Temsilciler',
-                href: '/admin/users/representatives',
+                href: '/admin/user-groups',
                 icon: Users,
             },
         ],
     },
     {
         title: 'Destek Talepleri',
-        href: '/admin/support',
+        href: '/admin/support-tickets',
         icon: HelpCircle,
     },
     {
