@@ -9,6 +9,10 @@
     @include('components.porto.header-demo42')
 @endsection
 
+@section('footer')
+    @include('components.porto.footer-demo42')
+@endsection
+
 @section('content')
 <div class="intro-slider slide-animate owl-carousel owl-theme show-nav-hover nav-inside nav-big"
                 data-owl-options="{

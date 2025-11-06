@@ -10,6 +10,52 @@
 @endsection
 
 @section('content')
+<div class="top-slider owl-carousel owl-theme slide-animate show-nav-hover" data-toggle="owl"
+                data-owl-options="{
+                'items' : 1,
+                'margin' : 0,
+                'nav': true,
+                'navText': [ '<i class=icon-left-open-big>', '<i class=icon-right-open-big>' ],
+                'dots': false
+            }">
+                <div class="home-slide home-slide1"
+                    style="background-image: url('/porto/assets/images/demoes/demo32/slider/home_slider1.jpg'); background-position: 60%;">
+                    <div class="slide-content content-left">
+                        <div class="divide-txt mb-0 appear-animate" data-animation-name="fadeInUpShorter"
+                            data-animation-delay="100">
+                            <span class="font2">New Brown Collection</span>
+                        </div>
+                        <h2 class="appear-animate" data-animation-name="fadeInUpShorter" data-animation-delay="300">
+                            Summer Sale</h2>
+                        <h3 class=" appear-animate" data-animation-name="fadeInUpShorter" data-animation-delay="500">30%
+                            OFF</h3>
+                        <div class="image-info-group appear-animate" data-animation-name="fadeInUpShorter"
+                            data-animation-delay="700">
+                            <h5>STARTING AT <span><sup>$</sup>39<sup>99</sup></span></h5>
+                            <a href="/porto/demo32-shop.html" class="btn">GET YOURS!</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="home-slide home-slide2"
+                    style="background-image: url('/porto/assets/images/demoes/demo32/slider/home_slider2.jpg');">
+                    <div class="slide-content content-right">
+                        <div class="divide-txt no-txt appear-animate" data-animation-name="fadeInUpShorter"
+                            data-animation-delay="100">
+                            <div class="divide-line"></div>
+                        </div>
+                        <h2 class="appear-animate" data-animation-name="fadeInUpShorter" data-animation-delay="300">
+                            Must Have</h2>
+                        <h3 class="appear-animate" data-animation-name="fadeInUpShorter" data-animation-delay="500">
+                            SANDALS</h3>
+                        <div class="image-info-group appear-animate" data-animation-name="fadeInUpShorter"
+                            data-animation-delay="700">
+                            <h5>STARTING AT <span><sup>$</sup>19<sup>99</sup></span></h5>
+                            <a href="/porto/demo32-shop.html" class="btn">GET YOURS!</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 <div class="container">
                 <section class="featured-section text-center appear-animate" data-animation-name="fadeIn"
                     data-animation-delay="100">

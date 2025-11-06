@@ -4,6 +4,9 @@
     @include('components.porto.top-notice-demo14')
 @endsection
 
+@section('footer')
+    @include('components.porto.footer-demo14')
+@endsection
 
 @section('header')
     @include('components.porto.header-demo14')

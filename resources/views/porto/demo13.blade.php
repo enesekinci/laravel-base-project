@@ -78,7 +78,7 @@
 						</div>
 						<!-- End .col-lg-9 -->
 
-						<div class="col-lg-3 top-banners">
+						<div class="col-lg-3" id="top-banners">
 							<div class="row">
 								<div class="col-md-4 col-lg-12">
 									<div class="banner banner1 banner-md-vw-large banner-sm-vw-large mb-2">
@@ -115,8 +115,7 @@
 									<div class="banner banner3 banner-md-vw-large banner-sm-vw-large mb-2">
 										<figure>
 											<img src="/porto/assets/images/demoes/demo13/banners/banner-3.jpg"
-												style="background-color: #b8c1d0;" alt="banner" width="264" height="133"
-												style="object-position: left;">
+												style="background-color: #b8c1d0; object-position: left;" alt="banner" width="264" height="133">
 										</figure>
 										<div class="banner-layer banner-layer-middle">
 											<h3 class="m-b-2">Black Jackets</h3>
@@ -1743,7 +1742,55 @@
 @endsection
 
 @push('styles')
-    {{-- Ekstra CSS dosyaları buraya eklenebilir --}}
+    <style>
+        /* Bannerların görünürlüğü */
+        .home-top-container .row .col-lg-3#top-banners {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+        
+        /* .top-banners font stilleri */
+        #top-banners h4 {
+            font-size: 0.875em;
+            font-weight: 600;
+        }
+        #top-banners .banner-layer {
+            left: 8%;
+            right: 8%;
+        }
+        #top-banners a {
+            font-size: 0.75em;
+            font-weight: 700;
+            font-family: Poppins, sans-serif;
+        }
+        #top-banners .banner:hover {
+            box-shadow: 0 0 25px 0 rgba(0, 0, 0, 0.08);
+        }
+        #top-banners .banner h3 {
+            margin-top: -2px;
+        }
+        #top-banners .banner h4 {
+            margin-bottom: 2.6rem;
+        }
+        #top-banners .banner1 h3 {
+            font-size: 1.4em;
+        }
+        #top-banners .banner1 h4 {
+            font-size: 0.9375em;
+        }
+        #top-banners .banner2 h3 {
+            font-size: 1.125em;
+            letter-spacing: -0.035em;
+        }
+        #top-banners .banner3 h3 {
+            margin-top: 0;
+            font-size: 1.35em;
+        }
+        #top-banners .banner3 h4 {
+            margin-bottom: 2.5rem;
+        }
+    </style>
 @endpush
 
 @push('scripts')

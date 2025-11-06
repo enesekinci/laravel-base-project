@@ -460,5 +460,6 @@
 @endpush
 
 @push('scripts')
-    {{-- Ekstra JavaScript dosyaları buraya eklenebilir --}}
+    <script src="/porto/assets/js/optional/imagesloaded.pkgd.min.js"></script>
+    <script src="/porto/assets/js/optional/isotope.pkgd.min.js"></script>
 @endpush

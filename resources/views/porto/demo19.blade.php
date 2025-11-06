@@ -1825,5 +1825,24 @@
 @endpush
 
 @push('scripts')
-    {{-- Ekstra JavaScript dosyaları buraya eklenebilir --}}
+    <script src="/porto/assets/js/jquery.plugin.min.js"></script>
+    <script src="/porto/assets/js/jquery.countdown.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Bootstrap scrollspy'yi initialize et
+            // data-spy="scroll" zaten body'de var, sadece refresh et
+            $('body').scrollspy('refresh');
+            
+            // Smooth scroll için nav linklerine click event ekle
+            $('#category-list .nav-link').on('click', function(e) {
+                var target = $(this.getAttribute('href'));
+                if (target.length) {
+                    e.preventDefault();
+                    $('html, body').stop().animate({
+                        scrollTop: target.offset().top - 71
+                    }, 1000);
+                }
+            });
+        });
+    </script>
 @endpush
