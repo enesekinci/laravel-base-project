@@ -61,9 +61,7 @@ const statusLabels: Record<string, string> = {
 };
 
 export default function ProductsIndex({ products }: Props) {
-    const [deleteProductId, setDeleteProductId] = useState<number | null>(
-        null,
-    );
+    const [deleteProductId, setDeleteProductId] = useState<number | null>(null);
 
     const handleDelete = (productId: number) => {
         router.delete(destroy(productId).url, {

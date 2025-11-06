@@ -45,9 +45,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function AttributeSetsShow({
-    attributeSet,
-}: Props) {
+export default function AttributeSetsShow({ attributeSet }: Props) {
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
     const handleDelete = () => {
@@ -61,9 +59,7 @@ export default function AttributeSetsShow({
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head
-                title={`${attributeSet.name} - Özellik Seti Detayı`}
-            />
+            <Head title={`${attributeSet.name} - Özellik Seti Detayı`} />
 
             <div className="flex-1 space-y-6 p-6">
                 <div className="flex items-center justify-between">
@@ -138,9 +134,7 @@ export default function AttributeSetsShow({
                             <p className="text-sm font-medium text-muted-foreground">
                                 Özellik Seti Adı
                             </p>
-                            <p className="mt-1 text-lg">
-                                {attributeSet.name}
-                            </p>
+                            <p className="mt-1 text-lg">{attributeSet.name}</p>
                         </div>
                         {attributeSet.slug && (
                             <div>
@@ -164,9 +158,7 @@ export default function AttributeSetsShow({
                                             : 'secondary'
                                     }
                                 >
-                                    {attributeSet.is_active
-                                        ? 'Aktif'
-                                        : 'Pasif'}
+                                    {attributeSet.is_active ? 'Aktif' : 'Pasif'}
                                 </Badge>
                             </div>
                         </div>
@@ -194,4 +186,3 @@ export default function AttributeSetsShow({
         </AppLayout>
     );
 }
-

@@ -88,7 +88,9 @@ export default function TaxClassesShow({ taxClass }: Props) {
                             </DialogTrigger>
                             <DialogContent>
                                 <DialogHeader>
-                                    <DialogTitle>Vergi Sınıfını Sil</DialogTitle>
+                                    <DialogTitle>
+                                        Vergi Sınıfını Sil
+                                    </DialogTitle>
                                     <DialogDescription>
                                         Bu vergi sınıfını silmek istediğinizden
                                         emin misiniz? Bu işlem geri alınamaz.
@@ -162,4 +164,3 @@ export default function TaxClassesShow({ taxClass }: Props) {
         </AppLayout>
     );
 }
-

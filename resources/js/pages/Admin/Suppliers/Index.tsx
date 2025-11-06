@@ -149,9 +149,7 @@ export default function SuppliersIndex({ suppliers }: Props) {
                         <DropdownMenuContent align="end">
                             <DropdownMenuLabel>İşlemler</DropdownMenuLabel>
                             <DropdownMenuItem
-                                onClick={() =>
-                                    router.visit(show(supplier.id))
-                                }
+                                onClick={() => router.visit(show(supplier.id))}
                             >
                                 <Eye className="mr-2 h-4 w-4" />
                                 Görüntüle
@@ -167,9 +165,7 @@ export default function SuppliersIndex({ suppliers }: Props) {
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem
-                                onClick={() =>
-                                    setDeleteSupplierId(supplier.id)
-                                }
+                                onClick={() => setDeleteSupplierId(supplier.id)}
                                 className="text-destructive"
                             >
                                 <Trash2 className="mr-2 h-4 w-4" />
@@ -231,8 +227,8 @@ export default function SuppliersIndex({ suppliers }: Props) {
                         <DialogHeader>
                             <DialogTitle>Tedarikçiyi Sil</DialogTitle>
                             <DialogDescription>
-                                Bu tedarikçiyi silmek istediğinizden emin misiniz?
-                                Bu işlem geri alınamaz.
+                                Bu tedarikçiyi silmek istediğinizden emin
+                                misiniz? Bu işlem geri alınamaz.
                             </DialogDescription>
                         </DialogHeader>
                         <DialogFooter>

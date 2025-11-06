@@ -115,7 +115,9 @@ export default function TaxClassesEdit({ taxClass }: Props) {
                             <div className="flex items-center space-x-2">
                                 <Checkbox
                                     id="is_active"
-                                    checked={data.is_active ?? taxClass.is_active}
+                                    checked={
+                                        data.is_active ?? taxClass.is_active
+                                    }
                                     onCheckedChange={(checked) =>
                                         setData('is_active', checked === true)
                                     }
@@ -140,4 +142,3 @@ export default function TaxClassesEdit({ taxClass }: Props) {
         </AppLayout>
     );
 }
-

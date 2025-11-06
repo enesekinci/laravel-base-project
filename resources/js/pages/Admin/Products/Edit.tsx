@@ -237,7 +237,9 @@ export default function ProductsEdit({ product }: Props) {
                             <div className="flex items-center space-x-2">
                                 <Checkbox
                                     id="is_virtual"
-                                    checked={data.is_virtual ?? product.is_virtual}
+                                    checked={
+                                        data.is_virtual ?? product.is_virtual
+                                    }
                                     onCheckedChange={(checked) =>
                                         setData('is_virtual', checked === true)
                                     }
@@ -262,4 +264,3 @@ export default function ProductsEdit({ product }: Props) {
         </AppLayout>
     );
 }
-

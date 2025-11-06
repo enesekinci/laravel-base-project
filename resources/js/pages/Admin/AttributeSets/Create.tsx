@@ -166,9 +166,7 @@ export default function AttributeSetsCreate() {
                                     </Button>
                                 </Link>
                                 <Button type="submit" disabled={processing}>
-                                    {processing
-                                        ? 'Kaydediliyor...'
-                                        : 'Kaydet'}
+                                    {processing ? 'Kaydediliyor...' : 'Kaydet'}
                                 </Button>
                             </div>
                         </form>
@@ -178,4 +176,3 @@ export default function AttributeSetsCreate() {
         </AppLayout>
     );
 }
-

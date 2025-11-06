@@ -48,9 +48,7 @@ interface Props {
     attributeSets: PaginatedResponse<AttributeSet>;
 }
 
-export default function AttributeSetsIndex({
-    attributeSets,
-}: Props) {
+export default function AttributeSetsIndex({ attributeSets }: Props) {
     const [deleteAttributeSetId, setDeleteAttributeSetId] = useState<
         number | null
     >(null);
@@ -64,9 +62,13 @@ export default function AttributeSetsIndex({
     };
 
     const handlePageChange = (page: number) => {
-        router.get('/admin/attribute-sets', { page }, {
-            preserveState: true,
-        });
+        router.get(
+            '/admin/attribute-sets',
+            { page },
+            {
+                preserveState: true,
+            },
+        );
     };
 
     const columns: ColumnDef<AttributeSet>[] = [

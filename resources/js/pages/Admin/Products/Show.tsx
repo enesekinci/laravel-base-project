@@ -220,9 +220,7 @@ export default function ProductsShow({ product }: Props) {
                                 <p className="text-sm font-medium text-muted-foreground">
                                     Vergi Sınıfı
                                 </p>
-                                <p className="mt-1">
-                                    {product.taxClass.name}
-                                </p>
+                                <p className="mt-1">{product.taxClass.name}</p>
                             </div>
                         )}
                         {product.categories &&
@@ -233,7 +231,10 @@ export default function ProductsShow({ product }: Props) {
                                     </p>
                                     <div className="mt-1 flex flex-wrap gap-2">
                                         {product.categories.map((category) => (
-                                            <Badge key={category.id} variant="outline">
+                                            <Badge
+                                                key={category.id}
+                                                variant="outline"
+                                            >
                                                 {category.name}
                                             </Badge>
                                         ))}
@@ -260,4 +261,3 @@ export default function ProductsShow({ product }: Props) {
         </AppLayout>
     );
 }
-

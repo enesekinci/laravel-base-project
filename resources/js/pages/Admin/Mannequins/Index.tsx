@@ -128,9 +128,7 @@ export default function MannequinsIndex({ mannequins }: Props) {
                         <DropdownMenuContent align="end">
                             <DropdownMenuLabel>İşlemler</DropdownMenuLabel>
                             <DropdownMenuItem
-                                onClick={() =>
-                                    router.visit(show(mannequin.id))
-                                }
+                                onClick={() => router.visit(show(mannequin.id))}
                             >
                                 <Eye className="mr-2 h-4 w-4" />
                                 Görüntüle

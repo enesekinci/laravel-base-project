@@ -37,9 +37,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function AttributeSetsEdit({
-    attributeSet,
-}: Props) {
+export default function AttributeSetsEdit({ attributeSet }: Props) {
     const { data, setData, put, processing, errors } = useForm({
         name: attributeSet.name,
         slug: attributeSet.slug || '',
@@ -193,4 +191,3 @@ export default function AttributeSetsEdit({
         </AppLayout>
     );
 }
-
