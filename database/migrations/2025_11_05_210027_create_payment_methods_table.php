@@ -11,21 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('product_media', function (Blueprint $table) {
+        Schema::create('payment_methods', function (Blueprint $table) {
             $table->id();
-
-            $table->unsignedBigInteger('product_id');
-
-            $table->enum('type', ['image', 'video'])->default('image');
-            $table->string('path');
-            $table->string('alt')->nullable();
+            $table->string('name');
+            $table->string('code')->unique();
+            $table->text('description')->nullable();
+            $table->json('config')->nullable(); // API keys, credentials, vb.
+            $table->boolean('is_active')->default(true);
             $table->integer('sort_order')->default(0);
             $table->timestamps();
+            $table->softDeletes();
 
-            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
-
-            $table->index('product_id');
-            $table->index('type');
+            $table->index('code');
+            $table->index('is_active');
             $table->index('sort_order');
         });
     }
@@ -35,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('product_media');
+        Schema::dropIfExists('payment_methods');
     }
 };

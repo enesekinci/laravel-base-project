@@ -11,21 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('product_media', function (Blueprint $table) {
+        Schema::create('sliders', function (Blueprint $table) {
             $table->id();
-
-            $table->unsignedBigInteger('product_id');
-
-            $table->enum('type', ['image', 'video'])->default('image');
-            $table->string('path');
-            $table->string('alt')->nullable();
+            $table->string('title');
+            $table->text('description')->nullable();
+            $table->string('image');
+            $table->string('link')->nullable();
             $table->integer('sort_order')->default(0);
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
+            $table->softDeletes();
 
-            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
-
-            $table->index('product_id');
-            $table->index('type');
+            $table->index('is_active');
             $table->index('sort_order');
         });
     }
@@ -35,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('product_media');
+        Schema::dropIfExists('sliders');
     }
 };
