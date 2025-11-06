@@ -1,28 +1,30 @@
 <footer class="footer font2">
-
                                 <div class="footer-top appear-animate" data-animation-name="fadeInUpShorter" data-animation-delay="200">
-                                    <div class="widget-newsletter d-flex align-items-center align-items-sm-start flex-column flex-xl-row  justify-content-xl-between">
-                                        <div class="widget-newsletter-info text-center text-sm-left d-flex flex-column flex-sm-row align-items-center mb-1 mb-xl-0">
-                                            <i class="icon-envolope"></i>
-                                            <div class="widget-info-content">
-                                                <h5 class="widget-newsletter-title mb-0">
-                                                    Subscribe To Our Newsletter</h5>
-                                                <p class="widget-newsletter-content mb-0">Get all the latest information on Events, Sales and Offers.
-                                                </p>
+                                    <div class="container">
+                                        <div class="widget-newsletter d-flex align-items-center align-items-sm-start flex-column flex-xl-row  justify-content-xl-between">
+                                            <div class="widget-newsletter-info text-center text-sm-left d-flex flex-column flex-sm-row align-items-center mb-1 mb-xl-0">
+                                                <i class="icon-envolope"></i>
+                                                <div class="widget-info-content">
+                                                    <h5 class="widget-newsletter-title mb-0">
+                                                        Subscribe To Our Newsletter</h5>
+                                                    <p class="widget-newsletter-content mb-0">Get all the latest information on Events, Sales and Offers.
+                                                    </p>
+                                                </div>
                                             </div>
+                                            <form action="#" class="mb-0 w-lg-max mt-2 mt-md-0">
+                                                <div class="footer-submit-wrapper d-flex align-items-center">
+                                                    <input type="email" class="form-control mb-0" placeholder="Your E-mail Address" size="40" required>
+                                                    <button type="submit" class="btn btn-primary btn-sm text-transform-none">Subscribe
+                                                        Now!</button>
+                                                </div>
+                                            </form>
                                         </div>
-                                        <form action="#" class="mb-0 w-lg-max mt-2 mt-md-0">
-                                            <div class="footer-submit-wrapper d-flex align-items-center">
-                                                <input type="email" class="form-control mb-0" placeholder="Your E-mail Address" size="40" required>
-                                                <button type="submit" class="btn btn-primary btn-sm text-transform-none">Subscribe
-                                                    Now!</button>
-                                            </div>
-                                        </form>
                                     </div>
                                 </div>
 
                                 <div class="footer-middle">
-                                    <div class="row">
+                                    <div class="container">
+                                        <div class="row">
                                         <div class="col-md-6 col-lg-3">
                                             <div class="widget">
                                                 <h3 class="widget-title">Customer Services</h3>
@@ -79,21 +81,23 @@
                                         </div>
                                     </div>
                                 </div>
+                                </div>
                                 <div class="footer-bottom d-sm-flex align-items-center">
-                                    <div class="footer-left">
-                                        <span class="footer-copyright">Porto eCommerce. © 2021. All Rights
-                                            Reserved</span>
-                                    </div>
+                                    <div class="container">
+                                        <div class="footer-left">
+                                            <span class="footer-copyright">Porto eCommerce. © 2021. All Rights
+                                                Reserved</span>
+                                        </div>
 
-                                    <div class="footer-right ml-auto mt-1 mt-sm-0">
-                                        <div class="payment-icons mr-0">
-                                            <span class="payment-icon visa" style="background-image: url(/porto/assets/images/payments/payment-visa.svg)"></span>
-                                            <span class="payment-icon paypal" style="background-image: url(/porto/assets/images/payments/payment-paypal.svg)"></span>
-                                            <span class="payment-icon stripe" style="background-image: url(/porto/assets/images/payments/payment-stripe.png)"></span>
-                                            <span class="payment-icon verisign" style="background-image:  url(/porto/assets/images/payments/payment-verisign.svg)"></span>
+                                        <div class="footer-right ml-auto mt-1 mt-sm-0">
+                                            <div class="payment-icons mr-0">
+                                                <span class="payment-icon visa" style="background-image: url(/porto/assets/images/payments/payment-visa.svg)"></span>
+                                                <span class="payment-icon paypal" style="background-image: url(/porto/assets/images/payments/payment-paypal.svg)"></span>
+                                                <span class="payment-icon stripe" style="background-image: url(/porto/assets/images/payments/payment-stripe.png)"></span>
+                                                <span class="payment-icon verisign" style="background-image:  url(/porto/assets/images/payments/payment-verisign.svg)"></span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                                 <!-- End .footer-bottom -->
-                            
 </footer>

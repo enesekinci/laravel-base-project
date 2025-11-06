@@ -220,13 +220,23 @@
                 </div>
                 <!-- End .header-left -->
 
-                <div class="header-right w-lg-max">
-                    <div class="header-search header-search-inline header-search-category w-lg-max">
-                        <a href="#" class="search-toggle" role="button"><i class="icon-search-3"></i></a>
+                <div class="header-right">
+                    <a href="/porto/login.html" class="header-icon header-icon-user"><i class="icon-user-2"></i></a>
+
+                    <a href="#" class="header-icon position-relative header-wishlist">
+                        <i class="icon-wishlist-2"></i>
+                        <span class="cart-count badge-circle bg-secondary">0</span>
+                    </a>
+
+                    <div class="header-search header-search-popup header-search-category d-none d-sm-block">
+                        <a href="#" class="search-toggle header-icon" role="button">
+                            <i class="icon-search-3"></i>
+                        </a>
+
                         <form action="#" method="get">
                             <div class="header-search-wrapper">
-                                <input type="search" class="form-control" name="q" id="q" placeholder="Search..." required>
-                                <div class="select-custom">
+                                <input type="search" class="form-control bg-white" name="q" id="q" placeholder="Search..." required="">
+                                <div class="select-custom bg-white">
                                     <select id="cat" name="cat">
                                         <option value="">All Categories</option>
                                         <option value="4">Fashion</option>
@@ -248,15 +258,13 @@
                                     </select>
                                 </div>
                                 <!-- End .select-custom -->
-                                <button class="btn icon-magnifier" type="submit"></button>
+                                <button class="btn icon-search-3 bg-white" type="submit"></button>
                             </div>
                             <!-- End .header-search-wrapper -->
                         </form>
                     </div>
                     <!-- End .header-search -->
 
-                    <a href="/porto/login.html" class="header-icon header-icon-user"><i class="icon-user-2"></i></a>
-                    <a href="/porto/wishlist.html" class="header-icon"><i class="icon-wishlist-2"></i></a>
                     <div class="dropdown cart-dropdown">
                         <a href="#" title="Cart" class="dropdown-toggle dropdown-arrow cart-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
                             <i class="minicart-icon"></i>
