@@ -14,11 +14,9 @@ return new class extends Migration
         Schema::create('product_variations', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('product_id');
-            $table->unsignedBigInteger('variation_template_id')->nullable();
             $table->string('name');
             $table->string('sku')->unique()->nullable();
             $table->decimal('price', 10, 2)->default(0);
-            $table->decimal('compare_price', 10, 2)->nullable();
             $table->integer('stock')->default(0);
             $table->string('barcode')->nullable();
             $table->string('image')->nullable();
@@ -30,11 +28,6 @@ return new class extends Migration
                 ->references('id')
                 ->on('products')
                 ->onDelete('cascade');
-
-            $table->foreign('variation_template_id')
-                ->references('id')
-                ->on('variation_templates')
-                ->onDelete('set null');
 
             $table->index('product_id');
             $table->index('sku');

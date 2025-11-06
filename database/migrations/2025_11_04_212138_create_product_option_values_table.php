@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('label');
             $table->string('value')->nullable();
             $table->decimal('price_adjustment', 10, 2)->default(0);
+            $table->string('price_type')->default('fixed'); // fixed, percentage
             $table->integer('sort_order')->default(0);
             $table->timestamps();
 
