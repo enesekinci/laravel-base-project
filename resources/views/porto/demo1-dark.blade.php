@@ -1,7 +1,11 @@
 @extends('layouts.porto')
 
+@section('top-notice')
+    @include('components.porto.top-notice')
+@endsection
+
 @section('header')
-    @include('components.porto.header')
+    @include('components.porto.demo1.header')
 @endsection
 
 @section('content')

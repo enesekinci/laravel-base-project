@@ -1,7 +1,11 @@
 @extends('layouts.porto')
 
 @section('header')
-    @include('components.porto.header')
+    @include('components.porto.header-demo4')
+@endsection
+
+@section('footer')
+    @include('components.porto.footer-demo4')
 @endsection
 
 @section('content')
@@ -256,6 +260,10 @@
 			</div>
 
 			<div class="mb-8"></div>
+@section('footer')
+    @include('components.porto.footer-demo4')
+@endsection
+
 @endsection
 
 @push('styles')

@@ -1,0 +1,964 @@
+@extends('layouts.porto')
+
+@section('footer')
+    @include('components.porto.demo10.footer')
+@endsection
+
+
+@section('header')
+    @include('components.porto.demo10.header')
+@endsection
+
+@section('content')
+<section class="section-1">
+                <h2 class="d-none">Home Slider</h2>
+
+                <div class="home-slider slide-animate owl-carousel owl-theme show-nav-hover" data-owl-options="{
+						'loop': false,
+						'navText': [ '<i class=icon-left-open-big>', '<i class=icon-right-open-big>' ]
+					}">
+
+                    <div class="banner">
+                        <img src="/porto/assets/images/demoes/demo10/slider/slide-1.jpg" width="1620" height="980" style="background-color: #eee;" alt="slider-one">
+
+                        <div class="banner-layer banner-layer-middle">
+                            <h6 class=" appear-animate" data-animation-name="fadeInRightShorter" data-animation-delay="200">NEW ARRIVALS!</h6>
+                            <img src="/porto/assets/images/demoes/demo10/banners/banner-text-1.png" class="w-auto appear-animate" data-animation-name="fadeInRightShorter" data-animation-delay="450" width="503" height="113" alt="banner-text">
+                            <h3 class=" appear-animate" data-animation-name="fadeInRightShorter" data-animation-delay="700">70% OFF</h3>
+                            <a href="/porto/demo10-shop.html" class="btn btn-xl appear-animate" data-animation-name="fadeInRightShorter" data-animation-delay="950" role="button">Shop
+								Now<i class="fas fa-chevron-right"></i></a>
+                        </div>
+                        <!-- End .banner-layer.banner-layer-middle -->
+                    </div>
+                    <!-- End .banner -->
+
+                    <div class="banner text-right">
+                        <img src="/porto/assets/images/demoes/demo10/slider/slide-2.jpg" width="1620" height="980" style="background-color: #eee;" alt="slider-two">
+
+                        <div class="banner-layer banner-layer-middle content-right">
+                            <h6 class=" appear-animate" data-animation-name="fadeInLeftShorter" data-animation-delay="200">NEW ARRIVALS!</h6>
+                            <img src="/porto/assets/images/demoes/demo10/banners/banner-text-2.png" class="w-auto ml-auto appear-animate" data-animation-name="fadeInLeftShorter" data-animation-delay="450" width="503" height="113" alt="banner-text">
+                            <h3 class=" appear-animate" data-animation-name="fadeInLeftShorter" data-animation-delay="700">50% OFF</h3>
+                            <a href="/porto/demo10-shop.html" class="btn btn-xl appear-animate" data-animation-name="fadeInLeftShorter" data-animation-delay="950" role="button">Shop
+								Now<i class="fas fa-chevron-right"></i></a>
+                        </div>
+                        <!-- End .banner-layer.banner-layer-middle -->
+                    </div>
+                </div>
+            </section>
+            <!-- End .section-1 -->
+
+            <section class="section-2 featured-collection mt-5 appear-animate" data-animation-name="fadeIn" data-animation-delay="100">
+                <div class="container">
+                    <h2 class="section-title">Featured Products</h2>
+
+                    <div class="products-grid grid">
+                        <div class="product-default grid-item inner-quickview inner-icon inner-icon-inline overlay-dark grid-height-2 col-xl-5 col-lg-6 col-md-6">
+                            <figure>
+                                <a href="/porto/demo10-product.html">
+                                    <img src="/porto/assets/images/demoes/demo10/products/grid/product-1.jpg" class="h-100" alt="desc" height="720" width="720">
+                                </a>
+
+                                <div class="btn-icon-group">
+                                    <a href="#" class="btn-icon btn-icon-wish"><i class="icon-wishlist-2"></i></a>
+                                    <a href="#" class="btn-icon btn-add-cart product-type-simple"><i
+											class="icon-shopping-cart"></i></a>
+                                </div>
+                                <a href="/porto/ajax/product-quick-view.html" class="btn-quickview" title="Quick View">Quick
+									View</a>
+                            </figure>
+                            <div class="product-details">
+                                <div class="category-wrap">
+                                    <div class="category-list">
+                                        <a href="/porto/demo10-shop.html" class="product-category">Women</a>
+                                    </div>
+                                </div>
+                                <h3 class="product-title"> <a href="/porto/demo10-product.html">Woman Blouse</a> </h3>
+                                <div class="ratings-container">
+                                    <div class="product-ratings">
+                                        <span class="ratings" style="width:0%"></span>
+                                        <!-- End .ratings -->
+                                        <span class="tooltiptext tooltip-top"></span>
+                                    </div>
+                                    <!-- End .product-ratings -->
+                                </div>
+                                <!-- End .product-container -->
+                                <div class="price-box">
+                                    <span class="product-price">$88.00</span>
+                                </div>
+                                <!-- End .price-box -->
+                            </div>
+                            <!-- End .product-details -->
+                        </div>
+
+                        <div class="product-default grid-item inner-quickview inner-icon inner-icon-inline overlay-dark grid-height-2 col-xl-3 col-lg-6 col-sm-6">
+                            <figure>
+                                <a href="/porto/demo10-product.html">
+                                    <img src="/porto/assets/images/demoes/demo10/products/grid/product-2.jpg" class="h-100" height="490" width="366" alt="desc">
+                                </a>
+
+                                <div class="btn-icon-group">
+                                    <a href="#" class="btn-icon btn-icon-wish"><i class="icon-wishlist-2"></i></a>
+                                    <a href="#" class="btn-icon btn-add-cart product-type-simple"><i
+											class="icon-shopping-cart"></i></a>
+                                </div>
+                                <a href="/porto/ajax/product-quick-view.html" class="btn-quickview" title="Quick View">Quick
+									View</a>
+                            </figure>
+                            <div class="product-details">
+                                <div class="category-wrap">
+                                    <div class="category-list">
+                                        <a href="/porto/demo10-shop.html" class="product-category">Women</a>
+                                    </div>
+                                </div>
+                                <h3 class="product-title"> <a href="/porto/demo10-product.html">Men Cloths</a> </h3>
+                                <div class="ratings-container">
+                                    <div class="product-ratings">
+                                        <span class="ratings" style="width:0%"></span>
+                                        <!-- End .ratings -->
+                                        <span class="tooltiptext tooltip-top"></span>
+                                    </div>
+                                    <!-- End .product-ratings -->
+                                </div>
+                                <!-- End .product-container -->
+                                <div class="price-box">
+                                    <span class="product-price">$199.00</span>
+                                </div>
+                                <!-- End .price-box -->
+                            </div>
+                            <!-- End .product-details -->
+                        </div>
+
+                        <div class="product-default grid-item inner-quickview inner-icon inner-icon-inline overlay-dark grid-height-1 col-xl-2 col-md-3 col-sm-6">
+                            <figure>
+                                <a href="/porto/demo10-product.html">
+                                    <img src="/porto/assets/images/demoes/demo10/products/grid/product-3.jpg" class="h-100" alt="desc" width="231" height="231">
+                                </a>
+
+                                <div class="btn-icon-group">
+                                    <a href="#" class="btn-icon btn-icon-wish"><i class="icon-wishlist-2"></i></a>
+                                    <a href="#" class="btn-icon btn-add-cart product-type-simple"><i
+											class="icon-shopping-cart"></i></a>
+                                </div>
+                                <a href="/porto/ajax/product-quick-view.html" class="btn-quickview" title="Quick View">Quick
+									View</a>
+                            </figure>
+                            <div class="product-details">
+                                <div class="category-wrap">
+                                    <div class="category-list">
+                                        <a href="/porto/demo10-shop.html" class="product-category">Women</a>
+                                    </div>
+                                </div>
+                                <h3 class="product-title"> <a href="/porto/demo10-product.html">Man Belt</a> </h3>
+                                <div class="ratings-container">
+                                    <div class="product-ratings">
+                                        <span class="ratings" style="width:0%"></span>
+                                        <!-- End .ratings -->
+                                        <span class="tooltiptext tooltip-top"></span>
+                                    </div>
+                                    <!-- End .product-ratings -->
+                                </div>
+                                <!-- End .product-container -->
+                                <div class="price-box">
+                                    <span class="product-price">$48.00</span>
+                                </div>
+                                <!-- End .price-box -->
+                            </div>
+                            <!-- End .product-details -->
+                        </div>
+
+                        <div class="product-default grid-item inner-quickview inner-icon inner-icon-inline overlay-dark grid-height-1 col-xl-2 col-md-3 col-sm-6">
+                            <figure>
+                                <a href="/porto/demo10-product.html">
+                                    <img src="/porto/assets/images/demoes/demo10/products/grid/product-4.jpg" class="h-100" alt="desc" width="231" height="231">
+                                </a>
+
+                                <div class="btn-icon-group">
+                                    <a href="#" class="btn-icon btn-icon-wish"><i class="icon-wishlist-2"></i></a>
+                                    <a href="#" class="btn-icon btn-add-cart product-type-simple"><i
+											class="icon-shopping-cart"></i></a>
+                                </div>
+                                <a href="/porto/ajax/product-quick-view.html" class="btn-quickview" title="Quick View">Quick
+									View</a>
+                            </figure>
+                            <div class="product-details">
+                                <div class="category-wrap">
+                                    <div class="category-list">
+                                        <a href="/porto/demo10-shop.html" class="product-category">Women</a>
+                                    </div>
+                                </div>
+                                <h3 class="product-title"> <a href="/porto/demo10-product.html">Double Belt</a> </h3>
+                                <div class="ratings-container">
+                                    <div class="product-ratings">
+                                        <span class="ratings" style="width:0%"></span>
+                                        <!-- End .ratings -->
+                                        <span class="tooltiptext tooltip-top"></span>
+                                    </div>
+                                    <!-- End .product-ratings -->
+                                </div>
+                                <!-- End .product-container -->
+                                <div class="price-box">
+                                    <span class="product-price">$48.00</span>
+                                </div>
+                                <!-- End .price-box -->
+                            </div>
+                            <!-- End .product-details -->
+                        </div>
+
+                        <div class="product-default grid-item inner-quickview inner-icon inner-icon-inline overlay-dark grid-height-1 col-xl-2 col-md-3 col-sm-6">
+                            <figure>
+                                <a href="/porto/demo10-product.html">
+                                    <img src="/porto/assets/images/demoes/demo10/products/grid/product-5.jpg" class="h-100" alt="desc" width="231" height="231">
+                                </a>
+
+                                <div class="btn-icon-group">
+                                    <a href="#" class="btn-icon btn-icon-wish"><i class="icon-wishlist-2"></i></a>
+                                    <a href="#" class="btn-icon btn-add-cart product-type-simple"><i
+											class="icon-shopping-cart"></i></a>
+                                </div>
+                                <a href="/porto/ajax/product-quick-view.html" class="btn-quickview" title="Quick View">Quick
+									View</a>
+                            </figure>
+                            <div class="product-details">
+                                <div class="category-wrap">
+                                    <div class="category-list">
+                                        <a href="/porto/demo10-shop.html" class="product-category">Women</a>
+                                    </div>
+                                </div>
+                                <h3 class="product-title"> <a href="/porto/demo10-product.html">Woman Bag</a> </h3>
+                                <div class="ratings-container">
+                                    <div class="product-ratings">
+                                        <span class="ratings" style="width:0%"></span>
+                                        <!-- End .ratings -->
+                                        <span class="tooltiptext tooltip-top"></span>
+                                    </div>
+                                    <!-- End .product-ratings -->
+                                </div>
+                                <!-- End .product-container -->
+                                <div class="price-box">
+                                    <span class="product-price">$48.00</span>
+                                </div>
+                                <!-- End .price-box -->
+                            </div>
+                            <!-- End .product-details -->
+                        </div>
+
+                        <div class="product-default grid-item inner-quickview inner-icon inner-icon-inline overlay-dark grid-height-1 col-xl-2 col-md-3 col-sm-6">
+                            <figure>
+                                <a href="/porto/demo10-product.html">
+                                    <img src="/porto/assets/images/demoes/demo10/products/home/product-6.jpg" class="h-100" alt="desc" width="231" height="231">
+                                </a>
+
+                                <div class="btn-icon-group">
+                                    <a href="#" class="btn-icon btn-icon-wish"><i class="icon-wishlist-2"></i></a>
+                                    <a href="#" class="btn-icon btn-add-cart product-type-simple"><i
+											class="icon-shopping-cart"></i></a>
+                                </div>
+                                <a href="/porto/ajax/product-quick-view.html" class="btn-quickview" title="Quick View">Quick
+									View</a>
+                            </figure>
+                            <div class="product-details">
+                                <div class="category-wrap">
+                                    <div class="category-list">
+                                        <a href="/porto/demo10-shop.html" class="product-category">Women</a>
+                                    </div>
+                                </div>
+                                <h3 class="product-title"> <a href="/porto/demo10-product.html">Man Shoes</a> </h3>
+                                <div class="ratings-container">
+                                    <div class="product-ratings">
+                                        <span class="ratings" style="width:0%"></span>
+                                        <!-- End .ratings -->
+                                        <span class="tooltiptext tooltip-top"></span>
+                                    </div>
+                                    <!-- End .product-ratings -->
+                                </div>
+                                <!-- End .product-container -->
+                                <div class="price-box">
+                                    <span class="product-price">$416.00</span>
+                                </div>
+                                <!-- End .price-box -->
+                            </div>
+                            <!-- End .product-details -->
+                        </div>
+
+                        <div class="grid-col-sizer col-1"></div>
+                    </div>
+                </div>
+            </section>
+            <!-- End .section-2 -->
+
+            <section class="section-3 product-collection appear-animate" data-animation-name="fadeIn" data-animation-delay="100">
+                <div class="container">
+                    <h2 class="section-title">JUST ARRIVED</h2>
+
+                    <div class="products-slider owl-carousel owl-theme dots-top" data-owl-options="{
+							'dots': false,
+							'responsive': {
+								'0': {
+									'items': 2
+								},
+								'576': {
+									'items': 4
+								},
+								'768': {
+									'items': 4
+								},
+								'991': {
+									'items': 4
+								},
+								'1200': {
+									'items': 5
+								},
+								'1500': {
+									'items': 6
+								}
+							}
+						}">
+                        <div class="product-default inner-quickview inner-icon">
+                            <figure>
+                                <a href="/porto/demo10-product.html">
+                                    <img src="/porto/assets/images/demoes/demo10/products/home/product-1.jpg" alt="product" width="400" height="400" />
+                                </a>
+
+                                <div class="btn-icon-group">
+                                    <a href="#" class="btn-icon btn-add-cart product-type-simple"><i
+											class="icon-shopping-cart"></i></a>
+                                </div>
+
+                                <a href="/porto/ajax/product-quick-view.html" class="btn-quickview" title="Quick View">Quick
+									View</a>
+                            </figure>
+
+                            <div class="product-details">
+                                <div class="category-wrap">
+                                    <div class="category-list">
+                                        <a href="/porto/demo10-shop.html" class="product-category">DRESS</a>,
+                                        <a href="/porto/demo10-shop.html" class="product-category">T-SHIRTS</a>
+                                    </div>
+
+                                    <a href="/porto/wishlist.html" title="Wishlist" class="btn-icon-wish"><i
+											class="icon-heart"></i></a>
+                                </div>
+
+                                <h3 class="product-title"> <a href="/porto/demo10-product.html">Lucky Emmie Ballet Flat</a>
+                                </h3>
+
+                                <div class="ratings-container">
+                                    <div class="product-ratings">
+                                        <span class="ratings" style="width:0%"></span>
+                                        <!-- End .ratings -->
+                                        <span class="tooltiptext tooltip-top"></span>
+                                    </div>
+                                    <!-- End .product-ratings -->
+                                </div>
+                                <!-- End .product-container -->
+
+                                <div class="price-box">
+                                    <span class="product-price">$55.00</span>
+                                </div>
+                                <!-- End .price-box -->
+                            </div>
+                            <!-- End .product-details -->
+                        </div>
+                        <!-- End .product-default -->
+
+                        <div class="product-default inner-quickview inner-icon">
+                            <figure>
+                                <a href="/porto/demo10-product.html">
+                                    <img src="/porto/assets/images/demoes/demo10/products/home/product-2.jpg" alt="product" width="400" height="400" />
+                                    <img src="/porto/assets/images/demoes/demo10/products/home/product-2-2.jpg" alt="product" width="400" height="400" />
+                                </a>
+
+                                <div class="btn-icon-group">
+                                    <a href="/porto/demo10-product.html" class="btn-icon btn-add-cart product-type-simple"><i
+											class="icon-shopping-cart"></i>
+									</a>
+                                </div>
+
+                                <a href="/porto/ajax/product-quick-view.html" class="btn-quickview" title="Quick View">Quick
+									View</a>
+                            </figure>
+
+                            <div class="product-details">
+                                <div class="category-wrap">
+                                    <div class="category-list">
+                                        <a href="/porto/demo10-shop.html" class="product-category">TOYS</a>,
+                                        <a href="/porto/demo10-shop.html" class="product-category">WATCHES</a>
+                                    </div>
+
+                                    <a href="/porto/wishlist.html" title="Wishlist" class="btn-icon-wish"><i
+											class="icon-heart"></i></a>
+                                </div>
+
+                                <h3 class="product-title"> <a href="/porto/demo10-product.html">Silver Porto Headset</a> </h3>
+
+                                <div class="ratings-container">
+                                    <div class="product-ratings">
+                                        <span class="ratings" style="width:0%"></span>
+                                        <!-- End .ratings -->
+                                        <span class="tooltiptext tooltip-top"></span>
+                                    </div>
+                                    <!-- End .product-ratings -->
+                                </div>
+                                <!-- End .product-container -->
+
+                                <div class="price-box">
+                                    <span class="product-price">$149.00</span>
+                                </div>
+                                <!-- End .price-box -->
+                            </div>
+                            <!-- End .product-details -->
+                        </div>
+                        <!-- End .product-default -->
+
+                        <div class="product-default inner-quickview inner-icon">
+                            <figure>
+                                <a href="/porto/demo10-product.html">
+                                    <img src="/porto/assets/images/demoes/demo10/products/home/product-3.jpg" alt="product" width="400" height="400" />
+                                </a>
+
+                                <div class="btn-icon-group">
+                                    <a href="#" class="btn-icon btn-add-cart product-type-simple"><i
+											class="icon-shopping-cart"></i></a>
+                                </div>
+
+                                <div class="label-group">
+                                    <span class="product-label label-hot">HOT</span>
+                                </div>
+
+                                <a href="/porto/ajax/product-quick-view.html" class="btn-quickview" title="Quick View">Quick
+									View</a>
+                            </figure>
+
+                            <div class="product-details">
+                                <div class="category-wrap">
+                                    <div class="category-list">
+                                        <a href="/porto/demo10-shop.html" class="product-category">DRESS</a>,
+                                        <a href="/porto/demo10-shop.html" class="product-category">T-SHIRTS</a>
+                                    </div>
+
+                                    <a href="/porto/wishlist.html" title="Wishlist" class="btn-icon-wish"><i
+											class="icon-heart"></i></a>
+                                </div>
+
+                                <h3 class="product-title"> <a href="/porto/demo10-product.html">Black Watch</a> </h3>
+
+                                <div class="ratings-container">
+                                    <div class="product-ratings">
+                                        <span class="ratings" style="width:0%"></span>
+                                        <!-- End .ratings -->
+                                        <span class="tooltiptext tooltip-top"></span>
+                                    </div>
+                                    <!-- End .product-ratings -->
+                                </div>
+                                <!-- End .product-container -->
+
+                                <div class="price-box">
+                                    <span class="product-price">$89.00</span>
+                                </div>
+                                <!-- End .price-box -->
+                            </div>
+                            <!-- End .product-details -->
+                        </div>
+                        <!-- End .product-default -->
+
+                        <div class="product-default inner-quickview inner-icon">
+                            <figure>
+                                <a href="/porto/demo10-product.html">
+                                    <img src="/porto/assets/images/demoes/demo10/products/home/product-4.jpg" alt="product" width="400" height="400" />
+                                    <img src="/porto/assets/images/demoes/demo10/products/home/product-4-2.jpg" alt="product" width="400" height="400" />
+                                </a>
+
+                                <div class="btn-icon-group">
+                                    <a href="/porto/demo10-product.html" class="btn-icon btn-add-cart product-type-simple"><i
+											class="icon-shopping-cart"></i>
+									</a>
+                                </div>
+
+                                <div class="label-group">
+                                    <span class="product-label label-hot">HOT</span>
+                                </div>
+
+                                <a href="/porto/ajax/product-quick-view.html" class="btn-quickview" title="Quick View">Quick
+									View</a>
+                            </figure>
+
+                            <div class="product-details">
+                                <div class="category-wrap">
+                                    <div class="category-list">
+                                        <a href="/porto/demo10-shop.html" class="product-category">DRESS</a>,
+                                        <a href="/porto/demo10-shop.html" class="product-category">WATCHES</a>
+                                    </div>
+
+                                    <a href="/porto/wishlist.html" title="Wishlist" class="btn-icon-wish"><i
+											class="icon-heart"></i></a>
+                                </div>
+
+                                <h3 class="product-title"> <a href="/porto/demo10-product.html">Porto Black Shoes</a> </h3>
+
+                                <div class="ratings-container">
+                                    <div class="product-ratings">
+                                        <span class="ratings" style="width:0%"></span>
+                                        <!-- End .ratings -->
+                                        <span class="tooltiptext tooltip-top"></span>
+                                    </div>
+                                    <!-- End .product-ratings -->
+                                </div>
+                                <!-- End .product-container -->
+
+                                <div class="price-box">
+                                    <span class="product-price">$101.00 - $108.00</span>
+                                </div>
+                                <!-- End .price-box -->
+                            </div>
+                            <!-- End .product-details -->
+                        </div>
+                        <!-- End .product-default -->
+
+                        <div class="product-default inner-quickview inner-icon">
+                            <figure>
+                                <a href="/porto/demo10-product.html">
+                                    <img src="/porto/assets/images/demoes/demo10/products/home/product-5.jpg" alt="product" width="400" height="400" />
+                                    <img src="/porto/assets/images/demoes/demo10/products/home/product-5-2.jpg" alt="product" width="400" height="400" />
+                                </a>
+
+                                <div class="btn-icon-group">
+                                    <a href="#" class="btn-icon btn-add-cart product-type-simple"><i
+											class="icon-shopping-cart"></i></a>
+                                </div>
+
+                                <a href="/porto/ajax/product-quick-view.html" class="btn-quickview" title="Quick View">Quick
+									View</a>
+                            </figure>
+
+                            <div class="product-details">
+                                <div class="category-wrap">
+                                    <div class="category-list">
+                                        <a href="/porto/demo10-shop.html" class="product-category">SHOES</a>,
+                                        <a href="/porto/demo10-shop.html" class="product-category">WATCHES</a>
+                                    </div>
+
+                                    <a href="/porto/wishlist.html" title="Wishlist" class="btn-icon-wish"><i
+											class="icon-heart"></i></a>
+                                </div>
+
+                                <h3 class="product-title"> <a href="/porto/demo10-product.html">Product Black Bag</a> </h3>
+
+                                <div class="ratings-container">
+                                    <div class="product-ratings">
+                                        <span class="ratings" style="width:0%"></span>
+                                        <!-- End .ratings -->
+                                        <span class="tooltiptext tooltip-top"></span>
+                                    </div>
+                                    <!-- End .product-ratings -->
+                                </div>
+                                <!-- End .product-container -->
+
+                                <div class="price-box">
+                                    <span class="product-price">$229.00</span>
+                                </div>
+                                <!-- End .price-box -->
+                            </div>
+                            <!-- End .product-details -->
+                        </div>
+                        <!-- End .product-default -->
+
+                        <div class="product-default inner-quickview inner-icon">
+                            <figure>
+                                <a href="/porto/demo10-product.html">
+                                    <img src="/porto/assets/images/demoes/demo10/products/home/product-6.jpg" alt="product" width="400" height="400" />
+                                    <img src="/porto/assets/images/demoes/demo10/products/home/product-6-2.jpg" alt="product" width="400" height="400" />
+                                </a>
+
+                                <div class="btn-icon-group">
+                                    <a href="/porto/demo10-product.html" class="btn-icon btn-add-cart product-type-simple"><i
+											class="icon-shopping-cart"></i>
+									</a>
+                                </div>
+
+                                <a href="/porto/ajax/product-quick-view.html" class="btn-quickview" title="Quick View">Quick
+									View</a>
+                            </figure>
+
+                            <div class="product-details">
+                                <div class="category-wrap">
+                                    <div class="category-list">
+                                        <a href="/porto/demo10-shop.html" class="product-category">SHOES</a>,
+                                        <a href="/porto/demo10-shop.html" class="product-category">WATCHES</a>
+                                    </div>
+
+                                    <a href="/porto/wishlist.html" title="Wishlist" class="btn-icon-wish"><i
+											class="icon-heart"></i></a>
+                                </div>
+
+                                <h3 class="product-title"> <a href="/porto/demo10-product.html">Porto Black Glasses</a> </h3>
+
+                                <div class="ratings-container">
+                                    <div class="product-ratings">
+                                        <span class="ratings" style="width:0%"></span>
+                                        <!-- End .ratings -->
+                                        <span class="tooltiptext tooltip-top"></span>
+                                    </div>
+                                    <!-- End .product-ratings -->
+                                </div>
+                                <!-- End .product-container -->
+
+                                <div class="price-box">
+                                    <span class="product-price">$39.00</span>
+                                </div>
+                                <!-- End .price-box -->
+                            </div>
+                            <!-- End .product-details -->
+                        </div>
+                        <!-- End .product-default -->
+                    </div>
+                    <!-- End .products-slider -->
+                </div>
+            </section>
+            <!-- End .section-3 -->
+
+            <section class="section-4 container appear-animate" data-animation-name="fadeIn" data-animation-delay="100">
+                <div class="newsletter-section bg-img">
+                    <div class="banner">
+                        <img src="/porto/assets/images/demoes/demo10/newsletter_bg.jpg" alt="desc" width="1000" height="400">
+
+                        <div class="banner-layer banner-layer-middle text-right">
+                            <h4>Sunglasses, Bags, Dresses and much more...</h4>
+                            <h3>
+                                <b class="text-white position-relative">BIG SALE</b> ALL NEW FASHION BRANDS ITEMS UP TO 70% OFF
+                            </h3>
+                            <a href="/porto/demo10-shop.html" class="btn btn-xl" role="button">Shop Now<i
+									class="fas fa-chevron-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- End .section-4 -->
+
+            <section class="section-5 product-collection text-center appear-animate" data-animation-name="fadeIn" data-animation-delay="100">
+                <div class="container">
+                    <h2 class="section-title text-left">POPULAR PRODUCTS</h2>
+
+                    <div class="row product-ajax-grid">
+                        <div class="product-default inner-quickview inner-icon col-xl-2 col-md-3 col-sm-4 col-6">
+                            <figure>
+                                <a href="/porto/demo10-product.html">
+                                    <img src="/porto/assets/images/demoes/demo10/products/home/product-12.jpg" alt="product" width="400" height="400" />
+                                    <img src="/porto/assets/images/demoes/demo10/products/home/product-12-2.jpg" alt="product" width="400" height="400" />
+                                </a>
+
+                                <div class="btn-icon-group">
+                                    <a href="/porto/demo10-product.html" class="btn-icon btn-add-cart product-type-simple"><i
+											class="icon-shopping-cart"></i>
+									</a>
+                                </div>
+
+                                <div class="label-group">
+                                    <span class="product-label label-hot">HOT</span>
+                                </div>
+
+                                <a href="/porto/ajax/product-quick-view.html" class="btn-quickview" title="Quick View">Quick
+									View</a>
+                            </figure>
+
+                            <div class="product-details">
+                                <div class="category-wrap">
+                                    <div class="category-list">
+                                        <a href="/porto/demo10-shop.html" class="product-category">SHOES</a>,
+                                        <a href="/porto/demo10-shop.html" class="product-category">TOYS</a>
+                                    </div>
+
+                                    <a href="/porto/wishlist.html" title="Wishlist" class="btn-icon-wish"><i
+											class="icon-heart"></i></a>
+                                </div>
+
+                                <h3 class="product-title"> <a href="/porto/demo10-product.html">Lucky Bag</a> </h3>
+
+                                <div class="ratings-container">
+                                    <div class="product-ratings">
+                                        <span class="ratings" style="width:0%"></span>
+                                        <!-- End .ratings -->
+                                        <span class="tooltiptext tooltip-top"></span>
+                                    </div>
+                                    <!-- End .product-ratings -->
+                                </div>
+                                <!-- End .product-container -->
+
+                                <div class="price-box">
+                                    <span class="product-price">$299.00</span>
+                                </div>
+                                <!-- End .price-box -->
+                            </div>
+                            <!-- End .product-details -->
+                        </div>
+                        <!-- End .product-default -->
+
+                        <div class="product-default inner-quickview inner-icon col-xl-2 col-md-3 col-sm-4 col-6">
+                            <figure>
+                                <a href="/porto/demo10-product.html">
+                                    <img src="/porto/assets/images/demoes/demo10/products/home/product-7.jpg" alt="product" width="400" height="400" />
+                                </a>
+
+                                <div class="btn-icon-group">
+                                    <a href="#" class="btn-icon btn-add-cart product-type-simple"><i
+											class="icon-shopping-cart"></i></a>
+                                </div>
+
+                                <div class="label-group">
+                                    <span class="product-label label-sale">-15%</span>
+                                </div>
+
+                                <a href="/porto/ajax/product-quick-view.html" class="btn-quickview" title="Quick View">Quick
+									View</a>
+                            </figure>
+
+                            <div class="product-details">
+                                <div class="category-wrap">
+                                    <div class="category-list">
+                                        <a href="/porto/demo10-shop.html" class="product-category">SHOES</a>,
+                                        <a href="/porto/demo10-shop.html" class="product-category">TOYS</a>
+                                    </div>
+
+                                    <a href="/porto/wishlist.html" title="Wishlist" class="btn-icon-wish"><i
+											class="icon-heart"></i></a>
+                                </div>
+
+                                <h3 class="product-title"> <a href="/porto/demo10-product.html">Men Shoes</a> </h3>
+
+                                <div class="ratings-container">
+                                    <div class="product-ratings">
+                                        <span class="ratings" style="width:0%"></span>
+                                        <!-- End .ratings -->
+                                        <span class="tooltiptext tooltip-top"></span>
+                                    </div>
+                                    <!-- End .product-ratings -->
+                                </div>
+                                <!-- End .product-container -->
+
+                                <div class="price-box">
+                                    <span class="old-price">$1,999.00</span>
+                                    <span class="product-price">$1,699.00</span>
+                                </div>
+                                <!-- End .price-box -->
+                            </div>
+                            <!-- End .product-details -->
+                        </div>
+                        <!-- End .product-default -->
+
+                        <div class="product-default inner-quickview inner-icon col-xl-2 col-md-3 col-sm-4 col-6">
+                            <figure>
+                                <a href="/porto/demo10-product.html">
+                                    <img src="/porto/assets/images/demoes/demo10/products/home/product-8.jpg" alt="product" width="400" height="400" />
+                                    <img src="/porto/assets/images/demoes/demo10/products/home/product-7.jpg" alt="product" width="400" height="400" />
+                                </a>
+
+                                <div class="btn-icon-group">
+                                    <a href="/porto/demo10-product.html" class="btn-icon btn-add-cart product-type-simple"><i
+											class="icon-shopping-cart"></i>
+									</a>
+                                </div>
+
+                                <a href="/porto/ajax/product-quick-view.html" class="btn-quickview" title="Quick View">Quick
+									View</a>
+                            </figure>
+
+                            <div class="product-details">
+                                <div class="category-wrap">
+                                    <div class="category-list">
+                                        <a href="/porto/demo10-shop.html" class="product-category">SHOES</a>,
+                                        <a href="/porto/demo10-shop.html" class="product-category">TOYS</a>
+                                    </div>
+
+                                    <a href="/porto/wishlist.html" title="Wishlist" class="btn-icon-wish"><i
+											class="icon-heart"></i></a>
+                                </div>
+
+                                <h3 class="product-title"> <a href="/porto/demo10-product.html">Porto Sports Shoes</a> </h3>
+
+                                <div class="ratings-container">
+                                    <div class="product-ratings">
+                                        <span class="ratings" style="width:0%"></span>
+                                        <!-- End .ratings -->
+                                        <span class="tooltiptext tooltip-top"></span>
+                                    </div>
+                                    <!-- End .product-ratings -->
+                                </div>
+                                <!-- End .product-container -->
+
+                                <div class="price-box">
+                                    <span class="product-price">$101.00 - $111.00</span>
+                                </div>
+                                <!-- End .price-box -->
+                            </div>
+                            <!-- End .product-details -->
+                        </div>
+                        <!-- End .product-default -->
+
+                        <div class="product-default inner-quickview inner-icon col-xl-2 col-md-3 col-sm-4 col-6">
+                            <figure>
+                                <a href="/porto/demo10-product.html">
+                                    <img src="/porto/assets/images/demoes/demo10/products/home/product-9.jpg" alt="product" width="400" height="400" />
+                                </a>
+
+                                <div class="btn-icon-group">
+                                    <a href="#" class="btn-icon btn-add-cart product-type-simple"><i
+											class="icon-shopping-cart"></i></a>
+                                </div>
+
+                                <a href="/porto/ajax/product-quick-view.html" class="btn-quickview" title="Quick View">Quick
+									View</a>
+                            </figure>
+
+                            <div class="product-details">
+                                <div class="category-wrap">
+                                    <div class="category-list">
+                                        <a href="/porto/demo10-shop.html" class="product-category">DRESS</a>,
+                                        <a href="/porto/demo10-shop.html" class="product-category">SHOES</a>
+                                    </div>
+
+                                    <a href="/porto/wishlist.html" title="Wishlist" class="btn-icon-wish"><i
+											class="icon-heart"></i></a>
+                                </div>
+
+                                <h3 class="product-title"> <a href="/porto/demo10-product.html">Men's Quartz</a> </h3>
+
+                                <div class="ratings-container">
+                                    <div class="product-ratings">
+                                        <span class="ratings" style="width:0%"></span>
+                                        <!-- End .ratings -->
+                                        <span class="tooltiptext tooltip-top"></span>
+                                    </div>
+                                    <!-- End .product-ratings -->
+                                </div>
+                                <!-- End .product-container -->
+
+                                <div class="price-box">
+                                    <span class="product-price">$299.00</span>
+                                </div>
+                                <!-- End .price-box -->
+                            </div>
+                            <!-- End .product-details -->
+                        </div>
+                        <!-- End .product-default -->
+
+                        <div class="product-default inner-quickview inner-icon col-xl-2 col-md-3 col-sm-4 col-6">
+                            <figure>
+                                <a href="/porto/demo10-product.html">
+                                    <img src="/porto/assets/images/demoes/demo10/products/home/product-10.jpg" alt="product" width="400" height="400" />
+                                </a>
+
+                                <div class="btn-icon-group">
+                                    <a href="/porto/demo10-product.html" class="btn-icon btn-add-cart product-type-simple"><i
+											class="icon-shopping-cart"></i>
+									</a>
+                                </div>
+
+                                <div class="label-group">
+                                    <span class="product-label label-hot">HOT</span>
+                                </div>
+
+                                <a href="/porto/ajax/product-quick-view.html" class="btn-quickview" title="Quick View">Quick
+									View</a>
+                            </figure>
+
+                            <div class="product-details">
+                                <div class="category-wrap">
+                                    <div class="category-list">
+                                        <a href="/porto/demo10-shop.html" class="product-category">HEADPHONE</a>,
+                                        <a href="/porto/demo10-shop.html" class="product-category">WATCHES</a>
+                                    </div>
+
+                                    <a href="/porto/wishlist.html" title="Wishlist" class="btn-icon-wish"><i
+											class="icon-heart"></i></a>
+                                </div>
+
+                                <h3 class="product-title"> <a href="/porto/demo10-product.html">Men's Belt</a> </h3>
+
+                                <div class="ratings-container">
+                                    <div class="product-ratings">
+                                        <span class="ratings" style="width:0%"></span>
+                                        <!-- End .ratings -->
+                                        <span class="tooltiptext tooltip-top"></span>
+                                    </div>
+                                    <!-- End .product-ratings -->
+                                </div>
+                                <!-- End .product-container -->
+
+                                <div class="price-box">
+                                    <span class="product-price">$299.00</span>
+                                </div>
+                                <!-- End .price-box -->
+                            </div>
+                            <!-- End .product-details -->
+                        </div>
+                        <!-- End .product-default -->
+
+                        <div class="product-default inner-quickview inner-icon col-xl-2 col-md-3 col-sm-4 col-6">
+                            <figure>
+                                <a href="/porto/demo10-product.html">
+                                    <img src="/porto/assets/images/demoes/demo10/products/home/product-11.jpg" alt="product" width="400" height="400" />
+                                </a>
+
+                                <div class="btn-icon-group">
+                                    <a href="#" class="btn-icon btn-add-cart product-type-simple"><i
+											class="icon-shopping-cart"></i></a>
+                                </div>
+
+                                <div class="label-group">
+                                    <span class="product-label label-hot">HOT</span>
+                                </div>
+
+                                <a href="/porto/ajax/product-quick-view.html" class="btn-quickview" title="Quick View">Quick
+									View</a>
+                            </figure>
+
+                            <div class="product-details">
+                                <div class="category-wrap">
+                                    <div class="category-list">
+                                        <a href="/porto/demo10-shop.html" class="product-category">DRESS</a>,
+                                        <a href="/porto/demo10-shop.html" class="product-category">T-SHIRTS</a>
+                                    </div>
+
+                                    <a href="/porto/wishlist.html" title="Wishlist" class="btn-icon-wish"><i
+											class="icon-heart"></i></a>
+                                </div>
+
+                                <h3 class="product-title"> <a href="/porto/demo10-product.html">Black Watch</a> </h3>
+
+                                <div class="ratings-container">
+                                    <div class="product-ratings">
+                                        <span class="ratings" style="width:0%"></span>
+                                        <!-- End .ratings -->
+                                        <span class="tooltiptext tooltip-top"></span>
+                                    </div>
+                                    <!-- End .product-ratings -->
+                                </div>
+                                <!-- End .product-container -->
+
+                                <div class="price-box">
+                                    <span class="product-price">$89.00</span>
+                                </div>
+                                <!-- End .price-box -->
+                            </div>
+                            <!-- End .product-details -->
+                        </div>
+                        <!-- End .product-default -->
+                    </div>
+                    <!-- End .row -->
+
+                    <div class="load-more text-center d-inline-block">
+                        <a href="/porto/ajax/demo10-ajax-products.html" class="btn btn-xl loadmore" role="button">LOAD
+							MORE...</a>
+                    </div>
+                </div>
+            </section>
+            <!-- End .section-5 -->
+@endsection
+
+@push('styles')
+    {{-- Ekstra CSS dosyaları buraya eklenebilir --}}
+@endpush
+
+@push('scripts')
+    {{-- Ekstra JavaScript dosyaları buraya eklenebilir --}}
+@endpush

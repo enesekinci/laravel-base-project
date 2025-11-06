@@ -1,7 +1,15 @@
 @extends('layouts.porto')
 
+@section('top-notice')
+    @include('components.porto.top-notice-demo22')
+@endsection
+
 @section('header')
-    @include('components.porto.header')
+    @include('components.porto.header-demo22')
+@endsection
+
+@section('footer')
+    @include('components.porto.footer-demo22')
 @endsection
 
 @section('content')
@@ -252,6 +260,10 @@
                 </div>
             </div>
             <div class="mb-3"></div>
+@section('footer')
+    @include('components.porto.footer-demo22')
+@endsection
+
 @endsection
 
 @push('styles')

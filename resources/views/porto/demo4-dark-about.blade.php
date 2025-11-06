@@ -1,7 +1,15 @@
 @extends('layouts.porto')
 
+@section('top-notice')
+    @include('components.porto.top-notice-demo4')
+@endsection
+
 @section('header')
-    @include('components.porto.header')
+    @include('components.porto.header-demo4')
+@endsection
+
+@section('footer')
+    @include('components.porto.footer-demo4')
 @endsection
 
 @section('content')
@@ -202,6 +210,10 @@
 					</div><!-- End .row -->
 				</div><!-- End .container -->
 			</div><!-- End .counters-section -->
+@section('footer')
+    @include('components.porto.footer-demo4')
+@endsection
+
 @endsection
 
 @push('styles')
