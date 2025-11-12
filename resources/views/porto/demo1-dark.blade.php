@@ -5,7 +5,7 @@
 @endsection
 
 @section('header')
-    @include('components.porto.demo1.header')
+    @include('porto.demo1.header')
 @endsection
 
 @section('content')

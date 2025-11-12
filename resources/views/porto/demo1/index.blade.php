@@ -2,11 +2,11 @@
 
 
 @section('top-notice')
-    @include('components.porto.demo1.top-notice')
+    @include('porto.demo1.top-notice')
 @endsection
 
 @section('header')
-    @include('components.porto.demo1.header', [
+    @include('porto.demo1.header', [
         'headerMenu' => $headerMenu ?? null,
         'footerMenu' => $footerMenu ?? null,
         'footerSettings' => $footerSettings ?? [],
@@ -1039,7 +1039,7 @@
 @endsection
 
 @section('footer')
-    @include('components.porto.demo1.footer', [
+    @include('porto.demo1.footer', [
         'footerMenu' => $footerMenu ?? null,
         'footerSettings' => $footerSettings ?? [],
     ])

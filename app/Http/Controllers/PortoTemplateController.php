@@ -261,76 +261,50 @@ class PortoTemplateController extends Controller
      */
     private function getFooterSettings(): array
     {
-        $getSetting = function (string $key, $default = null) {
-            return $this->storeSettingService->get($key, $default);
+        $getSetting = function (string $key) {
+            return $this->storeSettingService->get($key);
         };
 
-        $getJsonSetting = function (string $key, array $default = []) use ($getSetting) {
+        $getJsonSetting = function (string $key) use ($getSetting) {
             $value = $getSetting($key);
-            if (empty($value)) {
-                return $default;
+            if (empty($value) || $value === null) {
+                return [];
             }
             $decoded = json_decode($value, true);
-            return is_array($decoded) ? $decoded : $default;
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                return [];
+            }
+            return is_array($decoded) ? $decoded : [];
         };
 
         return [
             // About Us
-            'about_logo' => $getSetting('footer_about_logo', '/porto/assets/images/logo-footer.png'),
-            'about_description' => $getSetting('footer_about_description', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nec vestibulum magna, et dapibus lacus. Duis nec vestibulum magna, et dapibus lacus.'),
-            'about_read_more_url' => $getSetting('footer_about_read_more_url', '#'),
+            'about_logo' => $getSetting('footer_about_logo'),
+            'about_description' => $getSetting('footer_about_description'),
+            'about_read_more_url' => $getSetting('footer_about_read_more_url'),
 
             // Contact Info
-            'contact_address' => $getSetting('footer_contact_address', '123 Street Name, City, England'),
-            'contact_phone' => $getSetting('footer_contact_phone', '(123) 456-7890'),
-            'contact_email' => $getSetting('footer_contact_email', 'mail@example.com'),
-            'contact_working_hours' => $getSetting('footer_contact_working_hours', 'Mon - Sun / 9:00 AM - 8:00 PM'),
+            'contact_address' => $getSetting('footer_contact_address'),
+            'contact_phone' => $getSetting('footer_contact_phone'),
+            'contact_email' => $getSetting('footer_contact_email'),
+            'contact_working_hours' => $getSetting('footer_contact_working_hours'),
 
             // Social Media
-            'social_facebook' => $getSetting('footer_social_facebook', '#'),
-            'social_twitter' => $getSetting('footer_social_twitter', '#'),
-            'social_linkedin' => $getSetting('footer_social_linkedin', '#'),
+            'social_facebook' => $getSetting('footer_social_facebook'),
+            'social_twitter' => $getSetting('footer_social_twitter'),
+            'social_linkedin' => $getSetting('footer_social_linkedin'),
 
             // Customer Service Links
-            'customer_service_links' => $getJsonSetting('footer_customer_service_links', [
-                ['label' => 'Help & FAQs', 'url' => '#'],
-                ['label' => 'Order Tracking', 'url' => '#'],
-                ['label' => 'Shipping & Delivery', 'url' => '#'],
-                ['label' => 'Orders History', 'url' => '#'],
-                ['label' => 'Advanced Search', 'url' => '#'],
-                ['label' => 'My Account', 'url' => '/porto/dashboard.html'],
-                ['label' => 'Careers', 'url' => '#'],
-                ['label' => 'About Us', 'url' => '/porto/demo1-about.html'],
-                ['label' => 'Corporate Sales', 'url' => '#'],
-                ['label' => 'Privacy', 'url' => '#'],
-            ]),
+            'customer_service_links' => $getJsonSetting('footer_customer_service_links'),
 
             // Popular Tags
-            'popular_tags' => $getJsonSetting('footer_popular_tags', [
-                'Bag',
-                'Black',
-                'Blue',
-                'Clothes',
-                'Fashion',
-                'Hub',
-                'Jean',
-                'Shirt',
-                'Skirt',
-                'Sports',
-                'Sweater',
-                'Winter',
-            ]),
+            'popular_tags' => $getJsonSetting('footer_popular_tags'),
 
             // Copyright
-            'copyright' => $getSetting('footer_copyright', '© Porto eCommerce. 2021. All Rights Reserved'),
+            'copyright' => $getSetting('footer_copyright'),
 
             // Payment Icons
-            'payment_icons' => $getJsonSetting('footer_payment_icons', [
-                ['name' => 'visa', 'enabled' => true],
-                ['name' => 'paypal', 'enabled' => true],
-                ['name' => 'stripe', 'enabled' => true],
-                ['name' => 'verisign', 'enabled' => true],
-            ]),
+            'payment_icons' => $getJsonSetting('footer_payment_icons'),
         ];
     }
 }

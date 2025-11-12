@@ -1,16 +1,16 @@
 @extends('layouts.porto')
 
 @section('footer')
-    @include('components.porto.demo13.footer')
+    @include('porto.demo13.footer')
 @endsection
 
 @section('top-notice')
-    @include('components.porto.demo13.top-notice')
+    @include('porto.demo13.top-notice')
 @endsection
 
 
 @section('header')
-    @include('components.porto.demo13.header')
+    @include('porto.demo13.header')
 @endsection
 
 @section('content')
@@ -18,12 +18,7 @@
 				<div class="container">
 					<div class="row">
 						<div class="col-lg-9 col-md-12 mb-2">
-							<div class="home-slider owl-carousel owl-theme owl-carousel-lazy h-100 slide-animate"
-								data-owl-options="{
-								'dots': true,
-								'nav': false,
-								'loop': false
-							}">
+							<div class="home-slider owl-carousel owl-theme owl-carousel-lazy h-100 slide-animate" data-owl-options="{'dots': true,'nav': false,'loop': false}">
 								<div class="home-slide home-slide1 banner banner-md-vw h-100">
 									<figure>
 										<img class="slide-bg" src="/porto/assets/images/demoes/demo13/slider/slide-1.jpg"

@@ -23,10 +23,13 @@ class FooterController extends Controller
 
         $getJsonSetting = function (string $key, array $default = []) use ($getSetting) {
             $value = $getSetting($key);
-            if (empty($value)) {
+            if (empty($value) || $value === null) {
                 return $default;
             }
             $decoded = json_decode($value, true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                return $default;
+            }
             return is_array($decoded) ? $decoded : $default;
         };
 

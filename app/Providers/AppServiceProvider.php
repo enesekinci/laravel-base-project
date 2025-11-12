@@ -4,7 +4,9 @@ namespace App\Providers;
 
 use App\Events\ProductTranslated;
 use App\Listeners\TranslateProduct;
+use App\View\Composers\PortoViewComposer;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\View;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -32,6 +34,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Porto template view'larına ortak verileri ekle
+        View::composer('porto.*', PortoViewComposer::class);
+        View::composer('layouts.porto', PortoViewComposer::class);
+        View::composer('components.porto.*', PortoViewComposer::class);
     }
 }
