@@ -2,16 +2,37 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Translatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, Translatable;
+
+    /**
+     * Çevrilecek alanlar
+     * 
+     * Nested ilişkiler için: 'relation.field' formatı kullanılır
+     * Alt seviye ilişkiler (örn: 'options.values.label') için
+     * related model'in (ProductOption) translatable property'si kullanılır
+     * 
+     * @var array<string>
+     */
+    public array $translatable = [
+        'name',
+        'description',
+        'short_description',
+        'meta_title',
+        'meta_description',
+        'variations.name', // ProductVariation'ın name alanı
+        'options.name',    // ProductOption'ın name alanı (ProductOption'un translatable property'si de çalışır)
+    ];
 
     protected $fillable = [
         'name',
@@ -83,7 +104,7 @@ class Product extends Model
     }
 
     /**
-     * Varyasyonlar
+     * Varyasyonlar (variant kombinasyonları)
      */
     public function variations(): HasMany
     {
@@ -92,12 +113,30 @@ class Product extends Model
     }
 
     /**
+     * Ürün varyasyon şablonları (hangi variation template'lerinin aktif olduğu)
+     */
+    public function variationTemplates(): HasMany
+    {
+        return $this->hasMany(ProductVariationTemplate::class)
+            ->orderBy('sort_order');
+    }
+
+    /**
      * Seçenekler
      */
     public function options(): BelongsToMany
     {
-        return $this->belongsToMany(ProductOption::class, 'product_option_product')
+        return $this->belongsToMany(Option::class, 'product_option_values', 'product_id', 'option_id')
+            ->withPivot('label', 'value', 'price_adjustment', 'price_type', 'sort_order')
             ->withTimestamps();
+    }
+
+    /**
+     * Ürün seçenek değerleri (ara tablo)
+     */
+    public function optionValues(): HasMany
+    {
+        return $this->hasMany(ProductOptionValue::class);
     }
 
     /**
@@ -115,6 +154,14 @@ class Product extends Model
     public function links(): HasMany
     {
         return $this->hasMany(ProductLink::class);
+    }
+
+    /**
+     * Çeviriler
+     */
+    public function translations(): MorphMany
+    {
+        return $this->morphMany(ModelTranslation::class, 'translatable');
     }
 
     /**

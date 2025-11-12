@@ -13,10 +13,11 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import { useToastErrors } from '@/hooks/use-toast-errors';
 import AppLayout from '@/layouts/app-layout';
-import { index, update } from '@/routes/admin/product-options';
+import { index, update } from '@/routes/admin/options';
 import { type BreadcrumbItem } from '@/types';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Head, Link, router, useForm } from '@inertiajs/react';
 import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -27,7 +28,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
     {
         title: 'Ürün Seçenekleri',
-        href: '/admin/product-options',
+        href: '/admin/options',
     },
     {
         title: 'Seçenek Düzenle',
@@ -87,6 +88,9 @@ export default function ProductOptionsEdit({ option }: Props) {
         is_active: option.is_active,
         values: [] as ProductOptionValue[],
     });
+
+    // Toast errors hook'unu kullan
+    useToastErrors(errors);
 
     const [localValues, setLocalValues] = useState<
         (ProductOptionValue & { tempId?: string })[]
@@ -174,7 +178,6 @@ export default function ProductOptionsEdit({ option }: Props) {
 
         // Local values'ı form data'ya aktar
         const values = localValues.map((v) => ({
-            id: v.id,
             label: v.label,
             value: v.value || '',
             price_adjustment: v.price_adjustment,
@@ -182,8 +185,14 @@ export default function ProductOptionsEdit({ option }: Props) {
             sort_order: v.sort_order,
         }));
 
-        setData('values', values);
-        put(update.form(option.id).url);
+        // Form data'yı hazırla ve values'ı ekle
+        const formData = {
+            ...data,
+            values: values,
+        };
+
+        // router.put kullanarak direkt data gönder
+        router.put(update(option.id).url, formData);
     };
 
     return (

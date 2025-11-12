@@ -19,6 +19,8 @@
     <div class="page-wrapper">
         @hasSection('top-notice')
             @yield('top-notice')
+        @elseif(isset($topNotice) && $topNotice)
+            @include('components.porto.top-notice')
         @endif
 
         @hasSection('header')

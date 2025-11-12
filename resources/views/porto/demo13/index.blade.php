@@ -1429,61 +1429,66 @@
 						<i class="fas fa-sliders-h"></i>
 					</div>
 					<aside class="sidebar-home col-lg-3 mobile-sidebar">
-						<div class="side-menu-wrapper mb-3">
-							<h2 class="side-menu-title ls-n-25">Browse Categories</h2>
+					<div class="side-menu-wrapper mb-3">
+						<h2 class="side-menu-title ls-n-25">{{ __('Categories') }}</h2>
 
-							<ul class="side-menu px-3 mx-3">
-								<li>
-									<a href="/porto/demo13-shop.html">Fashion</a>
+						@if(count($categories ?? []) > 0)
+						<ul class="side-menu px-3 mx-3">
+							@foreach($categories as $category)
+							<li>
+								<a href="/porto/demo13-shop.html?category={{ $category['slug'] }}">
+									{{ $category['name'] }}
+								</a>
+								@if(count($category['children']) > 0)
 									<span class="side-menu-toggle"></span>
-
 									<ul>
+										@foreach($category['children'] as $child)
 										<li>
-											<a href="#">Women Clothes</a>
+											<a href="/porto/demo13-shop.html?category={{ $child['slug'] }}">
+												{{ $child['name'] }}
+											</a>
 										</li>
-										<li>
-											<a href="#">Men Clothes</a>
-										</li>
-										<li>
-											<a href="#">Shoes</a>
-										</li>
-										<li>
-											<a href="#">Accessories</a>
-										</li>
+										@endforeach
 									</ul>
-								</li>
-								<li>
-									<a href="/porto/demo13-shop.html">Accessories </a>
-									<span class="side-menu-toggle"></span>
-
-									<ul>
-										<li>
-											<a href="#">Watches</a>
-										</li>
-										<li>
-											<a href="#">Caps</a>
-										</li>
-									</ul>
-								</li>
-								<li>
-									<a href="/porto/demo13-shop.html">Electronics</a>
-									<span class="side-menu-toggle"></span>
-
-									<ul>
-										<li>
-											<a href="#">Toys</a>
-										</li>
-										<li>
-											<a href="#">Headphone</a>
-										</li>
-									</ul>
-								</li>
-								<li>
-									<a href="/porto/demo13-shop.html">Dress</a>
-								</li>
-							</ul>
-							<!-- End .side-menu -->
-						</div>
+								@endif
+							</li>
+							@endforeach
+						</ul>
+						@else
+						<ul class="side-menu px-3 mx-3">
+							<li>
+								<a href="/porto/demo13-shop.html">Fashion</a>
+								<span class="side-menu-toggle"></span>
+								<ul>
+									<li><a href="#">Women Clothes</a></li>
+									<li><a href="#">Men Clothes</a></li>
+									<li><a href="#">Shoes</a></li>
+									<li><a href="#">Accessories</a></li>
+								</ul>
+							</li>
+							<li>
+								<a href="/porto/demo13-shop.html">Accessories</a>
+								<span class="side-menu-toggle"></span>
+								<ul>
+									<li><a href="#">Watches</a></li>
+									<li><a href="#">Caps</a></li>
+								</ul>
+							</li>
+							<li>
+								<a href="/porto/demo13-shop.html">Electronics</a>
+								<span class="side-menu-toggle"></span>
+								<ul>
+									<li><a href="#">Toys</a></li>
+									<li><a href="#">Headphone</a></li>
+								</ul>
+							</li>
+							<li>
+								<a href="/porto/demo13-shop.html">Dress</a>
+							</li>
+						</ul>
+						@endif
+						<!-- End .side-menu -->
+					</div>
 
 						<div class="widget widget-banners px-5 text-center">
 							<div class="owl-carousel owl-theme dots-small">

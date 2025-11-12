@@ -2,10 +2,9 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class UpdateProductRequest extends FormRequest
+class UpdateProductRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -49,19 +48,27 @@ class UpdateProductRequest extends FormRequest
             'attributes.*.value' => ['nullable', 'string'],
             'attributes.*.attribute_value_id' => ['nullable', 'exists:attribute_values,id'],
             'options' => ['nullable', 'array'],
-            'options.*' => ['exists:product_options,id'],
+            'options.*.option_id' => ['required', 'exists:options,id'],
+            'options.*.values' => ['required', 'array'],
+            'options.*.values.*.label' => ['required', 'string', 'max:255'],
+            'options.*.values.*.value' => ['nullable', 'string', 'max:255'],
+            'options.*.values.*.price_adjustment' => ['required', 'numeric', 'min:0'],
+            'options.*.values.*.price_type' => ['required', 'string', Rule::in(['fixed', 'percentage'])],
+            'options.*.values.*.sort_order' => ['nullable', 'integer', 'min:0'],
             'variations' => ['nullable', 'array'],
-            'variations.*.name' => ['required', 'string', 'max:255'],
-            'variations.*.sku' => ['nullable', 'string', 'max:255'],
-            'variations.*.price' => ['required', 'numeric', 'min:0'],
-            'variations.*.compare_price' => ['nullable', 'numeric', 'min:0'],
-            'variations.*.stock' => ['nullable', 'integer', 'min:0'],
-            'variations.*.barcode' => ['nullable', 'string', 'max:255'],
-            'variations.*.image' => ['nullable', 'string'],
-            'variations.*.is_active' => ['nullable', 'boolean'],
+            'variations.*.variation_id' => ['required', 'integer', 'exists:variation_templates,id'],
             'variations.*.sort_order' => ['nullable', 'integer', 'min:0'],
-            'variations.*.values' => ['nullable', 'array'],
-            'variations.*.values.*' => ['exists:variation_template_values,id'],
+            'variants' => ['nullable', 'array'],
+            'variants.*.name' => ['required', 'string', 'max:255'],
+            'variants.*.sku' => ['required', 'string', 'max:255'],
+            'variants.*.barcode' => ['nullable', 'string', 'max:255'],
+            'variants.*.price' => ['required', 'numeric', 'min:0'],
+            'variants.*.stock' => ['required', 'integer', 'min:0'],
+            'variants.*.is_active' => ['nullable', 'boolean'],
+            'variants.*.image' => ['nullable', 'image', 'mimes:jpeg,jpg,png,gif,webp', 'max:2048'],
+            'variants.*.variation_values' => ['required', 'array', 'min:1'],
+            'variants.*.variation_values.*.variation_id' => ['required', 'integer', 'exists:variation_templates,id'],
+            'variants.*.variation_values.*.variation_value_id' => ['required', 'integer', 'exists:variation_template_values,id'],
             'media' => ['nullable', 'array'],
             'media.*.type' => ['required', 'string', Rule::in(['image', 'video'])],
             'media.*.path' => ['required', 'string'],

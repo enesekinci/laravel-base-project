@@ -9,10 +9,9 @@ use App\Models\Attribute;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
-use App\Models\ProductOption;
+use App\Models\Option;
 use App\Models\Tag;
 use App\Models\TaxClass;
-use App\Models\Variation;
 use App\Models\VariationTemplate;
 use App\Services\CategoryService;
 use App\Services\ProductService;
@@ -75,14 +74,15 @@ class ProductController extends Controller
             ->orderBy('name')
             ->get(['id', 'name', 'attribute_set_id']);
 
-        $variations = Variation::query()
+        $variations = VariationTemplate::query()
             ->with(['values' => function ($query) {
                 $query->orderBy('sort_order')->orderBy('label');
             }])
+            ->active()
             ->ordered()
-            ->get(['id', 'name', 'type']);
+            ->get();
 
-        $productOptions = ProductOption::query()
+        $productOptions = Option::query()
             ->with(['values' => function ($query) {
                 $query->orderBy('sort_order')->orderBy('label');
             }])
@@ -94,9 +94,9 @@ class ProductController extends Controller
             ->with(['values' => function ($query) {
                 $query->orderBy('sort_order')->orderBy('label');
             }])
-            ->where('is_active', true)
+            ->active()
             ->ordered()
-            ->get(['id', 'name', 'type']);
+            ->get();
 
         return Inertia::render('Admin/Products/Create', [
             'brands' => $brands,
@@ -115,7 +115,27 @@ class ProductController extends Controller
      */
     public function store(StoreProductRequest $request): RedirectResponse
     {
-        $product = $this->productService->create($request->validated());
+        try {
+            \Illuminate\Support\Facades\DB::beginTransaction();
+
+            $product = $this->productService->create($request->validated());
+            \Illuminate\Support\Facades\DB::commit();
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\DB::rollBack();
+
+            $error = [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ];
+
+            \Illuminate\Support\Facades\Log::error('Product creation failed', $error);
+
+            dd($error);
+
+            return redirect()->back()->with('error', 'Ürün oluşturulurken bir hata oluştu: ' . $e->getMessage());
+        }
 
         return redirect()
             ->route('admin.products.index')
@@ -155,11 +175,86 @@ class ProductController extends Controller
             'categories',
             'tags',
             'attributes',
-            'variations.values',
-            'options',
+            'variations.values.variationTemplateValue',
+            'variations.values.variationTemplate',
+            'variationTemplates.variationTemplate.values',
+            'optionValues',
             'media',
             'links',
         ]);
+
+        // Attributes'ı attribute_id'ye göre grupla
+        $attributesGrouped = [];
+        foreach ($product->attributes as $attribute) {
+            $attrId = $attribute->id;
+            if (!isset($attributesGrouped[$attrId])) {
+                $attributesGrouped[$attrId] = [
+                    'attribute_id' => $attrId,
+                    'attribute_value_ids' => [],
+                ];
+            }
+            if ($attribute->pivot->attribute_value_id) {
+                $attributesGrouped[$attrId]['attribute_value_ids'][] = $attribute->pivot->attribute_value_id;
+            }
+        }
+        $product->attributes_formatted = array_values($attributesGrouped);
+
+        // Variations'ı düzelt - variation_template_id ve variation_template_value_id'yi ekle
+        foreach ($product->variations as $variation) {
+            $variation->variation_values_formatted = $variation->values->map(function ($value) {
+                return [
+                    'variation_id' => $value->variation_template_id,
+                    'variation_value_id' => $value->variation_template_value_id,
+                ];
+            })->toArray();
+        }
+
+        // Variation Templates'ı formatla - frontend için
+        $product->variation_templates_formatted = $product->variationTemplates->map(function ($productVariationTemplate) use ($product) {
+            $template = $productVariationTemplate->variationTemplate;
+            if (!$template) {
+                return null;
+            }
+
+            // Bu template'e ait seçili value ID'lerini bul
+            $selectedValueIds = [];
+            foreach ($product->variations as $variation) {
+                foreach ($variation->values as $value) {
+                    if ($value->variation_template_id === $template->id) {
+                        $selectedValueIds[] = $value->variation_template_value_id;
+                    }
+                }
+            }
+            $selectedValueIds = array_unique($selectedValueIds);
+
+            return [
+                'variation_id' => $template->id,
+                'name' => $template->name,
+                'type' => $template->type,
+                'variation_value_ids' => array_values($selectedValueIds),
+                'sort_order' => $productVariationTemplate->sort_order,
+            ];
+        })->filter()->values()->toArray();
+
+        // Options'ı option_id'ye göre grupla
+        $optionsGrouped = [];
+        foreach ($product->optionValues as $optionValue) {
+            $optionId = $optionValue->option_id;
+            if (!isset($optionsGrouped[$optionId])) {
+                $optionsGrouped[$optionId] = [
+                    'option_id' => $optionId,
+                    'values' => [],
+                ];
+            }
+            $optionsGrouped[$optionId]['values'][] = [
+                'label' => $optionValue->label,
+                'value' => $optionValue->value,
+                'price_adjustment' => $optionValue->price_adjustment,
+                'price_type' => $optionValue->price_type,
+                'sort_order' => $optionValue->sort_order,
+            ];
+        }
+        $product->options_formatted = array_values($optionsGrouped);
 
         $brands = Brand::query()
             ->where('is_active', true)
@@ -190,14 +285,15 @@ class ProductController extends Controller
             ->orderBy('name')
             ->get(['id', 'name', 'attribute_set_id']);
 
-        $variations = Variation::query()
+        $variations = VariationTemplate::query()
             ->with(['values' => function ($query) {
                 $query->orderBy('sort_order')->orderBy('label');
             }])
+            ->active()
             ->ordered()
-            ->get(['id', 'name', 'type']);
+            ->get();
 
-        $productOptions = ProductOption::query()
+        $productOptions = Option::query()
             ->with(['values' => function ($query) {
                 $query->orderBy('sort_order')->orderBy('label');
             }])

@@ -139,7 +139,7 @@ export default function TaxClassesShow({ taxClass }: Props) {
                                 Oran
                             </p>
                             <p className="mt-1 text-lg">
-                                %{taxClass.rate.toFixed(2)}
+                                %{(Number(taxClass.rate) || 0).toFixed(2)}
                             </p>
                         </div>
                         <div>

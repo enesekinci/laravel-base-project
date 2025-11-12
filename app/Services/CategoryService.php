@@ -35,10 +35,13 @@ class CategoryService
         // Tree görünümü için tüm kayıtları getir (pagination olmadan)
         if (!isset($filters['per_page']) || $filters['per_page'] === 'all') {
             $all = $query->get();
+            $count = $all->count();
+            // Division by zero hatasını önlemek için en az 1
+            $perPage = max(1, $count);
             return new LengthAwarePaginator(
                 $all,
-                $all->count(),
-                $all->count(),
+                $count,
+                $perPage,
                 1
             );
         }

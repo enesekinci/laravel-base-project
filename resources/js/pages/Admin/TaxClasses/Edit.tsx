@@ -36,14 +36,14 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function TaxClassesEdit({ taxClass }: Props) {
     const { data, setData, put, processing, errors } = useForm({
-        name: taxClass.name,
-        rate: taxClass.rate,
-        is_active: taxClass.is_active,
+        name: taxClass.name || '',
+        rate: Number(taxClass.rate) || 0,
+        is_active: taxClass.is_active ?? true,
     });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        put(update.form(taxClass.id).url);
+        put(update(taxClass.id).url);
     };
 
     return (
@@ -100,7 +100,7 @@ export default function TaxClassesEdit({ taxClass }: Props) {
                                     step="0.01"
                                     min="0"
                                     max="100"
-                                    value={data.rate}
+                                    value={data.rate ?? 0}
                                     onChange={(e) =>
                                         setData(
                                             'rate',

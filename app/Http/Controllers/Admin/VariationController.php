@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreVariationRequest;
 use App\Http\Requests\UpdateVariationRequest;
-use App\Models\Variation;
-use App\Services\VariationService;
+use App\Models\VariationTemplate;
+use App\Services\VariationTemplateService;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -14,7 +14,7 @@ use Inertia\Response;
 class VariationController extends Controller
 {
     public function __construct(
-        private VariationService $variationService
+        private VariationTemplateService $variationTemplateService
     ) {}
 
     /**
@@ -22,7 +22,7 @@ class VariationController extends Controller
      */
     public function index(): Response
     {
-        $variations = $this->variationService->list(request()->only(['search', 'type', 'per_page']));
+        $variations = $this->variationTemplateService->list(request()->only(['search', 'type', 'is_active', 'per_page']));
 
         return Inertia::render('Admin/Variations/Index', [
             'variations' => $variations,
@@ -42,7 +42,7 @@ class VariationController extends Controller
      */
     public function store(StoreVariationRequest $request): RedirectResponse
     {
-        $variation = $this->variationService->create($request->validated());
+        $variation = $this->variationTemplateService->create($request->validated());
 
         return redirect()
             ->route('admin.variations.index')
@@ -52,7 +52,7 @@ class VariationController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Variation $variation): Response
+    public function show(VariationTemplate $variation): Response
     {
         $variation->load('values');
 
@@ -64,7 +64,7 @@ class VariationController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Variation $variation): Response
+    public function edit(VariationTemplate $variation): Response
     {
         $variation->load('values');
 
@@ -76,9 +76,9 @@ class VariationController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateVariationRequest $request, Variation $variation): RedirectResponse
+    public function update(UpdateVariationRequest $request, VariationTemplate $variation): RedirectResponse
     {
-        $this->variationService->update($variation, $request->validated());
+        $this->variationTemplateService->update($variation, $request->validated());
 
         return redirect()
             ->route('admin.variations.index')
@@ -88,9 +88,9 @@ class VariationController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Variation $variation): RedirectResponse
+    public function destroy(VariationTemplate $variation): RedirectResponse
     {
-        $this->variationService->delete($variation);
+        $this->variationTemplateService->delete($variation);
 
         return redirect()
             ->route('admin.variations.index')

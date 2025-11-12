@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\ProductOption;
+use App\Models\Option;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -13,7 +13,7 @@ class ProductOptionService
      */
     public function list(array $filters = []): LengthAwarePaginator
     {
-        $query = ProductOption::query()
+        $query = Option::query()
             ->with('values')
             ->orderBy('sort_order')
             ->orderBy('name');
@@ -39,12 +39,12 @@ class ProductOptionService
     /**
      * Ürün seçeneği oluştur
      */
-    public function create(array $data): ProductOption
+    public function create(array $data): Option
     {
         $values = $data['values'] ?? [];
         unset($data['values']);
 
-        $option = ProductOption::create($data);
+        $option = Option::create($data);
 
         if (!empty($values)) {
             foreach ($values as $valueData) {
@@ -58,7 +58,7 @@ class ProductOptionService
     /**
      * Ürün seçeneği güncelle
      */
-    public function update(ProductOption $option, array $data): ProductOption
+    public function update(Option $option, array $data): Option
     {
         $values = $data['values'] ?? [];
         unset($data['values']);
@@ -82,7 +82,7 @@ class ProductOptionService
     /**
      * Ürün seçeneği sil
      */
-    public function delete(ProductOption $option): bool
+    public function delete(Option $option): bool
     {
         return $option->delete();
     }
@@ -92,7 +92,7 @@ class ProductOptionService
      */
     public function allActive(): Collection
     {
-        return ProductOption::query()
+        return Option::query()
             ->with('values')
             ->where('is_active', true)
             ->orderBy('sort_order')

@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -24,6 +25,16 @@ return new class extends Migration
             $table->index('is_active');
             $table->index('sort_order');
         });
+
+        // Seed data
+        DB::table('attribute_sets')->insert([
+            'name' => 'Bilgisayar Özellikleri',
+            'slug' => 'bilgisayar-ozellikleri',
+            'sort_order' => 1,
+            'is_active' => true,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
     }
 
     /**

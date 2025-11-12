@@ -11,7 +11,7 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog';
 import AppLayout from '@/layouts/app-layout';
-import { destroy, edit, index } from '@/routes/admin/product-options';
+import { destroy, edit, index } from '@/routes/admin/options';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
 import { ArrowLeft, Edit, Trash2 } from 'lucide-react';
@@ -46,7 +46,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
     {
         title: 'Ürün Seçenekleri',
-        href: '/admin/product-options',
+        href: '/admin/options',
     },
     {
         title: 'Seçenek Detayı',

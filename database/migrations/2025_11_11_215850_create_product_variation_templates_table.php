@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('product_option_product', function (Blueprint $table) {
+        Schema::create('product_variation_templates', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('product_id');
-            $table->unsignedBigInteger('product_option_id');
+            $table->unsignedBigInteger('variation_template_id');
+            $table->integer('sort_order')->default(0);
             $table->timestamps();
 
             $table->foreign('product_id')
@@ -22,14 +23,15 @@ return new class extends Migration
                 ->on('products')
                 ->onDelete('cascade');
 
-            $table->foreign('product_option_id')
+            $table->foreign('variation_template_id')
                 ->references('id')
-                ->on('product_options')
+                ->on('variation_templates')
                 ->onDelete('cascade');
 
-            $table->unique(['product_id', 'product_option_id']);
+            $table->unique(['product_id', 'variation_template_id']);
             $table->index('product_id');
-            $table->index('product_option_id');
+            $table->index('variation_template_id');
+            $table->index('sort_order');
         });
     }
 
@@ -38,6 +40,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('product_option_product');
+        Schema::dropIfExists('product_variation_templates');
     }
 };

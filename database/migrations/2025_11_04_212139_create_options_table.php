@@ -27,6 +27,45 @@ return new class extends Migration
             $table->index('is_active');
             $table->index('sort_order');
         });
+
+        // Seed data - Sadece options, option_values seed data'sı option_values migration'ında
+        $now = now();
+
+        // Garanti Süresi
+        DB::table('options')->insert([
+            'name' => 'Garanti Süresi',
+            'description' => 'Ürün garanti süresi seçenekleri',
+            'type' => 'select',
+            'required' => false,
+            'sort_order' => 1,
+            'is_active' => true,
+            'created_at' => $now,
+            'updated_at' => $now,
+        ]);
+
+        // Kurulum Hizmeti
+        DB::table('options')->insert([
+            'name' => 'Kurulum Hizmeti',
+            'description' => 'Profesyonel kurulum hizmeti',
+            'type' => 'checkbox',
+            'required' => false,
+            'sort_order' => 2,
+            'is_active' => true,
+            'created_at' => $now,
+            'updated_at' => $now,
+        ]);
+
+        // Ekstra RAM
+        DB::table('options')->insert([
+            'name' => 'Ekstra RAM',
+            'description' => 'Ekstra RAM yükseltme seçenekleri',
+            'type' => 'radio',
+            'required' => false,
+            'sort_order' => 3,
+            'is_active' => true,
+            'created_at' => $now,
+            'updated_at' => $now,
+        ]);
     }
 
     /**

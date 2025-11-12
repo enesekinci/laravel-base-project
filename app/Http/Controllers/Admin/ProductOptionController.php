@@ -47,7 +47,7 @@ class ProductOptionController extends Controller
         $option = $this->productOptionService->create($request->validated());
 
         return redirect()
-            ->route('admin.product-options.index')
+            ->route('admin.options.index')
             ->with('success', 'Ürün seçeneği başarıyla oluşturuldu.');
     }
 
@@ -88,7 +88,7 @@ class ProductOptionController extends Controller
         );
 
         return redirect()
-            ->route('admin.product-options.index')
+            ->route('admin.options.index')
             ->with('success', 'Ürün seçeneği başarıyla güncellendi.');
     }
 
@@ -100,7 +100,7 @@ class ProductOptionController extends Controller
         $this->productOptionService->delete($productOption);
 
         return redirect()
-            ->route('admin.product-options.index')
+            ->route('admin.options.index')
             ->with('success', 'Ürün seçeneği başarıyla silindi.');
     }
 }

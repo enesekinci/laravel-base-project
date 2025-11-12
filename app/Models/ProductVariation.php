@@ -2,24 +2,33 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Translatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ProductVariation extends Model
 {
-    use HasFactory;
+    use HasFactory, Translatable;
+
+    /**
+     * Çevrilecek alanlar
+     * 
+     * @var array<string>
+     */
+    public array $translatable = [
+        'name',
+    ];
 
     protected $fillable = [
         'product_id',
         'variation_template_id',
         'name',
         'sku',
-        'price',
-        'compare_price',
-        'stock',
         'barcode',
+        'price',
+        'stock',
         'image',
         'is_active',
         'sort_order',
@@ -27,7 +36,6 @@ class ProductVariation extends Model
 
     protected $casts = [
         'price' => 'decimal:2',
-        'compare_price' => 'decimal:2',
         'stock' => 'integer',
         'is_active' => 'boolean',
         'sort_order' => 'integer',
@@ -52,15 +60,8 @@ class ProductVariation extends Model
     /**
      * Varyasyon değerleri
      */
-    public function values(): BelongsToMany
+    public function values(): HasMany
     {
-        return $this->belongsToMany(
-            VariationTemplateValue::class,
-            'product_variation_values',
-            'product_variation_id',
-            'variation_template_value_id'
-        )
-            ->withPivot('variation_template_id')
-            ->withTimestamps();
+        return $this->hasMany(ProductVariationValue::class, 'product_variation_id', 'id');
     }
 }

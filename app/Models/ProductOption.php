@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Translatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -9,7 +10,18 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ProductOption extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, Translatable;
+
+    /**
+     * Çevrilecek alanlar
+     * 
+     * @var array<string>
+     */
+    public array $translatable = [
+        'name',
+        'description',
+        'values.label',
+    ];
 
     protected $fillable = [
         'name',

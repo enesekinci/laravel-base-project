@@ -6,7 +6,11 @@
 @endsection
 
 @section('header')
-    @include('components.porto.demo1.header')
+    @include('components.porto.demo1.header', [
+        'headerMenu' => $headerMenu ?? null,
+        'footerMenu' => $footerMenu ?? null,
+        'footerSettings' => $footerSettings ?? [],
+    ])
 @endsection
 
 @section('content')
@@ -708,163 +712,81 @@
             <div class="sidebar-toggle custom-sidebar-toggle"><i class="fas fa-sliders-h"></i></div>
             <aside class="sidebar-home col-lg-3 order-lg-first mobile-sidebar">
                 <div class="side-menu-wrapper text-uppercase mb-2 d-none d-lg-block">
-                    <h2 class="side-menu-title bg-gray ls-n-25">Browse Categories</h2>
+                    <h2 class="side-menu-title bg-gray ls-n-25">{{ __('Categories') }}</h2>
 
                     <nav class="side-nav">
                         <ul class="menu menu-vertical sf-arrows">
-                            <li class="active"><a href="/porto/demo1.html"><i class="icon-home"></i>Home</a></li>
-                            <li>
-                                <a href="/porto/demo1-shop.html" class="sf-with-ul"><i
-                                        class="sicon-badge"></i>Categories</a>
-                                <div class="megamenu megamenu-fixed-width megamenu-3cols">
-                                    <div class="row">
-                                        <div class="col-lg-4">
-                                            <a href="#" class="nolink pl-0">VARIATION 1</a>
-                                            <ul class="submenu">
-                                                <li><a href="/porto/category.html">Fullwidth Banner</a></li>
-                                                <li><a href="/porto/category-banner-boxed-slider.html">Boxed Slider
-                                                        Banner</a>
-                                                </li>
-                                                <li><a href="/porto/category-banner-boxed-image.html">Boxed Image
-                                                        Banner</a>
-                                                </li>
-                                                <li><a href="/porto/demo1-shop.html">Left Sidebar</a></li>
-                                                <li><a href="/porto/category-sidebar-right.html">Right Sidebar</a></li>
-                                                <li><a href="/porto/category-off-canvas.html">Off Canvas Filter</a>
-                                                </li>
-                                                <li><a href="/porto/category-horizontal-filter1.html">Horizontal
-                                                        Filter1</a>
-                                                </li>
-                                                <li><a href="/porto/category-horizontal-filter2.html">Horizontal
-                                                        Filter2</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <a href="#" class="nolink pl-0">VARIATION 2</a>
-                                            <ul class="submenu">
-                                                <li><a href="/porto/category-list.html">List Types</a></li>
-                                                <li><a href="/porto/category-infinite-scroll.html">Ajax Infinite
-                                                        Scroll</a>
-                                                </li>
-                                                <li><a href="/porto/category.html">3 Columns Products</a></li>
-                                                <li><a href="/porto/category-4col.html">4 Columns Products</a></li>
-                                                <li><a href="/porto/category-5col.html">5 Columns Products</a></li>
-                                                <li><a href="/porto/category-6col.html">6 Columns Products</a></li>
-                                                <li><a href="/porto/category-7col.html">7 Columns Products</a></li>
-                                                <li><a href="/porto/category-8col.html">8 Columns Products</a></li>
-                                            </ul>
-                                        </div>
-                                        <div class="col-lg-4 p-0">
-                                            <div class="menu-banner">
-                                                <figure>
-                                                    <img src="/porto/assets/images/menu-banner.jpg" width="192" height="313" alt="Menu banner">
-                                                </figure>
-                                                <div class="banner-content">
-                                                    <h4>
-                                                        <span class="">UP TO</span><br />
-                                                        <b class="">50%</b>
-                                                        <i>OFF</i>
-                                                    </h4>
-                                                    <a href="/porto/demo1-shop.html" class="btn btn-sm btn-dark">SHOP
-                                                        NOW</a>
+                            @if(!empty($sidebarMenu) && is_array($sidebarMenu) && count($sidebarMenu) > 0)
+                                {!! render_menu_items($sidebarMenu) !!}
+                            @else
+                                {{-- Fallback: Varsayılan menü --}}
+                                <li class="active">
+                                    <a href="/porto/demo1.html">
+                                        <i class="icon-home"></i>{{ __('Home') }}
+                                    </a>
+                                </li>
+
+                                @if(!empty($categories))
+                                <li>
+                                    <a href="/porto/demo1-shop.html" class="sf-with-ul">
+                                        <i class="sicon-badge"></i>{{ __('Categories') }}
+                                    </a>
+                                    <div class="megamenu megamenu-fixed-width megamenu-3cols">
+                                        <div class="row">
+                                            @foreach($chunkedCategories as $chunkIndex => $chunk)
+                                                @if($chunkIndex < 2)
+                                                <div class="col-lg-4">
+                                                    @if($chunkIndex === 0)
+                                                        <a href="#" class="nolink pl-0">{{ __('Categories') }}</a>
+                                                    @endif
+                                                    <ul class="submenu">
+                                                        @foreach($chunk ?? [] as $category)
+                                                        <li>
+                                                            <a href="/porto/demo1-shop.html?category={{ $category['slug'] }}">
+                                                                {{ $category['name'] }}
+                                                                @if(count($category['children']) > 0)
+                                                                    <span class="tip tip-new">{{ __('New') }}</span>
+                                                                @endif
+                                                            </a>
+                                                            @if(count($category['children']) > 0)
+                                                                <ul>
+                                                                    @foreach($category['children'] as $child)
+                                                                    <li>
+                                                                        <a href="/porto/demo1-shop.html?category={{ $child['slug'] }}">
+                                                                            {{ $child['name'] }}
+                                                                        </a>
+                                                                    </li>
+                                                                    @endforeach
+                                                                </ul>
+                                                            @endif
+                                                        </li>
+                                                        @endforeach
+                                                    </ul>
+                                                </div>
+                                                @endif
+                                            @endforeach
+                                            <div class="col-lg-4 p-0">
+                                                <div class="menu-banner">
+                                                    <figure>
+                                                        <img src="/porto/assets/images/menu-banner.jpg" width="192" height="313" alt="{{ __('Menu banner') }}">
+                                                    </figure>
+                                                    <div class="banner-content">
+                                                        <h4>
+                                                            <span>{{ __('UP TO') }}</span><br>
+                                                            <b>50%</b>
+                                                            <i>{{ __('OFF') }}</i>
+                                                        </h4>
+                                                        <a href="/porto/demo1-shop.html" class="btn btn-sm btn-dark">
+                                                            {{ __('SHOP NOW') }}
+                                                        </a>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <!-- End .megamenu -->
-                            </li>
-                            <li>
-                                <a href="/porto/demo1-product.html" class="sf-with-ul"><i
-                                        class="sicon-basket"></i>Products</a>
-                                <div class="megamenu megamenu-fixed-width">
-                                    <div class="row">
-                                        <div class="col-lg-4">
-                                            <a href="#" class="nolink pl-0">PRODUCT PAGES</a>
-                                            <ul class="submenu">
-                                                <li><a href="/porto/product.html">SIMPLE PRODUCT</a></li>
-                                                <li><a href="/porto/product-variable.html">VARIABLE PRODUCT</a></li>
-                                                <li><a href="/porto/product.html">SALE PRODUCT</a></li>
-                                                <li><a href="/porto/product.html">FEATURED & ON SALE</a></li>
-                                                <li><a href="/porto/product-custom-tab.html">WITH CUSTOM TAB</a></li>
-                                                <li><a href="/porto/product-sidebar-left.html">WITH LEFT SIDEBAR</a>
-                                                </li>
-                                                <li><a href="/porto/product-sidebar-right.html">WITH RIGHT SIDEBAR</a>
-                                                </li>
-                                                <li><a href="/porto/product-addcart-sticky.html">ADD CART STICKY</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <!-- End .col-lg-4 -->
-
-                                        <div class="col-lg-4">
-                                            <a href="#" class="nolink pl-0">PRODUCT LAYOUTS</a>
-                                            <ul class="submenu">
-                                                <li><a href="/porto/product-extended-layout.html">EXTENDED LAYOUT</a>
-                                                </li>
-                                                <li><a href="/porto/product-grid-layout.html">GRID IMAGE</a></li>
-                                                <li><a href="/porto/product-full-width.html">FULL WIDTH LAYOUT</a></li>
-                                                <li><a href="/porto/product-sticky-info.html">STICKY INFO</a></li>
-                                                <li><a href="/porto/product-sticky-both.html">LEFT & RIGHT STICKY</a>
-                                                </li>
-                                                <li><a href="/porto/product-transparent-image.html">TRANSPARENT
-                                                        IMAGE</a></li>
-                                                <li><a href="/porto/product-center-vertical.html">CENTER VERTICAL</a>
-                                                </li>
-                                                <li><a href="#">BUILD YOUR OWN</a></li>
-                                            </ul>
-                                        </div>
-                                        <!-- End .col-lg-4 -->
-
-                                        <div class="col-lg-4 p-0">
-                                            <div class="menu-banner menu-banner-2">
-                                                <figure>
-                                                    <img src="/porto/assets/images/menu-banner-1.jpg" alt="Menu banner" class="product-promo">
-                                                </figure>
-                                                <i>OFF</i>
-                                                <div class="banner-content">
-                                                    <h4>
-                                                        <span class="">UP TO</span><br />
-                                                        <b class="">50%</b>
-                                                    </h4>
-                                                </div>
-                                                <a href="/porto/demo1-shop.html" class="btn btn-sm btn-dark">SHOP
-                                                    NOW</a>
-                                            </div>
-                                        </div>
-                                        <!-- End .col-lg-4 -->
-                                    </div>
-                                    <!-- End .row -->
-                                </div>
-                                <!-- End .megamenu -->
-                            </li>
-                            <li>
-                                <a href="#" class="sf-with-ul"><i class="sicon-envelope"></i>Pages</a>
-
-                                <ul>
-                                    <li><a href="/porto/wishlist.html">Wishlist</a></li>
-                                    <li><a href="/porto/cart.html">Shopping Cart</a></li>
-                                    <li><a href="/porto/checkout.html">Checkout</a></li>
-                                    <li><a href="/porto/dashboard.html">Dashboard</a></li>
-                                    <li><a href="/porto/demo1-about.html">About Us</a></li>
-                                    <li><a href="#">Blog</a>
-                                        <ul>
-                                            <li><a href="/porto/blog.html">Blog</a></li>
-                                            <li><a href="/porto/single.html">Blog Post</a></li>
-                                        </ul>
-                                    </li>
-                                    <li><a href="/porto/demo1-contact.html">Contact Us</a></li>
-                                    <li><a href="/porto/login.html">Login</a></li>
-                                    <li><a href="/porto/forgot-password.html">Forgot Password</a></li>
-                                </ul>
-                            </li>
-                            <li><a href="/porto/blog.html"><i class="sicon-book-open"></i>Blog</a></li>
-                            <li><a href="/porto/demo1-about.html"><i class="sicon-users"></i>About Us</a></li>
-                            <li><a href="#"><i class="icon-cat-gift"></i>Special Offer!</a></li>
-                            <li><a href="https://1.envato.market/DdLk5" target="_blank"><i
-                                        class="sicon-star"></i>Buy Porto!<span
-                                        class="tip tip-hot">Hot</span></a></li>
+                                </li>
+                                @endif
+                            @endif
                         </ul>
                     </nav>
                 </div>
@@ -1114,6 +1036,13 @@
         <!-- End .row -->
     </div>
     <!-- End .container -->
+@endsection
+
+@section('footer')
+    @include('components.porto.demo1.footer', [
+        'footerMenu' => $footerMenu ?? null,
+        'footerSettings' => $footerSettings ?? [],
+    ])
 @endsection
 
 @push('styles')

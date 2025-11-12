@@ -11,6 +11,8 @@ class NotificationHistory extends Model
 {
     use HasFactory;
 
+    protected $table = 'notification_history';
+
     protected $fillable = [
         'type',
         'to',
@@ -58,4 +60,3 @@ class NotificationHistory extends Model
         return $this->morphTo();
     }
 }
-

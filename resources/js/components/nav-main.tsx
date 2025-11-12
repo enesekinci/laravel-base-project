@@ -3,6 +3,7 @@ import {
     CollapsibleContent,
     CollapsibleTrigger,
 } from '@/components/ui/collapsible';
+import { Input } from '@/components/ui/input';
 import {
     SidebarGroup,
     SidebarGroupLabel,
@@ -16,38 +17,74 @@ import {
 import { resolveUrl } from '@/lib/utils';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { ChevronRight } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { ChevronRight, Search } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
 
 export function NavMain({ items = [] }: { items: NavItem[] }) {
     const page = usePage();
+    const [searchQuery, setSearchQuery] = useState('');
 
     // Sadece aktif menüleri açık tut
     const getActiveMenuState = (): Record<string, boolean> => {
         const activeState: Record<string, boolean> = {};
 
+        // Alt menülerde aktif öğe var mı kontrol eden yardımcı fonksiyon
+        const checkSubItemsActive = (
+            subItems: NavItem[],
+            parentKey: string,
+        ): boolean => {
+            let hasActive = false;
+
+            subItems.forEach((subItem) => {
+                // Direkt alt menü öğesi aktif mi?
+                if (subItem.href) {
+                    const subIsActive = page.url.startsWith(
+                        resolveUrl(subItem.href),
+                    );
+                    if (subIsActive) {
+                        hasActive = true;
+                    }
+                }
+
+                // Nested alt menüler var mı?
+                if (subItem.items && subItem.items.length > 0) {
+                    const subMenuKey = `${parentKey}_${subItem.title}`;
+                    const nestedActive = checkSubItemsActive(
+                        subItem.items,
+                        subMenuKey,
+                    );
+                    if (nestedActive) {
+                        hasActive = true;
+                        // Nested menüyü de açık tut
+                        activeState[subMenuKey] = true;
+                    }
+                }
+            });
+
+            return hasActive;
+        };
+
         items.forEach((item) => {
             if (item.items && item.items.length > 0) {
+                const menuKey = `menu_${item.title}`;
+
+                // Üst menü kendisi aktif mi?
                 const isActive = item.href
                     ? page.url.startsWith(resolveUrl(item.href))
                     : false;
-                const menuKey = `menu_${item.title}`;
+
                 if (isActive) {
                     activeState[menuKey] = true;
-                }
-                // Alt menüleri kontrol et
-                item.items.forEach((subItem) => {
-                    if (subItem.items && subItem.items.length > 0) {
-                        const subIsActive = subItem.href
-                            ? page.url.startsWith(resolveUrl(subItem.href))
-                            : false;
-                        const subMenuKey = `menu_${item.title}_${subItem.title}`;
-                        if (subIsActive) {
-                            activeState[menuKey] = true;
-                            activeState[subMenuKey] = true;
-                        }
+                } else {
+                    // Alt menülerde aktif öğe var mı kontrol et
+                    const hasActiveSubItem = checkSubItemsActive(
+                        item.items,
+                        menuKey,
+                    );
+                    if (hasActiveSubItem) {
+                        activeState[menuKey] = true;
                     }
-                });
+                }
             }
         });
 
@@ -69,6 +106,70 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
         // Sayfa değiştiğinde useEffect aktif menüleri belirleyecek
         setMenuState((prev) => ({ ...prev, [menuKey]: isOpen }));
     };
+
+    // Menü öğelerini arama sorgusuna göre filtrele
+    const filterMenuItems = (
+        menuItems: NavItem[],
+        query: string,
+    ): NavItem[] => {
+        if (!query.trim()) {
+            return menuItems;
+        }
+
+        const lowerQuery = query.toLowerCase();
+
+        return menuItems
+            .map((item) => {
+                const titleMatches = item.title
+                    .toLowerCase()
+                    .includes(lowerQuery);
+
+                // Alt menüleri de filtrele
+                let filteredItems: NavItem[] | undefined;
+                if (item.items && item.items.length > 0) {
+                    filteredItems = filterMenuItems(item.items, query);
+                }
+
+                // Eğer başlık eşleşiyorsa veya filtrelenmiş alt menüler varsa, öğeyi dahil et
+                if (
+                    titleMatches ||
+                    (filteredItems && filteredItems.length > 0)
+                ) {
+                    return {
+                        ...item,
+                        items: filteredItems,
+                    };
+                }
+
+                return null;
+            })
+            .filter((item): item is NavItem => item !== null);
+    };
+
+    const filteredItems = useMemo(
+        () => filterMenuItems(items, searchQuery),
+        [items, searchQuery],
+    );
+
+    // Arama yapıldığında eşleşen menüleri otomatik aç
+    useEffect(() => {
+        if (searchQuery.trim()) {
+            const openMenus: Record<string, boolean> = {};
+            const markMenusToOpen = (menuItems: NavItem[], parentKey = '') => {
+                menuItems.forEach((item) => {
+                    if (item.items && item.items.length > 0) {
+                        const menuKey = parentKey
+                            ? `${parentKey}_${item.title}`
+                            : `menu_${item.title}`;
+                        openMenus[menuKey] = true;
+                        markMenusToOpen(item.items, menuKey);
+                    }
+                });
+            };
+            markMenusToOpen(filteredItems);
+            setMenuState((prev) => ({ ...prev, ...openMenus }));
+        }
+    }, [searchQuery, filteredItems]);
 
     const renderMenuItem = (item: NavItem) => {
         const hasChildren = item.items && item.items.length > 0;
@@ -92,6 +193,7 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                             <SidebarMenuButton
                                 tooltip={{ children: item.title }}
                                 isActive={isActive}
+                                className="cursor-pointer"
                             >
                                 {item.icon && <item.icon />}
                                 <span>{item.title}</span>
@@ -143,6 +245,7 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                                                                           )
                                                                         : false
                                                                 }
+                                                                className="cursor-pointer"
                                                             >
                                                                 {subItem.icon && (
                                                                     <subItem.icon />
@@ -259,7 +362,29 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
     return (
         <SidebarGroup className="px-2 py-0">
             <SidebarGroupLabel>Menü</SidebarGroupLabel>
-            <SidebarMenu>{items.map(renderMenuItem)}</SidebarMenu>
+            <div className="px-2 pb-2">
+                <div className="relative">
+                    <Search className="absolute top-1/2 left-2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                        type="search"
+                        placeholder="Menüde ara..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="pl-8"
+                    />
+                </div>
+            </div>
+            <SidebarMenu>
+                {filteredItems.length > 0 ? (
+                    filteredItems.map(renderMenuItem)
+                ) : (
+                    <SidebarMenuItem>
+                        <div className="px-2 py-4 text-center text-sm text-muted-foreground">
+                            Sonuç bulunamadı
+                        </div>
+                    </SidebarMenuItem>
+                )}
+            </SidebarMenu>
         </SidebarGroup>
     );
 }

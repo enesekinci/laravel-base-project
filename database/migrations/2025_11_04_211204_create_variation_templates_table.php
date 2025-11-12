@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -24,6 +25,39 @@ return new class extends Migration
             $table->index('is_active');
             $table->index('sort_order');
         });
+
+        // Seed data - Sadece variation_templates, variation_template_values seed data'sı variation_template_values migration'ında
+        $now = now();
+
+        // Renk
+        DB::table('variation_templates')->insert([
+            'name' => 'Renk',
+            'type' => 'color',
+            'sort_order' => 1,
+            'is_active' => true,
+            'created_at' => $now,
+            'updated_at' => $now,
+        ]);
+
+        // Kapasite
+        DB::table('variation_templates')->insert([
+            'name' => 'Kapasite',
+            'type' => 'text',
+            'sort_order' => 2,
+            'is_active' => true,
+            'created_at' => $now,
+            'updated_at' => $now,
+        ]);
+
+        // Boyut
+        DB::table('variation_templates')->insert([
+            'name' => 'Boyut',
+            'type' => 'text',
+            'sort_order' => 3,
+            'is_active' => true,
+            'created_at' => $now,
+            'updated_at' => $now,
+        ]);
     }
 
     /**

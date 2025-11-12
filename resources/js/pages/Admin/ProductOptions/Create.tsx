@@ -11,10 +11,11 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import { useToastErrors } from '@/hooks/use-toast-errors';
 import AppLayout from '@/layouts/app-layout';
-import { index, store } from '@/routes/admin/product-options';
+import { index, store } from '@/routes/admin/options';
 import { type BreadcrumbItem } from '@/types';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Head, Link, router, useForm } from '@inertiajs/react';
 import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -25,11 +26,11 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
     {
         title: 'Ürün Seçenekleri',
-        href: '/admin/product-options',
+        href: '/admin/options',
     },
     {
         title: 'Yeni Seçenek',
-        href: '/admin/product-options/create',
+        href: '/admin/options/create',
     },
 ];
 
@@ -70,6 +71,9 @@ export default function ProductOptionsCreate() {
         is_active: true,
         values: [] as ProductOptionValue[],
     });
+
+    // Toast errors hook'unu kullan
+    useToastErrors(errors);
 
     const [localValues, setLocalValues] = useState<
         (ProductOptionValue & { tempId?: string })[]
@@ -151,8 +155,14 @@ export default function ProductOptionsCreate() {
             sort_order: v.sort_order,
         }));
 
-        setData('values', values);
-        post(store().url);
+        // Form data'yı hazırla ve values'ı ekle
+        const formData = {
+            ...data,
+            values: values,
+        };
+
+        // router.post kullanarak direkt data gönder
+        router.post(store().url, formData);
     };
 
     return (
@@ -223,8 +233,8 @@ export default function ProductOptionsCreate() {
                                         <SelectValue placeholder="Tip seçin" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="select">
-                                            Select
+                                        <SelectItem value="dropdown">
+                                            Dropdown
                                         </SelectItem>
                                         <SelectItem value="radio">
                                             Radio
@@ -232,8 +242,23 @@ export default function ProductOptionsCreate() {
                                         <SelectItem value="checkbox">
                                             Checkbox
                                         </SelectItem>
+                                        <SelectItem value="multiple_select">
+                                            Multiple Select
+                                        </SelectItem>
+                                        <SelectItem value="field">
+                                            Text Field
+                                        </SelectItem>
                                         <SelectItem value="textarea">
                                             Textarea
+                                        </SelectItem>
+                                        <SelectItem value="date">
+                                            Date
+                                        </SelectItem>
+                                        <SelectItem value="date_time">
+                                            Date Time
+                                        </SelectItem>
+                                        <SelectItem value="time">
+                                            Time
                                         </SelectItem>
                                     </SelectContent>
                                 </Select>

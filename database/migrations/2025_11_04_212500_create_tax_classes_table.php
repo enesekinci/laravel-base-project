@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -21,6 +22,15 @@ return new class extends Migration
 
             $table->index('is_active');
         });
+
+        // Seed data
+        $now = now();
+        DB::table('tax_classes')->insert([
+            ['name' => 'KDV %0', 'rate' => 0.00, 'is_active' => true, 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'KDV %1', 'rate' => 1.00, 'is_active' => true, 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'KDV %10', 'rate' => 10.00, 'is_active' => true, 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'KDV %20', 'rate' => 20.00, 'is_active' => true, 'created_at' => $now, 'updated_at' => $now],
+        ]);
     }
 
     /**

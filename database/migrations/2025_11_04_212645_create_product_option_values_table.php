@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('product_option_values', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('product_option_id');
+            $table->unsignedBigInteger('product_id');
+            $table->unsignedBigInteger('option_id');
             $table->string('label');
             $table->string('value')->nullable();
             $table->decimal('price_adjustment', 10, 2)->default(0);
@@ -21,12 +22,18 @@ return new class extends Migration
             $table->integer('sort_order')->default(0);
             $table->timestamps();
 
-            $table->foreign('product_option_id')
+            $table->foreign('product_id')
                 ->references('id')
-                ->on('product_options')
+                ->on('products')
                 ->onDelete('cascade');
 
-            $table->index('product_option_id');
+            $table->foreign('option_id')
+                ->references('id')
+                ->on('options')
+                ->onDelete('cascade');
+
+            $table->index('product_id');
+            $table->index('option_id');
             $table->index('sort_order');
         });
     }

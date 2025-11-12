@@ -12,6 +12,14 @@ alwaysApply: true
 - Component isimleri PascalCase olmalı.
 - Props'ları type-safe yap (TypeScript kullan).
 
+## CODE ORGANIZATION
+
+- **Types**: Tüm TypeScript tipleri `resources/js/types/` klasöründe, domain bazlı dosyalarda
+- **Hooks**: Custom hook'lar `resources/js/hooks/` klasöründe, `use-` prefix ile
+- **Utils**: Utility fonksiyonları `resources/js/utils/` klasöründe, pure fonksiyonlar
+- **Components**: Feature bazlı component'ler `resources/js/components/` klasöründe
+- **Refactoring**: Detaylı refactoring kuralları için `10-react-refactoring.mdc` dosyasına bak
+
 # REACT COMPONENT GENERATION
 
 - Eğer React component üretiyorsan shadcn stiline göre üret.

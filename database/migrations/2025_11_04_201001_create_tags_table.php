@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -23,6 +24,17 @@ return new class extends Migration
             $table->index('slug');
             $table->index('is_active');
         });
+
+        // Seed data
+        $now = now();
+        DB::table('tags')->insert([
+            ['name' => 'Yeni Ürün', 'slug' => 'yeni-urun', 'color' => '#10B981', 'is_active' => true, 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'İndirimli', 'slug' => 'indirimli', 'color' => '#EF4444', 'is_active' => true, 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'Popüler', 'slug' => 'populer', 'color' => '#F59E0B', 'is_active' => true, 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'Öne Çıkan', 'slug' => 'one-cikan', 'color' => '#3B82F6', 'is_active' => true, 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'Kampanya', 'slug' => 'kampanya', 'color' => '#8B5CF6', 'is_active' => true, 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'Stokta Yok', 'slug' => 'stokta-yok', 'color' => '#6B7280', 'is_active' => true, 'created_at' => $now, 'updated_at' => $now],
+        ]);
     }
 
     /**

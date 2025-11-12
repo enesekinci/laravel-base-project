@@ -52,4 +52,3 @@ class MenuService
         return $menu->delete();
     }
 }
-

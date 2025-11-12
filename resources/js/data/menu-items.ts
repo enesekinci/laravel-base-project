@@ -1,16 +1,11 @@
 import { type NavItem } from '@/types';
 import {
-    Activity,
-    AlertCircle,
-    Archive,
-    BarChart,
     BarChart3,
     Bell,
     Box,
     Boxes,
     Building,
     Building2,
-    Calendar,
     Camera,
     ClipboardList,
     CreditCard,
@@ -19,11 +14,8 @@ import {
     FileCode,
     FileText,
     FormInput,
-    Gift,
     Globe,
-    Globe2,
     Grid3x3,
-    HardDrive,
     HelpCircle,
     Image,
     Languages,
@@ -31,23 +23,15 @@ import {
     Link as LinkIcon,
     List,
     Mail,
-    MapPin,
     Menu,
     MessageSquare,
     Newspaper,
     Package,
     Palette,
-    PieChart,
     Receipt,
-    RefreshCw,
     Settings,
     ShoppingBag,
-    ShoppingCart,
-    Star,
     Tag,
-    Ticket,
-    TrendingDown,
-    TrendingUp,
     Truck,
     Users,
 } from 'lucide-react';
@@ -113,57 +97,10 @@ export const menuItems: NavItem[] = [
                     },
                     {
                         title: 'Seçenekler',
-                        href: '/admin/product-options',
+                        href: '/admin/options',
                         icon: List,
                     },
                 ],
-            },
-            {
-                title: 'Hareketler',
-                icon: Activity,
-                items: [
-                    {
-                        title: 'Yorumlar',
-                        href: '/admin/products/reviews',
-                        icon: MessageSquare,
-                    },
-                    {
-                        title: 'Sorular',
-                        href: '/admin/products/questions',
-                        icon: HelpCircle,
-                    },
-                    {
-                        title: 'Favoriler',
-                        href: '/admin/products/favorites',
-                        icon: Star,
-                    },
-                    {
-                        title: 'Gelince Haber Ver',
-                        href: '/admin/products/notify-stock',
-                        icon: Bell,
-                    },
-                    {
-                        title: 'Fiyat Düşünce Haber Ver',
-                        href: '/admin/products/notify-price',
-                        icon: TrendingDown,
-                    },
-                    {
-                        title: 'Unutulmuş Sepetler',
-                        href: '/admin/products/abandoned-carts',
-                        icon: ShoppingCart,
-                    },
-                ],
-            },
-        ],
-    },
-    {
-        title: 'XML Yönetimi',
-        icon: FileCode,
-        items: [
-            {
-                title: 'Export Yönetimi',
-                href: '/admin/xml/exports',
-                icon: FileText,
             },
         ],
     },
@@ -185,38 +122,6 @@ export const menuItems: NavItem[] = [
                 title: 'Temsilciler',
                 href: '/admin/customer-representatives',
                 icon: Users,
-            },
-        ],
-    },
-    {
-        title: 'Sipariş Yönetimi',
-        icon: ShoppingBag,
-        items: [
-            {
-                title: 'Sipariş',
-                href: '/admin/orders',
-                icon: ShoppingCart,
-            },
-            {
-                title: 'İade Talep',
-                href: '/admin/orders/returns',
-                icon: RefreshCw,
-            },
-        ],
-    },
-    {
-        title: 'Kampanya Yönetimi',
-        icon: Gift,
-        items: [
-            {
-                title: 'Kupon',
-                href: '/admin/campaigns/coupons',
-                icon: Ticket,
-            },
-            {
-                title: 'İndirim Sihirbazı',
-                href: '/admin/campaigns/discounts',
-                icon: TrendingDown,
             },
         ],
     },
@@ -286,6 +191,11 @@ export const menuItems: NavItem[] = [
                         icon: Image,
                     },
                     {
+                        title: 'Top Notice',
+                        href: '/admin/top-notice/edit',
+                        icon: Bell,
+                    },
+                    {
                         title: 'Sık Sorulan Sorular',
                         href: '/admin/faqs',
                         icon: HelpCircle,
@@ -325,7 +235,7 @@ export const menuItems: NavItem[] = [
         items: [
             {
                 title: 'Menü',
-                href: '/admin/settings/menu',
+                href: '/admin/menus',
                 icon: Menu,
             },
             {
@@ -333,40 +243,45 @@ export const menuItems: NavItem[] = [
                 icon: ShoppingBag,
                 items: [
                     {
-                        title: 'Genel Ayar',
-                        href: '/admin/settings/store/general',
+                        title: 'Genel Ayarlar',
+                        href: '/admin/general-settings/edit',
+                        icon: Settings,
+                    },
+                    {
+                        title: 'Mağaza Ayarları',
+                        href: '/admin/store-settings?group=general',
                         icon: Settings,
                     },
                     {
                         title: 'Ödeme Yöntem',
-                        href: '/admin/settings/store/payment-methods',
+                        href: '/admin/payment-methods',
                         icon: CreditCardIcon,
                     },
                     {
                         title: 'Para Birim',
-                        href: '/admin/settings/store/currencies',
+                        href: '/admin/currencies',
                         icon: DollarSign,
                     },
                     {
                         title: 'Vergi',
-                        href: '/admin/settings/store/taxes',
+                        href: '/admin/tax-classes',
                         icon: Receipt,
                     },
                 ],
             },
             {
                 title: 'Entegrasyon',
-                href: '/admin/settings/integrations',
+                href: '/admin/integrations',
                 icon: LinkIcon,
             },
             {
                 title: 'Kargo',
-                href: '/admin/settings/shipping',
+                href: '/admin/shipping-methods',
                 icon: Truck,
             },
             {
                 title: 'Banka Hesap',
-                href: '/admin/settings/bank-accounts',
+                href: '/admin/bank-accounts',
                 icon: Building,
             },
         ],
@@ -417,135 +332,5 @@ export const menuItems: NavItem[] = [
         title: 'Destek Talepleri',
         href: '/admin/support-tickets',
         icon: HelpCircle,
-    },
-    {
-        title: 'Raporlar',
-        icon: BarChart3,
-        items: [
-            {
-                title: 'Performans',
-                icon: TrendingUp,
-                items: [
-                    {
-                        title: 'Etkileşim ve Dönüşüm',
-                        href: '/admin/reports/performance/interaction',
-                        icon: Activity,
-                    },
-                    {
-                        title: 'Funnel Trafik',
-                        href: '/admin/reports/performance/funnel',
-                        icon: BarChart,
-                    },
-                    {
-                        title: 'Çapraz Ürün',
-                        href: '/admin/reports/performance/cross-product',
-                        icon: Grid3x3,
-                    },
-                    {
-                        title: 'Müşteri Aktivite',
-                        href: '/admin/reports/performance/customer-activity',
-                        icon: Users,
-                    },
-                ],
-            },
-            {
-                title: 'Envanter',
-                icon: Archive,
-                items: [
-                    {
-                        title: 'Envanter (Ürün Bazlı)',
-                        href: '/admin/reports/inventory/product-based',
-                        icon: Package,
-                    },
-                    {
-                        title: 'Envanter (Model Bazlı)',
-                        href: '/admin/reports/inventory/model-based',
-                        icon: Boxes,
-                    },
-                    {
-                        title: 'Kategori',
-                        href: '/admin/reports/inventory/category',
-                        icon: Grid3x3,
-                    },
-                    {
-                        title: 'Marka',
-                        href: '/admin/reports/inventory/brand',
-                        icon: Building2,
-                    },
-                    {
-                        title: 'Tedarikçi',
-                        href: '/admin/reports/inventory/supplier',
-                        icon: Truck,
-                    },
-                    {
-                        title: 'Kritik Stok',
-                        href: '/admin/reports/inventory/critical-stock',
-                        icon: AlertCircle,
-                    },
-                ],
-            },
-            {
-                title: 'Satış',
-                icon: DollarSign,
-                items: [
-                    {
-                        title: 'Satış ve Karlılık (Varyasyon Bazlı)',
-                        href: '/admin/reports/sales/variation-based',
-                        icon: BarChart,
-                    },
-                    {
-                        title: 'Satış ve Karlılık (Model Bazlı)',
-                        href: '/admin/reports/sales/model-based',
-                        icon: PieChart,
-                    },
-                    {
-                        title: 'Renk',
-                        href: '/admin/reports/sales/color',
-                        icon: Palette,
-                    },
-                    {
-                        title: 'Ürün İade',
-                        href: '/admin/reports/sales/returns',
-                        icon: RefreshCw,
-                    },
-                    {
-                        title: 'Süreli Sipariş',
-                        href: '/admin/reports/sales/periodic-orders',
-                        icon: Calendar,
-                    },
-                ],
-            },
-            {
-                title: 'Sipariş',
-                icon: ShoppingCart,
-                items: [
-                    {
-                        title: 'Ülke',
-                        href: '/admin/reports/orders/country',
-                        icon: Globe2,
-                    },
-                    {
-                        title: 'Şehir',
-                        href: '/admin/reports/orders/city',
-                        icon: MapPin,
-                    },
-                    {
-                        title: 'Ödeme Yöntemi',
-                        href: '/admin/reports/orders/payment-method',
-                        icon: CreditCard,
-                    },
-                    {
-                        title: 'Kargo',
-                        href: '/admin/reports/orders/shipping',
-                        icon: Truck,
-                    },
-                    {
-                        title: 'Müşteri Sipariş',
-                        href: '/admin/reports/orders/customer',
-                        icon: Users,
-                    },
-                ],
-            },
-        ],
     },
 ];

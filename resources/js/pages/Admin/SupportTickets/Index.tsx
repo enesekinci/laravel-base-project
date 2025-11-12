@@ -8,19 +8,11 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, type PaginatedResponse } from '@/types';
 import { Head, router } from '@inertiajs/react';
 import { type ColumnDef } from '@tanstack/react-table';
-import { ArrowUpDown, Eye, MoreHorizontal, Trash2 } from 'lucide-react';
+import { ArrowUpDown, Eye, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -180,35 +172,30 @@ export default function SupportTicketsIndex({
                 const ticket = row.original;
 
                 return (
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0">
-                                <span className="sr-only">Menüyü aç</span>
-                                <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>İşlemler</DropdownMenuLabel>
-                            <DropdownMenuItem
-                                onClick={() =>
-                                    router.visit(
-                                        `/admin/support-tickets/${ticket.id}`,
-                                    )
-                                }
-                            >
-                                <Eye className="mr-2 h-4 w-4" />
-                                Görüntüle
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem
-                                onClick={() => setDeleteTicketId(ticket.id)}
-                                className="text-destructive"
-                            >
-                                <Trash2 className="mr-2 h-4 w-4" />
-                                Sil
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                    <div className="flex items-center gap-2">
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                            onClick={() =>
+                                router.visit(
+                                    `/admin/support-tickets/${ticket.id}`,
+                                )
+                            }
+                            title="Görüntüle"
+                        >
+                            <Eye className="h-4 w-4" />
+                        </Button>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-destructive hover:text-destructive"
+                            onClick={() => setDeleteTicketId(ticket.id)}
+                            title="Sil"
+                        >
+                            <Trash2 className="h-4 w-4" />
+                        </Button>
+                    </div>
                 );
             },
         },

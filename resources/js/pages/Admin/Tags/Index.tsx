@@ -8,20 +8,12 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import AppLayout from '@/layouts/app-layout';
 import { destroy, show } from '@/routes/admin/tags';
 import { type BreadcrumbItem, type PaginatedResponse } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
 import { type ColumnDef } from '@tanstack/react-table';
-import { ArrowUpDown, Eye, MoreHorizontal, Plus, Trash2 } from 'lucide-react';
+import { ArrowUpDown, Eye, Pencil, Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -125,38 +117,37 @@ export default function TagsIndex({ tags }: Props) {
                 const tag = row.original;
 
                 return (
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0">
-                                <span className="sr-only">Menüyü aç</span>
-                                <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>İşlemler</DropdownMenuLabel>
-                            <DropdownMenuItem
-                                onClick={() => router.visit(show(tag.id))}
-                            >
-                                <Eye className="mr-2 h-4 w-4" />
-                                Görüntüle
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                                onClick={() =>
-                                    router.visit(`/admin/tags/${tag.id}/edit`)
-                                }
-                            >
-                                Düzenle
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem
-                                onClick={() => setDeleteTagId(tag.id)}
-                                className="text-destructive"
-                            >
-                                <Trash2 className="mr-2 h-4 w-4" />
-                                Sil
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                    <div className="flex items-center gap-2">
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                            onClick={() => router.visit(show(tag.id))}
+                            title="Görüntüle"
+                        >
+                            <Eye className="h-4 w-4" />
+                        </Button>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                            onClick={() =>
+                                router.visit(`/admin/tags/${tag.id}/edit`)
+                            }
+                            title="Düzenle"
+                        >
+                            <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-destructive hover:text-destructive"
+                            onClick={() => setDeleteTagId(tag.id)}
+                            title="Sil"
+                        >
+                            <Trash2 className="h-4 w-4" />
+                        </Button>
+                    </div>
                 );
             },
         },

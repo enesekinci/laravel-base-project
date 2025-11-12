@@ -25,6 +25,8 @@ class StoreVariationRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'type' => ['required', 'string', Rule::in(['text', 'color', 'image'])],
+            'sort_order' => ['nullable', 'integer', 'min:0'],
+            'is_active' => ['nullable', 'boolean'],
             'values' => ['nullable', 'array'],
             'values.*.label' => ['required', 'string', 'max:255'],
             'values.*.value' => ['nullable', 'string', 'max:255'],
