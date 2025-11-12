@@ -99,7 +99,7 @@
                             </a>
                             <form action="#" method="get">
                                 <div class="header-search-wrapper">
-                                    <input type="search" class="form-control" name="q" id="q" placeholder="Search..."
+                                    <input type="search" class="form-control" name="q" id="q" placeholder="{{ __('Search...') }}"
                                         required>
                                     <button class="btn icon-magnifier" type="submit"></button>
                                 </div>

@@ -72,7 +72,7 @@
                             <form class="mb-0" action="#" method="get">
                                 <div class="header-search-wrapper submit-wrapper">
                                     <input type="search" class="form-control font2" name="q" id="q"
-                                        placeholder="Search..." required>
+                                        placeholder="{{ __('Search...') }}" required>
                                     <button class="btn" type="submit"><i class="icon-search-3"></i></button>
                                 </div><!-- End .header-search-wrapper -->
                             </form>

@@ -35,12 +35,27 @@
                             <a href="#">Links</a>
                             <div class="header-menu">
                                 <ul>
-                                    <li><a href="/porto/dashboard.html">My Account</a></li>
-                                    <li><a href="/porto/demo1-contact.html">Contact Us</a></li>
-                                    <li><a href="/porto/wishlist.html">My Wishlist</a></li>
-                                    <li><a href="#">Site Map</a></li>
-                                    <li><a href="/porto/cart.html">Cart</a></li>
-                                    <li><a href="#" class="login-link">Log In</a></li>
+                                    @if(!empty($headerMenu) && is_array($headerMenu) && count($headerMenu) > 0)
+                                        @foreach($headerMenu as $item)
+                                            @if($item['is_active'] ?? true)
+                                                <li>
+                                                    <a href="{{ $item['url'] ?? '#' }}" 
+                                                       @if(($item['target'] ?? '_self') === '_blank') target="_blank" @endif
+                                                       @if(isset($item['url']) && str_contains($item['url'], 'login')) class="login-link" @endif>
+                                                        {{ $item['name'] ?? '' }}
+                                                    </a>
+                                                </li>
+                                            @endif
+                                        @endforeach
+                                    @else
+                                        {{-- Fallback: Varsayılan menü --}}
+                                        <li><a href="/porto/dashboard.html">My Account</a></li>
+                                        <li><a href="/porto/demo1-contact.html">Contact Us</a></li>
+                                        <li><a href="/porto/wishlist.html">My Wishlist</a></li>
+                                        <li><a href="#">Site Map</a></li>
+                                        <li><a href="/porto/cart.html">Cart</a></li>
+                                        <li><a href="#" class="login-link">Log In</a></li>
+                                    @endif
                                 </ul>
                             </div>
                             <!-- End .header-menu -->
@@ -79,26 +94,10 @@
                             <a href="#" class="search-toggle" role="button"><i class="icon-search-3"></i></a>
                             <form action="#" method="get">
                                 <div class="header-search-wrapper">
-                                    <input type="search" class="form-control" name="q" id="q" placeholder="Search..." required>
+                                    <input type="search" class="form-control" name="q" id="q" placeholder="{{ __('Search...') }}" required>
                                     <div class="select-custom">
-                                        <select id="cat" name="cat">
-                                            <option value="">All Categories</option>
-                                            <option value="4">Fashion</option>
-                                            <option value="12">- Women</option>
-                                            <option value="13">- Men</option>
-                                            <option value="66">- Jewellery</option>
-                                            <option value="67">- Kids Fashion</option>
-                                            <option value="5">Electronics</option>
-                                            <option value="21">- Smart TVs</option>
-                                            <option value="22">- Cameras</option>
-                                            <option value="63">- Games</option>
-                                            <option value="7">Home &amp; Garden</option>
-                                            <option value="11">Motors</option>
-                                            <option value="31">- Cars and Trucks</option>
-                                            <option value="32">- Motorcycles &amp; Powersports</option>
-                                            <option value="33">- Parts &amp; Accessories</option>
-                                            <option value="34">- Boats</option>
-                                            <option value="57">- Auto Tools &amp; Supplies</option>
+                                         <select id="cat" name="cat">
+                                            {!! category_select_options(null, 'All Categories') !!}
                                         </select>
                                     </div>
                                     <!-- End .select-custom -->

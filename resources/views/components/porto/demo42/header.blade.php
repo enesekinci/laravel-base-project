@@ -78,7 +78,7 @@
                             <a href="#" class="search-toggle" role="button"><i class="icon-search-3"></i></a>
                             <form action="#" method="get">
                                 <div class="header-search-wrapper">
-                                    <input type="search" class="form-control" name="q" id="q" placeholder="Search..."
+                                    <input type="search" class="form-control" name="q" id="q" placeholder="{{ __('Search...') }}"
                                         required>
 
                                     <button class="btn icon-magnifier p-0" title="search" type="submit"></button>
