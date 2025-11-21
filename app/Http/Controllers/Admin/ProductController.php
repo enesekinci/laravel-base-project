@@ -3,67 +3,132 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreProductRequest;
+use App\Http\Requests\Admin\UpdateProductRequest;
+use App\Http\Resources\Admin\AdminProductResource;
 use App\Models\Product;
+use App\Support\DatabaseHelper;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
-use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
-    public function store(Request $request)
+    public function index(Request $request)
     {
-        $data = $this->validateData($request);
+        $query = Product::query()
+            ->with(['brand', 'categories'])
+            ->whereNull('deleted_at');
 
-        if (empty($data['slug'])) {
-            $data['slug'] = Str::slug($data['name']) . '-' . Str::random(5);
+        if ($search = $request->query('search')) {
+            $likeOperator = DatabaseHelper::getCaseInsensitiveLikeOperator();
+            $query->where(function ($q) use ($search, $likeOperator) {
+                $q->where('name', $likeOperator, '%' . $search . '%')
+                  ->orWhere('sku', $likeOperator, '%' . $search . '%');
+            });
         }
+
+        if (!is_null($request->query('brand_id'))) {
+            $query->where('brand_id', $request->query('brand_id'));
+        }
+
+        if (!is_null($request->query('is_active'))) {
+            $val = (int) $request->query('is_active') === 1;
+            $query->where('is_active', $val);
+        }
+
+        if (!is_null($request->query('in_stock'))) {
+            $val = (int) $request->query('in_stock') === 1;
+            $query->where('in_stock', $val);
+        }
+
+        if ($catId = $request->query('category_id')) {
+            $query->whereHas('categories', function ($q) use ($catId) {
+                $q->where('categories.id', $catId);
+            });
+        }
+
+        $perPage = (int) $request->query('per_page', 20);
+
+        $products = $query->orderByDesc('id')->paginate($perPage);
+
+        return AdminProductResource::collection($products);
+    }
+
+    public function show(Product $product)
+    {
+        $product->load(['brand', 'categories', 'images']);
+
+        return new AdminProductResource($product);
+    }
+
+    public function store(StoreProductRequest $request)
+    {
+        $data = $request->validated();
+
+        $categoryIds = $data['category_ids'] ?? [];
+        unset($data['category_ids']);
+
+        // default flags
+        $data['is_active']    = $data['is_active'] ?? true;
+        $data['manage_stock'] = $data['manage_stock'] ?? true;
+        $data['in_stock']     = $data['in_stock'] ?? true;
+        $data['quantity']     = $data['quantity'] ?? 0;
 
         $product = Product::create($data);
 
-        return response()->json($product, 201);
+        if (!empty($categoryIds)) {
+            $product->categories()->sync($categoryIds);
+        }
+
+        $product->load(['brand', 'categories']);
+
+        return (new AdminProductResource($product))
+            ->response()
+            ->setStatusCode(201);
     }
 
-    public function update(Request $request, Product $product)
+    public function update(UpdateProductRequest $request, Product $product)
     {
-        $data = $this->validateData($request, $product->id);
+        $data = $request->validated();
 
-        $product->update($data);
+        $categoryIds = $data['category_ids'] ?? null;
+        unset($data['category_ids']);
 
-        return response()->json($product, 200);
+        $product->fill($data);
+        $product->save();
+
+        if (!is_null($categoryIds)) {
+            $product->categories()->sync($categoryIds);
+        }
+
+        $product->load(['brand', 'categories']);
+
+        return new AdminProductResource($product);
     }
 
     public function destroy(Product $product)
     {
         $product->delete();
 
-        return response()->json(null, 204);
+        return response()->noContent();
     }
 
-    protected function validateData(Request $request, ?int $productId = null): array
+    public function restore($id)
     {
-        $uniqueSkuRule = Rule::unique('products', 'sku');
-        $uniqueSlugRule = Rule::unique('products', 'slug');
+        $product = Product::withTrashed()->findOrFail($id);
+        $product->restore();
 
-        if ($productId) {
-            $uniqueSkuRule = $uniqueSkuRule->ignore($productId);
-            $uniqueSlugRule = $uniqueSlugRule->ignore($productId);
-        }
+        $product->load(['brand', 'categories']);
 
-        return $request->validate([
-            'name'        => ['required', 'string', 'max:255'],
-            'slug'        => ['nullable', 'string', $uniqueSlugRule],
-            'sku'         => ['nullable', 'string', $uniqueSkuRule],
-            'price'       => ['required', 'numeric', 'min:0'],
-            'special_price'       => ['nullable', 'numeric', 'min:0'],
-            'special_price_type'  => ['nullable', Rule::in(['percent', 'fixed'])],
-            'special_price_start' => ['nullable', 'date'],
-            'special_price_end'   => ['nullable', 'date', 'after_or_equal:special_price_start'],
-            'manage_stock'        => ['nullable', 'boolean'],
-            'quantity'            => ['nullable', 'integer', 'min:0'],
-            'in_stock'            => ['nullable', 'boolean'],
-            'brand_id'            => ['nullable', 'exists:brands,id'],
-            'tax_class_id'        => ['nullable', 'exists:tax_classes,id'],
-            'is_active'           => ['nullable', 'boolean'],
-        ]);
+        return new AdminProductResource($product);
+    }
+
+    public function toggleActive(Product $product)
+    {
+        $product->is_active = !$product->is_active;
+        $product->save();
+
+        $product->load(['brand', 'categories']);
+
+        return new AdminProductResource($product);
     }
 }
