@@ -1,11 +1,21 @@
 <?php
 
+use App\Models\User;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\Option;
 use App\Models\OptionValue;
 
+if (!function_exists('adminUser')) {
+    function adminUser(): User {
+        $user = User::factory()->create();
+        test()->actingAs($user);
+        return $user;
+    }
+}
+
 it('generates variants for all option combinations', function () {
+    adminUser();
     // Arrange
     $product = Product::factory()->create([
         'price' => 299.90,
@@ -106,6 +116,7 @@ it('generates variants for all option combinations', function () {
 });
 
 it('does not create duplicate variants when generate is called again', function () {
+    adminUser();
     // Arrange
     $product = Product::factory()->create([
         'price' => 299.90,

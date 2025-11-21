@@ -1,11 +1,21 @@
 <?php
 
+use App\Models\User;
 use App\Models\Product;
 use App\Models\Brand;
 use App\Models\TaxClass;
 use Illuminate\Support\Str;
 
+if (!function_exists('adminUser')) {
+    function adminUser(): User {
+        $user = User::factory()->create();
+        test()->actingAs($user);
+        return $user;
+    }
+}
+
 it('creates product via admin', function () {
+    adminUser();
     $brand = Brand::factory()->create();
     $tax   = TaxClass::factory()->create();
 
@@ -30,6 +40,7 @@ it('creates product via admin', function () {
 });
 
 it('validates required fields on create', function () {
+    adminUser();
     $response = $this->postJson(route('admin.products.store'), []);
 
     $response->assertStatus(422)
@@ -37,6 +48,7 @@ it('validates required fields on create', function () {
 });
 
 it('updates product via admin', function () {
+    adminUser();
     $product = Product::factory()->create([
         'name'  => 'Old Name',
         'price' => 100,
@@ -59,6 +71,7 @@ it('updates product via admin', function () {
 });
 
 it('soft deletes product via admin', function () {
+    adminUser();
     $product = Product::factory()->create();
 
     $response = $this->deleteJson(route('admin.products.destroy', $product));

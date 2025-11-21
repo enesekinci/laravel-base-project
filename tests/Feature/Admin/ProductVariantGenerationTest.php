@@ -1,11 +1,21 @@
 <?php
 
+use App\Models\User;
 use App\Models\Product;
 use App\Models\Option;
 use App\Models\OptionValue;
 use App\Models\ProductVariant;
 
+if (!function_exists('adminUser')) {
+    function adminUser(): User {
+        $user = User::factory()->create();
+        test()->actingAs($user);
+        return $user;
+    }
+}
+
 it('generates product variants from options', function () {
+    adminUser();
     $product = Product::factory()->create();
 
     $colorOption = Option::factory()->create(['name' => 'Renk']);
@@ -69,6 +79,7 @@ it('generates product variants from options', function () {
 });
 
 it('skips existing variant combinations', function () {
+    adminUser();
     $product = Product::factory()->create();
 
     $colorOption = Option::factory()->create(['name' => 'Renk']);
