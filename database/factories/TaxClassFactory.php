@@ -9,11 +9,11 @@ class TaxClassFactory extends Factory
 {
     protected $model = TaxClass::class;
 
-    public function definition()
+    public function definition(): array
     {
         return [
-            'name' => 'Standard VAT',
-            'rate' => 18.0,
+            'name'      => 'KDV 18',
+            'rate'      => 18,
             'is_active' => true,
         ];
     }
