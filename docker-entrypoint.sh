@@ -1,0 +1,31 @@
+#!/bin/sh
+set -e
+
+echo "🚀 Starting Laravel application..."
+
+# Fix permissions
+echo "🔧 Fixing permissions..."
+chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache || true
+chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache || true
+mkdir -p /var/www/html/storage/logs || true
+chmod -R 775 /var/www/html/storage/logs || true
+
+# Run migrations (will fail gracefully if database is not ready)
+echo "📦 Running migrations..."
+php artisan migrate --force --no-interaction || echo "⚠️  Migration failed or skipped (database may not be ready yet)"
+
+# Optimize Laravel (only if not in local environment)
+if [ "$APP_ENV" != "local" ]; then
+    echo "⚡ Optimizing Laravel..."
+    php artisan optimize:clear || true
+    php artisan config:clear || true
+    php artisan route:clear || true
+    php artisan view:clear || true
+    php artisan optimize || true
+fi
+
+echo "✅ Laravel is ready!"
+
+# Execute the main command
+exec "$@"
+

@@ -1,4 +1,4 @@
-window.addEventListener("load", function(){
+window.addEventListener("load", function () {
 
     // Remove Loader
     var load_screen = document.getElementById("load_screen");
@@ -15,8 +15,8 @@ window.addEventListener("load", function(){
                 darkMode: true,
                 boxed: true,
                 logo: {
-                    darkLogo: '../src/assets/img/logo.svg',
-                    lightLogo: '../src/assets/img/logo2.svg'
+                    darkLogo: '/cork/src/assets/img/logo.svg',
+                    lightLogo: '/cork/src/assets/img/logo2.svg'
                 }
             }
         },
@@ -37,7 +37,7 @@ window.addEventListener("load", function(){
         ParsedObject = getParseObject;
 
         if (getcorkThemeObject !== null) {
-               
+
             if (ParsedObject.admin === 'Cork Admin Template') {
 
                 if (ParsedObject.settings.layout.name === layoutName) {
@@ -46,31 +46,31 @@ window.addEventListener("load", function(){
                 } else {
                     corkThemeObject = settingsObject;
                 }
-                
+
             } else {
                 if (ParsedObject.admin === undefined) {
                     corkThemeObject = settingsObject;
                 }
             }
 
-        }  else {
+        } else {
             corkThemeObject = settingsObject;
         }
     }
 
     // Get Dark Mode Information i.e darkMode: true or false
-    
+
     if (corkThemeObject.settings.layout.darkMode) {
         localStorage.setItem("theme", JSON.stringify(corkThemeObject));
         getcorkThemeObject = localStorage.getItem("theme");
         getParseObject = JSON.parse(getcorkThemeObject)
-    
+
         if (getParseObject.settings.layout.darkMode) {
             ifStarterKit = document.body.getAttribute('page') === 'starter-pack' ? true : false;
             document.body.classList.add('dark');
             if (ifStarterKit) {
                 if (document.querySelector('.navbar-logo')) {
-                    document.querySelector('.navbar-logo').setAttribute('src', '../../src/assets/img/logo.svg')
+                    document.querySelector('.navbar-logo').setAttribute('src', '/cork/src/assets/img/logo.svg')
                 }
             } else {
                 if (document.querySelector('.navbar-logo')) {
@@ -88,27 +88,33 @@ window.addEventListener("load", function(){
             document.body.classList.remove('dark');
             if (ifStarterKit) {
                 if (document.querySelector('.navbar-logo')) {
-                    document.querySelector('.navbar-logo').setAttribute('src', '../../src/assets/img/logo2.svg')
+                    var logoPath = getParseObject.settings.layout.logo && getParseObject.settings.layout.logo.lightLogo
+                        ? getParseObject.settings.layout.logo.lightLogo
+                        : '/cork/src/assets/img/logo2.svg';
+                    document.querySelector('.navbar-logo').setAttribute('src', logoPath)
                 }
             } else {
                 if (document.querySelector('.navbar-logo')) {
-                    document.querySelector('.navbar-logo').setAttribute('src', getParseObject.settings.layout.logo.lightLogo)
+                    var logoPath = getParseObject.settings.layout.logo && getParseObject.settings.layout.logo.lightLogo
+                        ? getParseObject.settings.layout.logo.lightLogo
+                        : '/cork/src/assets/img/logo.svg';
+                    document.querySelector('.navbar-logo').setAttribute('src', logoPath)
                 }
             }
-            
+
         }
     }
 
     // Get Layout Information i.e boxed: true or false
 
     if (corkThemeObject.settings.layout.boxed) {
-    
+
         localStorage.setItem("theme", JSON.stringify(corkThemeObject));
         getcorkThemeObject = localStorage.getItem("theme");
         getParseObject = JSON.parse(getcorkThemeObject)
-    
+
         if (getParseObject.settings.layout.boxed) {
-            
+
             if (document.body.getAttribute('layout') !== 'full-width') {
                 document.body.classList.add('layout-boxed');
                 if (document.querySelector('.header-container')) {
@@ -126,15 +132,15 @@ window.addEventListener("load", function(){
                     document.querySelector('.middle-content').classList.remove('container-xxl');
                 }
             }
-            
+
         }
-        
+
     } else {
-        
+
         localStorage.setItem("theme", JSON.stringify(corkThemeObject));
         getcorkThemeObject = localStorage.getItem("theme");
         getParseObject = JSON.parse(getcorkThemeObject)
-        
+
         if (!getParseObject.settings.layout.boxed) {
 
             if (document.body.getAttribute('layout') !== 'boxed') {
@@ -157,9 +163,9 @@ window.addEventListener("load", function(){
         }
     }
 
-    
 
 
-    
+
+
 });
 

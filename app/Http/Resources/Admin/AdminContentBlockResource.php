@@ -1,0 +1,21 @@
+<?php
+
+namespace App\Http\Resources\Admin;
+
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class AdminContentBlockResource extends JsonResource
+{
+    public function toArray($request)
+    {
+        return [
+            'id'        => $this->id,
+            'key'       => $this->key,
+            'name'      => $this->name,
+            'type'      => $this->type,
+            'value'     => $this->value,
+            'is_active' => (bool) $this->is_active,
+            'created_at'=> optional($this->created_at)->toIso8601String(),
+        ];
+    }
+}

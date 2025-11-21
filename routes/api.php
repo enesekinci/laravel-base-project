@@ -5,26 +5,55 @@ use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 
-// Public API
-Route::get('/products', [ProductController::class, 'index']);
-Route::get('/products/search', \App\Http\Controllers\Api\ProductSearchController::class);
-Route::get('/products/{product:slug}', [ProductController::class, 'show']);
+// Auth routes (customer)
+Route::prefix('auth')->group(function () {
+    Route::post('/register', [\App\Http\Controllers\Auth\RegisterController::class, 'register']);
+    Route::post('/login', [\App\Http\Controllers\Auth\LoginController::class, 'login']);
+    Route::post('/logout', [\App\Http\Controllers\Auth\LoginController::class, 'logout'])->middleware('auth:sanctum');
+    Route::get('/me', [\App\Http\Controllers\Auth\MeController::class, 'me'])->middleware('auth:sanctum');
+});
 
-// Cart API (auth required)
-Route::middleware('auth:sanctum')->group(function () {
+// Public API (Rate limited)
+Route::middleware('throttle:api-public')->group(function () {
+    Route::get('/products', [ProductController::class, 'index']);
+    Route::get('/products/{product:slug}', [ProductController::class, 'show']);
+});
+
+// Search endpoint (daha sıkı rate limit)
+Route::middleware('throttle:api-search')->group(function () {
+    Route::get('/products/search', \App\Http\Controllers\Api\ProductSearchController::class);
+});
+
+// Cart API (auth required + rate limited)
+Route::middleware(['auth:sanctum', 'throttle:api-cart'])->group(function () {
     Route::get('/cart', [CartController::class, 'show']);
     Route::post('/cart/items', [CartController::class, 'storeItem']);
     Route::put('/cart/items/{cartItem}', [CartController::class, 'updateItem']);
     Route::delete('/cart/items/{cartItem}', [CartController::class, 'destroyItem']);
 
     // Checkout & Orders
-    Route::post('/checkout', [\App\Http\Controllers\Api\CheckoutController::class, 'store'])
+    Route::post('/checkout', [\App\Http\Controllers\Api\CheckoutController::class, 'checkout'])
         ->name('checkout.store');
     Route::get('/orders', [\App\Http\Controllers\Api\OrderController::class, 'index'])
         ->name('orders.index');
     Route::get('/orders/{order}', [\App\Http\Controllers\Api\OrderController::class, 'show'])
         ->name('orders.show');
 });
+
+// Account routes (customer account management)
+Route::middleware('auth:sanctum')->prefix('account')->group(function () {
+    Route::get('/addresses', [\App\Http\Controllers\Api\Account\AddressController::class, 'index']);
+    Route::post('/addresses', [\App\Http\Controllers\Api\Account\AddressController::class, 'store']);
+    Route::put('/addresses/{address}', [\App\Http\Controllers\Api\Account\AddressController::class, 'update']);
+    Route::delete('/addresses/{address}', [\App\Http\Controllers\Api\Account\AddressController::class, 'destroy']);
+
+    Route::get('/orders', [\App\Http\Controllers\Api\Account\OrderController::class, 'index']);
+    Route::get('/orders/{order}', [\App\Http\Controllers\Api\Account\OrderController::class, 'show']);
+});
+
+// Payment callbacks (public, no auth)
+Route::post('/payment/paytr/callback', [\App\Http\Controllers\Api\Payment\PaytrCallbackController::class, 'handle']);
+Route::post('/payment/iyzico/callback', [\App\Http\Controllers\Api\Payment\IyzicoCallbackController::class, 'handle']);
 
 // Admin API
 Route::middleware('auth:sanctum')
@@ -115,6 +144,8 @@ Route::middleware('auth:sanctum')
             ->name('orders.show');
         Route::put('/orders/{order}/status', [\App\Http\Controllers\Admin\OrderController::class, 'updateStatus'])
             ->name('orders.update-status');
+        Route::post('/orders/{order}/refund', [\App\Http\Controllers\Admin\OrderRefundController::class, 'refund'])
+            ->name('orders.refund');
 
         // Coupons
         Route::get('/coupons', [\App\Http\Controllers\Admin\CouponController::class, 'index'])
@@ -187,7 +218,7 @@ Route::middleware('auth:sanctum')
             ->name('transactions.update');
         Route::delete('/transactions/{transaction}', [\App\Http\Controllers\Admin\TransactionController::class, 'destroy'])
             ->name('transactions.destroy');
-        
+
         // Media Files
         Route::get('/media', [\App\Http\Controllers\Admin\MediaFileController::class, 'index'])
             ->name('media.index');
@@ -201,4 +232,50 @@ Route::middleware('auth:sanctum')
             ->name('media.destroy');
         Route::post('/media/{id}/restore', [\App\Http\Controllers\Admin\MediaFileController::class, 'restore'])
             ->name('media.restore');
+
+        // Sliders
+        Route::get('/sliders', [\App\Http\Controllers\Admin\SliderController::class, 'index'])
+            ->name('sliders.index');
+        Route::get('/sliders/{slider}', [\App\Http\Controllers\Admin\SliderController::class, 'show'])
+            ->name('sliders.show');
+        Route::post('/sliders', [\App\Http\Controllers\Admin\SliderController::class, 'store'])
+            ->name('sliders.store');
+        Route::put('/sliders/{slider}', [\App\Http\Controllers\Admin\SliderController::class, 'update'])
+            ->name('sliders.update');
+        Route::delete('/sliders/{slider}', [\App\Http\Controllers\Admin\SliderController::class, 'destroy'])
+            ->name('sliders.destroy');
+        Route::post('/sliders/{id}/restore', [\App\Http\Controllers\Admin\SliderController::class, 'restore'])
+            ->name('sliders.restore');
+
+        // Slider Items
+        Route::get('/sliders/{slider}/items', [\App\Http\Controllers\Admin\SliderItemController::class, 'index'])
+            ->name('sliders.items.index');
+        Route::post('/sliders/{slider}/items', [\App\Http\Controllers\Admin\SliderItemController::class, 'store'])
+            ->name('sliders.items.store');
+        Route::put('/slider-items/{item}', [\App\Http\Controllers\Admin\SliderItemController::class, 'update'])
+            ->name('slider-items.update');
+        Route::delete('/slider-items/{item}', [\App\Http\Controllers\Admin\SliderItemController::class, 'destroy'])
+            ->name('slider-items.destroy');
+        Route::post('/slider-items/{id}/restore', [\App\Http\Controllers\Admin\SliderItemController::class, 'restore'])
+            ->name('slider-items.restore');
+
+        // Content Blocks
+        Route::get('/content-blocks', [\App\Http\Controllers\Admin\ContentBlockController::class, 'index'])
+            ->name('content-blocks.index');
+        Route::get('/content-blocks/{content_block}', [\App\Http\Controllers\Admin\ContentBlockController::class, 'show'])
+            ->name('content-blocks.show');
+        Route::post('/content-blocks', [\App\Http\Controllers\Admin\ContentBlockController::class, 'store'])
+            ->name('content-blocks.store');
+        Route::put('/content-blocks/{content_block}', [\App\Http\Controllers\Admin\ContentBlockController::class, 'update'])
+            ->name('content-blocks.update');
+        Route::delete('/content-blocks/{content_block}', [\App\Http\Controllers\Admin\ContentBlockController::class, 'destroy'])
+            ->name('content-blocks.destroy');
+        Route::post('/content-blocks/{id}/restore', [\App\Http\Controllers\Admin\ContentBlockController::class, 'restore'])
+            ->name('content-blocks.restore');
+
+        // Settings
+        Route::get('/settings', [\App\Http\Controllers\Admin\SettingController::class, 'index'])
+            ->name('settings.index');
+        Route::post('/settings/{group}', [\App\Http\Controllers\Admin\SettingController::class, 'updateGroup'])
+            ->name('settings.update-group');
     });

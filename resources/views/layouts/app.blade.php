@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Dashboard') | Fast Commerce</title>
     <link rel="icon" type="image/x-icon" href="{{ asset('cork/src/assets/img/favicon.ico') }}"/>
     <link href="{{ asset('cork/layouts/modern-dark-menu/css/light/loader.css') }}" rel="stylesheet" type="text/css" />
@@ -279,6 +280,7 @@
     <!-- END MAIN CONTAINER -->
 
     <!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
+    <script src="{{ asset('cork/src/plugins/src/global/vendors.min.js') }}"></script>
     <script src="{{ asset('cork/src/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('cork/src/plugins/src/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
     <script src="{{ asset('cork/src/plugins/src/mousetrap/mousetrap.min.js') }}"></script>

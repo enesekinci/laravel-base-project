@@ -14,7 +14,12 @@ class Order extends Model
         'user_id',
         'status',
         'payment_status',
+        'shipping_status',
         'payment_method',
+        'payment_method_id',
+        'shipping_method_id',
+        'shipping_address_id',
+        'billing_address_id',
         'transaction_ref',
         'currency',
         'subtotal',
@@ -29,6 +34,7 @@ class Order extends Model
         'customer_email',
         'customer_name',
         'customer_phone',
+        'notes',
         'placed_at',
     ];
 
@@ -52,5 +58,25 @@ class Order extends Model
     public function items()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function shippingAddress()
+    {
+        return $this->belongsTo(Address::class, 'shipping_address_id');
+    }
+
+    public function billingAddress()
+    {
+        return $this->belongsTo(Address::class, 'billing_address_id');
+    }
+
+    public function shippingMethod()
+    {
+        return $this->belongsTo(ShippingMethod::class);
+    }
+
+    public function paymentMethod()
+    {
+        return $this->belongsTo(PaymentMethod::class);
     }
 }

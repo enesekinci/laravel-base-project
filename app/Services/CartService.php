@@ -113,4 +113,17 @@ class CartService
 
         $cart->save();
     }
+
+    public function getCartForUser(User $user): Cart
+    {
+        return $this->getOrCreateActiveCartForUser($user);
+    }
+
+    public function clearCart(Cart $cart): void
+    {
+        DB::transaction(function () use ($cart) {
+            $cart->items()->delete();
+            $this->recalculateCart($cart);
+        });
+    }
 }
