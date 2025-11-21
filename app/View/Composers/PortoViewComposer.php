@@ -2,6 +2,12 @@
 
 namespace App\View\Composers;
 
+use App\Models\Banner;
+use App\Models\Brand;
+use App\Models\FeatureBox;
+use App\Models\InfoBox;
+use App\Models\Product;
+use App\Models\Slider;
 use App\Services\StoreSettingService;
 use Illuminate\View\View;
 
@@ -16,15 +22,15 @@ class PortoViewComposer
      */
     public function compose(View $view): void
     {
-        // Footer settings'i al
-        $footerSettings = $this->getFooterSettings();
-
-        // Menüleri ve footer settings'i ekle
         $view->with([
             'sidebarMenu' => get_menu_by_location('sidebar'),
             'headerMenu' => get_menu_by_location('header'),
             'footerMenu' => get_menu_by_location('footer'),
-            'footerSettings' => $footerSettings,
+            'footerSettings' => $this->getFooterSettings(),
+            'siteSettings' => $this->getSiteSettings(),
+            'topNotice' => $this->getTopNotice(),
+            'categories' => category_tree(),
+            'chunkedCategories' => category_tree_chunked(2),
         ]);
     }
 
@@ -78,5 +84,47 @@ class PortoViewComposer
             // Payment Icons
             'payment_icons' => $getJsonSetting('footer_payment_icons'),
         ];
+    }
+
+    /**
+     * Site ayarlarını döndürür
+     */
+    private function getSiteSettings(): array
+    {
+        $getSetting = function (string $key) {
+            return $this->storeSettingService->get($key);
+        };
+
+        return [
+            // Site Logo
+            'logo' => $getSetting('site_logo') ?: '/porto/assets/images/logo.png',
+
+            // Site Phone
+            'phone' => $getSetting('site_phone') ?: '+123 5678 890',
+            'phone_text' => $getSetting('site_phone_text') ?: 'Call us now',
+        ];
+    }
+
+    /**
+     * Top notice verilerini döndürür
+     */
+    private function getTopNotice(): ?array
+    {
+        $data = $this->storeSettingService->get('top_notice');
+
+        if (!$data) {
+            return null;
+        }
+
+        $decoded = json_decode($data, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return null;
+        }
+
+        if (!($decoded['is_active'] ?? false)) {
+            return null;
+        }
+
+        return $decoded;
     }
 }

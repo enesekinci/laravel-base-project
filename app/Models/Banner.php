@@ -12,10 +12,20 @@ class Banner extends Model
 
     protected $fillable = [
         'title',
+        'subtitle',
         'description',
         'image',
+        'image_alt',
         'link',
         'position',
+        'price',
+        'price_em',
+        'button_text',
+        'button_url',
+        'background_color',
+        'text_align',
+        'animation_name',
+        'animation_delay',
         'sort_order',
         'is_active',
     ];
@@ -26,6 +36,30 @@ class Banner extends Model
             'is_active' => 'boolean',
             'sort_order' => 'integer',
         ];
+    }
+
+    /**
+     * Aktif banner'lar
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
+    /**
+     * Position'a göre filtrele
+     */
+    public function scopeByPosition($query, string $position)
+    {
+        return $query->where('position', $position);
+    }
+
+    /**
+     * Sıralı banner'lar
+     */
+    public function scopeOrdered($query)
+    {
+        return $query->orderBy('sort_order')->orderBy('created_at', 'desc');
     }
 }
 

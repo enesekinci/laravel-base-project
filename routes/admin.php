@@ -88,14 +88,18 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('sliders', \App\Http\Controllers\Admin\SliderController::class);
     Route::resource('banners', \App\Http\Controllers\Admin\BannerController::class);
     Route::resource('popups', \App\Http\Controllers\Admin\PopupController::class);
-    Route::get('top-notice/edit', [\App\Http\Controllers\Admin\TopNoticeController::class, 'edit'])->name('top-notice.edit');
-    Route::put('top-notice', [\App\Http\Controllers\Admin\TopNoticeController::class, 'update'])->name('top-notice.update');
+    Route::get('store-settings/top-notice/edit', [\App\Http\Controllers\Admin\StoreSettingController::class, 'editTopNotice'])->name('store-settings.top-notice.edit');
+    Route::put('store-settings/top-notice', [\App\Http\Controllers\Admin\StoreSettingController::class, 'updateTopNotice'])->name('store-settings.top-notice.update');
     Route::resource('faqs', \App\Http\Controllers\Admin\FaqController::class);
     Route::resource('showcases', \App\Http\Controllers\Admin\ShowcaseController::class);
     Route::resource('blogs', \App\Http\Controllers\Admin\BlogController::class);
     Route::resource('pages', \App\Http\Controllers\Admin\PageController::class);
     Route::resource('translations', \App\Http\Controllers\Admin\TranslationController::class);
     Route::resource('languages', \App\Http\Controllers\Admin\LanguageController::class);
+
+    // Ülke ve Eyalet Yönetimi
+    Route::resource('countries', \App\Http\Controllers\Admin\CountryController::class);
+    Route::resource('states', \App\Http\Controllers\Admin\StateController::class);
 
     // Genel Ayarlar
     Route::resource('menus', \App\Http\Controllers\Admin\MenuController::class);

@@ -15,35 +15,25 @@ use App\Http\Controllers\Admin\VariationTemplateController;
 use App\Http\Controllers\Admin\ProductOptionController;
 use App\Http\Controllers\Admin\TaxClassController;
 use App\Http\Controllers\Admin\ProductController;
-use App\Http\Controllers\PortoTemplateController;
+use App\Http\Controllers\StoreController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
 
-Route::get('/', function () {
-    return Inertia::render('welcome', [
-        'canRegister' => Features::enabled(Features::registration()),
-    ]);
-})->name('home');
-
 require __DIR__ . '/admin.php';
 
-// Porto Template Sayfaları
-Route::prefix('porto')->name('porto.')->group(function () {
-    // Tüm sayfalar için wildcard route (index dahil)
-    Route::get('{page?}', [PortoTemplateController::class, 'show'])
-        ->where('page', '.*')
-        ->defaults('page', 'index.html')
-        ->name('page');
-});
+// Ana sayfa ve tüm template sayfaları
+Route::get('{page?}', [StoreController::class, 'show'])
+    ->where('page', '.*')
+    ->defaults('page', 'index')
+    ->name('page');
 
-Route::get('demo1', function () {
-    return response()->view('porto.demo1.index', [
-        "demoCss" => "demo1",
-        "mainClass" => "home",
-        "bodyClass" => null,
-        "bodyAttributes" => null,
-    ]);
+// Cart Routes (AJAX)
+Route::prefix('cart')->name('cart.')->group(function () {
+    Route::get('/', [App\Http\Controllers\CartController::class, 'index'])->name('index');
+    Route::post('/add', [App\Http\Controllers\CartController::class, 'add'])->name('add');
+    Route::post('/update', [App\Http\Controllers\CartController::class, 'update'])->name('update');
+    Route::post('/remove', [App\Http\Controllers\CartController::class, 'remove'])->name('remove');
 });
 
 require __DIR__ . '/settings.php';

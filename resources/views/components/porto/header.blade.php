@@ -35,27 +35,17 @@
                             <a href="#">Links</a>
                             <div class="header-menu">
                                 <ul>
-                                    @if(!empty($headerMenu) && is_array($headerMenu) && count($headerMenu) > 0)
-                                        @foreach($headerMenu as $item)
-                                            @if($item['is_active'] ?? true)
-                                                <li>
-                                                    <a href="{{ $item['url'] ?? '#' }}" 
-                                                       @if(($item['target'] ?? '_self') === '_blank') target="_blank" @endif
-                                                       @if(isset($item['url']) && str_contains($item['url'], 'login')) class="login-link" @endif>
-                                                        {{ $item['name'] ?? '' }}
-                                                    </a>
-                                                </li>
-                                            @endif
-                                        @endforeach
-                                    @else
-                                        {{-- Fallback: Varsayılan menü --}}
-                                        <li><a href="/porto/dashboard.html">My Account</a></li>
-                                        <li><a href="/porto/demo1-contact.html">Contact Us</a></li>
-                                        <li><a href="/porto/wishlist.html">My Wishlist</a></li>
-                                        <li><a href="#">Site Map</a></li>
-                                        <li><a href="/porto/cart.html">Cart</a></li>
-                                        <li><a href="#" class="login-link">Log In</a></li>
-                                    @endif
+                                    @foreach($headerMenu ?? [] as $item)
+                                        @if($item['is_active'] ?? true)
+                                            <li>
+                                                <a href="{{ $item['url'] ?? '#' }}" 
+                                                   @if(($item['target'] ?? '_self') === '_blank') target="_blank" @endif
+                                                   @if(isset($item['url']) && str_contains($item['url'], 'login')) class="login-link" @endif>
+                                                    {{ $item['name'] ?? '' }}
+                                                </a>
+                                            </li>
+                                        @endif
+                                    @endforeach
                                 </ul>
                             </div>
                             <!-- End .header-menu -->
@@ -83,8 +73,8 @@
                         <button class="mobile-menu-toggler mr-2" type="button">
                             <i class="fas fa-bars"></i>
                         </button>
-                        <a href="/porto/demo1.html" class="logo">
-                            <img src="/porto/assets/images/logo.png" width="111" height="44" alt="Porto Logo">
+                        <a href="/porto" class="logo">
+                            <img src="{{ $siteSettings['logo'] ?? '/porto/assets/images/logo.png' }}" width="111" height="44" alt="Porto Logo">
                         </a>
                     </div>
                     <!-- End .header-left -->
@@ -110,7 +100,7 @@
 
                         <div class="header-contact d-none d-lg-flex align-items-center pr-xl-5 mr-5 mr-xl-3 ml-5">
                             <i class="icon-phone-2"></i>
-                            <h6 class="pt-1 line-height-1">Call us now<a href="tel:#" class="d-block text-dark ls-10 pt-1">+123 5678 890</a></h6>
+                            <h6 class="pt-1 line-height-1">{{ $siteSettings['phone_text'] ?? 'Call us now' }}<a href="tel:{{ $siteSettings['phone'] ?? '' }}" class="d-block text-dark ls-10 pt-1">{{ $siteSettings['phone'] }}</a></h6>
                         </div>
                         <!-- End .header-contact -->
 

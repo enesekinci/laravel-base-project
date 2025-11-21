@@ -36,6 +36,7 @@ class AppServiceProvider extends ServiceProvider
     {
         // Porto template view'larına ortak verileri ekle
         View::composer('porto.*', PortoViewComposer::class);
+        View::composer('pages.*', PortoViewComposer::class);
         View::composer('layouts.porto', PortoViewComposer::class);
         View::composer('components.porto.*', PortoViewComposer::class);
     }

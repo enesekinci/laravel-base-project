@@ -59,7 +59,7 @@ class FooterController extends Controller
                 ['label' => 'Advanced Search', 'url' => '#'],
                 ['label' => 'My Account', 'url' => '/porto/dashboard.html'],
                 ['label' => 'Careers', 'url' => '#'],
-                ['label' => 'About Us', 'url' => '/porto/demo1-about.html'],
+                ['label' => 'About Us', 'url' => route('page', ['page' => 'about'])],
                 ['label' => 'Corporate Sales', 'url' => '#'],
                 ['label' => 'Privacy', 'url' => '#'],
             ]),

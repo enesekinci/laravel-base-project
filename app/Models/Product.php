@@ -179,4 +179,85 @@ class Product extends Model
     {
         return $query->orderBy('sort_order')->orderBy('name');
     }
+
+    /**
+     * Featured ürünler (Showcase'den gelecek)
+     */
+    public function scopeFeatured($query)
+    {
+        // Showcase'den featured ürün ID'lerini al
+        $showcase = \App\Models\Showcase::where('slug', 'featured-products')
+            ->where('is_active', true)
+            ->first();
+        
+        if ($showcase && !empty($showcase->content)) {
+            $productIds = is_array($showcase->content) ? $showcase->content : json_decode($showcase->content, true);
+            if (is_array($productIds) && count($productIds) > 0) {
+                return $query->whereIn('id', $productIds);
+            }
+        }
+        
+        // Fallback: En yeni ürünler
+        return $query->orderBy('created_at', 'desc')->limit(8);
+    }
+
+    /**
+     * Top Rated ürünler (Showcase'den gelecek)
+     */
+    public function scopeTopRated($query)
+    {
+        $showcase = \App\Models\Showcase::where('slug', 'top-rated-products')
+            ->where('is_active', true)
+            ->first();
+        
+        if ($showcase && !empty($showcase->content)) {
+            $productIds = is_array($showcase->content) ? $showcase->content : json_decode($showcase->content, true);
+            if (is_array($productIds) && count($productIds) > 0) {
+                return $query->whereIn('id', $productIds);
+            }
+        }
+        
+        // Fallback: En yeni ürünler
+        return $query->orderBy('created_at', 'desc')->limit(3);
+    }
+
+    /**
+     * Best Selling ürünler (Showcase'den gelecek)
+     */
+    public function scopeBestSelling($query)
+    {
+        $showcase = \App\Models\Showcase::where('slug', 'best-selling-products')
+            ->where('is_active', true)
+            ->first();
+        
+        if ($showcase && !empty($showcase->content)) {
+            $productIds = is_array($showcase->content) ? $showcase->content : json_decode($showcase->content, true);
+            if (is_array($productIds) && count($productIds) > 0) {
+                return $query->whereIn('id', $productIds);
+            }
+        }
+        
+        // Fallback: En yeni ürünler
+        return $query->orderBy('created_at', 'desc')->limit(3);
+    }
+
+    /**
+     * Latest ürünler (Showcase'den gelecek)
+     */
+    public function scopeLatest($query)
+    {
+        $showcase = \App\Models\Showcase::where('slug', 'latest-products')
+            ->where('is_active', true)
+            ->first();
+        
+        if ($showcase && !empty($showcase->content)) {
+            $productIds = is_array($showcase->content) ? $showcase->content : json_decode($showcase->content, true);
+            if (is_array($productIds) && count($productIds) > 0) {
+                return $query->whereIn('id', $productIds);
+            }
+        }
+        
+        // Fallback: En yeni ürünler
+        return $query->orderBy('created_at', 'desc')->limit(3);
+    }
 }

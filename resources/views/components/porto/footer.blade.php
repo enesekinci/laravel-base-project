@@ -66,24 +66,16 @@
                         <h4 class="widget-title pb-1">Customer Service</h4>
 
                         <ul class="links">
-                            @if(!empty($footerMenu) && is_array($footerMenu) && count($footerMenu) > 0)
-                                {{-- Footer menüsünden göster --}}
-                                @foreach($footerMenu as $item)
-                                    @if($item['is_active'] ?? true)
-                                        <li>
-                                            <a href="{{ $item['url'] ?? '#' }}" 
-                                               @if(($item['target'] ?? '_self') === '_blank') target="_blank" @endif>
-                                                {{ $item['name'] ?? '' }}
-                                            </a>
-                                        </li>
-                                    @endif
-                                @endforeach
-                            @elseif(!empty($footer['customer_service_links']) && is_array($footer['customer_service_links']))
-                                {{-- Fallback: Footer settings'ten göster --}}
-                                @foreach($footer['customer_service_links'] as $link)
-                                    <li><a href="{{ $link['url'] ?? '#' }}">{{ $link['label'] ?? '' }}</a></li>
-                                @endforeach
-                            @endif
+                            @foreach($footerMenu ?? [] as $item)
+                                @if($item['is_active'] ?? true)
+                                    <li>
+                                        <a href="{{ $item['url'] ?? '#' }}" 
+                                           @if(($item['target'] ?? '_self') === '_blank') target="_blank" @endif>
+                                            {{ $item['name'] ?? '' }}
+                                        </a>
+                                    </li>
+                                @endif
+                            @endforeach
                         </ul>
                     </div>
                     <!-- End .widget -->

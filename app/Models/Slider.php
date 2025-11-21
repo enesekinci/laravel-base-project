@@ -12,9 +12,19 @@ class Slider extends Model
 
     protected $fillable = [
         'title',
+        'subtitle',
+        'heading',
         'description',
         'image',
         'link',
+        'price',
+        'price_em',
+        'button_text',
+        'button_url',
+        'background_color',
+        'animation_name',
+        'text_uppercase',
+        'location',
         'sort_order',
         'is_active',
     ];
@@ -23,8 +33,33 @@ class Slider extends Model
     {
         return [
             'is_active' => 'boolean',
+            'text_uppercase' => 'boolean',
             'sort_order' => 'integer',
         ];
+    }
+
+    /**
+     * Aktif slider'lar
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
+    /**
+     * Location'a göre filtrele
+     */
+    public function scopeByLocation($query, string $location)
+    {
+        return $query->where('location', $location);
+    }
+
+    /**
+     * Sıralı slider'lar
+     */
+    public function scopeOrdered($query)
+    {
+        return $query->orderBy('sort_order')->orderBy('created_at', 'desc');
     }
 }
 

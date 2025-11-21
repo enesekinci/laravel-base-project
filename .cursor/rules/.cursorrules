@@ -1,0 +1,261 @@
+# PROJECT CONTEXT
+
+- Project: E-commerce monolith built with Laravel backend and React (Inertia) admin using shadcn.
+- Goal: Fast feature delivery, clean boundaries, no over-engineering.
+
+# STACK
+
+- Backend: Laravel 12+, PHP 8.3, PostgreSQL (veya MySQL ama enumlardan kaçın).
+- Frontend: Inertia + React + shadcn/ui.
+- Auth: Laravel starter kit (Breeze + Inertia + React).
+- UI: shadcn/ui componentleri, Tailwind ile.
+
+# BACKEND CONVENTIONS
+
+- Controllers sadece HTTP işini yapsın. İş kuralları Service / Action sınıflarında olsun: `app/Actions`, `app/Services`.
+- Request validation daima FormRequest ile.
+- Response'lar JSON'da resource veya DTO stili olsun. api/\* için Resource kullan.
+- E-ticaret domainlerini ayır: Products, Categories, Attributes, Customers, Orders, Payments, Shipping.
+- Model içinde sorgu şişirmeyin, Query Builder/Scopes kullanın.
+- Controller metodları maksimum 5-10 satır olmalı.
+- Dependency Injection kullan, container'a bağımlı olma.
+
+```php
+// ✅ İyi
+public function store(StoreProductRequest $request, ProductService $service)
+{
+    $product = $service->create($request->validated());
+    return Inertia::render('Admin/Products/Show', ['product' => $product]);
+}
+
+// ❌ Kötü
+public function store(Request $request)
+{
+    $request->validate([...]);
+    $product = Product::create([...]);
+    // ... 50 satır business logic
+}
+```
+
+# FRONTEND CONVENTIONS
+
+- React componentleri feature bazlı klasörlensin: `resources/js/Pages/Admin/Products/...`
+- shadcn componentleri `resources/js/components/ui` altında.
+- Formlarda react-hook-form + zod kullan.
+- API isteklerinde axios kullan ve CSRF'i ayarla.
+- Tablo, modal, drawer gibi şeyler reusable olacak.
+- Component isimleri PascalCase olmalı.
+- Props'ları type-safe yap (TypeScript kullan).
+
+# CODE STYLE
+
+- Laravel Pint ile format.
+- PHP için strict types kullanma zorunlu değil ama type-hint zorunlu.
+- Her yeni feature için test yazılabilir formatta üret.
+- 4 space indentation.
+- Opening brace aynı satırda.
+- Method chaining'de her metod ayrı satırda.
+
+```php
+// ✅ İyi
+$products = Product::query()
+    ->where('is_active', true)
+    ->with('user')
+    ->orderBy('created_at', 'desc')
+    ->get();
+
+// ❌ Kötü
+$products = Product::query()->where('is_active', true)->with('user')->orderBy('created_at', 'desc')->get();
+```
+
+# DO NOT
+
+- Rastgele helper yazma, `app/Support` altında topla.
+- Controller içine doğrudan 30 satır business logic koyma.
+- Blade + React karıştırma, admin tarafı sadece Inertia/React.
+- Raw SQL query kullanma, Eloquent/Query Builder kullan.
+- N+1 problem yaratma, eager loading kullan.
+
+# TASK STYLE
+
+- Bir dosya istersem tek dosya üret.
+- Yeni feature istersem migration + model + request + controller + route + react page şeklinde üretim sırası kullan.
+- Migration yazarken timestamps ekle ve softDeletes ürünle ilgili tablolara ekle.
+- Laravel controller üretirken ilgili FormRequest'i de üret.
+- E-ticaret modeli üretirken SKU alanı ekle.
+
+# E-COMMERCE DOMAIN RULES
+
+- products: id, name, slug, sku, price, currency, status (draft,published), stock, description (longtext), images via media library.
+- categories: tree yapısı (parent_id).
+- orders: order_number, user_id, status, totals, items ayrı tabloda.
+- migrations always use unsignedBigInteger for fks.
+- Foreign key'ler için index'ler ekle.
+- Timestamps kullan (mümkünse).
+
+```php
+// ✅ İyi - Product Migration
+Schema::create('products', function (Blueprint $table) {
+    $table->id();
+    $table->string('name');
+    $table->string('slug')->unique();
+    $table->string('sku')->unique();
+    $table->decimal('price', 10, 2);
+    $table->string('currency', 3)->default('TRY');
+    $table->enum('status', ['draft', 'published'])->default('draft');
+    $table->integer('stock')->default(0);
+    $table->text('description')->nullable();
+    $table->unsignedBigInteger('category_id')->nullable();
+    $table->timestamps();
+    $table->softDeletes();
+
+    $table->foreign('category_id')->references('id')->on('categories')->onDelete('set null');
+    $table->index('category_id');
+    $table->index('status');
+});
+```
+
+# REACT COMPONENT GENERATION
+
+- Eğer React component üretiyorsan shadcn stiline göre üret.
+- Form varsa react-hook-form + zod kullan.
+- TypeScript kullan, any kullanma.
+- Component'leri feature bazlı organize et.
+
+```tsx
+// ✅ İyi - Product Form Component
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+
+const productSchema = z.object({
+    name: z.string().min(1, 'Ürün adı gereklidir'),
+    sku: z.string().min(1, 'SKU gereklidir'),
+    price: z.number().min(0, "Fiyat 0'dan büyük olmalıdır"),
+});
+
+type ProductFormData = z.infer<typeof productSchema>;
+
+export function ProductForm({
+    onSubmit,
+}: {
+    onSubmit: (data: ProductFormData) => void;
+}) {
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<ProductFormData>({
+        resolver: zodResolver(productSchema),
+    });
+
+    return <form onSubmit={handleSubmit(onSubmit)}>{/* form fields */}</form>;
+}
+```
+
+# TESTING
+
+- Pest kullan (projede zaten var).
+- Test isimleri açıklayıcı olmalı.
+- Her feature için test yazılabilir formatta üret.
+- Factory'leri kullan.
+
+```php
+// ✅ İyi
+it('can create a product', function () {
+    $user = User::factory()->create();
+
+    $response = $this->actingAs($user)
+        ->post(route('admin.products.store'), [
+            'name' => 'Test Product',
+            'sku' => 'TEST-001',
+            'price' => 99.99,
+        ]);
+
+    $response->assertRedirect();
+    $this->assertDatabaseHas('products', [
+        'name' => 'Test Product',
+        'sku' => 'TEST-001',
+    ]);
+});
+```
+
+# SECURITY
+
+- CSRF protection her zaman aktif olmalı.
+- XSS koruması için input validation.
+- SQL injection'dan korunmak için Eloquent/Query Builder kullan.
+- Mass assignment protection kullan (`$fillable` veya `$guarded`).
+- Password hashing Laravel'in kendi sistemini kullan.
+- Rate limiting kullan.
+
+# PERFORMANCE
+
+- Cache kullan (Redis/Memcached).
+- Queue kullan (uzun süren işlemler için).
+- Database query'leri optimize et, N+1 problem'den kaçın.
+- Eager loading kullan (`with()`, `load()`).
+
+```php
+// ✅ İyi
+$products = Product::with('category:id,name')
+    ->select('id', 'name', 'price', 'category_id')
+    ->where('status', 'published')
+    ->get();
+
+// ❌ Kötü
+$products = Product::all();
+foreach ($products as $product) {
+    echo $product->category->name; // N+1 problem
+}
+```
+
+# NAMING CONVENTIONS
+
+- Controller isimleri tekil + "Controller" (örn: `ProductController`, `OrderController`).
+- Model isimleri tekil (örn: `User`, `Product`, `Order`).
+- Service isimleri tekil + "Service" (örn: `ProductService`, `OrderService`).
+- Form Request isimleri: `Store{Model}Request`, `Update{Model}Request`.
+- Event isimleri geçmiş zaman (örn: `ProductCreated`, `OrderCompleted`).
+- Job isimleri açıklayıcı + "Job" (örn: `SendEmailJob`, `ProcessPaymentJob`).
+
+# BLADE VIEW CONVENTIONS
+
+- View Composer'lar veri sağlıyorsa, Blade template'lerde gereksiz boş data kontrolü YAPMA.
+- View Composer zaten veriyi sağlıyor, eğer veri yoksa boş array/null gelir, bu durumda direkt foreach kullan.
+- Fallback menü/veri ekleme, View Composer'ın sorumluluğundadır, Blade template'de değil.
+
+```blade
+{{-- ❌ Kötü - Gereksiz kontrol ve fallback --}}
+@if(!empty($headerMenu) && is_array($headerMenu) && count($headerMenu) > 0)
+    @foreach($headerMenu as $item)
+        ...
+    @endforeach
+@else
+    {{-- Fallback menü --}}
+    <li><a href="/porto/dashboard.html">My Account</a></li>
+@endif
+
+{{-- ✅ İyi - Direkt foreach, View Composer zaten veriyi sağlıyor --}}
+@foreach($headerMenu ?? [] as $item)
+    @if($item['is_active'] ?? true)
+        <li>
+            <a href="{{ $item['url'] ?? '#' }}">{{ $item['name'] ?? '' }}</a>
+        </li>
+    @endif
+@endforeach
+```
+
+- Menüler için: `@foreach($headerMenu ?? [] as $item)` şeklinde direkt foreach kullan, gereksiz `@if(!empty(...))` kontrolü yapma.
+- Footer menüler için: `@foreach($footerMenu ?? [] as $item)` şeklinde direkt foreach kullan.
+
+# NOTES
+
+- Laravel 12 kullanılıyor, yeni özelliklerden faydalan.
+- Inertia.js ile React kullanılıyor, frontend-backend entegrasyonuna dikkat et.
+- Pest test framework'ü kullanılıyor.
+- Laravel Pint code formatter kullanılıyor.
+- shadcn/ui componentleri zaten kurulu, `components.json` var.
+- Her zaman Türkçe yorum ve açıklama kullan.

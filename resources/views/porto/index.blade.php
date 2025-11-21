@@ -526,7 +526,7 @@
 							<div class="appear-animation" data-appear-animation="fadeInUpShorter"
 								data-appear-animation-delay="" data-appear-animation-duration="750">
 								<div class="portfolio-item hover-effect-1 text-center">
-									<a href="/porto/demo1.html" title="demo">
+									<a href="{{ route('page', ['page' => 'index']) }}" title="demo">
 										<span
 											class="thumb-info thumb-info-no-zoom thumb-info-no-overlay thumb-info-no-bg">
 											<span class="thumb-info-wrapper thumb-info-wrapper-demos m-0">
@@ -546,7 +546,7 @@
 							<div class="appear-animation" data-appear-animation="fadeInUpShorter"
 								data-appear-animation-delay="200" data-appear-animation-duration="750">
 								<div class="portfolio-item hover-effect-1 text-center">
-									<a href="/porto/demo2.html" title="demo">
+									<a href="{{ route('page', ['page' => 'index']) }}" title="demo">
 										<span
 											class="thumb-info thumb-info-no-zoom thumb-info-no-overlay thumb-info-no-bg">
 											<span class="thumb-info-wrapper thumb-info-wrapper-demos m-0">
@@ -566,7 +566,7 @@
 							<div class="appear-animation" data-appear-animation="fadeInUpShorter"
 								data-appear-animation-delay="400" data-appear-animation-duration="750">
 								<div class="portfolio-item hover-effect-1 text-center">
-									<a href="/porto/demo3.html" title="demo">
+									<a href="{{ route('page', ['page' => 'index']) }}" title="demo">
 										<span
 											class="thumb-info thumb-info-no-zoom thumb-info-no-overlay thumb-info-no-bg">
 											<span class="thumb-info-wrapper thumb-info-wrapper-demos m-0">
@@ -606,7 +606,7 @@
 							<div class="appear-animation" data-appear-animation="fadeInUpShorter"
 								data-appear-animation-delay="" data-appear-animation-duration="750">
 								<div class="portfolio-item hover-effect-1 text-center">
-									<a href="/porto/demo5.html" title="demo">
+									<a href="{{ route('page', ['page' => 'index']) }}" title="demo">
 										<span
 											class="thumb-info thumb-info-no-zoom thumb-info-no-overlay thumb-info-no-bg">
 											<span class="thumb-info-wrapper thumb-info-wrapper-demos m-0">
@@ -626,7 +626,7 @@
 							<div class="appear-animation" data-appear-animation="fadeInUpShorter"
 								data-appear-animation-delay="200" data-appear-animation-duration="750">
 								<div class="portfolio-item hover-effect-1 text-center">
-									<a href="/porto/demo6.html" title="demo">
+									<a href="{{ route('page', ['page' => 'index']) }}" title="demo">
 										<span
 											class="thumb-info thumb-info-no-zoom thumb-info-no-overlay thumb-info-no-bg">
 											<span class="thumb-info-wrapper thumb-info-wrapper-demos m-0">
@@ -646,7 +646,7 @@
 							<div class="appear-animation" data-appear-animation="fadeInUpShorter"
 								data-appear-animation-delay="400" data-appear-animation-duration="750">
 								<div class="portfolio-item hover-effect-1 text-center">
-									<a href="/porto/demo7.html" title="demo">
+									<a href="{{ route('page', ['page' => 'index']) }}" title="demo">
 										<span
 											class="thumb-info thumb-info-no-zoom thumb-info-no-overlay thumb-info-no-bg">
 											<span class="thumb-info-wrapper thumb-info-wrapper-demos m-0">
@@ -666,7 +666,7 @@
 							<div class="appear-animation" data-appear-animation="fadeInUpShorter"
 								data-appear-animation-delay="600" data-appear-animation-duration="750">
 								<div class="portfolio-item hover-effect-1 text-center">
-									<a href="/porto/demo8.html" title="demo">
+									<a href="{{ route('page', ['page' => 'index']) }}" title="demo">
 										<span
 											class="thumb-info thumb-info-no-zoom thumb-info-no-overlay thumb-info-no-bg">
 											<span class="thumb-info-wrapper thumb-info-wrapper-demos m-0">
@@ -686,7 +686,7 @@
 							<div class="appear-animation" data-appear-animation="fadeInUpShorter"
 								data-appear-animation-delay="" data-appear-animation-duration="750">
 								<div class="portfolio-item hover-effect-1 text-center">
-									<a href="/porto/demo9.html" title="demo">
+									<a href="{{ route('page', ['page' => 'index']) }}" title="demo">
 										<span
 											class="thumb-info thumb-info-no-zoom thumb-info-no-overlay thumb-info-no-bg">
 											<span class="thumb-info-wrapper thumb-info-wrapper-demos m-0">
@@ -706,7 +706,7 @@
 							<div class="appear-animation" data-appear-animation="fadeInUpShorter"
 								data-appear-animation-delay="200" data-appear-animation-duration="750">
 								<div class="portfolio-item hover-effect-1 text-center">
-									<a href="/porto/demo10.html" title="demo">
+									<a href="{{ route('page', ['page' => 'index']) }}" title="demo">
 										<span
 											class="thumb-info thumb-info-no-zoom thumb-info-no-overlay thumb-info-no-bg">
 											<span class="thumb-info-wrapper thumb-info-wrapper-demos m-0">
@@ -726,7 +726,7 @@
 							<div class="appear-animation" data-appear-animation="fadeInUpShorter"
 								data-appear-animation-delay="200" data-appear-animation-duration="750">
 								<div class="portfolio-item hover-effect-1 text-center">
-									<a href="/porto/demo11.html" title="demo">
+									<a href="{{ route('page', ['page' => 'index']) }}" title="demo">
 										<span
 											class="thumb-info thumb-info-no-zoom thumb-info-no-overlay thumb-info-no-bg">
 											<span class="thumb-info-wrapper thumb-info-wrapper-demos m-0">
@@ -746,7 +746,7 @@
 							<div class="appear-animation" data-appear-animation="fadeInUpShorter"
 								data-appear-animation-delay="200" data-appear-animation-duration="750">
 								<div class="portfolio-item hover-effect-1 text-center">
-									<a href="/porto/demo12.html" title="demo">
+									<a href="{{ route('page', ['page' => 'index']) }}" title="demo">
 										<span
 											class="thumb-info thumb-info-no-zoom thumb-info-no-overlay thumb-info-no-bg">
 											<span class="thumb-info-wrapper thumb-info-wrapper-demos m-0">
@@ -766,7 +766,7 @@
 							<div class="appear-animation" data-appear-animation="fadeInUpShorter"
 								data-appear-animation-delay="200" data-appear-animation-duration="750">
 								<div class="portfolio-item hover-effect-1 text-center">
-									<a href="/porto/demo13.html" title="demo">
+									<a href="{{ route('page', ['page' => 'index']) }}" title="demo">
 										<span
 											class="thumb-info thumb-info-no-zoom thumb-info-no-overlay thumb-info-no-bg">
 											<span class="thumb-info-wrapper thumb-info-wrapper-demos m-0">
@@ -786,7 +786,7 @@
 							<div class="appear-animation" data-appear-animation="fadeInUpShorter"
 								data-appear-animation-delay="200" data-appear-animation-duration="750">
 								<div class="portfolio-item hover-effect-1 text-center">
-									<a href="/porto/demo14.html" title="demo">
+									<a href="{{ route('page', ['page' => 'index']) }}" title="demo">
 										<span
 											class="thumb-info thumb-info-no-zoom thumb-info-no-overlay thumb-info-no-bg">
 											<span class="thumb-info-wrapper thumb-info-wrapper-demos m-0">
@@ -806,7 +806,7 @@
 							<div class="appear-animation" data-appear-animation="fadeInUpShorter"
 								data-appear-animation-delay="200" data-appear-animation-duration="750">
 								<div class="portfolio-item hover-effect-1 text-center">
-									<a href="/porto/demo15.html" title="demo">
+									<a href="{{ route('page', ['page' => 'index']) }}" title="demo">
 										<span
 											class="thumb-info thumb-info-no-zoom thumb-info-no-overlay thumb-info-no-bg">
 											<span class="thumb-info-wrapper thumb-info-wrapper-demos m-0">
@@ -826,7 +826,7 @@
 							<div class="appear-animation" data-appear-animation="fadeInUpShorter"
 								data-appear-animation-delay="200" data-appear-animation-duration="750">
 								<div class="portfolio-item hover-effect-1 text-center">
-									<a href="/porto/demo16.html" title="demo">
+									<a href="{{ route('page', ['page' => 'index']) }}" title="demo">
 										<span
 											class="thumb-info thumb-info-no-zoom thumb-info-no-overlay thumb-info-no-bg">
 											<span class="thumb-info-wrapper thumb-info-wrapper-demos m-0">
@@ -846,7 +846,7 @@
 							<div class="appear-animation" data-appear-animation="fadeInUpShorter"
 								data-appear-animation-delay="200" data-appear-animation-duration="750">
 								<div class="portfolio-item hover-effect-1 text-center">
-									<a href="/porto/demo17.html" title="demo">
+									<a href="{{ route('page', ['page' => 'index']) }}" title="demo">
 										<span
 											class="thumb-info thumb-info-no-zoom thumb-info-no-overlay thumb-info-no-bg">
 											<span class="thumb-info-wrapper thumb-info-wrapper-demos m-0">
@@ -866,7 +866,7 @@
 							<div class="appear-animation" data-appear-animation="fadeInUpShorter"
 								data-appear-animation-delay="200" data-appear-animation-duration="750">
 								<div class="portfolio-item hover-effect-1 text-center">
-									<a href="/porto/demo18.html" title="demo">
+									<a href="{{ route('page', ['page' => 'index']) }}" title="demo">
 										<span
 											class="thumb-info thumb-info-no-zoom thumb-info-no-overlay thumb-info-no-bg">
 											<span class="thumb-info-wrapper thumb-info-wrapper-demos m-0">
@@ -886,7 +886,7 @@
 							<div class="appear-animation" data-appear-animation="fadeInUpShorter"
 								data-appear-animation-delay="200" data-appear-animation-duration="750">
 								<div class="portfolio-item hover-effect-1 text-center">
-									<a href="/porto/demo19.html" title="demo">
+									<a href="{{ route('page', ['page' => 'index']) }}" title="demo">
 										<span
 											class="thumb-info thumb-info-no-zoom thumb-info-no-overlay thumb-info-no-bg">
 											<span class="thumb-info-wrapper thumb-info-wrapper-demos m-0">
@@ -906,7 +906,7 @@
 							<div class="appear-animation" data-appear-animation="fadeInUpShorter"
 								data-appear-animation-delay="200" data-appear-animation-duration="750">
 								<div class="portfolio-item hover-effect-1 text-center">
-									<a href="/porto/demo20.html" title="demo">
+									<a href="{{ route('page', ['page' => 'index']) }}" title="demo">
 										<span
 											class="thumb-info thumb-info-no-zoom thumb-info-no-overlay thumb-info-no-bg">
 											<span class="thumb-info-wrapper thumb-info-wrapper-demos m-0">
@@ -926,7 +926,7 @@
 							<div class="appear-animation" data-appear-animation="fadeInUpShorter"
 								data-appear-animation-delay="200" data-appear-animation-duration="750">
 								<div class="portfolio-item hover-effect-1 text-center">
-									<a href="/porto/demo21.html" title="demo">
+									<a href="{{ route('page', ['page' => 'index']) }}" title="demo">
 										<span
 											class="thumb-info thumb-info-no-zoom thumb-info-no-overlay thumb-info-no-bg">
 											<span class="thumb-info-wrapper thumb-info-wrapper-demos m-0">
@@ -946,7 +946,7 @@
 							<div class="appear-animation" data-appear-animation="fadeInUpShorter"
 								data-appear-animation-delay="200" data-appear-animation-duration="750">
 								<div class="portfolio-item hover-effect-1 text-center">
-									<a href="/porto/demo22.html" title="demo">
+									<a href="{{ route('page', ['page' => 'index']) }}" title="demo">
 										<span
 											class="thumb-info thumb-info-no-zoom thumb-info-no-overlay thumb-info-no-bg">
 											<span class="thumb-info-wrapper thumb-info-wrapper-demos m-0">
@@ -966,7 +966,7 @@
 							<div class="appear-animation" data-appear-animation="fadeInUpShorter"
 								data-appear-animation-delay="200" data-appear-animation-duration="750">
 								<div class="portfolio-item hover-effect-1 text-center">
-									<a href="/porto/demo23.html" title="demo">
+									<a href="{{ route('page', ['page' => 'index']) }}" title="demo">
 										<span
 											class="thumb-info thumb-info-no-zoom thumb-info-no-overlay thumb-info-no-bg">
 											<span class="thumb-info-wrapper thumb-info-wrapper-demos m-0">
@@ -986,7 +986,7 @@
 							<div class="appear-animation" data-appear-animation="fadeInUpShorter"
 								data-appear-animation-delay="200" data-appear-animation-duration="750">
 								<div class="portfolio-item hover-effect-1 text-center">
-									<a href="/porto/demo24.html" title="demo">
+									<a href="{{ route('page', ['page' => 'index']) }}" title="demo">
 										<span
 											class="thumb-info thumb-info-no-zoom thumb-info-no-overlay thumb-info-no-bg">
 											<span class="thumb-info-wrapper thumb-info-wrapper-demos m-0">
@@ -1006,7 +1006,7 @@
 							<div class="appear-animation" data-appear-animation="fadeInUpShorter"
 								data-appear-animation-delay="200" data-appear-animation-duration="750">
 								<div class="portfolio-item hover-effect-1 text-center">
-									<a href="/porto/demo25.html" title="demo">
+									<a href="{{ route('page', ['page' => 'index']) }}" title="demo">
 										<span
 											class="thumb-info thumb-info-no-zoom thumb-info-no-overlay thumb-info-no-bg">
 											<span class="thumb-info-wrapper thumb-info-wrapper-demos m-0">
@@ -1026,7 +1026,7 @@
 							<div class="appear-animation" data-appear-animation="fadeInUpShorter"
 								data-appear-animation-delay="200" data-appear-animation-duration="750">
 								<div class="portfolio-item hover-effect-1 text-center">
-									<a href="/porto/demo26.html" title="demo">
+									<a href="{{ route('page', ['page' => 'index']) }}" title="demo">
 										<span
 											class="thumb-info thumb-info-no-zoom thumb-info-no-overlay thumb-info-no-bg">
 											<span class="thumb-info-wrapper thumb-info-wrapper-demos m-0">
@@ -1046,7 +1046,7 @@
 							<div class="appear-animation" data-appear-animation="fadeInUpShorter"
 								data-appear-animation-delay="200" data-appear-animation-duration="750">
 								<div class="portfolio-item hover-effect-1 text-center">
-									<a href="/porto/demo27.html" title="demo">
+									<a href="{{ route('page', ['page' => 'index']) }}" title="demo">
 										<span
 											class="thumb-info thumb-info-no-zoom thumb-info-no-overlay thumb-info-no-bg">
 											<span class="thumb-info-wrapper thumb-info-wrapper-demos m-0">
@@ -1066,7 +1066,7 @@
 							<div class="appear-animation" data-appear-animation="fadeInUpShorter"
 								data-appear-animation-delay="200" data-appear-animation-duration="750">
 								<div class="portfolio-item hover-effect-1 text-center">
-									<a href="/porto/demo28.html" title="demo">
+									<a href="{{ route('page', ['page' => 'index']) }}" title="demo">
 										<span
 											class="thumb-info thumb-info-no-zoom thumb-info-no-overlay thumb-info-no-bg">
 											<span class="thumb-info-wrapper thumb-info-wrapper-demos m-0">
@@ -1086,7 +1086,7 @@
 							<div class="appear-animation" data-appear-animation="fadeInUpShorter"
 								data-appear-animation-delay="200" data-appear-animation-duration="750">
 								<div class="portfolio-item hover-effect-1 text-center">
-									<a href="/porto/demo29.html" title="demo">
+									<a href="{{ route('page', ['page' => 'index']) }}" title="demo">
 										<span
 											class="thumb-info thumb-info-no-zoom thumb-info-no-overlay thumb-info-no-bg">
 											<span class="thumb-info-wrapper thumb-info-wrapper-demos m-0">
@@ -1106,7 +1106,7 @@
 							<div class="appear-animation" data-appear-animation="fadeInUpShorter"
 								data-appear-animation-delay="200" data-appear-animation-duration="750">
 								<div class="portfolio-item hover-effect-1 text-center">
-									<a href="/porto/demo30.html" title="demo">
+									<a href="{{ route('page', ['page' => 'index']) }}" title="demo">
 										<span
 											class="thumb-info thumb-info-no-zoom thumb-info-no-overlay thumb-info-no-bg">
 											<span class="thumb-info-wrapper thumb-info-wrapper-demos m-0">
@@ -1126,7 +1126,7 @@
 							<div class="appear-animation" data-appear-animation="fadeInUpShorter"
 								data-appear-animation-delay="200" data-appear-animation-duration="750">
 								<div class="portfolio-item hover-effect-1 text-center">
-									<a href="/porto/demo31.html" title="demo">
+									<a href="{{ route('page', ['page' => 'index']) }}" title="demo">
 										<span
 											class="thumb-info thumb-info-no-zoom thumb-info-no-overlay thumb-info-no-bg">
 											<span class="thumb-info-wrapper thumb-info-wrapper-demos m-0">
@@ -1146,7 +1146,7 @@
 							<div class="appear-animation" data-appear-animation="fadeInUpShorter"
 								data-appear-animation-delay="200" data-appear-animation-duration="750">
 								<div class="portfolio-item hover-effect-1 text-center">
-									<a href="/porto/demo32.html" title="demo">
+									<a href="{{ route('page', ['page' => 'index']) }}" title="demo">
 										<span
 											class="thumb-info thumb-info-no-zoom thumb-info-no-overlay thumb-info-no-bg">
 											<span class="thumb-info-wrapper thumb-info-wrapper-demos m-0">
@@ -1166,7 +1166,7 @@
 							<div class="appear-animation" data-appear-animation="fadeInUpShorter"
 								data-appear-animation-delay="200" data-appear-animation-duration="750">
 								<div class="portfolio-item hover-effect-1 text-center">
-									<a href="/porto/demo33.html" title="demo">
+									<a href="{{ route('page', ['page' => 'index']) }}" title="demo">
 										<span
 											class="thumb-info thumb-info-no-zoom thumb-info-no-overlay thumb-info-no-bg">
 											<span class="thumb-info-wrapper thumb-info-wrapper-demos m-0">
@@ -1186,7 +1186,7 @@
 							<div class="appear-animation" data-appear-animation="fadeInUpShorter"
 								data-appear-animation-delay="200" data-appear-animation-duration="750">
 								<div class="portfolio-item hover-effect-1 text-center">
-									<a href="/porto/demo34.html" title="demo">
+									<a href="{{ route('page', ['page' => 'index']) }}" title="demo">
 										<span
 											class="thumb-info thumb-info-no-zoom thumb-info-no-overlay thumb-info-no-bg">
 											<span class="thumb-info-wrapper thumb-info-wrapper-demos m-0">
@@ -1206,7 +1206,7 @@
 							<div class="appear-animation" data-appear-animation="fadeInUpShorter"
 								data-appear-animation-delay="200" data-appear-animation-duration="750">
 								<div class="portfolio-item hover-effect-1 text-center">
-									<a href="/porto/demo35.html" title="demo">
+									<a href="{{ route('page', ['page' => 'index']) }}" title="demo">
 										<span
 											class="thumb-info thumb-info-no-zoom thumb-info-no-overlay thumb-info-no-bg">
 											<span class="thumb-info-wrapper thumb-info-wrapper-demos m-0">
@@ -1226,7 +1226,7 @@
 							<div class="appear-animation" data-appear-animation="fadeInUpShorter"
 								data-appear-animation-delay="200" data-appear-animation-duration="750">
 								<div class="portfolio-item hover-effect-1 text-center">
-									<a href="/porto/demo36.html" title="demo">
+									<a href="{{ route('page', ['page' => 'index']) }}" title="demo">
 										<span
 											class="thumb-info thumb-info-no-zoom thumb-info-no-overlay thumb-info-no-bg">
 											<span class="thumb-info-wrapper thumb-info-wrapper-demos m-0">
@@ -1246,7 +1246,7 @@
 							<div class="appear-animation" data-appear-animation="fadeInUpShorter"
 								data-appear-animation-delay="200" data-appear-animation-duration="750">
 								<div class="portfolio-item hover-effect-1 text-center">
-									<a href="/porto/demo37.html" title="demo">
+									<a href="{{ route('page', ['page' => 'index']) }}" title="demo">
 										<span
 											class="thumb-info thumb-info-no-zoom thumb-info-no-overlay thumb-info-no-bg">
 											<span class="thumb-info-wrapper thumb-info-wrapper-demos m-0">
@@ -1266,7 +1266,7 @@
 							<div class="appear-animation" data-appear-animation="fadeInUpShorter"
 								data-appear-animation-delay="200" data-appear-animation-duration="750">
 								<div class="portfolio-item hover-effect-1 text-center">
-									<a href="/porto/demo38.html" title="demo">
+									<a href="{{ route('page', ['page' => 'index']) }}" title="demo">
 										<span
 											class="thumb-info thumb-info-no-zoom thumb-info-no-overlay thumb-info-no-bg">
 											<span class="thumb-info-wrapper thumb-info-wrapper-demos m-0">
@@ -1286,7 +1286,7 @@
 							<div class="appear-animation" data-appear-animation="fadeInUpShorter"
 								data-appear-animation-delay="200" data-appear-animation-duration="750">
 								<div class="portfolio-item hover-effect-1 text-center">
-									<a href="/porto/demo39.html" title="demo">
+									<a href="{{ route('page', ['page' => 'index']) }}" title="demo">
 										<span
 											class="thumb-info thumb-info-no-zoom thumb-info-no-overlay thumb-info-no-bg">
 											<span class="thumb-info-wrapper thumb-info-wrapper-demos m-0">
@@ -1366,7 +1366,7 @@
 							<div class="appear-animation" data-appear-animation="fadeInUpShorter"
 								data-appear-animation-delay="200" data-appear-animation-duration="750">
 								<div class="portfolio-item hover-effect-1 text-center">
-									<a href="/porto/demo1-dark.html" title="demo">
+									<a href="{{ route('page', ['page' => 'index']) }}" title="demo">
 										<span
 											class="thumb-info thumb-info-no-zoom thumb-info-no-overlay thumb-info-no-bg">
 											<span class="thumb-info-wrapper thumb-info-wrapper-demos m-0">
@@ -1386,7 +1386,7 @@
 							<div class="appear-animation" data-appear-animation="fadeInUpShorter"
 								data-appear-animation-delay="200" data-appear-animation-duration="750">
 								<div class="portfolio-item hover-effect-1 text-center">
-									<a href="/porto/demo2-dark.html" title="demo">
+									<a href="{{ route('page', ['page' => 'index']) }}" title="demo">
 										<span
 											class="thumb-info thumb-info-no-zoom thumb-info-no-overlay thumb-info-no-bg">
 											<span class="thumb-info-wrapper thumb-info-wrapper-demos m-0">

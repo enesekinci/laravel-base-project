@@ -5,7 +5,7 @@
     'title' => $title ?? 'Porto - Bootstrap eCommerce Template',
     'keywords' => $keywords ?? 'HTML5 Template',
     'description' => $description ?? 'Porto - Bootstrap eCommerce Template',
-    'demoCss' => $demoCss ?? 'demo1',
+    'demoCss' => $demoCss ?? 'demo1', // CSS dosyası demo1.min.css olarak derleniyor
 ])
 
 <body

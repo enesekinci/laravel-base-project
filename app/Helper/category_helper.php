@@ -322,7 +322,7 @@ if (!function_exists('render_megamenu')) {
         $html .= '<b>50%</b>';
         $html .= '<i>' . __('OFF') . '</i>';
         $html .= '</h4>';
-        $html .= '<a href="/porto/demo1-shop.html" class="btn btn-sm btn-dark">' . __('SHOP NOW') . '</a>';
+        $html .= '<a href="' . route('page', ['page' => 'shop']) . '" class="btn btn-sm btn-dark">' . __('SHOP NOW') . '</a>';
         $html .= '</div>';
         $html .= '</div>';
         $html .= '</div>';
@@ -364,7 +364,7 @@ if (!function_exists('render_categories_megamenu')) {
 
                 foreach ($chunk ?? [] as $category) {
                     $html .= '<li>';
-                    $html .= '<a href="/porto/demo1-shop.html?category=' . htmlspecialchars($category['slug']) . '">';
+                    $html .= '<a href="' . route('page', ['page' => 'shop', 'category' => $category['slug']]) . '">';
                     $html .= htmlspecialchars($category['name']);
 
                     if (count($category['children']) > 0) {
@@ -377,7 +377,7 @@ if (!function_exists('render_categories_megamenu')) {
                         $html .= '<ul>';
                         foreach ($category['children'] as $child) {
                             $html .= '<li>';
-                            $html .= '<a href="/porto/demo1-shop.html?category=' . htmlspecialchars($child['slug']) . '">';
+                            $html .= '<a href="' . route('page', ['page' => 'shop', 'category' => $child['slug']]) . '">';
                             $html .= htmlspecialchars($child['name']);
                             $html .= '</a>';
                             $html .= '</li>';
@@ -405,7 +405,7 @@ if (!function_exists('render_categories_megamenu')) {
         $html .= '<b>50%</b>';
         $html .= '<i>' . __('OFF') . '</i>';
         $html .= '</h4>';
-        $html .= '<a href="/porto/demo1-shop.html" class="btn btn-sm btn-dark">' . __('SHOP NOW') . '</a>';
+        $html .= '<a href="' . route('page', ['page' => 'shop']) . '" class="btn btn-sm btn-dark">' . __('SHOP NOW') . '</a>';
         $html .= '</div>';
         $html .= '</div>';
         $html .= '</div>';

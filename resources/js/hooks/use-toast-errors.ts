@@ -57,26 +57,22 @@ export function useToastErrors(errors: Record<string, string | string[]> = {}) {
         // Her form submit'inde yeni bir Inertia response geldiği için
         // page.props değişir ve useEffect tekrar çalışır
         if (Object.keys(currentErrors).length > 0) {
-            // Her form submit'inde toast göster
-            // page.props her submit'te değiştiği için useEffect tekrar çalışır
-            // Aynı sayfada aynı hatalar geldiğinde de toast göster
-            // Çünkü kullanıcı formu tekrar submit etmiş olabilir
+            // Hatalar değiştiyse, yeni sayfa ise veya ilk render ise toast göster
+            // Aynı hatalar aynı sayfada tekrar geldiğinde de göster (kullanıcı tekrar submit etmiş olabilir)
             const hasDifferentErrors =
                 currentErrorsString !== previousErrorsStringRef.current;
             const isNewPage = currentUrl !== previousPageUrlRef.current;
+            const isFirstRender = previousErrorsStringRef.current === '';
             const timeSinceLastToast = currentTime - lastToastTimeRef.current;
 
             // Her submit'te toast göster
-            // Hatalar değiştiyse, yeni sayfa ise veya son toast'tan 500ms geçtiyse toast göster
-            // Bu sayede aynı render cycle içinde tekrar gösterilmez
-            // ama her yeni submit'te gösterilir
-            const shouldShowToast =
+            // Aynı render cycle içinde tekrar gösterilmemesi için zaman kontrolü yapıyoruz
+            if (
                 hasDifferentErrors ||
                 isNewPage ||
-                timeSinceLastToast > 500 ||
-                previousErrorsStringRef.current === '';
-
-            if (shouldShowToast) {
+                isFirstRender ||
+                timeSinceLastToast > 1000 // Son toast'tan 1 saniye geçtiyse tekrar göster
+            ) {
                 // Her hatayı ayrı satırda göster
                 const errorMessages = Object.entries(currentErrors)
                     .map(([, value]) => {
@@ -91,6 +87,7 @@ export function useToastErrors(errors: Record<string, string | string[]> = {}) {
                     title: 'Form Hataları',
                     description: errorMessages,
                     variant: 'destructive',
+                    duration: 5000, // 5 saniye göster
                 });
 
                 // Son toast zamanını güncelle

@@ -29,6 +29,7 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/components/ui/use-toast';
 import { useProductVariants } from '@/hooks/use-product-variants';
 import { useProductVariations } from '@/hooks/use-product-variations';
 import { useToastErrors } from '@/hooks/use-toast-errors';
@@ -112,6 +113,7 @@ export default function ProductsCreate({
     });
 
     useToastErrors(errors);
+    const { toast } = useToast();
 
     const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
     const [selectedTags, setSelectedTags] = useState<number[]>([]);
@@ -517,80 +519,157 @@ export default function ProductsCreate({
     const handleSubmit = (e: React.FormEvent, redirectToIndex = false) => {
         e.preventDefault();
 
-        // Attributes - backend her attribute_value_id için ayrı kayıt bekliyor
-        const attributesArray: Array<{
-            attribute_id: number;
-            attribute_value_id: number | null;
-        }> = [];
-        productAttributes.forEach((attr) => {
-            if (attr.attribute_value_ids.length > 0) {
-                attr.attribute_value_ids.forEach((valueId) => {
+        // Client-side validation
+        const validationErrors: string[] = [];
+
+        if (!data.name || data.name.trim() === '') {
+            validationErrors.push('Ürün adı gereklidir');
+        }
+
+        if (!data.slug || data.slug.trim() === '') {
+            validationErrors.push('Slug gereklidir');
+        }
+
+        if (!data.sku || data.sku.trim() === '') {
+            validationErrors.push('SKU gereklidir');
+        }
+
+        if (!data.description || data.description.trim() === '') {
+            validationErrors.push('Açıklama gereklidir');
+        }
+
+        if (!data.short_description || data.short_description.trim() === '') {
+            validationErrors.push('Kısa açıklama gereklidir');
+        }
+
+        if (!data.brand_id) {
+            validationErrors.push('Marka seçimi gereklidir');
+        }
+
+        if (!data.tax_class_id) {
+            validationErrors.push('Vergi sınıfı seçimi gereklidir');
+        }
+
+        if (selectedCategories.length === 0) {
+            validationErrors.push('En az bir kategori seçilmelidir');
+        }
+
+        if (productVariations.length === 0) {
+            validationErrors.push('En az bir varyasyon seçilmelidir');
+        }
+
+        if (productVariants.length === 0) {
+            validationErrors.push('En az bir varyant oluşturulmalıdır');
+        }
+
+        // Validation hataları varsa toast göster ve submit etme
+        if (validationErrors.length > 0) {
+            toast({
+                title: 'Form Hataları',
+                description: validationErrors
+                    .map((err) => `• ${err}`)
+                    .join('\n'),
+                variant: 'destructive',
+            });
+            return;
+        }
+
+        try {
+            // Attributes - backend her attribute_value_id için ayrı kayıt bekliyor
+            const attributesArray: Array<{
+                attribute_id: number;
+                attribute_value_id: number | null;
+            }> = [];
+            productAttributes.forEach((attr) => {
+                if (attr.attribute_value_ids.length > 0) {
+                    attr.attribute_value_ids.forEach((valueId) => {
+                        attributesArray.push({
+                            attribute_id: attr.attribute_id,
+                            attribute_value_id: valueId,
+                        });
+                    });
+                } else {
                     attributesArray.push({
                         attribute_id: attr.attribute_id,
-                        attribute_value_id: valueId,
+                        attribute_value_id: null,
                     });
-                });
-            } else {
-                attributesArray.push({
-                    attribute_id: attr.attribute_id,
-                    attribute_value_id: null,
-                });
-            }
-        });
+                }
+            });
 
-        // Variants - product_variations tablosuna kaydedilir
-        const variantsData = productVariants.map((variant) => ({
-            name: variant.name,
-            sku: variant.sku || '',
-            barcode: variant.barcode || '',
-            price: variant.price || 0,
-            stock: variant.stock || 0,
-            image:
-                variant.image instanceof File
-                    ? variant.image
-                    : variant.image || null,
-            variation_values: variant.variation_values,
-        }));
+            // Variants - product_variations tablosuna kaydedilir
+            const variantsData = productVariants.map((variant) => ({
+                name: variant.name,
+                sku: variant.sku || '',
+                barcode: variant.barcode || '',
+                price: variant.price || 0,
+                stock: variant.stock || 0,
+                image:
+                    variant.image instanceof File
+                        ? variant.image
+                        : variant.image || null,
+                variation_values: variant.variation_values,
+            }));
 
-        // Media - sort_order ekle
-        const mediaData = data.media.map((item, index) => ({
-            ...item,
-            sort_order: item.sort_order ?? index,
-        }));
+            // Media - sort_order ekle
+            const mediaData = data.media.map((item, index) => ({
+                ...item,
+                sort_order: item.sort_order ?? index,
+            }));
 
-        // Variations - product_variation_templates tablosuna kaydedilir
-        const variationsData = productVariations.map((variation, index) => ({
-            variation_id: variation.variation_id,
-            sort_order: index,
-        }));
+            // Variations - product_variation_templates tablosuna kaydedilir
+            const variationsData = productVariations.map(
+                (variation, index) => ({
+                    variation_id: variation.variation_id,
+                    sort_order: index,
+                }),
+            );
 
-        // Form data'yı hazırla
-        const formData = {
-            ...data,
-            categories: selectedCategories,
-            tags: selectedTags,
-            attributes: attributesArray,
-            variations: variationsData,
-            variants: variantsData,
-            options: selectedOptions.map((opt) => ({
-                option_id: opt.option_id,
-                values: (opt.localValues || []).map((val) => ({
-                    label: val.label,
-                    value: val.value || null,
-                    price_adjustment: val.price_adjustment || 0,
-                    price_type: val.price_type || 'fixed',
-                    sort_order: val.sort_order || 0,
+            // Form data'yı hazırla
+            const formData = {
+                ...data,
+                categories: selectedCategories,
+                tags: selectedTags,
+                attributes: attributesArray,
+                variations: variationsData,
+                variants: variantsData,
+                options: selectedOptions.map((opt) => ({
+                    option_id: opt.option_id,
+                    values: (opt.localValues || []).map((val) => ({
+                        label: val.label,
+                        value: val.value || null,
+                        price_adjustment: val.price_adjustment || 0,
+                        price_type: val.price_type || 'fixed',
+                        sort_order: val.sort_order || 0,
+                    })),
                 })),
-            })),
-            downloads: downloads.map((dl) => ({ file: dl.file })),
-            media: mediaData,
-            redirect: redirectToIndex ? 'index' : data.redirect,
-        };
+                downloads: downloads.map((dl) => ({ file: dl.file })),
+                media: mediaData,
+                redirect: redirectToIndex ? 'index' : data.redirect,
+            };
 
-        // Submit et - formData'yı doğrudan router.post ile gönder
-        // setData asenkron olduğu için ilk submit'te state güncellenmeden post çağrılıyordu
-        // router.post kullanarak hazırlanan formData'yı direkt gönderiyoruz
-        router.post(store().url, formData);
+            // Submit et - formData'yı doğrudan router.post ile gönder
+            // setData asenkron olduğu için ilk submit'te state güncellenmeden post çağrılıyordu
+            // router.post kullanarak hazırlanan formData'yı direkt gönderiyoruz
+            router.post(store().url, formData, {
+                onError: (errors) => {
+                    // Hatalar zaten useToastErrors hook'u tarafından gösterilecek
+                    console.error('Form submission errors:', errors);
+                },
+                onSuccess: () => {
+                    // Başarılı submit - flash message zaten useToastErrors hook'u tarafından gösterilecek
+                },
+            });
+        } catch (error) {
+            console.error('Form submission error:', error);
+            toast({
+                title: 'Hata',
+                description:
+                    error instanceof Error
+                        ? error.message
+                        : 'Ürün kaydedilirken bir hata oluştu',
+                variant: 'destructive',
+            });
+        }
     };
 
     return (
