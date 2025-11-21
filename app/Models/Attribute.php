@@ -33,4 +33,14 @@ class Attribute extends Model
     {
         return $this->hasMany(ProductAttributeValue::class);
     }
+
+    public function values()
+    {
+        return $this->hasMany(AttributeValue::class);
+    }
+
+    public function attributeSet()
+    {
+        return $this->belongsTo(AttributeSet::class, 'attribute_set_id');
+    }
 }

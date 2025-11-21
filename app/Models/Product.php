@@ -7,11 +7,12 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Scout\Searchable;
 use Carbon\Carbon;
 
 class Product extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, Searchable;
 
     protected $guarded = [];
 
@@ -120,5 +121,86 @@ class Product extends Model
     public function newEloquentBuilder($query): Builder
     {
         return new ProductQueryBuilder($query);
+    }
+
+    public function searchableAs(): string
+    {
+        return 'products';
+    }
+
+    /**
+     * Test ortamında veya Meili çalışmıyorsa otomatik sync'i devre dışı bırak
+     */
+    public function shouldBeSearchable(): bool
+    {
+        return config('scout.driver') === 'meilisearch' && app()->environment() !== 'testing';
+    }
+
+    public function toSearchableArray(): array
+    {
+        $this->loadMissing([
+            'brand',
+            'categories',
+            'variants.optionValues.option',
+            'attributeValues.attribute',
+        ]);
+
+        $base = [
+            'id'        => $this->id,
+            'name'      => $this->name,
+            'slug'      => $this->slug,
+            'sku'       => $this->sku,
+            'price'     => $this->getEffectivePrice(),
+            'is_active' => (bool) $this->is_active,
+            'in_stock'  => $this->isInStock(),
+            'brand'     => $this->brand?->name,
+            'category_ids'   => $this->categories->pluck('id')->values()->all(),
+            'category_names' => $this->categories->pluck('name')->values()->all(),
+        ];
+
+        // Option'ları (renk, beden vs.) flatten edelim
+        $colorIds = [];
+        $sizeIds  = [];
+        $colors   = [];
+        $sizes    = [];
+
+        foreach ($this->variants as $variant) {
+            foreach ($variant->optionValues as $ov) {
+                $optName = mb_strtolower($ov->option->name);
+
+                if ($optName === 'renk') {
+                    $colorIds[] = $ov->id;
+                    $colors[]   = $ov->value;
+                }
+
+                if ($optName === 'beden') {
+                    $sizeIds[] = $ov->id;
+                    $sizes[]   = $ov->value;
+                }
+            }
+        }
+
+        $colorIds = array_values(array_unique($colorIds));
+        $sizeIds  = array_values(array_unique($sizeIds));
+        $colors   = array_values(array_unique($colors));
+        $sizes    = array_values(array_unique($sizes));
+
+        // Attribute'leri flatten et
+        $attributes = [];
+        foreach ($this->attributeValues as $av) {
+            $code = $av->attribute->slug;
+            $attributes[$code] = $av->typed_value;
+        }
+
+        return array_merge($base, [
+            'colors'   => $colors,
+            'color_ids' => $colorIds,
+            'sizes'    => $sizes,
+            'size_ids' => $sizeIds,
+            'attributes' => $attributes,
+            // direkt facet alanları
+            'attribute_material'   => $attributes['material']   ?? null,
+            'attribute_neck_type'  => $attributes['neck_type']  ?? null,
+        ]);
     }
 }
