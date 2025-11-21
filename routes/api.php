@@ -187,4 +187,18 @@ Route::middleware('auth:sanctum')
             ->name('transactions.update');
         Route::delete('/transactions/{transaction}', [\App\Http\Controllers\Admin\TransactionController::class, 'destroy'])
             ->name('transactions.destroy');
+        
+        // Media Files
+        Route::get('/media', [\App\Http\Controllers\Admin\MediaFileController::class, 'index'])
+            ->name('media.index');
+        Route::get('/media/{media_file}', [\App\Http\Controllers\Admin\MediaFileController::class, 'show'])
+            ->name('media.show');
+        Route::post('/media', [\App\Http\Controllers\Admin\MediaFileController::class, 'store'])
+            ->name('media.store');
+        Route::put('/media/{media_file}', [\App\Http\Controllers\Admin\MediaFileController::class, 'update'])
+            ->name('media.update');
+        Route::delete('/media/{media_file}', [\App\Http\Controllers\Admin\MediaFileController::class, 'destroy'])
+            ->name('media.destroy');
+        Route::post('/media/{id}/restore', [\App\Http\Controllers\Admin\MediaFileController::class, 'restore'])
+            ->name('media.restore');
     });
