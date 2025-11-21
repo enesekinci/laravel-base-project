@@ -1,11 +1,7 @@
-<div class="top-notice text-white bg-dark">
-    <div class="container text-center">
-        <h5 class="d-inline-block mb-0">Get Up to <b>40% OFF</b> New-Season Styles</h5>
-        <a href="/porto/demo1-shop.html" class="category">MEN</a>
-        <a href="/porto/demo1-shop.html" class="category">WOMEN</a>
-        <small>* Limited time only.</small>
-        <button title="Close (Esc)" type="button" class="mfp-close">×</button>
+@if(!empty($topNotice))
+    @include('components.porto.top-notice')
+@else
+    <div class="container py-5 text-center text-muted">
+        {{ __('Top notice içeriği ayarlardan aktifleştirildiğinde burada görünecek.') }}
     </div>
-</div>
-<!-- End .top-notice -->
-
+@endif

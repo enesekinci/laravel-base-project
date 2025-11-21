@@ -9,7 +9,7 @@
 				<div class="container">
 					<ol class="breadcrumb">
 						<li class="breadcrumb-item">
-							<a href="/porto/demo4.html"><i class="icon-home"></i></a>
+							<a href="{{ route('page', ['page' => 'index']) }}"><i class="icon-home"></i></a>
 						</li>
 						<li class="breadcrumb-item active" aria-current="page">
 							Contact Us
@@ -21,62 +21,43 @@
 			<div id="map"></div>
 
 			<div class="container contact-us-container">
-				<div class="contact-info">
-					<div class="row">
-						<div class="col-12">
-							<h2 class="ls-n-25 m-b-1">
-								Contact Info
-							</h2>
+				@if($contactDescription || (!empty($contactInfoBoxes) && count($contactInfoBoxes) > 0))
+					<div class="contact-info">
+						<div class="row">
+							@if($contactDescription)
+								<div class="col-12">
+									<h2 class="ls-n-25 m-b-1">
+										{{ __('Contact Us') }}
+									</h2>
+									<p>{{ $contactDescription }}</p>
+								</div>
+							@endif
 
-							<p>
-								Lorem ipsum dolor sit amet, consectetur adipiscing
-								elit. Sed imperdiet libero id nisi euismod, sed
-								porta est consectetur. Vestibulum auctor felis eget
-								orci semper vestibulum. Pellentesque ultricies nibh
-								gravida, accumsan libero luctus, molestie nunc.L
-								orem ipsum dolor sit amet, consectetur adipiscing
-								elit.
-							</p>
-						</div>
-
-						<div class="col-sm-6 col-lg-3">
-							<div class="feature-box text-center">
-								<i class="sicon-location-pin"></i>
-								<div class="feature-box-content">
-									<h3>Address</h3>
-									<h5>123 Wall Street, New York / NY</h5>
-								</div>
-							</div>
-						</div>
-						<div class="col-sm-6 col-lg-3">
-							<div class="feature-box text-center">
-								<i class="fa fa-mobile-alt"></i>
-								<div class="feature-box-content">
-									<h3>Phone Number</h3>
-									<h5>(800) 123-4567</h5>
-								</div>
-							</div>
-						</div>
-						<div class="col-sm-6 col-lg-3">
-							<div class="feature-box text-center">
-								<i class="far fa-envelope"></i>
-								<div class="feature-box-content">
-									<h3>E-mail Address</h3>
-									<h5>porto@portotheme.com</h5>
-								</div>
-							</div>
-						</div>
-						<div class="col-sm-6 col-lg-3">
-							<div class="feature-box text-center">
-								<i class="far fa-calendar-alt"></i>
-								<div class="feature-box-content">
-									<h3>Working Days/Hours</h3>
-									<h5>Mon - Sun / 9:00AM - 8:00PM</h5>
-								</div>
-							</div>
+							@if(!empty($contactInfoBoxes) && count($contactInfoBoxes) > 0)
+								@foreach($contactInfoBoxes as $infoBox)
+									<div class="col-sm-6 col-lg-3">
+										<div class="feature-box text-center">
+											@if($infoBox['icon'])
+												<i class="{{ $infoBox['icon'] }}"></i>
+											@endif
+											<div class="feature-box-content">
+												@if($infoBox['title'])
+													<h3>{{ $infoBox['title'] }}</h3>
+												@endif
+												@if($infoBox['subtitle'])
+													<h5>{{ $infoBox['subtitle'] }}</h5>
+												@endif
+												@if($infoBox['description'])
+													<p>{{ $infoBox['description'] }}</p>
+												@endif
+											</div>
+										</div>
+									</div>
+								@endforeach
+							@endif
 						</div>
 					</div>
-				</div>
+				@endif
 
 				<div class="row">
 					<div class="col-lg-6">
@@ -84,21 +65,24 @@
 
 						<form class="mb-0" action="#">
 							<div class="form-group">
-								<label class="mb-1" for="contact-name">Your Name
+								<label class="mb-1" for="contact-name">
+									{{ __('Your Name') }}
 									<span class="required">*</span></label>
 								<input type="text" class="form-control" id="contact-name" name="contact-name"
 									required />
 							</div>
 
 							<div class="form-group">
-								<label class="mb-1" for="contact-email">Your E-mail
+								<label class="mb-1" for="contact-email">
+									{{ __('Your E-mail') }}
 									<span class="required">*</span></label>
 								<input type="email" class="form-control" id="contact-email" name="contact-email"
 									required />
 							</div>
 
 							<div class="form-group">
-								<label class="mb-1" for="contact-message">Your Message
+								<label class="mb-1" for="contact-message">
+									{{ __('Your Message') }}
 									<span class="required">*</span></label>
 								<textarea cols="30" rows="1" id="contact-message" class="form-control"
 									name="contact-message" required></textarea>
@@ -106,152 +90,36 @@
 
 							<div class="form-footer mb-0">
 								<button type="submit" class="btn btn-dark font-weight-normal">
-									Send Message
+									{{ __('Send Message') }}
 								</button>
 							</div>
 						</form>
 					</div>
 
-					<div class="col-lg-6">
-						<h2 class="mt-6 mb-1">Frequently Asked Questions</h2>
-						<div id="accordion">
-							<div class="card card-accordion">
-								<a class="card-header" href="#" data-toggle="collapse" data-target="#collapseOne"
-									aria-expanded="true" aria-controls="collapseOne">
-									Curabitur eget leo at velit imperdiet viaculis
-									vitaes?
-								</a>
-
-								<div id="collapseOne" class="collapse show" data-parent="#accordion">
-									<p>Lorem ipsum dolor sit amet, consectetur
-										adipiscing elit. Curabitur eget leo at velit
-										imperdiet varius. In eu ipsum vitae velit
-										congue iaculis vitae at risus. Nullam tortor
-										nunc, bibendum vitae semper a, volutpat eget
-										massa.</p>
-								</div>
-							</div>
-
-							<div class="card card-accordion">
-								<a class="card-header collapsed" href="#" data-toggle="collapse"
-									data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseOne">
-									Curabitur eget leo at velit imperdiet vague
-									iaculis vitaes?
-								</a>
-
-								<div id="collapseTwo" class="collapse" data-parent="#accordion">
-									<p>Lorem ipsum dolor sit amet, consectetur
-										adipiscing elit. Curabitur eget leo at velit
-										imperdiet varius. In eu ipsum vitae velit
-										congue iaculis vitae at risus. Nullam tortor
-										nunc, bibendum vitae semper a, volutpat eget
-										massa. Lorem ipsum dolor sit amet,
-										consectetur adipiscing elit. Integer
-										fringilla, orci sit amet posuere auctor,
-										orci eros pellentesque odio, nec
-										pellentesque erat ligula nec massa. Aenean
-										consequat lorem ut felis ullamcorper posuere
-										gravida tellus faucibus. Maecenas dolor
-										elit, pulvinar eu vehicula eu, consequat et
-										lacus. Duis et purus ipsum. In auctor mattis
-										ipsum id molestie. Donec risus nulla,
-										fringilla a rhoncus vitae, semper a massa.
-										Vivamus ullamcorper, enim sit amet consequat
-										laoreet, tortor tortor dictum urna, ut
-										egestas urna ipsum nec libero. Nulla justo
-										leo, molestie vel tempor nec, egestas at
-										massa. Aenean pulvinar, felis porttitor
-										iaculis pulvinar, odio orci sodales odio, ac
-										pulvinar felis quam sit.</p>
-								</div>
-							</div>
-
-							<div class="card card-accordion">
-								<a class="card-header collapsed" href="#" data-toggle="collapse"
-									data-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
-									Curabitur eget leo at velit imperdiet viaculis
-									vitaes?
-								</a>
-
-								<div id="collapseThree" class="collapse" data-parent="#accordion">
-									<p>Lorem ipsum dolor sit amet, consectetur
-										adipiscing elit. Curabitur eget leo at velit
-										imperdiet varius. In eu ipsum vitae velit
-										congue iaculis vitae at risus. Nullam tortor
-										nunc, bibendum vitae semper a, volutpat eget
-										massa.</p>
-								</div>
-							</div>
-
-							<div class="card card-accordion">
-								<a class="card-header collapsed" href="#" data-toggle="collapse"
-									data-target="#collapseFour" aria-expanded="true" aria-controls="collapseThree">
-									Curabitur eget leo at velit imperdiet vague
-									iaculis vitaes?
-								</a>
-
-								<div id="collapseFour" class="collapse" data-parent="#accordion">
-									<p>Lorem ipsum dolor sit amet, consectetur
-										adipiscing elit. Curabitur eget leo at velit
-										imperdiet varius. In eu ipsum vitae velit
-										congue iaculis vitae at risus. Nullam tortor
-										nunc, bibendum vitae semper a, volutpat eget
-										massa. Lorem ipsum dolor sit amet,
-										consectetur adipiscing elit. Integer
-										fringilla, orci sit amet posuere auctor,
-										orci eros pellentesque odio, nec
-										pellentesque erat ligula nec massa. Aenean
-										consequat lorem ut felis ullamcorper posuere
-										gravida tellus faucibus. Maecenas dolor
-										elit, pulvinar eu vehicula eu, consequat et
-										lacus. Duis et purus ipsum. In auctor mattis
-										ipsum id molestie. Donec risus nulla,
-										fringilla a rhoncus vitae, semper a massa.
-										Vivamus ullamcorper, enim sit amet consequat
-										laoreet, tortor tortor dictum urna, ut
-										egestas urna ipsum nec libero. Nulla justo
-										leo, molestie vel tempor nec, egestas at
-										massa. Aenean pulvinar, felis porttitor
-										iaculis pulvinar, odio orci sodales odio, ac
-										pulvinar felis quam sit.</p>
-								</div>
-							</div>
-
-							<div class="card card-accordion">
-								<a class="card-header collapsed" href="#" data-toggle="collapse"
-									data-target="#collapseFive" aria-expanded="true" aria-controls="collapseThree">
-									Curabitur eget leo at velit imperdiet varius
-									iaculis vitaes?
-								</a>
-
-								<div id="collapseFive" class="collapse" data-parent="#accordion">
-									<p>Lorem ipsum dolor sit amet, consectetur
-										adipiscing elit. Curabitur eget leo at velit
-										imperdiet varius. In eu ipsum vitae velit
-										congue iaculis vitae at risus. Nullam tortor
-										nunc, bibendum vitae semper a, volutpat eget
-										massa. Lorem ipsum dolor sit amet,
-										consectetur adipiscing elit. Integer
-										fringilla, orci sit amet posuere auctor,
-										orci eros pellentesque odio, nec
-										pellentesque erat ligula nec massa. Aenean
-										consequat lorem ut felis ullamcorper posuere
-										gravida tellus faucibus. Maecenas dolor
-										elit, pulvinar eu vehicula eu, consequat et
-										lacus. Duis et purus ipsum. In auctor mattis
-										ipsum id molestie. Donec risus nulla,
-										fringilla a rhoncus vitae, semper a massa.
-										Vivamus ullamcorper, enim sit amet consequat
-										laoreet, tortor tortor dictum urna, ut
-										egestas urna ipsum nec libero. Nulla justo
-										leo, molestie vel tempor nec, egestas at
-										massa. Aenean pulvinar, felis porttitor
-										iaculis pulvinar, odio orci sodales odio, ac
-										pulvinar felis quam sit.</p>
-								</div>
+					@if(!empty($faqs) && count($faqs) > 0)
+						<div class="col-lg-6">
+							<h2 class="mt-6 mb-1">{{ __('Frequently Asked Questions') }}</h2>
+							<div id="accordion">
+								@foreach($faqs as $index => $faq)
+									<div class="card card-accordion">
+										<a class="card-header {{ $index === 0 ? '' : 'collapsed' }}" 
+										   href="#" 
+										   data-toggle="collapse" 
+										   data-target="#collapse{{ $faq['id'] }}"
+										   aria-expanded="{{ $index === 0 ? 'true' : 'false' }}" 
+										   aria-controls="collapse{{ $faq['id'] }}">
+											{{ $faq['question'] }}
+										</a>
+										<div id="collapse{{ $faq['id'] }}" 
+											 class="collapse {{ $index === 0 ? 'show' : '' }}" 
+											 data-parent="#accordion">
+											<p>{{ $faq['answer'] }}</p>
+										</div>
+									</div>
+								@endforeach
 							</div>
 						</div>
-					</div>
+					@endif
 				</div>
 			</div>
 

@@ -18,10 +18,10 @@
 					<nav aria-label="breadcrumb" class="breadcrumb-nav">
 						<div class="container">
 							<ol class="breadcrumb">
-								<li class="breadcrumb-item"><a href="/porto/demo1.html">Home</a></li>
-								<li class="breadcrumb-item"><a href="/porto/demo1-category.html">Shop</a></li>
+								<li class="breadcrumb-item"><a href="{{ route('page', ['page' => 'index']) }}">{{ __('Home') }}</a></li>
+								<li class="breadcrumb-item"><a href="{{ route('page', ['page' => 'shop']) }}">{{ __('Shop') }}</a></li>
 								<li class="breadcrumb-item active" aria-current="page">
-									My Account
+									{{ __('My Account') }}
 								</li>
 							</ol>
 						</div>
@@ -40,27 +40,31 @@
 									<h2 class="title">Login</h2>
 								</div>
 
-								<form action="#">
+								<form action="{{ route('login') }}" method="POST">
+                                    @csrf
 									<label for="login-email">
 										Username or email address
 										<span class="required">*</span>
 									</label>
-									<input type="email" class="form-input form-wide" id="login-email" required />
+									<input type="email" class="form-input form-wide @error('email') is-invalid @enderror" id="login-email" name="email" value="{{ old('email') }}" required />
 
 									<label for="login-password">
 										Password
 										<span class="required">*</span>
 									</label>
-									<input type="password" class="form-input form-wide" id="login-password" required />
+									<input type="password" class="form-input form-wide @error('password') is-invalid @enderror" id="login-password" name="password" required />
+                                    @error('email')
+                                        <span class="invalid-feedback d-block">{{ $message }}</span>
+                                    @enderror
 
 									<div class="form-footer">
 										<div class="custom-control custom-checkbox mb-0">
-											<input type="checkbox" class="custom-control-input" id="lost-password" />
-											<label class="custom-control-label mb-0" for="lost-password">Remember
+											<input type="checkbox" class="custom-control-input" id="remember" name="remember" {{ old('remember') ? 'checked' : '' }} />
+											<label class="custom-control-label mb-0" for="remember">Remember
 												me</label>
 										</div>
 
-										<a href="/porto/demo1-forgot-password.html"
+										<a href="{{ route('password.request') }}"
 											class="forget-password text-dark form-footer-right">Forgot
 											Password?</a>
 									</div>
@@ -74,19 +78,27 @@
 									<h2 class="title">Register</h2>
 								</div>
 
-								<form action="#">
+								<form action="{{ route('register') }}" method="POST">
+                                    @csrf
 									<label for="register-email">
 										Email address
 										<span class="required">*</span>
 									</label>
-									<input type="email" class="form-input form-wide" id="register-email" required />
+									<input type="email" class="form-input form-wide @error('register_email') is-invalid @enderror" id="register-email" name="email" value="{{ old('email') }}" required />
 
 									<label for="register-password">
 										Password
 										<span class="required">*</span>
 									</label>
 									<input type="password" class="form-input form-wide" id="register-password"
-										required />
+										required name="password" />
+
+                                    <label for="register-password-confirm">
+										{{ __('Confirm Password') }}
+										<span class="required">*</span>
+									</label>
+									<input type="password" class="form-input form-wide"
+										required name="password_confirmation" id="register-password-confirm" />
 
 									<div class="form-footer mb-2">
 										<button type="submit" class="btn btn-dark btn-md w-100 mr-0">

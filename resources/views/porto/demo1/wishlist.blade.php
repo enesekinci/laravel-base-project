@@ -18,9 +18,9 @@
                     <nav aria-label="breadcrumb" class="breadcrumb-nav">
                         <div class="container">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="/porto/demo1.html">Home</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('page', ['page' => 'index']) }}">{{ __('Home') }}</a></li>
                                 <li class="breadcrumb-item active" aria-current="page">
-                                    Wishlist
+                                    {{ __('Wishlist') }}
                                 </li>
                             </ol>
                         </div>
@@ -46,92 +46,41 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="product-row">
-                                <td>
-                                    <figure class="product-image-container">
-                                        <a href="/porto/demo1-product.html" class="product-image">
-                                            <img src="/porto/assets/images/products/product-4.jpg" alt="product">
-                                        </a>
+                            @forelse($wishlistItems ?? [] as $item)
+                                <tr class="product-row">
+                                    <td>
+                                        <figure class="product-image-container">
+                                            <a href="{{ $item['url'] ?? '#' }}" class="product-image">
+                                                <img src="{{ $item['image'] ?? '/porto/assets/images/products/product-4.jpg' }}" alt="{{ $item['name'] ?? 'product' }}">
+                                            </a>
 
-                                        <a href="#" class="btn-remove icon-cancel" title="Remove Product"></a>
-                                    </figure>
-                                </td>
-                                <td>
-                                    <h5 class="product-title">
-                                        <a href="/porto/demo1-product.html">Men Watch</a>
-                                    </h5>
-                                </td>
-                                <td class="price-box">$17.90</td>
-                                <td>
-                                    <span class="stock-status">In stock</span>
-                                </td>
-                                <td class="action">
-                                    <a href="/porto/demo1-ajax/product-quick-view.html" class="btn btn-quickview mt-1 mt-md-0"
-                                        title="Quick View">Quick
-                                        View</a>
-                                    <button class="btn btn-dark btn-add-cart product-type-simple btn-shop">
-                                        ADD TO CART
-                                    </button>
-                                </td>
-                            </tr>
-
-                            <tr class="product-row">
-                                <td>
-                                    <figure class="product-image-container">
-                                        <a href="/porto/demo1-product.html" class="product-image">
-                                            <img src="/porto/assets/images/products/product-5.jpg" alt="product">
-                                        </a>
-
-                                        <a href="#" class="btn-remove icon-cancel" title="Remove Product"></a>
-                                    </figure>
-                                </td>
-                                <td>
-                                    <h5 class="product-title">
-                                        <a href="/porto/demo1-product.html">Men Cap</a>
-                                    </h5>
-                                </td>
-                                <td class="price-box">$17.90</td>
-                                <td>
-                                    <span class="stock-status">In stock</span>
-                                </td>
-                                <td class="action">
-                                    <a href="/porto/demo1-ajax/product-quick-view.html" class="btn btn-quickview mt-1 mt-md-0"
-                                        title="Quick View">Quick
-                                        View</a>
-                                    <a href="/porto/demo1-product.html" class="btn btn-dark btn-add-cart btn-shop">
-                                        SELECT OPTION
-                                    </a>
-                                </td>
-                            </tr>
-
-                            <tr class="product-row">
-                                <td>
-                                    <figure class="product-image-container">
-                                        <a href="/porto/demo1-product.html" class="product-image">
-                                            <img src="/porto/assets/images/products/product-6.jpg" alt="product">
-                                        </a>
-
-                                        <a href="#" class="btn-remove icon-cancel" title="Remove Product"></a>
-                                    </figure>
-                                </td>
-                                <td>
-                                    <h5 class="product-title">
-                                        <a href="/porto/demo1-product.html">Men Black Gentle Belt</a>
-                                    </h5>
-                                </td>
-                                <td class="price-box">$17.90</td>
-                                <td>
-                                    <span class="stock-status">In stock</span>
-                                </td>
-                                <td class="action">
-                                    <a href="/porto/demo1-ajax/product-quick-view.html" class="btn btn-quickview mt-1 mt-md-0"
-                                        title="Quick View">Quick
-                                        View</a>
-                                    <a href="/porto/demo1-product.html" class="btn btn-dark btn-add-cart btn-shop">
-                                        SELECT OPTION
-                                    </a>
-                                </td>
-                            </tr>
+                                            <a href="#" class="btn-remove icon-cancel" title="{{ __('Remove Product') }}"></a>
+                                        </figure>
+                                    </td>
+                                    <td>
+                                        <h5 class="product-title">
+                                            <a href="{{ $item['url'] ?? '#' }}">{{ $item['name'] ?? '' }}</a>
+                                        </h5>
+                                        <small class="text-muted">{{ $item['sku'] ?? '' }}</small>
+                                    </td>
+                                    <td class="price-box">{{ $item['formatted_unit_price'] ?? '$0.00' }}</td>
+                                    <td>
+                                        <span class="stock-status">{{ __('In stock') }}</span>
+                                    </td>
+                                    <td class="action">
+                                        <a href="{{ $item['url'] ?? '#' }}" class="btn btn-quickview mt-1 mt-md-0"
+                                            title="Quick View">Quick
+                                            View</a>
+                                        <button class="btn btn-dark btn-add-cart product-type-simple btn-shop">
+                                            {{ __('Add to Cart') }}
+                                        </button>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-4">{{ __('İstek listenizde ürün yok.') }}</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div><!-- End .cart-table-container -->

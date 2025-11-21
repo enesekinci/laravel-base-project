@@ -18,10 +18,10 @@
 					<nav aria-label="breadcrumb" class="breadcrumb-nav">
 						<div class="container">
 							<ol class="breadcrumb">
-								<li class="breadcrumb-item"><a href="/porto/demo1.html">Home</a></li>
-								<li class="breadcrumb-item"><a href="/porto/demo1-category.html">Shop</a></li>
+								<li class="breadcrumb-item"><a href="{{ route('page', ['page' => 'index']) }}">{{ __('Home') }}</a></li>
+								<li class="breadcrumb-item"><a href="{{ route('page', ['page' => 'shop']) }}">{{ __('Shop') }}</a></li>
 								<li class="breadcrumb-item active" aria-current="page">
-									My Account
+									{{ __('My Account') }}
 								</li>
 							</ol>
 						</div>
@@ -66,10 +66,10 @@
 									aria-controls="edit" aria-selected="false">Shopping Addres</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="/porto/demo1-wishlist.html">Wishlist</a>
+								<a class="nav-link" href="{{ route('page', ['page' => 'wishlist']) }}">{{ __('Wishlist') }}</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="/porto/demo1-login.html">Logout</a>
+								<a class="nav-link" href="{{ route('page', ['page' => 'login']) }}">{{ __('Logout') }}</a>
 							</li>
 						</ul>
 					</div>
@@ -77,9 +77,18 @@
 						<div class="tab-pane fade show active" id="dashboard" role="tabpanel">
 							<div class="dashboard-content">
 								<p>
-									Hello <strong class="text-dark">Editor</strong> (not
-									<strong class="text-dark">Editor</strong>?
-									<a href="/porto/demo1-login.html" class="btn btn-link ">Log out</a>)
+									Hello <strong class="text-dark">{{ $accountUser->name ?? __('Guest') }}</strong>
+									@if($accountUser)
+										(<a href="{{ route('logout') }}" class="btn btn-link"
+											onclick="event.preventDefault(); document.getElementById('logout-form').submit();">{{ __('Log out') }}</a>)
+										<form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+											@csrf
+										</form>
+									@else
+										(<a href="{{ route('login') }}" class="btn btn-link">{{ __('Log in') }}</a>)
+									@endif
+								</p>
+									<a href="{{ route('login') }}" class="btn btn-link ">{{ __('Log out') }}</a>)
 								</p>
 
 								<p>
@@ -136,7 +145,7 @@
 
 									<div class="col-6 col-md-4">
 										<div class="feature-box text-center pb-4">
-											<a href="/porto/demo1-wishlist.html"><i class="sicon-heart"></i></a>
+											<a href="{{ route('page', ['page' => 'wishlist']) }}"><i class="sicon-heart"></i></a>
 											<div class="feature-box-content">
 												<h3>WISHLIST</h3>
 											</div>
@@ -145,7 +154,7 @@
 
 									<div class="col-6 col-md-4">
 										<div class="feature-box text-center pb-4">
-											<a href="/porto/demo1-login.html"><i class="sicon-logout"></i></a>
+											<a href="{{ route('page', ['page' => 'login']) }}"><i class="sicon-logout"></i></a>
 											<div class="feature-box-content">
 												<h3>LOGOUT</h3>
 											</div>
@@ -173,16 +182,32 @@
 										<tbody>
 											<tr>
 												<td class="text-center p-0" colspan="5">
-													<p class="mb-5 mt-5">
-														No Order has been made yet.
-													</p>
+                                                    @forelse($accountOrders ?? [] as $order)
+                                                        <tr>
+                                                            <td>{{ $order['order_number'] ?? '' }}</td>
+                                                            <td>{{ $order['date'] ?? '' }}</td>
+                                                            <td>{{ ucfirst($order['status'] ?? 'pending') }}</td>
+                                                            <td>{{ $order['total'] ?? '$0.00' }}</td>
+                                                            <td>
+                                                                <a href="#" class="btn btn-primary btn-sm">{{ __('View') }}</a>
+                                                            </td>
+                                                        </tr>
+                                                    @empty
+													    <tr>
+                                                            <td class="text-center p-0" colspan="5">
+                                                                <p class="mb-5 mt-5">
+                                                                    {{ __('No Order has been made yet.') }}
+                                                                </p>
+                                                            </td>
+                                                        </tr>
+                                                    @endforelse
 												</td>
 											</tr>
 										</tbody>
 									</table>
 									<hr class="mt-0 mb-3 pb-2" />
 
-									<a href="/porto/demo1-category.html" class="btn btn-dark">Go Shop</a>
+									<a href="{{ route('page', ['page' => 'shop']) }}" class="btn btn-dark">{{ __('Go Shop') }}</a>
 								</div>
 							</div>
 						</div><!-- End .tab-pane -->
@@ -192,7 +217,7 @@
 								<h3 class="account-sub-title d-none d-md-block"><i
 										class="sicon-cloud-download align-middle mr-3"></i>Downloads</h3>
 								<div class="download-table-container">
-									<p>No downloads available yet.</p> <a href="/porto/demo1-category.html"
+									<p>{{ __('No downloads available yet.') }}</p> <a href="{{ route('page', ['page' => 'shop']) }}"
 										class="btn btn-primary text-transform-none mb-2">GO SHOP</a>
 								</div>
 							</div>
@@ -214,11 +239,17 @@
 										</div>
 
 										<div class="address-box">
-											You have not set up this type of address yet.
+											@if(!empty($accountAddresses['billing']))
+												<strong>{{ $accountAddresses['billing']['name'] ?? '' }}</strong><br>
+												<span>{{ $accountAddresses['billing']['email'] ?? '' }}</span>
+											@else
+												{{ __('You have not set up this type of address yet.') }}
+											@endif
 										</div>
 
-										<a href="#billing" class="btn btn-default address-action link-to-tab">Add
-											Address</a>
+										<a href="#billing" class="btn btn-default address-action link-to-tab">
+                                            {{ empty($accountAddresses['billing']) ? __('Add Address') : __('Edit Address') }}
+                                        </a>
 									</div>
 
 									<div class="address col-md-6 mt-5 mt-md-0">
@@ -229,11 +260,17 @@
 										</div>
 
 										<div class="address-box">
-											You have not set up this type of address yet.
+											@if(!empty($accountAddresses['shipping']))
+												<strong>{{ $accountAddresses['shipping']['name'] ?? '' }}</strong><br>
+												<span>{{ $accountAddresses['shipping']['address'] ?? '' }}</span>
+											@else
+												{{ __('You have not set up this type of address yet.') }}
+											@endif
 										</div>
 
-										<a href="#shipping" class="btn btn-default address-action link-to-tab">Add
-											Address</a>
+										<a href="#shipping" class="btn btn-default address-action link-to-tab">
+                                            {{ empty($accountAddresses['shipping']) ? __('Add Address') : __('Edit Address') }}
+                                        </a>
 									</div>
 								</div>
 							</div>

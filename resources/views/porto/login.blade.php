@@ -10,7 +10,7 @@
 					<nav aria-label="breadcrumb" class="breadcrumb-nav">
 						<div class="container">
 							<ol class="breadcrumb">
-								<li class="breadcrumb-item"><a href="/porto/demo4.html">Home</a></li>
+								<li class="breadcrumb-item"><a href="{{ route('page', ['page' => 'index']) }}">Home</a></li>
 								<li class="breadcrumb-item"><a href="/porto/category.html">Shop</a></li>
 								<li class="breadcrumb-item active" aria-current="page">
 									My Account

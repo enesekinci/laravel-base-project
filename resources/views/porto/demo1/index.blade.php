@@ -16,38 +16,41 @@
 @section('content')
     <div class="container mb-2">
         <div class="info-boxes-container row row-joined mb-2 font2">
+            @forelse($infoBoxes as $box)
             <div class="info-box info-box-icon-left col-lg-4">
-                <i class="icon-shipping"></i>
+                    @if(!empty($box['icon']))
+                        <i class="{{ $box['icon'] }}"></i>
+                    @endif
 
                 <div class="info-box-content">
-                    <h4>FREE SHIPPING &amp; RETURN</h4>
-                    <p class="text-body">Free shipping on all orders over $99</p>
+                        <h4>{{ strtoupper($box['title'] ?? '') }}</h4>
+                        <p class="text-body">{{ $box['description'] ?? '' }}</p>
                 </div>
                 <!-- End .info-box-content -->
             </div>
-            <!-- End .info-box -->
-
+            @empty
+                <div class="info-box info-box-icon-left col-lg-4">
+                    <i class="icon-shipping"></i>
+                    <div class="info-box-content">
+                        <h4>{{ __('Free Shipping & Return') }}</h4>
+                        <p class="text-body">{{ __('Free shipping on all orders over $99') }}</p>
+                    </div>
+                </div>
             <div class="info-box info-box-icon-left col-lg-4">
                 <i class="icon-money"></i>
-
                 <div class="info-box-content">
-                    <h4>MONEY BACK GUARANTEE</h4>
-                    <p class="text-body">100% money back guarantee</p>
+                        <h4>{{ __('Money Back Guarantee') }}</h4>
+                        <p class="text-body">{{ __('100% money back guarantee') }}</p>
                 </div>
-                <!-- End .info-box-content -->
             </div>
-            <!-- End .info-box -->
-
             <div class="info-box info-box-icon-left col-lg-4">
                 <i class="icon-support"></i>
-
                 <div class="info-box-content">
-                    <h4>ONLINE SUPPORT 24/7</h4>
-                    <p class="text-body">Lorem ipsum dolor sit amet.</p>
+                        <h4>{{ __('Online Support 24/7') }}</h4>
+                        <p class="text-body">{{ __('Reach out whenever you need help.') }}</p>
                 </div>
-                <!-- End .info-box-content -->
             </div>
-            <!-- End .info-box -->
+            @endforelse
         </div>
 
         <div class="row">
@@ -57,48 +60,52 @@
 							'dots': true,
 							'nav': false
 						}">
-                    <div class="home-slide home-slide1 banner banner-md-vw banner-sm-vw d-flex align-items-center">
-                        <img class="slide-bg" style="background-color: #2699D0;" src="/porto/assets/images/demoes/demo1/slider/slide-1.png" width="880" height="428" alt="home-slider">
-                        <div class="banner-layer appear-animate" data-animation-name="fadeInUpShorter">
-                            <h4 class="text-white mb-0">Find the Boundaries. Push Through!</h4>
-                            <h2 class="text-white mb-0">Summer Sale</h2>
-                            <h3 class="text-white text-uppercase m-b-3">70% Off</h3>
-                            <h5 class="text-white text-uppercase d-inline-block mb-0 ls-n-20 align-text-bottom">
-                                Starting At <b class="coupon-sale-text bg-secondary text-white d-inline-block">$<em
-                                        class="align-text-top">199</em>99</b></h5>
-                            <a href="/porto/demo1-shop.html" class="btn btn-dark btn-md ls-10">Shop Now!</a>
-                        </div>
-                        <!-- End .banner-layer -->
-                    </div>
-                    <!-- End .home-slide -->
-
-                    <div class="home-slide home-slide2 banner banner-md-vw banner-sm-vw d-flex align-items-center">
-                        <img class="slide-bg" style="background-color: #dadada;" src="/porto/assets/images/demoes/demo1/slider/slide-2.jpg" width="880" height="428" alt="home-slider">
-                        <div class="banner-layer text-uppercase appear-animate" data-animation-name="fadeInUpShorter">
-                            <h4 class="m-b-2">Over 200 products with discounts</h4>
-                            <h2 class="m-b-3">Great Deals</h2>
-                            <h5 class="d-inline-block mb-0 align-top mr-5 mb-2">Starting At
-                                <b>$<em>299</em>99</b>
+                    @forelse($sliders as $slider)
+                        <div class="home-slide banner banner-md-vw banner-sm-vw d-flex align-items-center">
+                            <img class="slide-bg"
+                                 style="background-color: {{ $slider['background_color'] ?? '#2699D0' }};"
+                                 src="{{ $slider['image'] ?? '/porto/assets/images/demoes/demo1/slider/slide-1.png' }}"
+                                 width="880"
+                                 height="428"
+                                 alt="home-slider">
+                            <div class="banner-layer appear-animate" data-animation-name="{{ $slider['animation_name'] ?? 'fadeInUpShorter' }}">
+                                @if(!empty($slider['subtitle']))
+                                    <h4 class="{{ !empty($slider['text_uppercase']) ? 'text-uppercase' : '' }} mb-0">{{ $slider['subtitle'] }}</h4>
+                                @endif
+                                @if(!empty($slider['heading']))
+                                    <h2 class="mb-0">{{ $slider['heading'] }}</h2>
+                                @endif
+                                @if(!empty($slider['title']))
+                                    <h3 class="text-uppercase m-b-3">{{ $slider['title'] }}</h3>
+                                @endif
+                                @if(!empty($slider['price']))
+                                    <h5 class="text-uppercase d-inline-block mb-0 ls-n-20 align-text-bottom">
+                                        {{ __('Starting At') }}
+                                        <b class="coupon-sale-text bg-secondary text-white d-inline-block">
+                                            {{ $slider['price'] }}
+                                        </b>
                             </h5>
-                            <a href="/porto/demo1-shop.html" class="btn btn-dark btn-md ls-10">Get Yours!</a>
+                                @endif
+                                @if(!empty($slider['button_text']))
+                                    <a href="{{ $slider['button_url'] ?? route('page', ['page' => 'shop']) }}" class="btn btn-dark btn-md ls-10">
+                                        {{ $slider['button_text'] }}
+                                    </a>
+                                @endif
                         </div>
                         <!-- End .banner-layer -->
                     </div>
                     <!-- End .home-slide -->
-
-                    <div class="home-slide home-slide3 banner banner-md-vw banner-sm-vw  d-flex align-items-center">
-                        <img class="slide-bg" style="background-color: #e5e4e2;" src="/porto/assets/images/demoes/demo1/slider/slide-3.jpg" width="880" height="428" alt="home-slider" />
-                        <div class="banner-layer text-uppercase appear-animate" data-animation-name="fadeInUpShorter">
-                            <h4 class="m-b-2">Up to 70% off</h4>
-                            <h2 class="m-b-3">New Arrivals</h2>
-                            <h5 class="d-inline-block mb-0 align-top mr-5 mb-2">Starting At
-                                <b>$<em>299</em>99</b>
-                            </h5>
-                            <a href="/porto/demo1-shop.html" class="btn btn-dark btn-md ls-10">Get Yours!</a>
+                    @empty
+                        <div class="home-slide banner banner-md-vw banner-sm-vw d-flex align-items-center">
+                            <img class="slide-bg" style="background-color: #2699D0;" src="/porto/assets/images/demoes/demo1/slider/slide-1.png" width="880" height="428" alt="home-slider">
+                            <div class="banner-layer appear-animate" data-animation-name="fadeInUpShorter">
+                                <h4 class="text-white mb-0">{{ __('Find the Boundaries. Push Through!') }}</h4>
+                                <h2 class="text-white mb-0">{{ __('Summer Sale') }}</h2>
+                                <h3 class="text-white text-uppercase m-b-3">70% Off</h3>
+                                <a href="{{ route('page', ['page' => 'shop']) }}" class="btn btn-dark btn-md ls-10">Shop Now!</a>
                         </div>
-                        <!-- End .banner-layer -->
                     </div>
-                    <!-- End .home-slide -->
+                    @endforelse
                 </div>
                 <!-- End .home-slider -->
 
@@ -115,252 +122,76 @@
 								}
 							}
 						}">
-                    <div class="banner banner1 banner-hover-shadow d-flex align-items-center mb-2 w-100 appear-animate" data-animation-name="fadeInLeftShorter" data-animation-delay="500">
+                    @forelse($banners as $banner)
+                        <div class="banner banner-hover-shadow d-flex align-items-center mb-2 w-100 appear-animate" data-animation-name="{{ $banner['animation_name'] ?? 'fadeInUpShorter' }}" data-animation-delay="{{ $banner['animation_delay'] ?? 200 }}">
                         <figure class="w-100">
-                            <img src="/porto/assets/images/demoes/demo1/banners/banner-1.jpg" style="background-color: #dadada;" alt="banner">
+                                <img src="{{ $banner['image'] ?? '/porto/assets/images/demoes/demo1/banners/banner-1.jpg' }}" style="background-color: {{ $banner['background_color'] ?? '#dadada' }};" alt="{{ $banner['image_alt'] ?? 'banner' }}">
                         </figure>
-                        <div class="banner-layer">
-                            <h3 class="m-b-2">Porto Watches</h3>
-                            <h4 class="m-b-4 text-primary"><sup class="text-dark"><del>20%</del></sup>30%<sup>OFF</sup></h4>
-                            <a href="/porto/demo1-shop.html" class="text-dark text-uppercase ls-10">Shop Now</a>
+                            <div class="banner-layer {{ $banner['text_align'] ?? '' }}">
+                                @if(!empty($banner['title']))
+                                    <h3 class="m-b-2">{{ $banner['title'] }}</h3>
+                                @endif
+                                @if(!empty($banner['subtitle']))
+                                    <h4 class="m-b-4 text-primary">{{ $banner['subtitle'] }}</h4>
+                                @endif
+                                <a href="{{ $banner['link'] ?? route('page', ['page' => 'shop']) }}" class="text-dark text-uppercase ls-10">{{ __('Shop Now') }}</a>
                         </div>
                     </div>
-                    <!-- End .banner -->
-                    <div class="banner banner2 text-uppercase banner-hover-shadow d-flex align-items-center mb-2 w-100 appear-animate" data-animation-name="fadeInUpShorter" data-animation-delay="200">
+                    @empty
+                        <div class="banner banner-hover-shadow d-flex align-items-center mb-2 w-100 appear-animate">
                         <figure class="w-100">
-                            <img src="/porto/assets/images/demoes/demo1/banners/banner-2.jpg" style="background-color: #dadada;" alt="banner">
+                                <img src="/porto/assets/images/demoes/demo1/banners/banner-1.jpg" style="background-color: #dadada;" alt="banner">
                         </figure>
-                        <div class="banner-layer text-center">
-                            <h3 class="m-b-1 ls-n-20">Deal Promos</h3>
-                            <h4 class="text-body">Starting at $99</h4>
-                            <a href="/porto/demo1-shop.html" class="text-dark text-uppercase ls-10">Shop Now</a>
+                            <div class="banner-layer">
+                                <h3 class="m-b-2">Porto Watches</h3>
+                                <a href="{{ route('page', ['page' => 'shop']) }}" class="text-dark text-uppercase ls-10">Shop Now</a>
                         </div>
                     </div>
-                    <!-- End .banner -->
-                    <div class="banner banner3 banner-hover-shadow d-flex align-items-center mb-2 w-100 appear-animate" data-animation-name="fadeInRightShorter" data-animation-delay="500">
-                        <figure class="w-100">
-                            <img src="/porto/assets/images/demoes/demo1/banners/banner-3.jpg" style="background-color: #dadada;" alt="banner">
-                        </figure>
-                        <div class="banner-layer text-right">
-                            <h3 class="m-b-2">Handbags</h3>
-                            <h4 class="mb-3 text-secondary text-uppercase">Starting at $99</h4>
-                            <a href="/porto/demo1-shop.html" class="text-dark text-uppercase ls-10">Shop Now</a>
-                        </div>
-                    </div>
-                    <!-- End .banner -->
+                    @endforelse
                 </div>
 
                 <h2 class="section-title ls-n-10 m-b-4 appear-animate" data-animation-name="fadeInUpShorter">
                     Featured Products</h2>
 
                 <div class="products-slider owl-carousel owl-theme dots-top dots-small m-b-1 pb-1 appear-animate" data-animation-name="fadeInUpShorter">
+                    @forelse($featuredProducts as $product)
                     <div class="product-default inner-quickview inner-icon">
                         <figure class="img-effect">
-                            <a href="/porto/demo1-product.html">
-                                <img src="/porto/assets/images/demoes/demo1/products/product-1.jpg" width="205" height="205" alt="product">
-                                <img src="/porto/assets/images/demoes/demo1/products/product-1-2.jpg" width="205" height="205" alt="product">
-                            </a>
-                            <div class="label-group">
-                                <div class="product-label label-hot">HOT</div>
-                                <div class="product-label label-sale">-20%</div>
-                            </div>
-                            <div class="btn-icon-group">
-                                <a href="/porto/demo1-product.html" class="btn-icon btn-add-cart"><i
-                                        class="fa fa-arrow-right"></i>
+                                <a href="{{ $product['url'] ?? route('page', ['page' => 'product']) }}">
+                                    <img src="{{ $product['image'] ?? '/porto/assets/images/demoes/demo1/products/product-1.jpg' }}" width="205" height="205" alt="{{ $product['name'] }}">
+                                    @if(!empty($product['image_hover']))
+                                        <img src="{{ $product['image_hover'] }}" width="205" height="205" alt="{{ $product['name'] }}">
+                                    @endif
                                 </a>
-                            </div>
-                            <a href="/porto/ajax/product-quick-view.html" class="btn-quickview" title="Quick View">Quick View</a>
-                            <div class="product-countdown-container">
-                                <span class="product-countdown-title">offer ends in:</span>
-                                <div class="product-countdown countdown-compact" data-until="2021, 10, 5" data-compact="true">
-                                </div>
-                                <!-- End .product-countdown -->
-                            </div>
-                            <!-- End .product-countdown-container -->
-                        </figure>
-                        <div class="product-details">
-                            <div class="category-wrap">
-                                <div class="category-list">
-                                    <a href="/porto/demo1-shop.html" class="product-category">category</a>
-                                </div>
-                                <a href="/porto/wishlist.html" title="Add to Wishlist" class="btn-icon-wish"><i
-                                        class="icon-heart"></i></a>
-                            </div>
-                            <h3 class="product-title"> <a href="/porto/demo1-product.html">Black Grey Headset</a> </h3>
-                            <div class="ratings-container">
-                                <div class="product-ratings">
-                                    <span class="ratings" style="width:100%"></span>
-                                    <!-- End .ratings -->
-                                    <span class="tooltiptext tooltip-top"></span>
-                                </div>
-                                <!-- End .product-ratings -->
-                            </div>
-                            <!-- End .product-container -->
-                            <div class="price-box">
-                                <span class="product-price">$9.00</span>
-                            </div>
-                            <!-- End .price-box -->
-                        </div>
-                        <!-- End .product-details -->
-                    </div>
-                    <div class="product-default inner-quickview inner-icon">
-                        <figure class="img-effect">
-                            <a href="/porto/demo1-product.html">
-                                <img src="/porto/assets/images/demoes/demo1/products/product-2.jpg" width="205" height="205" alt="product" />
-                            </a>
                             <div class="btn-icon-group">
-                                <a href="#" title="Add To Cart" class="btn-icon btn-add-cart product-type-simple"><i
-                                        class="icon-shopping-cart"></i></a>
+                                    <a href="{{ $product['url'] ?? '#' }}" class="btn-icon btn-add-cart"><i class="fa fa-arrow-right"></i></a>
                             </div>
-                            <a href="/porto/ajax/product-quick-view.html" class="btn-quickview" title="Quick View">Quick View</a>
+                                <a href="{{ $product['url'] ?? '#' }}" class="btn-quickview" title="Quick View">Quick View</a>
                         </figure>
                         <div class="product-details">
                             <div class="category-wrap">
                                 <div class="category-list">
-                                    <a href="/porto/demo1-shop.html" class="product-category">category</a>
+                                        <a href="{{ $product['category_url'] ?? route('page', ['page' => 'shop']) }}" class="product-category">{{ $product['category'] ?? __('Category') }}</a>
                                 </div>
-                                <a href="/porto/wishlist.html" title="Add to Wishlist" class="btn-icon-wish"><i
-                                        class="icon-heart"></i></a>
+                                    <a href="{{ route('page', ['page' => 'wishlist']) }}" title="Add to Wishlist" class="btn-icon-wish"><i class="icon-heart"></i></a>
                             </div>
-                            <h3 class="product-title"> <a href="/porto/demo1-product.html">Battery Charger</a> </h3>
-                            <div class="ratings-container">
-                                <div class="product-ratings">
-                                    <span class="ratings" style="width:100%"></span>
-                                    <!-- End .ratings -->
-                                    <span class="tooltiptext tooltip-top"></span>
-                                </div>
-                                <!-- End .product-ratings -->
-                            </div>
-                            <!-- End .product-container -->
-                            <div class="price-box">
-                                <span class="product-price">$9.00</span>
-                            </div>
-                            <!-- End .price-box -->
-                        </div>
-                        <!-- End .product-details -->
-                    </div>
-                    <div class="product-default inner-quickview inner-icon">
-                        <figure class="img-effect">
-                            <a href="/porto/demo1-product.html">
-                                <img src="/porto/assets/images/demoes/demo1/products/product-3.jpg" width="205" height="205" alt="product">
-                                <img src="/porto/assets/images/demoes/demo1/products/product-3-2.jpg" width="205" height="205" alt="product">
-                            </a>
-                            <div class="label-group">
-                                <div class="product-label label-hot">HOT</div>
-                                <div class="product-label label-sale">-30%</div>
-                            </div>
-                            <div class="btn-icon-group">
-                                <a href="#" title="Add To Cart" class="btn-icon btn-add-cart product-type-simple"><i
-                                        class="icon-shopping-cart"></i></a>
-                            </div>
-                            <a href="/porto/ajax/product-quick-view.html" class="btn-quickview" title="Quick View">Quick View</a>
-                        </figure>
-                        <div class="product-details">
-                            <div class="category-wrap">
-                                <div class="category-list">
-                                    <a href="/porto/demo1-shop.html" class="product-category">category</a>
-                                </div>
-                                <a href="/porto/wishlist.html" title="Add to Wishlist" class="btn-icon-wish"><i
-                                        class="icon-heart"></i></a>
-                            </div>
-                            <h3 class="product-title"> <a href="/porto/demo1-product.html">Brown Bag</a> </h3>
-                            <div class="ratings-container">
-                                <div class="product-ratings">
-                                    <span class="ratings" style="width:100%"></span>
-                                    <!-- End .ratings -->
-                                    <span class="tooltiptext tooltip-top"></span>
-                                </div>
-                                <!-- End .product-ratings -->
-                            </div>
-                            <!-- End .product-container -->
-                            <div class="price-box">
-                                <span class="product-price">$9.00</span>
-                            </div>
-                            <!-- End .price-box -->
-                        </div>
-                        <!-- End .product-details -->
-                    </div>
-                    <div class="product-default inner-quickview inner-icon">
-                        <figure class="img-effect">
-                            <a href="/porto/demo1-product.html">
-                                <img src="/porto/assets/images/demoes/demo1/products/product-4.jpg" width="205" height="205" alt="product">
-                                <img src="/porto/assets/images/demoes/demo1/products/product-4-2.jpg" width="205" height="205" alt="product">
-                            </a>
-                            <div class="label-group">
-                                <div class="product-label label-hot">HOT</div>
-                            </div>
-                            <div class="btn-icon-group">
-                                <a href="#" title="Add To Cart" class="btn-icon btn-add-cart product-type-simple"><i
-                                        class="icon-shopping-cart"></i></a>
-                            </div>
-                            <a href="/porto/ajax/product-quick-view.html" class="btn-quickview" title="Quick View">Quick View</a>
-                        </figure>
-                        <div class="product-details">
-                            <div class="category-wrap">
-                                <div class="category-list">
-                                    <a href="/porto/demo1-shop.html" class="product-category">category</a>
-                                </div>
-                                <a href="/porto/wishlist.html" title="Add to Wishlist" class="btn-icon-wish"><i
-                                        class="icon-heart"></i></a>
-                            </div>
-                            <h3 class="product-title"> <a href="/porto/demo1-product.html">Casual Note Bag</a> </h3>
-                            <div class="ratings-container">
-                                <div class="product-ratings">
-                                    <span class="ratings" style="width:100%"></span>
-                                    <!-- End .ratings -->
-                                    <span class="tooltiptext tooltip-top"></span>
-                                </div>
-                                <!-- End .product-ratings -->
-                            </div>
-                            <!-- End .product-container -->
-                            <div class="price-box">
-                                <span class="product-price">$9.00</span>
-                            </div>
-                            <!-- End .price-box -->
-                        </div>
-                        <!-- End .product-details -->
-                    </div>
-                    <div class="product-default inner-quickview inner-icon">
-                        <figure class="img-effect">
-                            <a href="/porto/demo1-product.html">
-                                <img src="/porto/assets/images/demoes/demo1/products/product-5.jpg" width="205" height="205" alt="product">
-                                <img src="/porto/assets/images/demoes/demo1/products/product-5-2.jpg" width="205" height="205" alt="product">
-                            </a>
-                            <div class="label-group">
-                                <div class="product-label label-hot">HOT</div>
-                            </div>
-                            <div class="btn-icon-group">
-                                <a href="#" title="Add To Cart" class="btn-icon btn-add-cart product-type-simple"><i
-                                        class="icon-shopping-cart"></i></a>
-                            </div>
-                            <a href="/porto/ajax/product-quick-view.html" class="btn-quickview" title="Quick View">Quick View</a>
-                        </figure>
-                        <div class="product-details">
-                            <div class="category-wrap">
-                                <div class="category-list">
-                                    <a href="/porto/demo1-shop.html" class="product-category">category</a>
-                                </div>
-                                <a href="/porto/wishlist.html" title="Add to Wishlist" class="btn-icon-wish"><i
-                                        class="icon-heart"></i></a>
-                            </div>
-                            <h3 class="product-title"> <a href="/porto/demo1-product.html">Porto Extended Camera</a>
+                                <h3 class="product-title">
+                                    <a href="{{ $product['url'] ?? '#' }}">{{ $product['name'] }}</a>
                             </h3>
                             <div class="ratings-container">
                                 <div class="product-ratings">
                                     <span class="ratings" style="width:100%"></span>
-                                    <!-- End .ratings -->
                                     <span class="tooltiptext tooltip-top"></span>
                                 </div>
-                                <!-- End .product-ratings -->
                             </div>
-                            <!-- End .product-container -->
                             <div class="price-box">
-                                <span class="product-price">$9.00</span>
+                                    <span class="product-price">{{ $product['price'] ?? '$0.00' }}</span>
                             </div>
-                            <!-- End .price-box -->
                         </div>
-                        <!-- End .product-details -->
                     </div>
+                    @empty
+                        <p class="text-muted mb-0">{{ __('Henüz vitrinde ürün yok.') }}</p>
+                    @endforelse
                 </div>
                 <!-- End .featured-proucts -->
 
@@ -378,98 +209,44 @@
 								}
 							}
 						}">
-                    <img src="/porto/assets/images/brands/small/brand1.png" width="140" height="60" alt="brand">
-                    <img src="/porto/assets/images/brands/small/brand2.png" width="140" height="60" alt="brand">
-                    <img src="/porto/assets/images/brands/small/brand3.png" width="140" height="60" alt="brand">
-                    <img src="/porto/assets/images/brands/small/brand4.png" width="140" height="60" alt="brand">
-                    <img src="/porto/assets/images/brands/small/brand5.png" width="140" height="60" alt="brand">
-                    <img src="/porto/assets/images/brands/small/brand6.png" width="140" height="60" alt="brand">
+                    @forelse($brands as $brand)
+                        <img src="{{ $brand['logo'] ?? '/porto/assets/images/brands/small/brand1.png' }}" width="140" height="60" alt="{{ $brand['name'] }}">
+                    @empty
+                        <img src="/porto/assets/images/brands/small/brand1.png" width="140" height="60" alt="brand">
+                    @endforelse
                 </div>
                 <!-- End .brands-slider -->
 
                 <div class="row products-widgets">
                     <div class="col-sm-6 col-md-4 pb-4 pb-md-0 appear-animate" data-animation-name="fadeInLeftShorter" data-animation-delay="200">
                         <div class="product-column">
-                            <h3 class="section-sub-title ls-n-20">Top Rated Products</h3>
-
-                            <div class="product-default left-details product-widget">
-                                <figure>
-                                    <a href="/porto/demo1-product.html">
-                                        <img src="/porto/assets/images/demoes/demo1/products/small/product-4.jpg" width="84" height="84" alt="product">
-                                        <img src="/porto/assets/images/demoes/demo1/products/small/product-4-2.jpg" width="84" height="84" alt="product">
-                                    </a>
-                                </figure>
-                                <div class="product-details">
-                                    <h3 class="product-title"> <a href="/porto/demo1-product.html">Porto Extended
-                                            Camera</a> </h3>
-                                    <div class="ratings-container">
-                                        <div class="product-ratings">
-                                            <span class="ratings" style="width:100%"></span>
-                                            <!-- End .ratings -->
-                                            <span class="tooltiptext tooltip-top"></span>
+                            <h3 class="section-sub-title ls-n-20">{{ __('Top Rated Products') }}</h3>
+                            @forelse($topRatedProducts as $product)
+                                <div class="product-default left-details product-widget">
+                                    <figure>
+                                        <a href="{{ $product['url'] ?? '#' }}">
+                                            <img src="{{ $product['image'] ?? '/porto/assets/images/demoes/demo1/products/small/product-4.jpg' }}" width="84" height="84" alt="{{ $product['name'] }}">
+                                            @if(!empty($product['image_hover']))
+                                                <img src="{{ $product['image_hover'] }}" width="84" height="84" alt="{{ $product['name'] }}">
+                                            @endif
+                                        </a>
+                                    </figure>
+                                    <div class="product-details">
+                                        <h3 class="product-title"> <a href="{{ $product['url'] ?? '#' }}">{{ $product['name'] }}</a> </h3>
+                                        <div class="ratings-container">
+                                            <div class="product-ratings">
+                                                <span class="ratings" style="width:100%"></span>
+                                                <span class="tooltiptext tooltip-top"></span>
+                                            </div>
                                         </div>
-                                        <!-- End .product-ratings -->
-                                    </div>
-                                    <!-- End .product-container -->
-                                    <div class="price-box">
-                                        <span class="product-price">$49.00</span>
-                                    </div>
-                                    <!-- End .price-box -->
-                                </div>
-                                <!-- End .product-details -->
-                            </div>
-                            <div class="product-default left-details product-widget">
-                                <figure>
-                                    <a href="/porto/demo1-product.html">
-                                        <img src="/porto/assets/images/demoes/demo1/products/small/product-5.jpg" width="84" height="84" alt="product">
-                                        <img src="/porto/assets/images/demoes/demo1/products/small/product-5-2.jpg" width="84" height="84" alt="product">
-                                    </a>
-                                </figure>
-                                <div class="product-details">
-                                    <h3 class="product-title"> <a href="/porto/demo1-product.html">Blue BackPack</a>
-                                    </h3>
-                                    <div class="ratings-container">
-                                        <div class="product-ratings">
-                                            <span class="ratings" style="width:100%"></span>
-                                            <!-- End .ratings -->
-                                            <span class="tooltiptext tooltip-top"></span>
+                                        <div class="price-box">
+                                            <span class="product-price">{{ $product['price'] ?? '$0.00' }}</span>
                                         </div>
-                                        <!-- End .product-ratings -->
                                     </div>
-                                    <!-- End .product-container -->
-                                    <div class="price-box">
-                                        <span class="product-price">$49.00</span>
-                                    </div>
-                                    <!-- End .price-box -->
                                 </div>
-                                <!-- End .product-details -->
-                            </div>
-                            <div class="product-default left-details product-widget ">
-                                <figure>
-                                    <a href="/porto/demo1-product.html">
-                                        <img src="/porto/assets/images/demoes/demo1/products/small/product-6.jpg" width="84" height="84" alt="product">
-                                        <img src="/porto/assets/images/demoes/demo1/products/small/product-6-2.jpg" width="84" height="84" alt="product">
-                                    </a>
-                                </figure>
-                                <div class="product-details">
-                                    <h3 class="product-title"> <a href="/porto/demo1-product.html">Casual Blue
-                                            Shoes</a> </h3>
-                                    <div class="ratings-container">
-                                        <div class="product-ratings">
-                                            <span class="ratings" style="width:100%"></span>
-                                            <!-- End .ratings -->
-                                            <span class="tooltiptext tooltip-top"></span>
-                                        </div>
-                                        <!-- End .product-ratings -->
-                                    </div>
-                                    <!-- End .product-container -->
-                                    <div class="price-box">
-                                        <span class="product-price">$49.00</span>
-                                    </div>
-                                    <!-- End .price-box -->
-                                </div>
-                                <!-- End .product-details -->
-                            </div>
+                            @empty
+                                <p class="text-muted">{{ __('Henüz ürün yok') }}</p>
+                            @endforelse
                         </div>
                         <!-- End .product-column -->
                     </div>
@@ -477,85 +254,33 @@
 
                     <div class="col-sm-6 col-md-4 pb-4 pb-md-0 appear-animate" data-animation-name="fadeInLeftShorter" data-animation-delay="500">
                         <div class="product-column">
-                            <h3 class="section-sub-title ls-n-20">Best Selling Products</h3>
-
-                            <div class="product-default left-details product-widget ">
-                                <figure>
-                                    <a href="/porto/demo1-product.html">
-                                        <img src="/porto/assets/images/demoes/demo1/products/small/product-2.jpg" width="84" height="84" alt="product">
-                                    </a>
-                                </figure>
-                                <div class="product-details">
-                                    <h3 class="product-title"> <a href="/porto/demo1-product.html">Battery Charger</a>
-                                    </h3>
-                                    <div class="ratings-container">
-                                        <div class="product-ratings">
-                                            <span class="ratings" style="width:100%"></span>
-                                            <!-- End .ratings -->
-                                            <span class="tooltiptext tooltip-top"></span>
+                            <h3 class="section-sub-title ls-n-20">{{ __('Best Selling Products') }}</h3>
+                            @forelse($bestSellingProducts as $product)
+                                <div class="product-default left-details product-widget">
+                                    <figure>
+                                        <a href="{{ $product['url'] ?? '#' }}">
+                                            <img src="{{ $product['image'] ?? '/porto/assets/images/demoes/demo1/products/small/product-2.jpg' }}" width="84" height="84" alt="{{ $product['name'] }}">
+                                            @if(!empty($product['image_hover']))
+                                                <img src="{{ $product['image_hover'] }}" width="84" height="84" alt="{{ $product['name'] }}">
+                                            @endif
+                                        </a>
+                                    </figure>
+                                    <div class="product-details">
+                                        <h3 class="product-title"> <a href="{{ $product['url'] ?? '#' }}">{{ $product['name'] }}</a></h3>
+                                        <div class="ratings-container">
+                                            <div class="product-ratings">
+                                                <span class="ratings" style="width:100%"></span>
+                                                <span class="tooltiptext tooltip-top"></span>
+                                            </div>
                                         </div>
-                                        <!-- End .product-ratings -->
-                                    </div>
-                                    <!-- End .product-container -->
-                                    <div class="price-box">
-                                        <span class="product-price">$49.00</span>
-                                    </div>
-                                    <!-- End .price-box -->
-                                </div>
-                                <!-- End .product-details -->
-                            </div>
-                            <div class="product-default left-details product-widget ">
-                                <figure>
-                                    <a href="/porto/demo1-product.html">
-                                        <img src="/porto/assets/images/demoes/demo1/products/small/product-7.jpg" width="84" height="84" alt="product">
-                                        <img src="/porto/assets/images/demoes/demo1/products/small/product-7-2.jpg" width="84" height="84" alt="product">
-                                    </a>
-                                </figure>
-                                <div class="product-details">
-                                    <h3 class="product-title"> <a href="/porto/demo1-product.html">Computer Mouse</a>
-                                    </h3>
-                                    <div class="ratings-container">
-                                        <div class="product-ratings">
-                                            <span class="ratings" style="width:100%"></span>
-                                            <!-- End .ratings -->
-                                            <span class="tooltiptext tooltip-top"></span>
+                                        <div class="price-box">
+                                            <span class="product-price">{{ $product['price'] ?? '$0.00' }}</span>
                                         </div>
-                                        <!-- End .product-ratings -->
                                     </div>
-                                    <!-- End .product-container -->
-                                    <div class="price-box">
-                                        <span class="product-price">$49.00</span>
-                                    </div>
-                                    <!-- End .price-box -->
                                 </div>
-                                <!-- End .product-details -->
-                            </div>
-                            <div class="product-default left-details product-widget ">
-                                <figure>
-                                    <a href="/porto/demo1-product.html">
-                                        <img src="/porto/assets/images/demoes/demo1/products/small/product-8.jpg" width="84" height="84" alt="product">
-                                        <img src="/porto/assets/images/demoes/demo1/products/small/product-8-2.jpg" width="84" height="84" alt="product">
-                                    </a>
-                                </figure>
-                                <div class="product-details">
-                                    <h3 class="product-title"> <a href="/porto/demo1-product.html">Casual Note Bag</a>
-                                    </h3>
-                                    <div class="ratings-container">
-                                        <div class="product-ratings">
-                                            <span class="ratings" style="width:100%"></span>
-                                            <!-- End .ratings -->
-                                            <span class="tooltiptext tooltip-top"></span>
-                                        </div>
-                                        <!-- End .product-ratings -->
-                                    </div>
-                                    <!-- End .product-container -->
-                                    <div class="price-box">
-                                        <span class="product-price">$49.00</span>
-                                    </div>
-                                    <!-- End .price-box -->
-                                </div>
-                                <!-- End .product-details -->
-                            </div>
+                            @empty
+                                <p class="text-muted">{{ __('Henüz ürün yok') }}</p>
+                            @endforelse
                         </div>
                         <!-- End .product-column -->
                     </div>
@@ -563,86 +288,33 @@
 
                     <div class="col-sm-6 col-md-4 pb-4 pb-md-0 appear-animate" data-animation-name="fadeInLeftShorter" data-animation-delay="800">
                         <div class="product-column">
-                            <h3 class="section-sub-title ls-n-20">Latest Products</h3>
-
-                            <div class="product-default left-details product-widget ">
-                                <figure>
-                                    <a href="/porto/demo1-product.html">
-                                        <img src="/porto/assets/images/demoes/demo1/products/small/product-9.jpg" width="84" height="84" alt="product">
-                                        <img src="/porto/assets/images/demoes/demo1/products/small/product-9-2.jpg" width="84" height="84" alt="product">
-                                    </a>
-                                </figure>
-                                <div class="product-details">
-                                    <h3 class="product-title"> <a href="/porto/demo1-product.html">Ultimate 3D
-                                            Bluetooth Speaker</a> </h3>
-                                    <div class="ratings-container">
-                                        <div class="product-ratings">
-                                            <span class="ratings" style="width:100%"></span>
-                                            <!-- End .ratings -->
-                                            <span class="tooltiptext tooltip-top"></span>
+                            <h3 class="section-sub-title ls-n-20">{{ __('Latest Products') }}</h3>
+                            @forelse($latestProducts as $product)
+                                <div class="product-default left-details product-widget">
+                                    <figure>
+                                        <a href="{{ $product['url'] ?? '#' }}">
+                                            <img src="{{ $product['image'] ?? '/porto/assets/images/demoes/demo1/products/small/product-9.jpg' }}" width="84" height="84" alt="{{ $product['name'] }}">
+                                            @if(!empty($product['image_hover']))
+                                                <img src="{{ $product['image_hover'] }}" width="84" height="84" alt="{{ $product['name'] }}">
+                                            @endif
+                                        </a>
+                                    </figure>
+                                    <div class="product-details">
+                                        <h3 class="product-title"> <a href="{{ $product['url'] ?? '#' }}">{{ $product['name'] }}</a> </h3>
+                                        <div class="ratings-container">
+                                            <div class="product-ratings">
+                                                <span class="ratings" style="width:100%"></span>
+                                                <span class="tooltiptext tooltip-top"></span>
+                                            </div>
                                         </div>
-                                        <!-- End .product-ratings -->
-                                    </div>
-                                    <!-- End .product-container -->
-                                    <div class="price-box">
-                                        <span class="product-price">$49.00</span>
-                                    </div>
-                                    <!-- End .price-box -->
-                                </div>
-                                <!-- End .product-details -->
-                            </div>
-                            <div class="product-default left-details product-widget ">
-                                <figure>
-                                    <a href="/porto/demo1-product.html">
-                                        <img src="/porto/assets/images/demoes/demo1/products/small/product-10.jpg" width="84" height="84" alt="product">
-                                        <img src="/porto/assets/images/demoes/demo1/products/small/product-10-2.jpg" width="84" height="84" alt="product">
-                                    </a>
-                                </figure>
-                                <div class="product-details">
-                                    <h3 class="product-title"> <a href="/porto/demo1-product.html">Brown-Black Men
-                                            Casual Glasses</a> </h3>
-                                    <div class="ratings-container">
-                                        <div class="product-ratings">
-                                            <span class="ratings" style="width:100%"></span>
-                                            <!-- End .ratings -->
-                                            <span class="tooltiptext tooltip-top"></span>
+                                        <div class="price-box">
+                                            <span class="product-price">{{ $product['price'] ?? '$0.00' }}</span>
                                         </div>
-                                        <!-- End .product-ratings -->
                                     </div>
-                                    <!-- End .product-container -->
-                                    <div class="price-box">
-                                        <span class="product-price">$49.00</span>
-                                    </div>
-                                    <!-- End .price-box -->
                                 </div>
-                                <!-- End .product-details -->
-                            </div>
-                            <div class="product-default left-details product-widget ">
-                                <figure>
-                                    <a href="/porto/demo1-product.html">
-                                        <img src="/porto/assets/images/demoes/demo1/products/small/product-11.jpg" width="84" height="84" alt="product">
-                                        <img src="/porto/assets/images/demoes/demo1/products/small/product-11-2.jpg" width="84" height="84" alt="product">
-                                    </a>
-                                </figure>
-                                <div class="product-details">
-                                    <h3 class="product-title"> <a href="/porto/demo1-product.html">Brown-Black Men
-                                            Casual Glasses</a> </h3>
-                                    <div class="ratings-container">
-                                        <div class="product-ratings">
-                                            <span class="ratings" style="width:100%"></span>
-                                            <!-- End .ratings -->
-                                            <span class="tooltiptext tooltip-top"></span>
-                                        </div>
-                                        <!-- End .product-ratings -->
-                                    </div>
-                                    <!-- End .product-container -->
-                                    <div class="price-box">
-                                        <span class="product-price">$49.00</span>
-                                    </div>
-                                    <!-- End .price-box -->
-                                </div>
-                                <!-- End .product-details -->
-                            </div>
+                            @empty
+                                <p class="text-muted">{{ __('Henüz ürün yok') }}</p>
+                            @endforelse
                         </div>
                         <!-- End .product-column -->
                     </div>
@@ -721,14 +393,14 @@
                             @else
                                 {{-- Fallback: Varsayılan menü --}}
                                 <li class="active">
-                                    <a href="/porto/demo1.html">
+                                    <a href="{{ route('page', ['page' => 'index']) }}">
                                         <i class="icon-home"></i>{{ __('Home') }}
                                     </a>
                                 </li>
 
                                 @if(!empty($categories))
                                 <li>
-                                    <a href="/porto/demo1-shop.html" class="sf-with-ul">
+                                    <a href="{{ route('page', ['page' => 'shop']) }}" class="sf-with-ul">
                                         <i class="sicon-badge"></i>{{ __('Categories') }}
                                     </a>
                                     <div class="megamenu megamenu-fixed-width megamenu-3cols">
@@ -742,7 +414,7 @@
                                                     <ul class="submenu">
                                                         @foreach($chunk ?? [] as $category)
                                                         <li>
-                                                            <a href="/porto/demo1-shop.html?category={{ $category['slug'] }}">
+                                                            <a href="{{ route('page', ['page' => 'shop', 'category' => $category['slug']]) }}">
                                                                 {{ $category['name'] }}
                                                                 @if(count($category['children']) > 0)
                                                                     <span class="tip tip-new">{{ __('New') }}</span>
@@ -752,7 +424,7 @@
                                                                 <ul>
                                                                     @foreach($category['children'] as $child)
                                                                     <li>
-                                                                        <a href="/porto/demo1-shop.html?category={{ $child['slug'] }}">
+                                                                        <a href="{{ route('page', ['page' => 'shop', 'category' => $child['slug']]) }}">
                                                                             {{ $child['name'] }}
                                                                         </a>
                                                                     </li>
@@ -776,7 +448,7 @@
                                                             <b>50%</b>
                                                             <i>{{ __('OFF') }}</i>
                                                         </h4>
-                                                        <a href="/porto/demo1-shop.html" class="btn btn-sm btn-dark">
+                                                        <a href="{{ route('page', ['page' => 'shop']) }}" class="btn btn-sm btn-dark">
                                                             {{ __('SHOP NOW') }}
                                                         </a>
                                                     </div>
@@ -802,7 +474,7 @@
                             <h4 class="sale-text text-uppercase"><small>UP
                                     TO</small>50<sup>%</sup><sub>off</sub></h4>
                             <p>Bags, Clothing, T-Shirts, Shoes, Watches and much more...</p>
-                            <a href="/porto/demo1-shop.html" class="btn btn-dark btn-md">View Sale</a>
+                            <a href="{{ route('page', ['page' => 'shop']) }}" class="btn btn-dark btn-md">{{ __('View Sale') }}</a>
                         </div>
                         <!-- End .banner -->
 
@@ -817,8 +489,7 @@
                                     <h5 class="coupon-sale-text text-gray ls-n-10 p-0 font1"><i>UP
                                             TO</i><b class="text-white bg-dark font1">$100</b> OFF</h5>
                                     <p class="ls-0">Top Brands and Models!</p>
-                                    <a href="/porto/demo1-shop.html" class="btn btn-inline-block btn-dark btn-black ls-0">VIEW
-                                        SALE</a>
+                                    <a href="{{ route('page', ['page' => 'shop']) }}" class="btn btn-inline-block btn-dark btn-black ls-0">{{ __('VIEW SALE') }}</a>
                                 </div>
                             </div>
                         </div>
@@ -835,8 +506,7 @@
                                 <div class="coupon-sale-content">
                                     <h5 class="coupon-sale-text ls-n-10 p-0 font1"><i>UP
                                             TO</i><b class="text-white bg-secondary font1">50%</b> OFF</h5>
-                                    <a href="/porto/demo1-shop.html" class="btn btn-inline-block btn-dark btn-black ls-0">VIEW
-                                        SALE</a>
+                                    <a href="{{ route('page', ['page' => 'shop']) }}" class="btn btn-inline-block btn-dark btn-black ls-0">{{ __('VIEW SALE') }}</a>
                                 </div>
                             </div>
                         </div>
@@ -926,19 +596,23 @@
                 <!-- End .widget -->
 
                 <div class="widget widget-posts post-date-in-media media-with-zoom mb-0 mb-lg-2 pb-lg-2">
+                    @if(isset($blogPosts) && count($blogPosts) > 0)
                     <div class="owl-carousel owl-theme dots-left dots-m-0 dots-small" data-owl-options="
                         { 'margin' : 20,
                           'loop': false }">
+                        @foreach($blogPosts as $post)
                         <article class="post">
                             <div class="post-media">
-                                <a href="/porto/single.html">
-                                    <img src="/porto/assets/images/blog/home/post-1.jpg" data-zoom-image="/porto/assets/images/blog/home/post-1.jpg" width="280" height="209" alt="Post">
+                                <a href="{{ route('page', ['page' => 'single', 'post' => $post['slug']]) }}">
+                                    <img src="{{ $post['featured_image'] ?? '/porto/assets/images/blog/home/post-1.jpg' }}" data-zoom-image="{{ $post['featured_image'] ?? '/porto/assets/images/blog/home/post-1.jpg' }}" width="280" height="209" alt="{{ $post['title'] }}">
                                 </a>
+                                @if($post['published_at'])
                                 <div class="post-date">
-                                    <span class="day">29</span>
-                                    <span class="month">Jun</span>
+                                    <span class="day">{{ $post['day'] ?? '29' }}</span>
+                                    <span class="month">{{ $post['month'] ?? 'Jun' }}</span>
                                 </div>
                                 <!-- End .post-date -->
+                                @endif
 
                                 <span class="prod-full-screen">
                                     <i class="fas fa-search"></i>
@@ -948,86 +622,25 @@
 
                             <div class="post-body">
                                 <h2 class="post-title">
-                                    <a href="/porto/single.html">Post Format Standard</a>
+                                    <a href="{{ route('page', ['page' => 'single', 'post' => $post['slug']]) }}">{{ $post['title'] }}</a>
                                 </h2>
 
                                 <div class="post-content">
-                                    <p>Leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with... </p>
+                                    <p>{{ Str::limit($post['excerpt'] ?? '', 100) }}...</p>
 
-                                    <a href="/porto/single.html" class="read-more">read more <i
+                                    <a href="{{ route('page', ['page' => 'single', 'post' => $post['slug']]) }}" class="read-more">{{ __('read more') }} <i
                                             class="icon-right-open"></i></a>
                                 </div>
                                 <!-- End .post-content -->
                             </div>
                             <!-- End .post-body -->
                         </article>
-
-                        <article class="post">
-                            <div class="post-media">
-                                <a href="/porto/single.html">
-                                    <img src="/porto/assets/images/blog/home/post-2.jpg" data-zoom-image="/porto/assets/images/blog/home/post-2.jpg" width="280" height="209" alt="Post">
-                                </a>
-                                <div class="post-date">
-                                    <span class="day">29</span>
-                                    <span class="month">Jun</span>
-                                </div>
-                                <!-- End .post-date -->
-                                <span class="prod-full-screen">
-                                    <i class="fas fa-search"></i>
-                                </span>
-                            </div>
-                            <!-- End .post-media -->
-
-                            <div class="post-body">
-                                <h2 class="post-title">
-                                    <a href="/porto/single.html">Fashion Trends</a>
-                                </h2>
-
-                                <div class="post-content">
-                                    <p>Leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with... </p>
-
-                                    <a href="/porto/single.html" class="read-more">read more <i
-                                            class="icon-right-open"></i></a>
-                                </div>
-                                <!-- End .post-content -->
-                            </div>
-                            <!-- End .post-body -->
-                        </article>
-
-                        <article class="post">
-                            <div class="post-media">
-                                <a href="/porto/single.html">
-                                    <img src="/porto/assets/images/blog/home/post-3.jpg" data-zoom-image="/porto/assets/images/blog/home/post-3.jpg" width="280" height="209" alt="Post">
-                                </a>
-                                <div class="post-date">
-                                    <span class="day">29</span>
-                                    <span class="month">Jun</span>
-                                </div>
-                                <!-- End .post-date -->
-                                <span class="prod-full-screen">
-                                    <i class="fas fa-search"></i>
-                                </span>
-                            </div>
-                            <!-- End .post-media -->
-
-                            <div class="post-body">
-                                <h2 class="post-title">
-                                    <a href="/porto/single.html">
-                                        Post Format Video</a>
-                                </h2>
-
-                                <div class="post-content">
-                                    <p>Leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with... </p>
-
-                                    <a href="/porto/single.html" class="read-more">read more <i
-                                            class="icon-right-open"></i></a>
-                                </div>
-                                <!-- End .post-content -->
-                            </div>
-                            <!-- End .post-body -->
-                        </article>
+                        @endforeach
                     </div>
                     <!-- End .posts-slider -->
+                    @else
+                    <p class="text-muted">{{ __('Blog posts will appear here once you publish content from the admin panel.') }}</p>
+                    @endif
                 </div>
                 <!-- End .widget -->
             </aside>

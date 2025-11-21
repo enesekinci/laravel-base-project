@@ -18,10 +18,10 @@
 					<nav aria-label="breadcrumb" class="breadcrumb-nav">
 						<div class="container">
 							<ol class="breadcrumb">
-								<li class="breadcrumb-item"><a href="/porto/demo1.html">Home</a></li>
-								<li class="breadcrumb-item"><a href="/porto/demo1-category.html">Shop</a></li>
+								<li class="breadcrumb-item"><a href="{{ route('page', ['page' => 'index']) }}">{{ __('Home') }}</a></li>
+								<li class="breadcrumb-item"><a href="{{ route('page', ['page' => 'shop']) }}">{{ __('Shop') }}</a></li>
 								<li class="breadcrumb-item active" aria-current="page">
-									My Account
+									{{ __('My Account') }}
 								</li>
 							</ol>
 						</div>
@@ -36,7 +36,13 @@
 					<div class="col-lg-6 offset-lg-3">
 						<div class="feature-box border-top-primary">
 							<div class="feature-box-content">
-								<form class="mb-0" action="#">
+                                @if (session('status'))
+                                    <div class="alert alert-success">
+                                        {{ session('status') }}
+                                    </div>
+                                @endif
+								<form class="mb-0" method="POST" action="{{ route('password.email') }}">
+                                    @csrf
 									<p>
 										Lost your password? Please enter your
 										username or email address. You will receive
@@ -44,12 +50,15 @@
 									</p>
 									<div class="form-group mb-0">
 										<label for="reset-email" class="font-weight-normal">Username or email</label>
-										<input type="email" class="form-control" id="reset-email" name="reset-email"
-											required />
+										<input type="email" class="form-control @error('email') is-invalid @enderror" id="reset-email" name="email"
+											required value="{{ old('email') }}" />
+                                        @error('email')
+                                            <span class="invalid-feedback">{{ $message }}</span>
+                                        @enderror
 									</div>
 
 									<div class="form-footer mb-0">
-										<a href="/porto/demo1-login.html">Click here to login</a>
+										<a href="{{ route('login') }}">Click here to login</a>
 
 										<button type="submit"
 											class="btn btn-md btn-primary form-footer-right font-weight-normal text-transform-none mr-0">

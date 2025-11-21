@@ -33,7 +33,7 @@
 				<nav aria-label="breadcrumb" class="breadcrumb-nav">
 					<ol class="breadcrumb">
 						<li class="breadcrumb-item">
-							<a href="/porto/demo4.html">
+							<a href="{{ route('page', ['page' => 'index']) }}">
 								<i class="icon-home"></i>
 							</a>
 						</li>

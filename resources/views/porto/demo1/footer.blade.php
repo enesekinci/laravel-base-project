@@ -17,7 +17,7 @@
                 <div class="col-lg-3 col-sm-6 pb-2 pb-sm-0">
                     <div class="widget">
                         <h4 class="widget-title">{{ __('About Us') }}</h4>
-                        <a href="/porto/demo1.html">
+                        <a href="{{ route('page', ['page' => 'index']) }}">
                             <img src="{{ $footer['about_logo'] ?? '/porto/assets/images/logo-footer.png' }}" alt="Logo" class="logo-footer">
                         </a>
                         <p class="m-b-4">{{ $footer['about_description'] ?? __('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nec vestibulum magna, et dapibus lacus. Duis nec vestibulum magna, et dapibus lacus.') }}</p>
@@ -66,24 +66,21 @@
                         <h4 class="widget-title pb-1">{{ __('Customer Service') }}</h4>
 
                         <ul class="links">
-                            @if(!empty($footerMenu) && is_array($footerMenu) && count($footerMenu) > 0)
-                                {{-- Footer menüsünden göster --}}
-                                @foreach($footerMenu as $item)
-                                    @if($item['is_active'] ?? true)
-                                        <li>
-                                            <a href="{{ $item['url'] ?? '#' }}" 
-                                               @if(($item['target'] ?? '_self') === '_blank') target="_blank" @endif>
-                                                {{ $item['name'] ?? '' }}
-                                            </a>
-                                        </li>
-                                    @endif
-                                @endforeach
-                            @elseif(!empty($footer['customer_service_links']) && is_array($footer['customer_service_links']))
-                                {{-- Fallback: Footer settings'ten göster --}}
-                                @foreach($footer['customer_service_links'] as $link)
-                                    <li><a href="{{ $link['url'] ?? '#' }}">{{ $link['label'] ?? '' }}</a></li>
-                                @endforeach
-                            @endif
+                            @php
+                                $customerMenu = $footerMenu ?? $footer['customer_service_links'] ?? [];
+                            @endphp
+                            @forelse($customerMenu as $item)
+                                @if($item['is_active'] ?? true)
+                                    <li>
+                                        <a href="{{ $item['url'] ?? '#' }}" 
+                                           @if(($item['target'] ?? '_self') === '_blank') target="_blank" @endif>
+                                            {{ $item['name'] ?? '' }}
+                                        </a>
+                                    </li>
+                                @endif
+                            @empty
+                                <li class="text-muted">{{ __('Menü bulunamadı') }}</li>
+                            @endforelse
                         </ul>
                     </div>
                     <!-- End .widget -->
@@ -98,6 +95,9 @@
                             @foreach($footer['popular_tags'] ?? [] as $tag)
                                 <a href="#">{{ $tag }}</a>
                             @endforeach
+                            @if(empty($footer['popular_tags']))
+                                <span class="text-muted">{{ __('Henüz etiket yok') }}</span>
+                            @endif
                         </div>
                     </div>
                     <!-- End .widget -->

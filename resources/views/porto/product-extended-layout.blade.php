@@ -8,8 +8,8 @@
 <nav aria-label="breadcrumb" class="breadcrumb-nav">
 				<div class="container">
 					<ol class="breadcrumb">
-						<li class="breadcrumb-item"><a href="/porto/demo4.html"><i class="icon-home"></i></a></li>
-						<li class="breadcrumb-item"><a href="/porto/demo4.html">Home</a></li>
+						<li class="breadcrumb-item"><a href="{{ route('page', ['page' => 'index']) }}"><i class="icon-home"></i></a></li>
+						<li class="breadcrumb-item"><a href="{{ route('page', ['page' => 'index']) }}">Home</a></li>
 						<li class="breadcrumb-item"><a href="#">Products</a></li>
 					</ol>
 				</div><!-- End .container -->

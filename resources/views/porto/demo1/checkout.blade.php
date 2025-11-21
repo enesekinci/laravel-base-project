@@ -16,13 +16,13 @@
 <div class="container checkout-container">
                 <ul class="checkout-progress-bar d-flex justify-content-center flex-wrap">
                     <li>
-                        <a href="/porto/demo1-cart.html">Shopping Cart</a>
+                        <a href="{{ route('page', ['page' => 'cart']) }}">{{ __('Shopping Cart') }}</a>
                     </li>
                     <li class="active">
-                        <a href="/porto/demo1-checkout.html">Checkout</a>
+                        <a href="{{ route('page', ['page' => 'checkout']) }}">{{ __('Checkout') }}</a>
                     </li>
                     <li class="disabled">
-                        <a href="#">Order Complete</a>
+                        <a href="#">{{ __('Order Complete') }}</a>
                     </li>
                 </ul>
 
@@ -66,7 +66,7 @@
                                                 me</label>
                                         </div>
 
-                                        <a href="/porto/demo1-forgot-password.html" class="forget-password">Lost your password?</a>
+                                        <a href="{{ route('page', ['page' => 'forgot-password']) }}" class="forget-password">{{ __('Lost your password?') }}</a>
                                     </div>
                                 </form>
                             </div>
@@ -133,14 +133,10 @@
                                     <div class="select-custom">
                                         <label>Country / Region
                                             <abbr class="required" title="required">*</abbr></label>
-                                        <select name="orderby" class="form-control">
-                                            <option value="" selected="selected">Vanuatu
-                                            </option>
-                                            <option value="1">Brunei</option>
-                                            <option value="2">Bulgaria</option>
-                                            <option value="3">Burkina Faso</option>
-                                            <option value="4">Burundi</option>
-                                            <option value="5">Cameroon</option>
+                                        <select name="country" class="form-control">
+                                            @foreach(($billingCountries ?? []) as $country)
+                                                <option value="{{ $country }}">{{ $country }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
 
@@ -162,13 +158,10 @@
 
                                     <div class="select-custom">
                                         <label>State / County <abbr class="required" title="required">*</abbr></label>
-                                        <select name="orderby" class="form-control">
-                                            <option value="" selected="selected">NY</option>
-                                            <option value="1">Brunei</option>
-                                            <option value="2">Bulgaria</option>
-                                            <option value="3">Burkina Faso</option>
-                                            <option value="4">Burundi</option>
-                                            <option value="5">Cameroon</option>
+                                        <select name="state" class="form-control">
+                                            @foreach(($states ?? []) as $state)
+                                                <option value="{{ $state }}">{{ $state }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
 
@@ -243,14 +236,11 @@
 
                                             <div class="select-custom">
                                                 <label>Country / Region <span class="required">*</span></label>
-                                                <select name="orderby" class="form-control">
-                                                    <option value="" selected="selected">Vanuatu</option>
-                                                    <option value="1">Brunei</option>
-                                                    <option value="2">Bulgaria</option>
-                                                    <option value="3">Burkina Faso</option>
-                                                    <option value="4">Burundi</option>
-                                                    <option value="5">Cameroon</option>
-                                                </select>
+                                        <select name="shipping_country" class="form-control">
+                                            @foreach(($billingCountries ?? []) as $country)
+                                                <option value="{{ $country }}">{{ $country }}</option>
+                                            @endforeach
+                                        </select>
                                             </div>
 
                                             <div class="form-group mb-1 pb-2">
@@ -272,14 +262,11 @@
                                             <div class="select-custom">
                                                 <label>State / County <abbr class="required"
                                                         title="required">*</abbr></label>
-                                                <select name="orderby" class="form-control">
-                                                    <option value="" selected="selected">NY</option>
-                                                    <option value="1">Brunei</option>
-                                                    <option value="2">Bulgaria</option>
-                                                    <option value="3">Burkina Faso</option>
-                                                    <option value="4">Burundi</option>
-                                                    <option value="5">Cameroon</option>
-                                                </select>
+                                            <select name="shipping_state" class="form-control">
+                                                @foreach(($states ?? []) as $state)
+                                                    <option value="{{ $state }}">{{ $state }}</option>
+                                                @endforeach
+                                            </select>
                                             </div>
 
                                             <div class="form-group">
@@ -311,31 +298,20 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td class="product-col">
-                                            <h3 class="product-title">
-                                                Circled Ultimate 3D Speaker ×
-                                                <span class="product-qty">4</span>
-                                            </h3>
-                                        </td>
+                                    @foreach(($checkoutCart['cartItems'] ?? []) as $item)
+                                        <tr>
+                                            <td class="product-col">
+                                                <h3 class="product-title">
+                                                    {{ $item['name'] ?? '' }} ×
+                                                    <span class="product-qty">{{ $item['quantity'] ?? 1 }}</span>
+                                                </h3>
+                                            </td>
 
-                                        <td class="price-col">
-                                            <span>$1,040.00</span>
+                       					<td class="price-col">
+                                            <span>{{ $item['formatted_subtotal'] ?? '$0.00' }}</span>
                                         </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td class="product-col">
-                                            <h3 class="product-title">
-                                                Fashion Computer Bag ×
-                                                <span class="product-qty">2</span>
-                                            </h3>
-                                        </td>
-
-                                        <td class="price-col">
-                                            <span>$418.00</span>
-                                        </td>
-                                    </tr>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                                 <tfoot>
                                     <tr class="cart-subtotal">
@@ -344,30 +320,24 @@
                                         </td>
 
                                         <td class="price-col">
-                                            <span>$1,458.00</span>
+                                            <span>{{ $checkoutCart['cartTotals']['formattedSubtotal'] ?? '$0.00' }}</span>
                                         </td>
                                     </tr>
                                     <tr class="order-shipping">
                                         <td class="text-left" colspan="2">
                                             <h4 class="m-b-sm">Shipping</h4>
 
-                                            <div class="form-group form-group-custom-control">
-                                                <div class="custom-control custom-radio d-flex">
-                                                    <input type="radio" class="custom-control-input" name="radio" checked />
-                                                    <label class="custom-control-label">Local Pickup</label>
+                                            @foreach(($checkoutCart['shippingOptions'] ?? []) as $index => $option)
+                                                <div class="form-group form-group-custom-control {{ $loop->last ? 'mb-0' : '' }}">
+                                                    <div class="custom-control custom-radio d-flex{{ $loop->last ? ' mb-0' : '' }}">
+                                                        <input type="radio" class="custom-control-input" name="shipping_method" {{ $loop->first ? 'checked' : '' }}>
+                                                        <label class="custom-control-label d-flex justify-content-between w-100">
+                                                            <span>{{ $option['label'] ?? '' }}</span>
+                                                            <span class="ml-auto text-muted">{{ $option['formatted_price'] ?? '$0.00' }}</span>
+                                                        </label>
+                                                    </div>
                                                 </div>
-                                                <!-- End .custom-checkbox -->
-                                            </div>
-                                            <!-- End .form-group -->
-
-                                            <div class="form-group form-group-custom-control mb-0">
-                                                <div class="custom-control custom-radio d-flex mb-0">
-                                                    <input type="radio" name="radio" class="custom-control-input">
-                                                    <label class="custom-control-label">Flat Rate</label>
-                                                </div>
-                                                <!-- End .custom-checkbox -->
-                                            </div>
-                                            <!-- End .form-group -->
+                                            @endforeach
                                         </td>
 
                                     </tr>
@@ -377,7 +347,7 @@
                                             <h4>Total</h4>
                                         </td>
                                         <td>
-                                            <b class="total-price"><span>$1,603.80</span></b>
+                                            <b class="total-price"><span>{{ $checkoutCart['cartTotals']['formattedTotal'] ?? '$0.00' }}</span></b>
                                         </td>
                                     </tr>
                                 </tfoot>

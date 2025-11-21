@@ -16,8 +16,8 @@
 <nav aria-label="breadcrumb" class="breadcrumb-nav">
 				<div class="container">
 					<ol class="breadcrumb">
-						<li class="breadcrumb-item"><a href="/porto/demo1.html"><i class="icon-home"></i></a></li>
-						<li class="breadcrumb-item active" aria-current="page">Blog Post</li>
+						<li class="breadcrumb-item"><a href="{{ route('page', ['page' => 'index']) }}"><i class="icon-home"></i></a></li>
+						<li class="breadcrumb-item active" aria-current="page">{{ __('Blog Post') }}</li>
 					</ol>
 				</div><!-- End .container -->
 			</nav>
@@ -25,45 +25,30 @@
 			<div class="container">
 				<div class="row">
 					<div class="col-lg-9">
+						@if(isset($blogPost) && $blogPost)
 						<article class="post single">
+							@if($blogPost->image)
 							<div class="post-media">
-								<img src="/porto/assets/images/blog/post-1.jpg" alt="Post">
+								<img src="{{ $blogPost->image }}" alt="{{ $blogPost->title }}">
 							</div><!-- End .post-media -->
+							@endif
 
 							<div class="post-body">
+								@if($blogPost->published_at)
 								<div class="post-date">
-									<span class="day">22</span>
-									<span class="month">Jun</span>
+									<span class="day">{{ $blogPost->published_at->format('d') }}</span>
+									<span class="month">{{ $blogPost->published_at->format('M') }}</span>
 								</div><!-- End .post-date -->
+								@endif
 
-								<h2 class="post-title">Top New Collection</h2>
+								<h2 class="post-title">{{ $blogPost->title }}</h2>
 
 								<div class="post-meta">
-									<a href="#" class="hash-scroll">0 Comments</a>
+									<a href="#" class="hash-scroll">{{ $blogPost->comments_count ?? 0 }} Comments</a>
 								</div><!-- End .post-meta -->
 
 								<div class="post-content">
-									<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras non placerat mi.
-										Etiam non tellus sem. Aenean pretium convallis lorem, sit amet dapibus ante
-										mollis a. Integer bibendum interdum sem, eget volutpat purus pulvinar in. Sed
-										tristique augue vitae sagittis porta. Phasellus ullamcorper, dolor suscipit
-										mattis viverra, sapien elit condimentum odio, ut imperdiet nisi risus sit amet
-										ante. Sed sem lorem, laoreet et facilisis quis, tincidunt non lorem. Etiam
-										tempus, dolor in sollicitudin faucibus, sem massa accumsan erat.
-									</p>
-
-									<h3>“ Many
-										desktop publishing packages and web page editors now use Lorem Ipsum as their
-										default model search for evolved over sometimes by accident, sometimes on
-										purpose ”
-									</h3>
-
-									<p>Aenean lorem diam, venenatis nec venenatis id, adipiscing ac massa. Nam vel dui
-										eget justo dictum pretium a rhoncus ipsum. Donec venenatis erat tincidunt nunc
-										suscipit, sit amet bibendum lacus posuere. Sed scelerisque, dolor a pharetra
-										sodales, mi augue consequat sapien, et interdum tellus leo et nunc. Nunc
-										imperdiet eu libero ut imperdiet.
-									</p>
+									{!! $blogPost->content ?? $blogPost->excerpt ?? '' !!}
 								</div><!-- End .post-content -->
 
 								<div class="post-share">
@@ -156,189 +141,115 @@
 
 						<hr class="mt-2 mb-1">
 
+						@if(isset($relatedPosts) && $relatedPosts->count() > 0)
 						<div class="related-posts">
 							<h4>Related <strong>Posts</strong></h4>
 
 							<div class="owl-carousel owl-theme related-posts-carousel" data-owl-options="{
 								'dots': false
 							}">
+								@foreach($relatedPosts as $relatedPost)
 								<article class="post">
+									@if($relatedPost->image)
 									<div class="post-media zoom-effect">
-										<a href="/porto/demo1-single.html">
-											<img src="/porto/assets/images/blog/related/post-1.jpg" alt="Post">
+										<a href="{{ route('page', ['page' => 'single', 'post' => $relatedPost->slug]) }}">
+											<img src="{{ $relatedPost->image }}" alt="{{ $relatedPost->title }}">
 										</a>
 									</div><!-- End .post-media -->
+									@endif
 
 									<div class="post-body">
+										@if($relatedPost->published_at)
 										<div class="post-date">
-											<span class="day">29</span>
-											<span class="month">Jun</span>
+											<span class="day">{{ $relatedPost->published_at->format('d') }}</span>
+											<span class="month">{{ $relatedPost->published_at->format('M') }}</span>
 										</div><!-- End .post-date -->
+										@endif
 
 										<h2 class="post-title">
-											<a href="/porto/demo1-single.html">Post Format - Image</a>
+											<a href="{{ route('page', ['page' => 'single', 'post' => $relatedPost->slug]) }}">{{ $relatedPost->title }}</a>
 										</h2>
 
 										<div class="post-content">
-											<p>Euismod atras vulputate iltricies etri elit. Class aptent taciti sociosqu
-												ad litora torquent per conubia nostra, per incep tos himens.</p>
+											<p>{{ Str::limit($relatedPost->excerpt ?? $relatedPost->content ?? '', 100) }}</p>
 
-											<a href="/porto/demo1-single.html" class="read-more">read more <i
+											<a href="{{ route('page', ['page' => 'single', 'post' => $relatedPost->slug]) }}" class="read-more">{{ __('read more') }} <i
 													class="fas fa-angle-right"></i></a>
 										</div><!-- End .post-content -->
 									</div><!-- End .post-body -->
 								</article>
-
-								<article class="post">
-									<div class="post-media zoom-effect">
-										<a href="/porto/demo1-single.html">
-											<img src="/porto/assets/images/blog/related/post-2.jpg" alt="Post">
-										</a>
-									</div><!-- End .post-media -->
-
-									<div class="post-body">
-										<div class="post-date">
-											<span class="day">23</span>
-											<span class="month">Mar</span>
-										</div><!-- End .post-date -->
-
-										<h2 class="post-title">
-											<a href="/porto/demo1-single.html">Post Format - Image</a>
-										</h2>
-
-										<div class="post-content">
-											<p>Euismod atras vulputate iltricies etri elit. Class aptent taciti sociosqu
-												ad litora torquent per conubia nostra, per incep tos himens.</p>
-
-											<a href="/porto/demo1-single.html" class="read-more">read more <i
-													class="fas fa-angle-right"></i></a>
-										</div><!-- End .post-content -->
-									</div><!-- End .post-body -->
-								</article>
-
-								<article class="post">
-									<div class="post-media zoom-effect">
-										<a href="/porto/demo1-single.html">
-											<img src="/porto/assets/images/blog/related/post-3.jpg" alt="Post">
-										</a>
-									</div><!-- End .post-media -->
-
-									<div class="post-body">
-										<div class="post-date">
-											<span class="day">14</span>
-											<span class="month">May</span>
-										</div><!-- End .post-date -->
-
-										<h2 class="post-title">
-											<a href="/porto/demo1-single.html">Post Format - Image</a>
-										</h2>
-
-										<div class="post-content">
-											<p>Euismod atras vulputate iltricies etri elit. Class aptent taciti sociosqu
-												ad litora torquent per conubia nostra, per incep tos himens.</p>
-
-											<a href="/porto/demo1-single.html" class="read-more">read more <i
-													class="fas fa-angle-right"></i></a>
-										</div><!-- End .post-content -->
-									</div><!-- End .post-body -->
-								</article>
-
-								<article class="post">
-									<div class="post-media zoom-effect">
-										<a href="/porto/demo1-single.html">
-											<img src="/porto/assets/images/blog/related/post-1.jpg" alt="Post">
-										</a>
-									</div><!-- End .post-media -->
-
-									<div class="post-body">
-										<div class="post-date">
-											<span class="day">11</span>
-											<span class="month">Apr</span>
-										</div><!-- End .post-date -->
-
-										<h2 class="post-title">
-											<a href="/porto/demo1-single.html">Post Format - Image</a>
-										</h2>
-
-										<div class="post-content">
-											<p>Euismod atras vulputate iltricies etri elit. Class aptent taciti sociosqu
-												ad litora torquent per conubia nostra, per incep tos himens.</p>
-
-											<a href="/porto/demo1-single.html" class="read-more">read more <i
-													class="fas fa-angle-right"></i></a>
-										</div><!-- End .post-content -->
-									</div><!-- End .post-body -->
-								</article>
-							</div><!-- End .owl-carousel -->
-						</div><!-- End .related-posts -->
+								@endforeach
+							</div>
+							<!-- End .owl-carousel -->
+						</div>
+						<!-- End .related-posts -->
+						@endif
+						@else
+						<p>Blog yazısı bulunamadı.</p>
+						@endif
 					</div><!-- End .col-lg-9 -->
-
-					<div class="sidebar-toggle custom-sidebar-toggle">
-						<i class="fas fa-sliders-h"></i>
-					</div>
-					<div class="sidebar-overlay"></div>
 					<aside class="sidebar mobile-sidebar col-lg-3">
 						<div class="sidebar-wrapper" data-sticky-sidebar-options='{"offsetTop": 72}'>
+							@if(isset($blogCategories) && count($blogCategories) > 0)
 							<div class="widget widget-categories">
 								<h4 class="widget-title">Blog Categories</h4>
 
 								<ul class="list">
+									@foreach($blogCategories as $category)
 									<li>
-										<a href="#">All about clothing</a>
-
+										<a href="{{ route('page', ['page' => 'blog', 'category' => $category['slug'] ?? '']) }}">{{ $category['name'] ?? '' }}</a>
+										@if(isset($category['children']) && count($category['children']) > 0)
 										<ul class="list">
-											<li><a href="#">Dresses</a></li>
+											@foreach($category['children'] as $child)
+											<li><a href="{{ route('page', ['page' => 'blog', 'category' => $child['slug'] ?? '']) }}">{{ $child['name'] ?? '' }}</a></li>
+											@endforeach
 										</ul>
+										@endif
 									</li>
-									<li><a href="#">Make-up &amp; beauty</a></li>
-									<li><a href="#">Accessories</a></li>
-									<li><a href="#">Fashion trends</a></li>
-									<li><a href="#">Haircuts &amp; hairstyles</a></li>
+									@endforeach
 								</ul>
 							</div><!-- End .widget -->
+							@endif
 
+							@if(isset($recentPosts) && $recentPosts->count() > 0)
 							<div class="widget">
 								<h4 class="widget-title">Recent Posts</h4>
 
 								<ul class="simple-post-list">
+									@foreach($recentPosts as $recentPost)
 									<li>
+										@if($recentPost->image)
 										<div class="post-media">
-											<a href="/porto/demo1-single.html">
-												<img src="/porto/assets/images/blog/widget/post-1.jpg" alt="Post">
+											<a href="{{ route('page', ['page' => 'single', 'post' => $recentPost->slug]) }}">
+												<img src="{{ $recentPost->image }}" alt="{{ $recentPost->title }}">
 											</a>
 										</div><!-- End .post-media -->
+										@endif
 										<div class="post-info">
-											<a href="/porto/demo1-single.html">Post Format - Video</a>
+											<a href="{{ route('page', ['page' => 'single', 'post' => $recentPost->slug]) }}">{{ $recentPost->title }}</a>
+											@if($recentPost->published_at)
 											<div class="post-meta">
-												April 08, 2018
+												{{ $recentPost->published_at->format('F d, Y') }}
 											</div><!-- End .post-meta -->
+											@endif
 										</div><!-- End .post-info -->
 									</li>
-
-									<li>
-										<div class="post-media">
-											<a href="/porto/demo1-single.html">
-												<img src="/porto/assets/images/blog/widget/post-2.jpg" alt="Post">
-											</a>
-										</div><!-- End .post-media -->
-										<div class="post-info">
-											<a href="/porto/demo1-single.html">Post Format - Image</a>
-											<div class="post-meta">
-												March 23, 2016
-											</div><!-- End .post-meta -->
-										</div><!-- End .post-info -->
-									</li>
+									@endforeach
 								</ul>
 							</div><!-- End .widget -->
+							@endif
 
+							@if(isset($blogTags) && $blogTags->count() > 0)
 							<div class="widget">
 								<h4 class="widget-title">Tags</h4>
 
 								<div class="tagcloud">
-									<a href="#">ARTICLES</a>
-									<a href="#">CHAT</a>
+									@foreach($blogTags as $tag)
+									<a href="{{ route('page', ['page' => 'blog', 'tag' => $tag->slug]) }}">{{ $tag->name }}</a>
+									@endforeach
 								</div><!-- End .tagcloud -->
 							</div><!-- End .widget -->
+							@endif
 						</div><!-- End .sidebar-wrapper -->
 					</aside><!-- End .col-lg-3 -->
 				</div><!-- End .row -->

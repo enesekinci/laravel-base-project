@@ -11,7 +11,7 @@
 					<div class="container position-relative">
 						<nav aria-label="breadcrumb" class="breadcrumb-nav text-white">
 							<ol class="breadcrumb justify-content-center">
-								<li class="breadcrumb-item"><a href="/porto/demo4.html">Home</a></li>
+								<li class="breadcrumb-item"><a href="{{ route('page', ['page' => 'index']) }}">Home</a></li>
 								<li class="breadcrumb-item active" aria-current="page">Animation</li>
 							</ol>
 						</nav>
