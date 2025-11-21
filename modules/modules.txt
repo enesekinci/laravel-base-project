@@ -1,0 +1,87 @@
+- Products
+    - Categories
+    - Brands
+    - Attributes
+    - Attribute Sets
+    - Variations
+    - Options
+    - Tags
+    - Reviews
+
+- Sales
+    - Orders
+    - Transactions
+
+- Flash Sales
+- Coupons
+- Pages
+- Menus
+- Blog
+    - Posts
+    - Categories
+    - Tags
+- Media
+- Users
+    - Users
+    - Roles
+- Localization
+    - Languages
+    - Currency Rates
+    - Taxes
+- Appearance
+    - Sliders
+    - Storefront
+        - General Settings
+            - General
+            - Logo
+            - Menus
+            - Footer
+            - Newsletter
+            - Features
+            - Product Page
+            - Social Links
+        - Home Page Sections
+            - Slider Banners
+            - Three Column Full Width Banners
+            - Featured Categories
+            - Product Tabs One
+            - Top Brands
+            - Flash Sale & Vertical Products
+            - Two column banners
+            - Product Grid
+            - Three Column Banners
+            - Product Tabs Two
+            - One Column Banner
+            - Blogs
+- Reports
+- Tools
+    - Sitemap
+- Settings
+    - General Settings
+        - General
+        - Maintenance
+        - Logo
+        - Store
+        - PWA
+        - Currency
+        - SMS
+        - Mail
+        - Newsletter
+        - Google reCAPTCHA
+        - Custom CSS/JS
+    - Social Logins
+        - Facebook
+        - Google
+    - Shipping Methods
+        - Free Shipping
+        - Local Pickup
+        - Flat Rate
+    - Payment Methods
+        - PayTR
+        - İyzico
+        - Craftgate
+        - PayPal
+        - Stripe
+        - Bank Transfer
+        - Cash On Delivery
+        - Check / Money Order
