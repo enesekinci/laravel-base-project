@@ -7,17 +7,13 @@ parameters:
         - config
         - database
         - routes
-        - tests
 
     # Rule level (0-9)
     level: 8
 
-    ignoreErrors:
-        # Laravel specific patterns
-        - '#PHPDoc tag @var#'
-
     excludePaths:
         - ./*/*/FileToIgnore.php
+        - tests
 
     # Laravel specific
     checkMissingCallableSignature: true
