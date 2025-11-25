@@ -6,6 +6,9 @@ use App\Models\MediaFile;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * @extends Factory<MediaFile>
+ */
 class MediaFileFactory extends Factory
 {
     protected $model = MediaFile::class;

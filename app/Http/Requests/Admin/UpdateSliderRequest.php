@@ -12,9 +12,14 @@ class UpdateSliderRequest extends FormRequest
         return auth()->check();
     }
 
+    /**
+     * @return array<string, array<int, string>>
+     */
     public function rules(): array
     {
-        $sliderId = $this->route('slider')?->id ?? null;
+        /** @var \App\Models\Slider|null $slider */
+        $slider = $this->route('slider');
+        $sliderId = $slider?->id;
 
         return [
             'name' => ['sometimes', 'required', 'string', 'max:255'],

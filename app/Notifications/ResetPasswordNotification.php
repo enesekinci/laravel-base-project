@@ -31,7 +31,7 @@ class ResetPasswordNotification extends Notification
      *
      * @return array<int, string>
      */
-    public function via(object $notifiable): array
+    public function via(mixed $notifiable): array
     {
         return ['mail'];
     }
@@ -39,8 +39,9 @@ class ResetPasswordNotification extends Notification
     /**
      * Get the mail representation of the notification.
      */
-    public function toMail(object $notifiable): MailMessage
+    public function toMail(mixed $notifiable): MailMessage
     {
+        /** @var \Illuminate\Contracts\Auth\CanResetPassword $notifiable */
         $url = URL::route('password.reset', [
             'token' => $this->token,
             'email' => $notifiable->getEmailForPasswordReset(),
@@ -59,7 +60,7 @@ class ResetPasswordNotification extends Notification
      *
      * @return array<string, mixed>
      */
-    public function toArray(object $notifiable): array
+    public function toArray(mixed $notifiable): array
     {
         return [
             //

@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Hash;
 
 class RegisterController extends Controller
 {
-    public function register(Request $request)
+    public function register(Request $request): \Illuminate\Http\JsonResponse
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],

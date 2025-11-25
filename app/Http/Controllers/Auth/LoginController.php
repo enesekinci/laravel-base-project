@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
-    public function login(Request $request)
+    public function login(Request $request): \Illuminate\Http\JsonResponse
     {
         $data = $request->validate([
             'email' => ['required', 'email'],
@@ -32,12 +32,15 @@ class LoginController extends Controller
         ]);
     }
 
-    public function logout(Request $request)
+    public function logout(Request $request): \Illuminate\Http\JsonResponse
     {
-        /** @var \Laravel\Sanctum\PersonalAccessToken $token */
-        $token = $request->user()->currentAccessToken();
-        if ($token) {
-            $token->delete();
+        $user = $request->user();
+        if ($user) {
+            /** @var \Laravel\Sanctum\PersonalAccessToken|null $token */
+            $token = $user->currentAccessToken();
+            if ($token) {
+                $token->delete();
+            }
         }
 
         return response()->json(['message' => 'Logged out']);

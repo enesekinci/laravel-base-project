@@ -8,8 +8,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @method static \Database\Factories\MenuItemFactory factory()
+ */
 class MenuItem extends Model
 {
+    /** @use HasFactory<\Database\Factories\MenuItemFactory> */
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
@@ -28,16 +32,25 @@ class MenuItem extends Model
         'is_active' => 'bool',
     ];
 
+    /**
+     * @return BelongsTo<Menu, MenuItem>
+     */
     public function menu(): BelongsTo
     {
         return $this->belongsTo(Menu::class);
     }
 
+    /**
+     * @return BelongsTo<MenuItem, MenuItem>
+     */
     public function parent(): BelongsTo
     {
         return $this->belongsTo(MenuItem::class, 'parent_id');
     }
 
+    /**
+     * @return HasMany<MenuItem, MenuItem>
+     */
     public function children(): HasMany
     {
         return $this->hasMany(MenuItem::class, 'parent_id')->orderBy('sort_order');

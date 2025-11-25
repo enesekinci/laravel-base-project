@@ -15,13 +15,14 @@ class SendExceptionAlertMail implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $tries = 3;
+    public int $tries = 3;
 
-    public $timeout = 30;
+    public int $timeout = 30;
 
     public function __construct(
         public Throwable $exception,
         public ?string $url = null,
+        /** @var array<string, mixed> */
         public ?array $context = []
     ) {
         // Job'un hangi queue'da çalışacağını belirle

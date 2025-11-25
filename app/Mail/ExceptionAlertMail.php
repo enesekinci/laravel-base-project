@@ -16,13 +16,14 @@ class ExceptionAlertMail extends Mailable
     public function __construct(
         public Throwable $exception,
         public ?string $url = null,
+        /** @var array<string, mixed> */
         public ?array $context = []
     ) {}
 
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: '🚨 Exception Alert - '.config('app.name'),
+            subject: '🚨 Exception Alert - ' . config('app.name'),
         );
     }
 

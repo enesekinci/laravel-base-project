@@ -12,6 +12,9 @@ class UpdateMediaFileRequest extends FormRequest
         return Auth::check();
     }
 
+    /**
+     * @return array<string, array<int, string>>
+     */
     public function rules(): array
     {
         return [

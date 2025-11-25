@@ -18,7 +18,7 @@ class HealthCheckController extends Controller
             'memory' => $this->checkMemory(),
         ];
 
-        $allHealthy = collect($checks)->every(fn ($check) => $check['status'] === 'healthy');
+        $allHealthy = collect($checks)->every(fn($check) => $check['status'] === 'healthy');
 
         return response()->json([
             'status' => $allHealthy ? 'healthy' : 'degraded',
@@ -27,6 +27,9 @@ class HealthCheckController extends Controller
         ], $allHealthy ? 200 : 503);
     }
 
+    /**
+     * @return array{status: string, message: string}
+     */
     private function checkDatabase(): array
     {
         try {
@@ -35,7 +38,7 @@ class HealthCheckController extends Controller
             $message = 'Database connection successful';
         } catch (\Exception $e) {
             $status = 'unhealthy';
-            $message = 'Database connection failed: '.$e->getMessage();
+            $message = 'Database connection failed: ' . $e->getMessage();
         }
 
         return [
@@ -44,6 +47,9 @@ class HealthCheckController extends Controller
         ];
     }
 
+    /**
+     * @return array{status: string, message: string}
+     */
     private function checkRedis(): array
     {
         try {
@@ -57,7 +63,7 @@ class HealthCheckController extends Controller
             }
         } catch (\Exception $e) {
             $status = 'unhealthy';
-            $message = 'Redis connection failed: '.$e->getMessage();
+            $message = 'Redis connection failed: ' . $e->getMessage();
         }
 
         return [
@@ -66,6 +72,9 @@ class HealthCheckController extends Controller
         ];
     }
 
+    /**
+     * @return array{status: string, message: string}
+     */
     private function checkQueue(): array
     {
         try {
@@ -75,7 +84,7 @@ class HealthCheckController extends Controller
             $message = "Queue system operational. Failed jobs: {$failedJobs}";
         } catch (\Exception $e) {
             $status = 'unhealthy';
-            $message = 'Queue check failed: '.$e->getMessage();
+            $message = 'Queue check failed: ' . $e->getMessage();
         }
 
         return [
@@ -84,6 +93,9 @@ class HealthCheckController extends Controller
         ];
     }
 
+    /**
+     * @return array{status: string, message: string}
+     */
     private function checkDisk(): array
     {
         try {
@@ -100,7 +112,7 @@ class HealthCheckController extends Controller
             );
         } catch (\Exception $e) {
             $status = 'unhealthy';
-            $message = 'Disk check failed: '.$e->getMessage();
+            $message = 'Disk check failed: ' . $e->getMessage();
         }
 
         return [
@@ -109,6 +121,9 @@ class HealthCheckController extends Controller
         ];
     }
 
+    /**
+     * @return array{status: string, message: string}
+     */
     private function checkMemory(): array
     {
         try {
@@ -128,7 +143,7 @@ class HealthCheckController extends Controller
             );
         } catch (\Exception $e) {
             $status = 'unhealthy';
-            $message = 'Memory check failed: '.$e->getMessage();
+            $message = 'Memory check failed: ' . $e->getMessage();
         }
 
         return [

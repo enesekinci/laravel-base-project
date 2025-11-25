@@ -11,6 +11,9 @@ class UpdateSliderItemRequest extends FormRequest
         return auth()->check();
     }
 
+    /**
+     * @return array<string, array<int, string>>
+     */
     public function rules(): array
     {
         return [

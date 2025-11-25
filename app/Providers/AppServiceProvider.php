@@ -58,7 +58,7 @@ class AppServiceProvider extends ServiceProvider
             \App\Jobs\SendSlowQueryAlertMail::dispatch(
                 $event->sql,
                 $event->time,
-                $event->bindings ?? []
+                $event->bindings
             )->onQueue('emails');
         });
 

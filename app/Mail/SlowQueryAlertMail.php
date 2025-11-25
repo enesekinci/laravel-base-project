@@ -15,13 +15,14 @@ class SlowQueryAlertMail extends Mailable
     public function __construct(
         public string $sql,
         public float $time,
+        /** @var array<int, mixed> */
         public array $bindings
     ) {}
 
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: '⚠️ Slow Query Alert - '.config('app.name'),
+            subject: '⚠️ Slow Query Alert - ' . config('app.name'),
         );
     }
 

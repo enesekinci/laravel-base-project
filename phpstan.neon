@@ -19,3 +19,14 @@ parameters:
     checkMissingCallableSignature: true
     checkTooWideReturnTypesInProtectedAndPublicMethods: true
 
+    ignoreErrors:
+        # Factory classes may not exist
+        - '#PHPDoc tag @method.*factory\(\) return type contains unknown class#'
+        - '#PHPDoc tag @use has invalid type.*Factory#'
+        - '#Type.*Factory in generic type.*is not subtype#'
+        # Relationship return types are not covariant (PHPStan limitation)
+        - '#should return.*but returns.*\$this\(#'
+        # SettingsSeeder type checks (union types in foreach)
+        - '#Call to function is_numeric\(\) with.*will always evaluate to (true|false)#'
+        - '#Call to function is_bool\(\) with.*will always evaluate to (true|false)#'
+

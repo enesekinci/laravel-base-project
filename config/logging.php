@@ -32,7 +32,7 @@ return [
 
     'enable_request_logging' => env('LOG_REQUESTS_ENABLED', true),
 
-    'excluded_request_paths' => explode(',', env('LOG_REQUESTS_EXCLUDED_PATHS', '/up,/health')),
+    'excluded_request_paths' => explode(',', (string) env('LOG_REQUESTS_EXCLUDED_PATHS', '/up,/health')),
 
     'slow_request_threshold_ms' => env('LOG_SLOW_REQUEST_THRESHOLD_MS', 500),
 
@@ -105,7 +105,7 @@ return [
             'handler_with' => [
                 'host' => env('PAPERTRAIL_URL'),
                 'port' => env('PAPERTRAIL_PORT'),
-                'connectionString' => 'tls://'.env('PAPERTRAIL_URL').':'.env('PAPERTRAIL_PORT'),
+                'connectionString' => 'tls://' . env('PAPERTRAIL_URL') . ':' . env('PAPERTRAIL_PORT'),
             ],
             'processors' => [PsrLogMessageProcessor::class],
         ],

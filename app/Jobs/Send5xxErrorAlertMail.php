@@ -15,9 +15,9 @@ class Send5xxErrorAlertMail implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $tries = 3;
+    public int $tries = 3;
 
-    public $timeout = 30;
+    public int $timeout = 30;
 
     public function __construct(
         public \Throwable $exception,
@@ -33,7 +33,7 @@ class Send5xxErrorAlertMail implements ShouldQueue
     public function handle(): void
     {
         // Rate limiting: Aynı exception için 5 dakikada bir mail gönder
-        $exceptionHash = md5($this->exception->getMessage().$this->url);
+        $exceptionHash = md5($this->exception->getMessage() . $this->url);
         $cacheKey = "5xx_error_alert:{$exceptionHash}";
 
         if (Cache::has($cacheKey)) {

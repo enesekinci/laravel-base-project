@@ -14,9 +14,9 @@ class SendSlowRequestAlertMail implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $tries = 3;
+    public int $tries = 3;
 
-    public $timeout = 30;
+    public int $timeout = 30;
 
     public function __construct(
         public string $method,

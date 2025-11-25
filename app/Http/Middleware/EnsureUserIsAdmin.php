@@ -24,7 +24,8 @@ class EnsureUserIsAdmin
             return redirect()->route('login');
         }
 
-        if (! Auth::user()->isAdmin()) {
+        $user = Auth::user();
+        if (! $user || ! $user->isAdmin()) {
             if ($request->expectsJson()) {
                 return response()->json(['message' => 'Bu sayfaya erişim yetkiniz yok.'], 403);
             }

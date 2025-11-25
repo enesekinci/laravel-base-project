@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 
 class ComponentController extends Controller
 {
-    public function index()
+    public function index(): \Illuminate\Contracts\View\View
     {
         return view('admin.components');
     }

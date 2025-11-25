@@ -5,8 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @method static \Database\Factories\SettingFactory factory()
+ */
 class Setting extends Model
 {
+    /** @use HasFactory<\Database\Factories\SettingFactory> */
     use HasFactory;
 
     protected $fillable = [

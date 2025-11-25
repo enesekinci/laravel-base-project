@@ -50,11 +50,6 @@ class User extends Authenticatable
         ];
     }
 
-    public function addresses()
-    {
-        return $this->hasMany(Address::class);
-    }
-
     /**
      * Check if user is admin
      */

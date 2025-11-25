@@ -4,9 +4,15 @@ namespace App\Http\Resources\Admin;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @mixin \App\Models\MediaFile
+ */
 class AdminMediaFileResource extends JsonResource
 {
-    public function toArray($request)
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray($request): array
     {
         return [
             'id' => $this->id,

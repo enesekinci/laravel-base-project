@@ -11,10 +11,10 @@ use Illuminate\Support\Facades\Password;
 
 class WebAuthController extends Controller
 {
-    public function showLogin()
+    public function showLogin(): \Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
     {
         if (Auth::check()) {
-            $isAdmin = Auth::user()->isAdmin();
+            $isAdmin = Auth::user()?->isAdmin() ?? false;
 
             return redirect()->route($isAdmin ? 'admin.dashboard' : 'account.dashboard');
         }
@@ -22,10 +22,10 @@ class WebAuthController extends Controller
         return view('auth.login');
     }
 
-    public function showRegister()
+    public function showRegister(): \Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
     {
         if (Auth::check()) {
-            $isAdmin = Auth::user()->isAdmin();
+            $isAdmin = Auth::user()?->isAdmin() ?? false;
 
             return redirect()->route($isAdmin ? 'admin.dashboard' : 'account.dashboard');
         }
@@ -33,12 +33,12 @@ class WebAuthController extends Controller
         return view('auth.register');
     }
 
-    public function showForgotPassword()
+    public function showForgotPassword(): \Illuminate\Contracts\View\View
     {
         return view('auth.forgot-password');
     }
 
-    public function login(Request $request)
+    public function login(Request $request): \Illuminate\Http\RedirectResponse
     {
         $credentials = $request->validate([
             'email' => ['required', 'email'],
@@ -47,7 +47,7 @@ class WebAuthController extends Controller
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
-            $isAdmin = Auth::user()->isAdmin();
+            $isAdmin = Auth::user()?->isAdmin() ?? false;
 
             return redirect()->intended(route($isAdmin ? 'admin.dashboard' : 'account.dashboard'));
         }
@@ -57,7 +57,7 @@ class WebAuthController extends Controller
         ])->onlyInput('email');
     }
 
-    public function register(Request $request)
+    public function register(Request $request): \Illuminate\Http\RedirectResponse
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -79,7 +79,7 @@ class WebAuthController extends Controller
         return redirect()->route('account.dashboard');
     }
 
-    public function sendPasswordReset(Request $request)
+    public function sendPasswordReset(Request $request): \Illuminate\Http\RedirectResponse
     {
         $request->validate([
             'email' => ['required', 'email'],
@@ -97,7 +97,7 @@ class WebAuthController extends Controller
             ->withErrors(['email' => __($status)]);
     }
 
-    public function showResetPassword(Request $request, ?string $token = null)
+    public function showResetPassword(Request $request, ?string $token = null): \Illuminate\Contracts\View\View
     {
         return view('auth.reset-password', [
             'token' => $token,
@@ -105,7 +105,7 @@ class WebAuthController extends Controller
         ]);
     }
 
-    public function resetPassword(Request $request)
+    public function resetPassword(Request $request): \Illuminate\Http\RedirectResponse
     {
         $request->validate([
             'token' => ['required'],

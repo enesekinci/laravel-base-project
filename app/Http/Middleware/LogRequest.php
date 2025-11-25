@@ -57,7 +57,7 @@ class LogRequest
                 $request->fullUrl(),
                 $duration,
                 $response->getStatusCode(),
-                $request->ip(),
+                $request->ip() ?? 'unknown',
                 $request->user()?->id
             )->onQueue('emails');
         }

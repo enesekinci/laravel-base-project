@@ -8,8 +8,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
 
+/**
+ * @method static \Database\Factories\MediaFileFactory factory()
+ */
 class MediaFile extends Model
 {
+    /** @use HasFactory<\Database\Factories\MediaFileFactory> */
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
@@ -46,6 +50,9 @@ class MediaFile extends Model
         return Storage::disk($this->disk)->url($this->path);
     }
 
+    /**
+     * @return BelongsTo<User, MediaFile>
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

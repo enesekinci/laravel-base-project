@@ -14,13 +14,14 @@ class SendSlowQueryAlertMail implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $tries = 3;
+    public int $tries = 3;
 
-    public $timeout = 30;
+    public int $timeout = 30;
 
     public function __construct(
         public string $sql,
         public float $time,
+        /** @var array<int, mixed> */
         public array $bindings
     ) {
         // Job'un hangi queue'da çalışacağını belirle

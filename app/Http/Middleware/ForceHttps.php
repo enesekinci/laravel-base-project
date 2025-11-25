@@ -15,8 +15,8 @@ class ForceHttps
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // APP_FORCE_HTTPS env variable ile kontrol
-        if (! config('app.force_https', env('APP_FORCE_HTTPS', false))) {
+        // APP_FORCE_HTTPS config ile kontrol
+        if (! config('app.force_https', false)) {
             return $next($request);
         }
 

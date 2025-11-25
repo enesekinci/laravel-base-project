@@ -96,7 +96,7 @@ class LogAdminAction
         }
 
         $routeName = $route->getName();
-        $action = $request->route()->getActionMethod();
+        $action = $route->getActionMethod();
 
         // Route name'den action çıkar (örn: admin.products.store -> store)
         if ($routeName) {
