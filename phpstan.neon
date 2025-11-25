@@ -19,9 +19,6 @@ parameters:
     excludePaths:
         - ./*/*/FileToIgnore.php
 
-    checkMissingIterableValueType: false
-    checkGenericClassInNonGenericObjectType: false
-
     # Laravel specific
     checkMissingCallableSignature: true
     checkTooWideReturnTypesInProtectedAndPublicMethods: true

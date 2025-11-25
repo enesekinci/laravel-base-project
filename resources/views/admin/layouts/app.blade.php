@@ -593,7 +593,7 @@
                             </ul>
                         </li>
 
-                        <li class="menu">
+                        <li class="menu {{ request()->routeIs('admin.components') ? 'active' : '' }}">
                             <a href="{{ route('admin.components') }}" class="dropdown-toggle {{ request()->routeIs('admin.components') ? 'active' : '' }}">
                                 <div class="">
                                     <svg
