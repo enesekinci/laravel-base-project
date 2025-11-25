@@ -20,4 +20,3 @@ class Setting extends Model
         'value' => 'array', // value'yi her zaman array/json tut; simple types için ["value" => "xxx"] kullanabilirsin.
     ];
 }
-

@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Models\Product;
 use App\Models\Brand;
+use App\Models\Product;
 use App\Models\TaxClass;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -18,7 +18,7 @@ class ProductFactory extends Factory
 
         return [
             'name' => $name,
-            'slug' => Str::slug($name) . '-' . Str::random(5),
+            'slug' => Str::slug($name).'-'.Str::random(5),
             'sku' => strtoupper(Str::random(8)),
             'description' => $this->faker->paragraph,
             'short_description' => $this->faker->sentence,

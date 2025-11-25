@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\GenerateProductVariantsRequest;
 use App\Http\Requests\Admin\UpdateProductVariantRequest;
-use App\Http\Resources\ProductVariantResource;
 use App\Http\Resources\Admin\AdminProductVariantResource;
+use App\Http\Resources\ProductVariantResource;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Services\ProductVariantGenerator;
@@ -22,7 +22,7 @@ class ProductVariantController extends Controller
         $validated = $request->validated();
 
         $options = $validated['options'];
-        $base    = $validated['base'] ?? [];
+        $base = $validated['base'] ?? [];
 
         $createdVariants = $this->generator->generate($product, $options, $base);
 

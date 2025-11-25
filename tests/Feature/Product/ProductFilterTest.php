@@ -1,21 +1,21 @@
 <?php
 
-use App\Models\Product;
-use App\Models\ProductVariant;
 use App\Models\Option;
 use App\Models\OptionValue;
+use App\Models\Product;
+use App\Models\ProductVariant;
 
 it('filters products by option value (color)', function () {
     $color = Option::factory()->create(['name' => 'Renk']);
 
     $black = OptionValue::factory()->create([
         'option_id' => $color->id,
-        'value' => 'Siyah'
+        'value' => 'Siyah',
     ]);
 
     $white = OptionValue::factory()->create([
         'option_id' => $color->id,
-        'value' => 'Beyaz'
+        'value' => 'Beyaz',
     ]);
 
     // Product with black variant

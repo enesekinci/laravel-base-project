@@ -1,20 +1,10 @@
 <?php
 
-use App\Models\User;
 use App\Models\Coupon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 
 uses(RefreshDatabase::class);
-
-if (!function_exists('adminUser')) {
-    function adminUser(): User
-    {
-        $user = User::factory()->create();
-        test()->actingAs($user, 'sanctum');
-        return $user;
-    }
-}
 
 it('lists coupons with filters for admin', function () {
     adminUser();
@@ -22,25 +12,25 @@ it('lists coupons with filters for admin', function () {
     $now = Carbon::now();
 
     $c1 = Coupon::factory()->create([
-        'code'          => 'SAVE10',
-        'type'          => 'percent',
-        'value'         => 10,
+        'code' => 'SAVE10',
+        'type' => 'percent',
+        'value' => 10,
         'min_cart_total' => 100,
-        'is_active'     => true,
-        'starts_at'     => $now->copy()->subDay(),
-        'ends_at'       => $now->copy()->addDay(),
-        'used_count'    => 5,
+        'is_active' => true,
+        'starts_at' => $now->copy()->subDay(),
+        'ends_at' => $now->copy()->addDay(),
+        'used_count' => 5,
     ]);
 
     $c2 = Coupon::factory()->create([
-        'code'          => 'FIX50',
-        'type'          => 'fixed',
-        'value'         => 50,
+        'code' => 'FIX50',
+        'type' => 'fixed',
+        'value' => 50,
         'min_cart_total' => 200,
-        'is_active'     => false,
-        'starts_at'     => $now->copy()->subDays(10),
-        'ends_at'       => $now->copy()->subDays(5),
-        'used_count'    => 1,
+        'is_active' => false,
+        'starts_at' => $now->copy()->subDays(10),
+        'ends_at' => $now->copy()->subDays(5),
+        'used_count' => 1,
     ]);
 
     // basic list
@@ -95,14 +85,14 @@ it('shows a single coupon detail', function () {
     adminUser();
 
     $coupon = Coupon::factory()->create([
-        'code'          => 'SAVE10',
-        'type'          => 'percent',
-        'value'         => 10,
+        'code' => 'SAVE10',
+        'type' => 'percent',
+        'value' => 10,
         'min_cart_total' => 100,
-        'usage_limit'   => 50,
+        'usage_limit' => 50,
         'usage_limit_per_user' => 5,
-        'used_count'    => 10,
-        'is_active'     => true,
+        'used_count' => 10,
+        'is_active' => true,
     ]);
 
     $res = $this->getJson("/api/admin/coupons/{$coupon->id}");
@@ -120,18 +110,18 @@ it('creates a coupon', function () {
     adminUser();
 
     $startsAt = now()->addDay();
-    $endsAt   = now()->addDays(10);
+    $endsAt = now()->addDays(10);
 
     $payload = [
-        'code'                  => 'NEW10',
-        'type'                  => 'percent',
-        'value'                 => 10,
-        'min_cart_total'        => 100,
-        'usage_limit'           => 100,
-        'usage_limit_per_user'  => 3,
-        'is_active'             => true,
-        'starts_at'             => $startsAt->toIso8601String(),
-        'ends_at'               => $endsAt->toIso8601String(),
+        'code' => 'NEW10',
+        'type' => 'percent',
+        'value' => 10,
+        'min_cart_total' => 100,
+        'usage_limit' => 100,
+        'usage_limit_per_user' => 3,
+        'is_active' => true,
+        'starts_at' => $startsAt->toIso8601String(),
+        'ends_at' => $endsAt->toIso8601String(),
     ];
 
     $res = $this->postJson('/api/admin/coupons', $payload);
@@ -148,12 +138,12 @@ it('creates a coupon', function () {
     expect((float) $data['min_cart_total'])->toBe(100.0);
 
     $this->assertDatabaseHas('coupons', [
-        'code'           => 'NEW10',
-        'type'           => 'percent',
-        'value'          => 10,
+        'code' => 'NEW10',
+        'type' => 'percent',
+        'value' => 10,
         'min_cart_total' => 100,
-        'usage_limit'    => 100,
-        'is_active'      => true,
+        'usage_limit' => 100,
+        'is_active' => true,
     ]);
 });
 
@@ -174,22 +164,22 @@ it('updates a coupon', function () {
     adminUser();
 
     $coupon = Coupon::factory()->create([
-        'code'          => 'SAVE10',
-        'type'          => 'percent',
-        'value'         => 10,
+        'code' => 'SAVE10',
+        'type' => 'percent',
+        'value' => 10,
         'min_cart_total' => 100,
-        'usage_limit'   => 50,
-        'is_active'     => true,
+        'usage_limit' => 50,
+        'is_active' => true,
     ]);
 
     $payload = [
-        'code'          => 'SAVE20',
-        'type'          => 'fixed',
-        'value'         => 20,
+        'code' => 'SAVE20',
+        'type' => 'fixed',
+        'value' => 20,
         'min_cart_total' => 200,
-        'usage_limit'   => 200,
+        'usage_limit' => 200,
         'usage_limit_per_user' => 10,
-        'is_active'     => false,
+        'is_active' => false,
     ];
 
     $res = $this->putJson("/api/admin/coupons/{$coupon->id}", $payload);
@@ -206,14 +196,14 @@ it('updates a coupon', function () {
     expect((float) $data['min_cart_total'])->toBe(200.0);
 
     $this->assertDatabaseHas('coupons', [
-        'id'             => $coupon->id,
-        'code'           => 'SAVE20',
-        'type'           => 'fixed',
-        'value'          => 20,
+        'id' => $coupon->id,
+        'code' => 'SAVE20',
+        'type' => 'fixed',
+        'value' => 20,
         'min_cart_total' => 200,
-        'usage_limit'    => 200,
+        'usage_limit' => 200,
         'usage_limit_per_user' => 10,
-        'is_active'      => false,
+        'is_active' => false,
     ]);
 });
 
@@ -237,7 +227,7 @@ it('soft deletes and restores a coupon', function () {
         ->assertJsonPath('data.id', $coupon->id);
 
     $this->assertDatabaseHas('coupons', [
-        'id'         => $coupon->id,
+        'id' => $coupon->id,
         'deleted_at' => null,
     ]);
 });
@@ -246,7 +236,7 @@ it('toggles coupon active status', function () {
     adminUser();
 
     $coupon = Coupon::factory()->create([
-        'code'      => 'SAVE10',
+        'code' => 'SAVE10',
         'is_active' => true,
     ]);
 

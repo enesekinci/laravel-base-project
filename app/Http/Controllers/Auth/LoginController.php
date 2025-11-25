@@ -12,7 +12,7 @@ class LoginController extends Controller
     public function login(Request $request)
     {
         $data = $request->validate([
-            'email'    => ['required', 'email'],
+            'email' => ['required', 'email'],
             'password' => ['required', 'string'],
         ]);
 
@@ -28,7 +28,7 @@ class LoginController extends Controller
 
         return response()->json([
             'token' => $token,
-            'user'  => $user,
+            'user' => $user,
         ]);
     }
 

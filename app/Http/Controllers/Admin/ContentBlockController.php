@@ -17,12 +17,12 @@ class ContentBlockController extends Controller
         if ($search = $request->query('search')) {
             $likeOperator = DatabaseHelper::getCaseInsensitiveLikeOperator();
             $query->where(function ($q) use ($search, $likeOperator) {
-                $q->where('key', $likeOperator, '%' . $search . '%')
-                  ->orWhere('name', $likeOperator, '%' . $search . '%');
+                $q->where('key', $likeOperator, '%'.$search.'%')
+                    ->orWhere('name', $likeOperator, '%'.$search.'%');
             });
         }
 
-        if (!is_null($request->query('is_active'))) {
+        if (! is_null($request->query('is_active'))) {
             $val = (int) $request->query('is_active') === 1;
             $query->where('is_active', $val);
         }
@@ -44,10 +44,10 @@ class ContentBlockController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'key'       => ['required', 'string', 'max:255', 'unique:content_blocks,key'],
-            'name'      => ['required', 'string', 'max:255'],
-            'type'      => ['required', 'string', 'in:json,html,markdown'],
-            'value'     => ['nullable', 'array'],
+            'key' => ['required', 'string', 'max:255', 'unique:content_blocks,key'],
+            'name' => ['required', 'string', 'max:255'],
+            'type' => ['required', 'string', 'in:json,html,markdown'],
+            'value' => ['nullable', 'array'],
             'is_active' => ['nullable', 'boolean'],
         ]);
 
@@ -63,10 +63,10 @@ class ContentBlockController extends Controller
     public function update(Request $request, ContentBlock $content_block)
     {
         $data = $request->validate([
-            'key'       => ['sometimes', 'required', 'string', 'max:255', 'unique:content_blocks,key,' . $content_block->id],
-            'name'      => ['sometimes', 'required', 'string', 'max:255'],
-            'type'      => ['sometimes', 'required', 'string', 'in:json,html,markdown'],
-            'value'     => ['sometimes', 'nullable', 'array'],
+            'key' => ['sometimes', 'required', 'string', 'max:255', 'unique:content_blocks,key,'.$content_block->id],
+            'name' => ['sometimes', 'required', 'string', 'max:255'],
+            'type' => ['sometimes', 'required', 'string', 'in:json,html,markdown'],
+            'value' => ['sometimes', 'nullable', 'array'],
             'is_active' => ['sometimes', 'boolean'],
         ]);
 

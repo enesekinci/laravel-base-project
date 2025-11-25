@@ -13,20 +13,20 @@ class OrderFactory extends Factory
     public function definition()
     {
         return [
-            'user_id'         => User::factory(),
-            'status'          => 'pending',
-            'payment_status'  => 'pending',
-            'payment_method'  => 'cod',
-            'currency'        => 'TRY',
-            'subtotal'        => $this->faker->randomFloat(2, 100, 1000),
-            'discount_total'  => 0,
-            'tax_total'       => $this->faker->randomFloat(2, 10, 100),
-            'shipping_total'  => $this->faker->randomFloat(2, 0, 50),
-            'grand_total'     => $this->faker->randomFloat(2, 100, 1000),
-            'customer_email'  => $this->faker->email,
-            'customer_name'   => $this->faker->name,
-            'customer_phone'  => $this->faker->phoneNumber,
-            'placed_at'       => now(),
+            'user_id' => User::factory(),
+            'status' => 'pending',
+            'payment_status' => 'pending',
+            'payment_method' => 'cod',
+            'currency' => 'TRY',
+            'subtotal' => $this->faker->randomFloat(2, 100, 1000),
+            'discount_total' => 0,
+            'tax_total' => $this->faker->randomFloat(2, 10, 100),
+            'shipping_total' => $this->faker->randomFloat(2, 0, 50),
+            'grand_total' => $this->faker->randomFloat(2, 100, 1000),
+            'customer_email' => $this->faker->email,
+            'customer_name' => $this->faker->name,
+            'customer_phone' => $this->faker->phoneNumber,
+            'placed_at' => now(),
         ];
     }
 }

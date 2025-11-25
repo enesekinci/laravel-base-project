@@ -14,19 +14,18 @@ class TransactionFactory extends Factory
     public function definition(): array
     {
         return [
-            'order_id'              => Order::factory(),
-            'payment_method_id'     => PaymentMethod::factory(),
-            'gateway'               => 'paytr',
-            'gateway_transaction_id'=> 'TRX-' . $this->faker->unique()->numerify('########'),
-            'type'                  => 'payment',
-            'status'                => 'success',
-            'amount'                => 100,
-            'currency'              => 'TRY',
-            'message'               => 'Payment success',
-            'processed_at'          => now(),
-            'request_payload'       => null,
-            'response_payload'      => null,
+            'order_id' => Order::factory(),
+            'payment_method_id' => PaymentMethod::factory(),
+            'gateway' => 'paytr',
+            'gateway_transaction_id' => 'TRX-'.$this->faker->unique()->numerify('########'),
+            'type' => 'payment',
+            'status' => 'success',
+            'amount' => 100,
+            'currency' => 'TRY',
+            'message' => 'Payment success',
+            'processed_at' => now(),
+            'request_payload' => null,
+            'response_payload' => null,
         ];
     }
 }
-

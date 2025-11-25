@@ -14,9 +14,9 @@ class StoreCartItemRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'product_id'        => ['required', 'integer', 'exists:products,id'],
+            'product_id' => ['required', 'integer', 'exists:products,id'],
             'product_variant_id' => ['nullable', 'integer', 'exists:product_variants,id'],
-            'quantity'          => ['required', 'integer', 'min:1'],
+            'quantity' => ['required', 'integer', 'min:1'],
         ];
     }
 }

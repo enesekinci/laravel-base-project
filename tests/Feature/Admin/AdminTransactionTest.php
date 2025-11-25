@@ -3,18 +3,9 @@
 use App\Models\Order;
 use App\Models\PaymentMethod;
 use App\Models\Transaction;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
-
-if (!function_exists('adminUser')) {
-    function adminUser(): User {
-        $user = User::factory()->create();
-        test()->actingAs($user, 'sanctum');
-        return $user;
-    }
-}
 
 it('lists transactions with filters', function () {
     adminUser();
@@ -28,17 +19,17 @@ it('lists transactions with filters', function () {
     ]);
 
     $t1 = Transaction::factory()->create([
-        'order_id'          => $order->id,
+        'order_id' => $order->id,
         'payment_method_id' => $pm->id,
-        'gateway'           => 'paytr',
-        'status'            => 'success',
-        'type'              => 'payment',
-        'amount'            => 250,
+        'gateway' => 'paytr',
+        'status' => 'success',
+        'type' => 'payment',
+        'amount' => 250,
     ]);
 
     $t2 = Transaction::factory()->create([
         'status' => 'failed',
-        'type'   => 'payment',
+        'type' => 'payment',
     ]);
 
     $res = $this->getJson('/api/admin/transactions');
@@ -57,7 +48,7 @@ it('lists transactions with filters', function () {
     expect($ids2)->toContain($t1->id);
     expect($ids2)->not()->toContain($t2->id);
 
-    $res3 = $this->getJson('/api/admin/transactions?order_id=' . $order->id);
+    $res3 = $this->getJson('/api/admin/transactions?order_id='.$order->id);
     $ids3 = collect($res3->json('data'))->pluck('id');
     expect($ids3)->toContain($t1->id);
 });
@@ -66,7 +57,7 @@ it('shows transaction detail with relations', function () {
     adminUser();
 
     $order = Order::factory()->create([
-        'grand_total'    => 150,
+        'grand_total' => 150,
         'customer_email' => 'test@example.com',
     ]);
 
@@ -76,9 +67,9 @@ it('shows transaction detail with relations', function () {
     ]);
 
     $t = Transaction::factory()->create([
-        'order_id'          => $order->id,
+        'order_id' => $order->id,
         'payment_method_id' => $pm->id,
-        'amount'            => 150,
+        'amount' => 150,
     ]);
 
     $res = $this->getJson("/api/admin/transactions/{$t->id}");
@@ -101,15 +92,15 @@ it('creates a transaction', function () {
     ]);
 
     $payload = [
-        'order_id'          => $order->id,
+        'order_id' => $order->id,
         'payment_method_id' => $pm->id,
-        'gateway'           => 'paytr',
+        'gateway' => 'paytr',
         'gateway_transaction_id' => 'TRX-123',
-        'type'              => 'payment',
-        'status'            => 'success',
-        'amount'            => 300,
-        'currency'          => 'TRY',
-        'message'           => 'Payment success',
+        'type' => 'payment',
+        'status' => 'success',
+        'amount' => 300,
+        'currency' => 'TRY',
+        'message' => 'Payment success',
     ];
 
     $res = $this->postJson('/api/admin/transactions', $payload);
@@ -124,8 +115,8 @@ it('creates a transaction', function () {
 
     $this->assertDatabaseHas('transactions', [
         'order_id' => $order->id,
-        'amount'   => 300,
-        'status'   => 'success',
+        'amount' => 300,
+        'status' => 'success',
     ]);
 });
 
@@ -133,7 +124,7 @@ it('validates transaction create payload', function () {
     adminUser();
 
     $res = $this->postJson('/api/admin/transactions', [
-        'type'   => 'invalid',
+        'type' => 'invalid',
         'status' => 'invalid',
         'amount' => -10,
     ]);
@@ -153,7 +144,7 @@ it('updates a transaction', function () {
     $payload = [
         'status' => 'success',
         'amount' => 120,
-        'message'=> 'Manual updated',
+        'message' => 'Manual updated',
     ];
 
     $res = $this->putJson("/api/admin/transactions/{$t->id}", $payload);
@@ -166,9 +157,9 @@ it('updates a transaction', function () {
     expect((float) $data['amount'])->toBe(120.0);
 
     $this->assertDatabaseHas('transactions', [
-        'id'      => $t->id,
-        'status'  => 'success',
-        'amount'  => 120,
+        'id' => $t->id,
+        'status' => 'success',
+        'amount' => 120,
         'message' => 'Manual updated',
     ]);
 });
@@ -185,4 +176,3 @@ it('deletes a transaction', function () {
         'id' => $t->id,
     ]);
 });
-

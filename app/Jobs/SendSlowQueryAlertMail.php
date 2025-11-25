@@ -15,6 +15,7 @@ class SendSlowQueryAlertMail implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $tries = 3;
+
     public $timeout = 30;
 
     public function __construct(
@@ -30,8 +31,9 @@ class SendSlowQueryAlertMail implements ShouldQueue
     {
         $adminEmail = config('mail.admin_email', config('mail.from.address'));
 
-        if (!$adminEmail) {
+        if (! $adminEmail) {
             logger()->warning('Slow query alert email not sent: admin_email not configured');
+
             return;
         }
 

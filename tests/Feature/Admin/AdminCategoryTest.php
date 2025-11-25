@@ -1,50 +1,40 @@
 <?php
 
-use App\Models\User;
 use App\Models\Category;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-if (!function_exists('adminUser')) {
-    function adminUser(): User
-    {
-        $user = User::factory()->create();
-        test()->actingAs($user);
-        return $user;
-    }
-}
-
 it('lists categories with filters for admin', function () {
     adminUser();
 
     $root1 = Category::factory()->create([
-        'name'      => 'Clothing',
-        'slug'      => 'clothing',
+        'name' => 'Clothing',
+        'slug' => 'clothing',
         'parent_id' => null,
         'is_active' => true,
         'sort_order' => 1,
     ]);
 
     $root2 = Category::factory()->create([
-        'name'      => 'Shoes',
-        'slug'      => 'shoes',
+        'name' => 'Shoes',
+        'slug' => 'shoes',
         'parent_id' => null,
         'is_active' => false,
         'sort_order' => 2,
     ]);
 
     $child1 = Category::factory()->create([
-        'name'      => 'T-Shirts',
-        'slug'      => 't-shirts',
+        'name' => 'T-Shirts',
+        'slug' => 't-shirts',
         'parent_id' => $root1->id,
         'is_active' => true,
         'sort_order' => 1,
     ]);
 
     $child2 = Category::factory()->create([
-        'name'      => 'Sneakers',
-        'slug'      => 'sneakers',
+        'name' => 'Sneakers',
+        'slug' => 'sneakers',
         'parent_id' => $root2->id,
         'is_active' => true,
         'sort_order' => 1,
@@ -70,7 +60,7 @@ it('lists categories with filters for admin', function () {
     expect($ids2)->not()->toContain($root2->id);
 
     // parent filter
-    $res3 = $this->getJson('/api/admin/categories?parent_id=' . $root1->id);
+    $res3 = $this->getJson('/api/admin/categories?parent_id='.$root1->id);
     $res3->assertStatus(200);
     $ids3 = collect($res3->json('data'))->pluck('id');
 
@@ -90,29 +80,29 @@ it('returns category tree for admin', function () {
     adminUser();
 
     $root = Category::factory()->create([
-        'name'      => 'Clothing',
-        'slug'      => 'clothing',
+        'name' => 'Clothing',
+        'slug' => 'clothing',
         'parent_id' => null,
         'sort_order' => 1,
     ]);
 
     $child1 = Category::factory()->create([
-        'name'      => 'T-Shirts',
-        'slug'      => 't-shirts',
+        'name' => 'T-Shirts',
+        'slug' => 't-shirts',
         'parent_id' => $root->id,
         'sort_order' => 1,
     ]);
 
     $child2 = Category::factory()->create([
-        'name'      => 'Jeans',
-        'slug'      => 'jeans',
+        'name' => 'Jeans',
+        'slug' => 'jeans',
         'parent_id' => $root->id,
         'sort_order' => 2,
     ]);
 
     $grandChild = Category::factory()->create([
-        'name'      => 'Skinny Jeans',
-        'slug'      => 'skinny-jeans',
+        'name' => 'Skinny Jeans',
+        'slug' => 'skinny-jeans',
         'parent_id' => $child2->id,
         'sort_order' => 1,
     ]);
@@ -147,7 +137,7 @@ it('returns category tree for admin', function () {
     expect($childIds)->toContain($child2->id);
 
     $jeansNode = collect($rootNode['children'])->firstWhere('id', $child2->id);
-    $grandIds  = collect($jeansNode['children'])->pluck('id');
+    $grandIds = collect($jeansNode['children'])->pluck('id');
     expect($grandIds)->toContain($grandChild->id);
 });
 
@@ -157,12 +147,12 @@ it('creates a category', function () {
     $parent = Category::factory()->create();
 
     $payload = [
-        'name'        => 'New Category',
-        'slug'        => 'new-category',
-        'parent_id'   => $parent->id,
+        'name' => 'New Category',
+        'slug' => 'new-category',
+        'parent_id' => $parent->id,
         'description' => 'Desc',
-        'sort_order'  => 5,
-        'is_active'   => true,
+        'sort_order' => 5,
+        'is_active' => true,
     ];
 
     $res = $this->postJson('/api/admin/categories', $payload);
@@ -172,8 +162,8 @@ it('creates a category', function () {
         ->assertJsonPath('data.parent_id', $parent->id);
 
     $this->assertDatabaseHas('categories', [
-        'name'      => 'New Category',
-        'slug'      => 'new-category',
+        'name' => 'New Category',
+        'slug' => 'new-category',
         'parent_id' => $parent->id,
         'sort_order' => 5,
         'is_active' => true,
@@ -199,16 +189,16 @@ it('updates a category', function () {
     $parent2 = Category::factory()->create();
 
     $category = Category::factory()->create([
-        'name'      => 'Old Name',
-        'slug'      => 'old-name',
+        'name' => 'Old Name',
+        'slug' => 'old-name',
         'parent_id' => $parent1->id,
         'sort_order' => 1,
         'is_active' => true,
     ]);
 
     $payload = [
-        'name'      => 'Updated Name',
-        'slug'      => 'updated-name',
+        'name' => 'Updated Name',
+        'slug' => 'updated-name',
         'parent_id' => $parent2->id,
         'sort_order' => 10,
         'is_active' => false,
@@ -223,9 +213,9 @@ it('updates a category', function () {
         ->assertJsonPath('data.sort_order', 10);
 
     $this->assertDatabaseHas('categories', [
-        'id'        => $category->id,
-        'name'      => 'Updated Name',
-        'slug'      => 'updated-name',
+        'id' => $category->id,
+        'name' => 'Updated Name',
+        'slug' => 'updated-name',
         'parent_id' => $parent2->id,
         'sort_order' => 10,
         'is_active' => false,
@@ -249,7 +239,7 @@ it('soft deletes and restores a category', function () {
         ->assertJsonPath('data.id', $category->id);
 
     $this->assertDatabaseHas('categories', [
-        'id'         => $category->id,
+        'id' => $category->id,
         'deleted_at' => null,
     ]);
 });

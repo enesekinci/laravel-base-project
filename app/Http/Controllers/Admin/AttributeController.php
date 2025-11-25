@@ -22,16 +22,16 @@ class AttributeController extends Controller
         if ($search = $request->query('search')) {
             $likeOperator = DatabaseHelper::getCaseInsensitiveLikeOperator();
             $query->where(function ($q) use ($search, $likeOperator) {
-                $q->where('name', $likeOperator, '%' . $search . '%')
-                    ->orWhere('slug', $likeOperator, '%' . $search . '%');
+                $q->where('name', $likeOperator, '%'.$search.'%')
+                    ->orWhere('slug', $likeOperator, '%'.$search.'%');
             });
         }
 
-        if (!is_null($request->query('attribute_set_id'))) {
+        if (! is_null($request->query('attribute_set_id'))) {
             $query->where('attribute_set_id', $request->query('attribute_set_id'));
         }
 
-        if (!is_null($request->query('is_filterable'))) {
+        if (! is_null($request->query('is_filterable'))) {
             $val = (int) $request->query('is_filterable') === 1;
             $query->where('is_filterable', $val);
         }
@@ -67,8 +67,8 @@ class AttributeController extends Controller
             foreach ($valuesData as $val) {
                 AttributeValue::create([
                     'attribute_id' => $attribute->id,
-                    'value'        => $val['value'],
-                    'sort_order'   => $val['sort_order'] ?? 0,
+                    'value' => $val['value'],
+                    'sort_order' => $val['sort_order'] ?? 0,
                 ]);
             }
 
@@ -90,22 +90,22 @@ class AttributeController extends Controller
         unset($data['values']);
 
         DB::transaction(function () use ($attribute, $data, $valuesData) {
-            if (!empty($data)) {
+            if (! empty($data)) {
                 $attribute->fill($data);
                 $attribute->save();
             }
 
-            if (!is_null($valuesData)) {
+            if (! is_null($valuesData)) {
                 $keepIds = [];
 
                 foreach ($valuesData as $val) {
-                    if (!empty($val['id'])) {
+                    if (! empty($val['id'])) {
                         $av = AttributeValue::where('id', $val['id'])
                             ->where('attribute_id', $attribute->id)
                             ->first();
 
                         if ($av) {
-                            $av->value      = $val['value'];
+                            $av->value = $val['value'];
                             $av->sort_order = $val['sort_order'] ?? 0;
                             $av->save();
 
@@ -114,8 +114,8 @@ class AttributeController extends Controller
                     } else {
                         $av = AttributeValue::create([
                             'attribute_id' => $attribute->id,
-                            'value'        => $val['value'],
-                            'sort_order'   => $val['sort_order'] ?? 0,
+                            'value' => $val['value'],
+                            'sort_order' => $val['sort_order'] ?? 0,
                         ]);
                         $keepIds[] = $av->id;
                     }

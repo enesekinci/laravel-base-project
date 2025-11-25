@@ -26,10 +26,10 @@ class Transaction extends Model
     ];
 
     protected $casts = [
-        'amount'           => 'float',
-        'request_payload'  => 'array',
+        'amount' => 'float',
+        'request_payload' => 'array',
         'response_payload' => 'array',
-        'processed_at'     => 'datetime',
+        'processed_at' => 'datetime',
     ];
 
     public function order(): BelongsTo
@@ -42,4 +42,3 @@ class Transaction extends Model
         return $this->belongsTo(PaymentMethod::class);
     }
 }
-

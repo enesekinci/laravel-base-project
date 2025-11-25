@@ -14,9 +14,9 @@ class StoreBrandRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'      => ['required', 'string', 'max:255'],
-            'slug'      => ['required', 'string', 'max:255', 'unique:brands,slug'],
-            'logo'      => ['nullable', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],
+            'slug' => ['required', 'string', 'max:255', 'unique:brands,slug'],
+            'logo' => ['nullable', 'string', 'max:255'],
             'is_active' => ['nullable', 'boolean'],
         ];
     }

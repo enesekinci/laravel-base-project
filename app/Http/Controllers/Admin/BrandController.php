@@ -19,12 +19,12 @@ class BrandController extends Controller
         if ($search = $request->query('search')) {
             $likeOperator = DatabaseHelper::getCaseInsensitiveLikeOperator();
             $query->where(function ($q) use ($search, $likeOperator) {
-                $q->where('name', $likeOperator, '%' . $search . '%')
-                    ->orWhere('slug', $likeOperator, '%' . $search . '%');
+                $q->where('name', $likeOperator, '%'.$search.'%')
+                    ->orWhere('slug', $likeOperator, '%'.$search.'%');
             });
         }
 
-        if (!is_null($request->query('is_active'))) {
+        if (! is_null($request->query('is_active'))) {
             $val = (int) $request->query('is_active') === 1;
             $query->where('is_active', $val);
         }
@@ -83,7 +83,7 @@ class BrandController extends Controller
 
     public function toggleActive(Brand $brand)
     {
-        $brand->is_active = !$brand->is_active;
+        $brand->is_active = ! $brand->is_active;
         $brand->save();
 
         return new AdminBrandResource($brand);

@@ -1,19 +1,10 @@
 <?php
 
-use App\Models\User;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
-
-if (!function_exists('adminUser')) {
-    function adminUser(): User {
-        $user = User::factory()->create();
-        test()->actingAs($user);
-        return $user;
-    }
-}
 
 it('lists variants for a product for admin', function () {
     adminUser();
@@ -24,18 +15,18 @@ it('lists variants for a product for admin', function () {
 
     $v1 = ProductVariant::factory()->create([
         'product_id' => $product->id,
-        'sku'        => 'VAR-1',
-        'price'      => 120,
-        'quantity'   => 5,
-        'is_active'  => true,
+        'sku' => 'VAR-1',
+        'price' => 120,
+        'quantity' => 5,
+        'is_active' => true,
     ]);
 
     $v2 = ProductVariant::factory()->create([
         'product_id' => $product->id,
-        'sku'        => 'VAR-2',
-        'price'      => 130,
-        'quantity'   => 0,
-        'is_active'  => false,
+        'sku' => 'VAR-2',
+        'price' => 130,
+        'quantity' => 0,
+        'is_active' => false,
     ]);
 
     // başka ürün varyantı karışmasın diye
@@ -75,15 +66,15 @@ it('updates variant price, quantity and active flag', function () {
 
     $variant = ProductVariant::factory()->create([
         'product_id' => $product->id,
-        'sku'        => 'VAR-1',
-        'price'      => 120,
-        'quantity'   => 5,
-        'is_active'  => true,
+        'sku' => 'VAR-1',
+        'price' => 120,
+        'quantity' => 5,
+        'is_active' => true,
     ]);
 
     $payload = [
-        'price'     => 150.50,
-        'quantity'  => 10,
+        'price' => 150.50,
+        'quantity' => 10,
         'is_active' => false,
     ];
 
@@ -143,16 +134,15 @@ it('validates variant update payload', function () {
 
     $variant = ProductVariant::factory()->create([
         'product_id' => $product->id,
-        'price'      => 100,
-        'quantity'   => 5,
+        'price' => 100,
+        'quantity' => 5,
     ]);
 
     $response = $this->putJson("/api/admin/products/{$product->id}/variants/{$variant->id}", [
-        'price'    => -10,
+        'price' => -10,
         'quantity' => -5,
     ]);
 
     $response->assertStatus(422)
         ->assertJsonValidationErrors(['price', 'quantity']);
 });
-

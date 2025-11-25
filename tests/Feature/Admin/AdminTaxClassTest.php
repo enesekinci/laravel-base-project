@@ -1,32 +1,22 @@
 <?php
 
-use App\Models\User;
 use App\Models\TaxClass;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-if (!function_exists('adminUser')) {
-    function adminUser(): User
-    {
-        $user = User::factory()->create();
-        test()->actingAs($user, 'sanctum');
-        return $user;
-    }
-}
-
 it('lists tax classes with filters', function () {
     adminUser();
 
     $t1 = TaxClass::factory()->create([
-        'name'      => 'KDV 18',
-        'rate'      => 18,
+        'name' => 'KDV 18',
+        'rate' => 18,
         'is_active' => true,
     ]);
 
     $t2 = TaxClass::factory()->create([
-        'name'      => 'KDV 8',
-        'rate'      => 8,
+        'name' => 'KDV 8',
+        'rate' => 8,
         'is_active' => false,
     ]);
 
@@ -49,8 +39,8 @@ it('creates a tax class', function () {
     adminUser();
 
     $payload = [
-        'name'      => 'KDV 20',
-        'rate'      => 20,
+        'name' => 'KDV 20',
+        'rate' => 20,
         'is_active' => true,
     ];
 
@@ -84,14 +74,14 @@ it('updates a tax class', function () {
     adminUser();
 
     $tax = TaxClass::factory()->create([
-        'name'      => 'KDV 18',
-        'rate'      => 18,
+        'name' => 'KDV 18',
+        'rate' => 18,
         'is_active' => true,
     ]);
 
     $payload = [
-        'name'      => 'KDV 10',
-        'rate'      => 10,
+        'name' => 'KDV 10',
+        'rate' => 10,
         'is_active' => false,
     ];
 
@@ -105,9 +95,9 @@ it('updates a tax class', function () {
     expect((float) $data['rate'])->toBe(10.0);
 
     $this->assertDatabaseHas('tax_classes', [
-        'id'        => $tax->id,
-        'name'      => 'KDV 10',
-        'rate'      => 10,
+        'id' => $tax->id,
+        'name' => 'KDV 10',
+        'rate' => 10,
         'is_active' => false,
     ]);
 });

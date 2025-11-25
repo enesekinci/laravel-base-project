@@ -12,12 +12,12 @@ class PaymentMethodFactory extends Factory
     public function definition(): array
     {
         return [
-            'name'       => 'PayTR',
-            'code'       => 'paytr_' . $this->faker->unique()->word(),
-            'type'       => 'online',
-            'is_active'  => true,
+            'name' => 'PayTR',
+            'code' => 'paytr_'.$this->faker->unique()->word(),
+            'type' => 'online',
+            'is_active' => true,
             'sort_order' => 0,
-            'config'     => null,
+            'config' => null,
         ];
     }
 }

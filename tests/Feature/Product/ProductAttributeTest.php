@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\Product;
 use App\Models\Attribute;
+use App\Models\Product;
 use App\Models\ProductAttributeValue;
 
 it('stores attribute values on a product', function () {

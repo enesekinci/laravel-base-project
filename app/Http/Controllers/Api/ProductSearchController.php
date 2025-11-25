@@ -12,48 +12,67 @@ class ProductSearchController extends Controller
 {
     public function __invoke(Request $request)
     {
+        // Meilisearch driver kontrolü
+        if (config('scout.driver') !== 'meilisearch') {
+            return response()->json([
+                'message' => 'Meilisearch driver is not configured',
+            ], 503);
+        }
+
         $search = $request->query('search', '');
-        $page   = (int) $request->query('page', 1);
+        $page = (int) $request->query('page', 1);
         $perPage = (int) $request->query('per_page', 20);
 
         // Filtreleri Meili formatına çevir
         $filterExpr = $this->buildFilterExpression($request);
 
-        /** @var \Meilisearch\Client $client */
-        $client = app(Client::class);
-        $index = $client->index('products');
+        try {
+            /** @var \Meilisearch\Client $client */
+            $client = app(Client::class);
+            $index = $client->index('products');
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Meilisearch client is not available: '.$e->getMessage(),
+            ], 503);
+        }
 
-        $result = $index->search($search, [
-            'filter'   => $filterExpr ?: null,
-            'limit'    => $perPage,
-            'offset'   => ($page - 1) * $perPage,
-        ]);
+        try {
+            $result = $index->search($search, [
+                'filter' => $filterExpr ?: null,
+                'limit' => $perPage,
+                'offset' => ($page - 1) * $perPage,
+            ]);
 
-        // Meilisearch SearchResult objesi - metodlar kullanılmalı
-        $hits = $result->getHits();
-        $total = $result->getEstimatedTotalHits();
+            // Meilisearch SearchResult objesi - metodlar kullanılmalı
+            $hits = $result->getHits();
+            $total = $result->getEstimatedTotalHits();
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Meilisearch search failed: '.$e->getMessage(),
+            ], 503);
+        }
 
         $ids = collect($hits)
             ->pluck('id')
-            ->map(fn($id) => (int) $id)
+            ->map(fn ($id) => (int) $id)
             ->all();
 
         $products = Product::query()
             ->whereIn('id', $ids)
             ->with(['brand', 'taxClass'])
             ->get()
-            ->sortBy(fn($p) => array_search($p->id, $ids)) // sıra meili ile aynı
+            ->sortBy(fn ($p) => array_search($p->id, $ids)) // sıra meili ile aynı
             ->values();
 
         // Kendi pagination'ını simüle edelim
         return response()->json([
             'data' => ProductResource::collection($products),
             'meta' => [
-                'total'        => $total,
+                'total' => $total,
                 'current_page' => $page,
-                'per_page'     => $perPage,
-                'from'         => ($page - 1) * $perPage + 1,
-                'to'           => ($page - 1) * $perPage + count($products),
+                'per_page' => $perPage,
+                'from' => ($page - 1) * $perPage + 1,
+                'to' => ($page - 1) * $perPage + count($products),
             ],
         ]);
     }
@@ -61,21 +80,21 @@ class ProductSearchController extends Controller
     protected function buildFilterExpression(Request $request): ?string
     {
         $filters = $request->query('filter', []);
-        $exprs   = [];
+        $exprs = [];
 
         // örn: filter[color] = 10 → color_ids IN [10]
-        if (!empty($filters['color'])) {
+        if (! empty($filters['color'])) {
             $colorId = (int) $filters['color'];
             $exprs[] = "color_ids = {$colorId}";
         }
 
-        if (!empty($filters['size'])) {
+        if (! empty($filters['size'])) {
             $sizeId = (int) $filters['size'];
             $exprs[] = "size_ids = {$sizeId}";
         }
 
         // attribute filtreleri: filter[attribute][material] = Pamuk
-        if (!empty($filters['attribute']['material'])) {
+        if (! empty($filters['attribute']['material'])) {
             $val = addslashes($filters['attribute']['material']);
             $exprs[] = "attribute_material = \"{$val}\"";
         }
@@ -86,7 +105,7 @@ class ProductSearchController extends Controller
         }
 
         if (isset($filters['is_active'])) {
-            $exprs[] = 'is_active = ' . ($filters['is_active'] ? 'true' : 'false');
+            $exprs[] = 'is_active = '.($filters['is_active'] ? 'true' : 'false');
         }
 
         if (empty($exprs)) {

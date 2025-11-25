@@ -19,8 +19,7 @@ class ContentBlock extends Model
     ];
 
     protected $casts = [
-        'value'     => 'array',
+        'value' => 'array',
         'is_active' => 'bool',
     ];
 }
-

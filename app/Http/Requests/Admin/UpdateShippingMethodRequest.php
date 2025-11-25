@@ -17,20 +17,20 @@ class UpdateShippingMethodRequest extends FormRequest
         $id = $this->route('shipping_method')?->id ?? null;
 
         return [
-            'name'           => ['sometimes', 'required', 'string', 'max:255'],
-            'code'           => [
+            'name' => ['sometimes', 'required', 'string', 'max:255'],
+            'code' => [
                 'sometimes',
                 'required',
                 'string',
                 'max:255',
                 Rule::unique('shipping_methods', 'code')->ignore($id),
             ],
-            'type'           => ['sometimes', 'required', 'string', 'in:flat_rate,free_shipping,local_pickup,custom'],
-            'price'          => ['sometimes', 'nullable', 'numeric', 'min:0'],
+            'type' => ['sometimes', 'required', 'string', 'in:flat_rate,free_shipping,local_pickup,custom'],
+            'price' => ['sometimes', 'nullable', 'numeric', 'min:0'],
             'min_cart_total' => ['sometimes', 'nullable', 'numeric', 'min:0'],
-            'is_active'      => ['sometimes', 'boolean'],
-            'sort_order'     => ['sometimes', 'nullable', 'integer', 'min:0'],
-            'config'         => ['sometimes', 'nullable', 'array'],
+            'is_active' => ['sometimes', 'boolean'],
+            'sort_order' => ['sometimes', 'nullable', 'integer', 'min:0'],
+            'config' => ['sometimes', 'nullable', 'array'],
         ];
     }
 }

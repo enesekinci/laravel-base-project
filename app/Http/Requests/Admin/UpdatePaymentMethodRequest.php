@@ -17,18 +17,18 @@ class UpdatePaymentMethodRequest extends FormRequest
         $id = $this->route('payment_method')?->id ?? null;
 
         return [
-            'name'       => ['sometimes', 'required', 'string', 'max:255'],
-            'code'       => [
+            'name' => ['sometimes', 'required', 'string', 'max:255'],
+            'code' => [
                 'sometimes',
                 'required',
                 'string',
                 'max:255',
                 Rule::unique('payment_methods', 'code')->ignore($id),
             ],
-            'type'       => ['sometimes', 'required', 'string', 'in:online,offline'],
-            'is_active'  => ['sometimes', 'boolean'],
+            'type' => ['sometimes', 'required', 'string', 'in:online,offline'],
+            'is_active' => ['sometimes', 'boolean'],
             'sort_order' => ['sometimes', 'nullable', 'integer', 'min:0'],
-            'config'     => ['sometimes', 'nullable', 'array'],
+            'config' => ['sometimes', 'nullable', 'array'],
         ];
     }
 }

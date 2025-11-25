@@ -1,12 +1,11 @@
 <?php
 
-use App\Models\Product;
-use App\Models\ProductVariant;
+use App\Models\Attribute;
 use App\Models\Option;
 use App\Models\OptionValue;
+use App\Models\Product;
 use App\Models\ProductAttributeValue;
-use App\Models\Attribute;
-use Illuminate\Support\Str;
+use App\Models\ProductVariant;
 
 it('returns paginated product list with basic fields', function () {
     Product::factory()->count(3)->create();
@@ -40,18 +39,18 @@ it('includes variants and attributes in product listing when requested', functio
     $colorOption = Option::factory()->create(['name' => 'Renk']);
     $black = OptionValue::factory()->create([
         'option_id' => $colorOption->id,
-        'value'     => 'Siyah',
+        'value' => 'Siyah',
     ]);
 
     $sizeOption = Option::factory()->create(['name' => 'Beden']);
     $sizeM = OptionValue::factory()->create([
         'option_id' => $sizeOption->id,
-        'value'     => 'M',
+        'value' => 'M',
     ]);
 
     $variant = ProductVariant::factory()->create([
         'product_id' => $product->id,
-        'sku'        => 'TSHIRT-BASIC-SIYAH-M',
+        'sku' => 'TSHIRT-BASIC-SIYAH-M',
     ]);
 
     $variant->optionValues()->attach([
@@ -66,7 +65,7 @@ it('includes variants and attributes in product listing when requested', functio
     ]);
 
     ProductAttributeValue::factory()->create([
-        'product_id'   => $product->id,
+        'product_id' => $product->id,
         'attribute_id' => $materialAttr->id,
         'value_string' => 'Pamuk',
     ]);

@@ -12,7 +12,7 @@ class AttributeSetFactory extends Factory
 
     public function definition()
     {
-        $name = ucfirst($this->faker->word) . ' Set';
+        $name = ucfirst($this->faker->word).' Set';
 
         return [
             'name' => $name,

@@ -1,5 +1,5 @@
 # Build stage
-FROM php:8.3-fpm-alpine AS builder
+FROM php:8.5-fpm-alpine AS builder
 
 # Install system dependencies and build tools
 RUN apk add --no-cache \
@@ -48,7 +48,7 @@ RUN npm run build
 RUN npm cache clean --force
 
 # Production stage
-FROM php:8.3-fpm-alpine
+FROM php:8.5-fpm-alpine
 
 # Install system dependencies and build dependencies for PHP extensions
 RUN apk add --no-cache \

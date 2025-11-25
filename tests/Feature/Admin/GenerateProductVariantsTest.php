@@ -1,18 +1,9 @@
 <?php
 
-use App\Models\User;
-use App\Models\Product;
-use App\Models\ProductVariant;
 use App\Models\Option;
 use App\Models\OptionValue;
-
-if (!function_exists('adminUser')) {
-    function adminUser(): User {
-        $user = User::factory()->create();
-        test()->actingAs($user);
-        return $user;
-    }
-}
+use App\Models\Product;
+use App\Models\ProductVariant;
 
 it('generates variants for all option combinations', function () {
     adminUser();
@@ -23,51 +14,51 @@ it('generates variants for all option combinations', function () {
 
     // Options: Renk, Beden
     $colorOption = Option::factory()->create(['name' => 'Renk']);
-    $sizeOption  = Option::factory()->create(['name' => 'Beden']);
+    $sizeOption = Option::factory()->create(['name' => 'Beden']);
 
     // Option values
     $black = OptionValue::factory()->create([
         'option_id' => $colorOption->id,
-        'value'     => 'Siyah',
+        'value' => 'Siyah',
     ]);
 
     $white = OptionValue::factory()->create([
         'option_id' => $colorOption->id,
-        'value'     => 'Beyaz',
+        'value' => 'Beyaz',
     ]);
 
     $sizeS = OptionValue::factory()->create([
         'option_id' => $sizeOption->id,
-        'value'     => 'S',
+        'value' => 'S',
     ]);
 
     $sizeM = OptionValue::factory()->create([
         'option_id' => $sizeOption->id,
-        'value'     => 'M',
+        'value' => 'M',
     ]);
 
     // Payload: 2 renk x 2 beden = 4 kombinasyon
     $payload = [
         'options' => [
             [
-                'option_id'  => $colorOption->id,
-                'value_ids'  => [$black->id, $white->id],
+                'option_id' => $colorOption->id,
+                'value_ids' => [$black->id, $white->id],
             ],
             [
-                'option_id'  => $sizeOption->id,
-                'value_ids'  => [$sizeS->id, $sizeM->id],
+                'option_id' => $sizeOption->id,
+                'value_ids' => [$sizeS->id, $sizeM->id],
             ],
         ],
         'base' => [
-            'price'        => 299.90,
+            'price' => 299.90,
             'manage_stock' => true,
-            'quantity'     => 0,
+            'quantity' => 0,
         ],
     ];
 
     // Act
     $response = $this->postJson(
-        route('admin.products.variants.generate', $product),
+        route('api.admin.products.variants.generate', $product),
         $payload
     );
 
@@ -124,49 +115,49 @@ it('does not create duplicate variants when generate is called again', function 
 
     // Options
     $colorOption = Option::factory()->create(['name' => 'Renk']);
-    $sizeOption  = Option::factory()->create(['name' => 'Beden']);
+    $sizeOption = Option::factory()->create(['name' => 'Beden']);
 
     $black = OptionValue::factory()->create([
         'option_id' => $colorOption->id,
-        'value'     => 'Siyah',
+        'value' => 'Siyah',
     ]);
 
     $white = OptionValue::factory()->create([
         'option_id' => $colorOption->id,
-        'value'     => 'Beyaz',
+        'value' => 'Beyaz',
     ]);
 
     $sizeS = OptionValue::factory()->create([
         'option_id' => $sizeOption->id,
-        'value'     => 'S',
+        'value' => 'S',
     ]);
 
     $sizeM = OptionValue::factory()->create([
         'option_id' => $sizeOption->id,
-        'value'     => 'M',
+        'value' => 'M',
     ]);
 
     $payload = [
         'options' => [
             [
-                'option_id'  => $colorOption->id,
-                'value_ids'  => [$black->id, $white->id],
+                'option_id' => $colorOption->id,
+                'value_ids' => [$black->id, $white->id],
             ],
             [
-                'option_id'  => $sizeOption->id,
-                'value_ids'  => [$sizeS->id, $sizeM->id],
+                'option_id' => $sizeOption->id,
+                'value_ids' => [$sizeS->id, $sizeM->id],
             ],
         ],
         'base' => [
-            'price'        => 299.90,
+            'price' => 299.90,
             'manage_stock' => true,
-            'quantity'     => 0,
+            'quantity' => 0,
         ],
     ];
 
     // İlk çağrı: 4 kombinasyon üretir
     $first = $this->postJson(
-        route('admin.products.variants.generate', $product),
+        route('api.admin.products.variants.generate', $product),
         $payload
     );
 
@@ -179,7 +170,7 @@ it('does not create duplicate variants when generate is called again', function 
 
     // İkinci çağrı: aynı kombinasyonlar, duplicate oluşmamalı
     $second = $this->postJson(
-        route('admin.products.variants.generate', $product),
+        route('api.admin.products.variants.generate', $product),
         $payload
     );
 

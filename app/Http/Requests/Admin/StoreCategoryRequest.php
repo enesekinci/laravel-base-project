@@ -14,13 +14,13 @@ class StoreCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'        => ['required', 'string', 'max:255'],
-            'slug'        => ['required', 'string', 'max:255', 'unique:categories,slug'],
-            'parent_id'   => ['nullable', 'integer', 'exists:categories,id'],
+            'name' => ['required', 'string', 'max:255'],
+            'slug' => ['required', 'string', 'max:255', 'unique:categories,slug'],
+            'parent_id' => ['nullable', 'integer', 'exists:categories,id'],
             'description' => ['nullable', 'string'],
-            'image'       => ['nullable', 'string', 'max:255'],
-            'sort_order'  => ['nullable', 'integer', 'min:0'],
-            'is_active'   => ['nullable', 'boolean'],
+            'image' => ['nullable', 'string', 'max:255'],
+            'sort_order' => ['nullable', 'integer', 'min:0'],
+            'is_active' => ['nullable', 'boolean'],
         ];
     }
 }

@@ -18,21 +18,21 @@ class UpdateAttributeRequest extends FormRequest
 
         return [
             'attribute_set_id' => ['sometimes', 'nullable', 'integer', 'exists:attribute_sets,id'],
-            'name'             => ['sometimes', 'required', 'string', 'max:255'],
-            'slug'             => [
+            'name' => ['sometimes', 'required', 'string', 'max:255'],
+            'slug' => [
                 'sometimes',
                 'required',
                 'string',
                 'max:255',
                 Rule::unique('attributes', 'slug')->ignore($attributeId),
             ],
-            'type'             => ['sometimes', 'required', 'string', 'in:text,textarea,select,radio,checkbox'],
-            'is_filterable'    => ['sometimes', 'boolean'],
+            'type' => ['sometimes', 'required', 'string', 'in:text,textarea,select,radio,checkbox'],
+            'is_filterable' => ['sometimes', 'boolean'],
 
-            'values'               => ['sometimes', 'array'],
-            'values.*.id'          => ['nullable', 'integer', 'exists:attribute_values,id'],
-            'values.*.value'       => ['required_with:values', 'string', 'max:255'],
-            'values.*.sort_order'  => ['nullable', 'integer', 'min:0'],
+            'values' => ['sometimes', 'array'],
+            'values.*.id' => ['nullable', 'integer', 'exists:attribute_values,id'],
+            'values.*.value' => ['required_with:values', 'string', 'max:255'],
+            'values.*.sort_order' => ['nullable', 'integer', 'min:0'],
         ];
     }
 }

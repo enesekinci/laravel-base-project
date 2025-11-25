@@ -1,17 +1,16 @@
 <?php
 
 use App\Models\Product;
-use Illuminate\Support\Str;
 
 it('searches products by name', function () {
     $tshirt = Product::factory()->create([
         'name' => 'Basic T-Shirt',
-        'sku'  => 'TSHIRT-001',
+        'sku' => 'TSHIRT-001',
     ]);
 
     $mug = Product::factory()->create([
         'name' => 'Kupa Bardak',
-        'sku'  => 'MUG-001',
+        'sku' => 'MUG-001',
     ]);
 
     $response = $this->getJson('/api/products?search=shirt');
@@ -24,12 +23,12 @@ it('searches products by name', function () {
 it('searches products by sku', function () {
     $product1 = Product::factory()->create([
         'name' => 'Product One',
-        'sku'  => 'PROD-ABC-123',
+        'sku' => 'PROD-ABC-123',
     ]);
 
     $product2 = Product::factory()->create([
         'name' => 'Product Two',
-        'sku'  => 'PROD-XYZ-456',
+        'sku' => 'PROD-XYZ-456',
     ]);
 
     $response = $this->getJson('/api/products?search=ABC');
@@ -43,26 +42,26 @@ it('combines search with filters', function () {
     // Ürün 1: Basic Black T-Shirt
     $product1 = Product::factory()->create([
         'name' => 'Basic Black T-Shirt',
-        'sku'  => 'TSHIRT-BLACK',
+        'sku' => 'TSHIRT-BLACK',
     ]);
 
     // Ürün 2: Basic White T-Shirt
     $product2 = Product::factory()->create([
         'name' => 'Basic White T-Shirt',
-        'sku'  => 'TSHIRT-WHITE',
+        'sku' => 'TSHIRT-WHITE',
     ]);
 
     // Ürün 3: Black Pants (shirt değil)
     $product3 = Product::factory()->create([
         'name' => 'Black Pants',
-        'sku'  => 'PANTS-BLACK',
+        'sku' => 'PANTS-BLACK',
     ]);
 
     // Renk option'ı oluştur
     $colorOption = \App\Models\Option::factory()->create(['name' => 'Renk']);
     $blackValue = \App\Models\OptionValue::factory()->create([
         'option_id' => $colorOption->id,
-        'value'     => 'Siyah',
+        'value' => 'Siyah',
     ]);
 
     // Ürün 1 ve 3'e siyah variant ekle
@@ -77,7 +76,7 @@ it('combines search with filters', function () {
     $variant3->optionValues()->attach($blackValue->id, ['option_id' => $colorOption->id]);
 
     // Search: shirt + Filter: color=Siyah
-    $response = $this->getJson('/api/products?search=shirt&filter[color]=' . $blackValue->id);
+    $response = $this->getJson('/api/products?search=shirt&filter[color]='.$blackValue->id);
 
     $response->assertStatus(200)
         ->assertJsonCount(1, 'data')

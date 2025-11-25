@@ -1,12 +1,12 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\ProductController;
-use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\Api\CartController;
+use App\Http\Controllers\Api\ProductController;
+use Illuminate\Support\Facades\Route;
 
-// Auth routes (customer)
-Route::prefix('auth')->group(function () {
+// Auth routes (customer) - Rate limited for brute force protection
+Route::prefix('auth')->middleware('throttle:auth')->group(function () {
     Route::post('/register', [\App\Http\Controllers\Auth\RegisterController::class, 'register']);
     Route::post('/login', [\App\Http\Controllers\Auth\LoginController::class, 'login']);
     Route::post('/logout', [\App\Http\Controllers\Auth\LoginController::class, 'logout'])->middleware('auth:sanctum');
@@ -31,9 +31,10 @@ Route::middleware(['auth:sanctum', 'throttle:api-cart'])->group(function () {
     Route::put('/cart/items/{cartItem}', [CartController::class, 'updateItem']);
     Route::delete('/cart/items/{cartItem}', [CartController::class, 'destroyItem']);
 
-    // Checkout & Orders
+    // Checkout & Orders - Fraud prevention rate limiting
     Route::post('/checkout', [\App\Http\Controllers\Api\CheckoutController::class, 'checkout'])
-        ->name('checkout.store');
+        ->name('checkout.store')
+        ->middleware('throttle:checkout');
     Route::get('/orders', [\App\Http\Controllers\Api\OrderController::class, 'index'])
         ->name('orders.index');
     Route::get('/orders/{order}', [\App\Http\Controllers\Api\OrderController::class, 'show'])
@@ -51,14 +52,17 @@ Route::middleware('auth:sanctum')->prefix('account')->group(function () {
     Route::get('/orders/{order}', [\App\Http\Controllers\Api\Account\OrderController::class, 'show']);
 });
 
-// Payment callbacks (public, no auth)
-Route::post('/payment/paytr/callback', [\App\Http\Controllers\Api\Payment\PaytrCallbackController::class, 'handle']);
-Route::post('/payment/iyzico/callback', [\App\Http\Controllers\Api\Payment\IyzicoCallbackController::class, 'handle']);
+// Payment callbacks (public, no auth) - Detailed logging with sensitive data masking
+Route::middleware('log-payment-callback')->group(function () {
+    Route::post('/payment/paytr/callback', [\App\Http\Controllers\Api\Payment\PaytrCallbackController::class, 'handle']);
+    Route::post('/payment/iyzico/callback', [\App\Http\Controllers\Api\Payment\IyzicoCallbackController::class, 'handle']);
+});
 
 // Admin API
-Route::middleware('auth:sanctum')
+// Note: Using 'web' guard for session-based authentication from Blade pages
+Route::middleware(['web', 'auth:web', 'admin', 'log-admin-action'])
     ->prefix('admin')
-    ->name('admin.')
+    ->name('api.admin.')
     ->group(function () {
         // Products
         Route::get('/products', [AdminProductController::class, 'index'])->name('products.index');
@@ -136,6 +140,20 @@ Route::middleware('auth:sanctum')
             ->name('attributes.update');
         Route::delete('/attributes/{attribute}', [\App\Http\Controllers\Admin\AttributeController::class, 'destroy'])
             ->name('attributes.destroy');
+
+        // Tags
+        Route::get('/tags', [\App\Http\Controllers\Admin\TagController::class, 'index'])
+            ->name('tags.index');
+        Route::get('/tags/{tag}', [\App\Http\Controllers\Admin\TagController::class, 'show'])
+            ->name('tags.show');
+        Route::post('/tags', [\App\Http\Controllers\Admin\TagController::class, 'store'])
+            ->name('tags.store');
+        Route::put('/tags/{tag}', [\App\Http\Controllers\Admin\TagController::class, 'update'])
+            ->name('tags.update');
+        Route::delete('/tags/{tag}', [\App\Http\Controllers\Admin\TagController::class, 'destroy'])
+            ->name('tags.destroy');
+        Route::post('/tags/{id}/restore', [\App\Http\Controllers\Admin\TagController::class, 'restore'])
+            ->name('tags.restore');
 
         // Orders
         Route::get('/orders', [\App\Http\Controllers\Admin\OrderController::class, 'index'])
@@ -233,6 +251,16 @@ Route::middleware('auth:sanctum')
         Route::post('/media/{id}/restore', [\App\Http\Controllers\Admin\MediaFileController::class, 'restore'])
             ->name('media.restore');
 
+        // Collections (Folders)
+        Route::get('/collections', [\App\Http\Controllers\Admin\CollectionController::class, 'index'])
+            ->name('collections.index');
+        Route::post('/collections', [\App\Http\Controllers\Admin\CollectionController::class, 'store'])
+            ->name('collections.store');
+        Route::put('/collections/{collection}', [\App\Http\Controllers\Admin\CollectionController::class, 'update'])
+            ->name('collections.update');
+        Route::delete('/collections/{collection}', [\App\Http\Controllers\Admin\CollectionController::class, 'destroy'])
+            ->name('collections.destroy');
+
         // Sliders
         Route::get('/sliders', [\App\Http\Controllers\Admin\SliderController::class, 'index'])
             ->name('sliders.index');
@@ -259,6 +287,20 @@ Route::middleware('auth:sanctum')
         Route::post('/slider-items/{id}/restore', [\App\Http\Controllers\Admin\SliderItemController::class, 'restore'])
             ->name('slider-items.restore');
 
+        // Menus
+        Route::get('/menus', [\App\Http\Controllers\Admin\MenuController::class, 'index'])
+            ->name('menus.index');
+        Route::get('/menus/{menu}', [\App\Http\Controllers\Admin\MenuController::class, 'show'])
+            ->name('menus.show');
+        Route::post('/menus', [\App\Http\Controllers\Admin\MenuController::class, 'store'])
+            ->name('menus.store');
+        Route::put('/menus/{menu}', [\App\Http\Controllers\Admin\MenuController::class, 'update'])
+            ->name('menus.update');
+        Route::delete('/menus/{menu}', [\App\Http\Controllers\Admin\MenuController::class, 'destroy'])
+            ->name('menus.destroy');
+        Route::post('/menus/{id}/restore', [\App\Http\Controllers\Admin\MenuController::class, 'restore'])
+            ->name('menus.restore');
+
         // Content Blocks
         Route::get('/content-blocks', [\App\Http\Controllers\Admin\ContentBlockController::class, 'index'])
             ->name('content-blocks.index');
@@ -272,6 +314,62 @@ Route::middleware('auth:sanctum')
             ->name('content-blocks.destroy');
         Route::post('/content-blocks/{id}/restore', [\App\Http\Controllers\Admin\ContentBlockController::class, 'restore'])
             ->name('content-blocks.restore');
+
+        // Post Tags
+        Route::get('/post-tags', [\App\Http\Controllers\Admin\PostTagController::class, 'index'])
+            ->name('post-tags.index');
+        Route::get('/post-tags/{post_tag}', [\App\Http\Controllers\Admin\PostTagController::class, 'show'])
+            ->name('post-tags.show');
+        Route::post('/post-tags', [\App\Http\Controllers\Admin\PostTagController::class, 'store'])
+            ->name('post-tags.store');
+        Route::put('/post-tags/{post_tag}', [\App\Http\Controllers\Admin\PostTagController::class, 'update'])
+            ->name('post-tags.update');
+        Route::delete('/post-tags/{post_tag}', [\App\Http\Controllers\Admin\PostTagController::class, 'destroy'])
+            ->name('post-tags.destroy');
+        Route::post('/post-tags/{id}/restore', [\App\Http\Controllers\Admin\PostTagController::class, 'restore'])
+            ->name('post-tags.restore');
+
+        // Post Categories
+        Route::get('/post-categories', [\App\Http\Controllers\Admin\PostCategoryController::class, 'index'])
+            ->name('post-categories.index');
+        Route::get('/post-categories/{post_category}', [\App\Http\Controllers\Admin\PostCategoryController::class, 'show'])
+            ->name('post-categories.show');
+        Route::post('/post-categories', [\App\Http\Controllers\Admin\PostCategoryController::class, 'store'])
+            ->name('post-categories.store');
+        Route::put('/post-categories/{post_category}', [\App\Http\Controllers\Admin\PostCategoryController::class, 'update'])
+            ->name('post-categories.update');
+        Route::delete('/post-categories/{post_category}', [\App\Http\Controllers\Admin\PostCategoryController::class, 'destroy'])
+            ->name('post-categories.destroy');
+        Route::post('/post-categories/{id}/restore', [\App\Http\Controllers\Admin\PostCategoryController::class, 'restore'])
+            ->name('post-categories.restore');
+
+        // Posts
+        Route::get('/posts', [\App\Http\Controllers\Admin\PostController::class, 'index'])
+            ->name('posts.index');
+        Route::get('/posts/{post}', [\App\Http\Controllers\Admin\PostController::class, 'show'])
+            ->name('posts.show');
+        Route::post('/posts', [\App\Http\Controllers\Admin\PostController::class, 'store'])
+            ->name('posts.store');
+        Route::put('/posts/{post}', [\App\Http\Controllers\Admin\PostController::class, 'update'])
+            ->name('posts.update');
+        Route::delete('/posts/{post}', [\App\Http\Controllers\Admin\PostController::class, 'destroy'])
+            ->name('posts.destroy');
+        Route::post('/posts/{id}/restore', [\App\Http\Controllers\Admin\PostController::class, 'restore'])
+            ->name('posts.restore');
+
+        // Pages
+        Route::get('/pages', [\App\Http\Controllers\Admin\PageController::class, 'index'])
+            ->name('pages.index');
+        Route::get('/pages/{page}', [\App\Http\Controllers\Admin\PageController::class, 'show'])
+            ->name('pages.show');
+        Route::post('/pages', [\App\Http\Controllers\Admin\PageController::class, 'store'])
+            ->name('pages.store');
+        Route::put('/pages/{page}', [\App\Http\Controllers\Admin\PageController::class, 'update'])
+            ->name('pages.update');
+        Route::delete('/pages/{page}', [\App\Http\Controllers\Admin\PageController::class, 'destroy'])
+            ->name('pages.destroy');
+        Route::post('/pages/{id}/restore', [\App\Http\Controllers\Admin\PageController::class, 'restore'])
+            ->name('pages.restore');
 
         // Settings
         Route::get('/settings', [\App\Http\Controllers\Admin\SettingController::class, 'index'])

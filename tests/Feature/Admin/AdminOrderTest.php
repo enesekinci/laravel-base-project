@@ -1,35 +1,25 @@
 <?php
 
-use App\Models\User;
 use App\Models\Order;
-use App\Models\OrderItem;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
-
-if (!function_exists('adminUser')) {
-    function adminUser(): User {
-        $user = User::factory()->create();
-        test()->actingAs($user, 'sanctum');
-        return $user;
-    }
-}
 
 it('lists orders for admin with filters', function () {
     adminUser();
 
     $o1 = Order::factory()->create([
-        'status'         => 'pending',
+        'status' => 'pending',
         'payment_status' => 'pending',
         'customer_email' => 'a@example.com',
-        'placed_at'      => now()->subDay(),
+        'placed_at' => now()->subDay(),
     ]);
 
     $o2 = Order::factory()->create([
-        'status'         => 'paid',
+        'status' => 'paid',
         'payment_status' => 'paid',
         'customer_email' => 'b@example.com',
-        'placed_at'      => now(),
+        'placed_at' => now(),
     ]);
 
     $res = $this->getJson('/api/admin/orders?status=paid');
@@ -52,12 +42,12 @@ it('updates order status and payment_status', function () {
     adminUser();
 
     $order = Order::factory()->create([
-        'status'         => 'pending',
+        'status' => 'pending',
         'payment_status' => 'pending',
     ]);
 
     $res = $this->putJson("/api/admin/orders/{$order->id}/status", [
-        'status'         => 'paid',
+        'status' => 'paid',
         'payment_status' => 'paid',
     ]);
 
@@ -66,9 +56,8 @@ it('updates order status and payment_status', function () {
         ->assertJsonPath('data.payment_status', 'paid');
 
     $this->assertDatabaseHas('orders', [
-        'id'             => $order->id,
-        'status'         => 'paid',
+        'id' => $order->id,
+        'status' => 'paid',
         'payment_status' => 'paid',
     ]);
 });
-

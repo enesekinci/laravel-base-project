@@ -31,14 +31,14 @@ class IyzicoGateway implements PaymentGateway
         $htmlForm = '<form>...iyzico checkout form...</form>';
 
         Transaction::create([
-            'order_id'          => $order->id,
+            'order_id' => $order->id,
             'payment_method_id' => $order->payment_method_id,
-            'gateway'           => 'iyzico',
-            'type'              => 'payment',
-            'status'            => 'pending',
-            'amount'            => $order->grand_total,
-            'currency'          => $order->currency ?? 'TRY',
-            'message'           => 'Iyzico payment initiated',
+            'gateway' => 'iyzico',
+            'type' => 'payment',
+            'status' => 'pending',
+            'amount' => $order->grand_total,
+            'currency' => $order->currency ?? 'TRY',
+            'message' => 'Iyzico payment initiated',
         ]);
 
         return new PaymentInitResult(
@@ -52,7 +52,7 @@ class IyzicoGateway implements PaymentGateway
         // Iyzico callback parse + status sorgu
         Log::info('Iyzico callback payload', $payload);
 
-        $orderId = (int)($payload['order_id'] ?? 0);
+        $orderId = (int) ($payload['order_id'] ?? 0);
         $success = ($payload['status'] ?? '') === 'success';
 
         $iyzicoPaymentId = $payload['paymentId'] ?? null;
@@ -66,17 +66,17 @@ class IyzicoGateway implements PaymentGateway
 
         if ($success) {
             $transaction?->update([
-                'status'                => 'success',
+                'status' => 'success',
                 'gateway_transaction_id' => $iyzicoPaymentId,
-                'message'               => 'Payment success',
-                'processed_at'          => now(),
+                'message' => 'Payment success',
+                'processed_at' => now(),
             ]);
 
             $this->orderStateService->markAsPaid($order);
         } else {
             $transaction?->update([
-                'status'       => 'failed',
-                'message'      => $payload['errorMessage'] ?? 'Payment failed',
+                'status' => 'failed',
+                'message' => $payload['errorMessage'] ?? 'Payment failed',
                 'processed_at' => now(),
             ]);
 
@@ -85,7 +85,7 @@ class IyzicoGateway implements PaymentGateway
 
         return new PaymentCallbackResult(
             success: $success,
-            orderReference: (string)$order->id,
+            orderReference: (string) $order->id,
             transactionId: $iyzicoPaymentId,
             message: $success ? 'Success' : 'Failed',
         );
@@ -95,12 +95,12 @@ class IyzicoGateway implements PaymentGateway
     {
         Log::info('Iyzico refund requested', [
             'payment_id' => $paymentTransaction->gateway_transaction_id,
-            'amount'     => $amount,
+            'amount' => $amount,
         ]);
 
         // pseudo: $refund = $iyzicoClient->refund(...);
 
-        $refundId = 'IYZICO_REFUND_' . uniqid();
+        $refundId = 'IYZICO_REFUND_'.uniqid();
 
         return new PaymentRefundResult(
             success: true,

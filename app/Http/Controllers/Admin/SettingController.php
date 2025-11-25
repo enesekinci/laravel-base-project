@@ -16,30 +16,34 @@ class SettingController extends Controller
             ->orderBy('key')
             ->get();
 
+        // Return as key-value pairs for easier frontend usage
+        $data = [];
+        foreach ($settings as $setting) {
+            $value = $setting->value;
+            // If value is array with 'value' key, extract it
+            if (is_array($value) && isset($value['value'])) {
+                $data[$setting->key] = $value['value'];
+            } else {
+                $data[$setting->key] = $value;
+            }
+        }
+
         return response()->json([
-            'data' => $settings->map(function (Setting $s) {
-                return [
-                    'id'    => $s->id,
-                    'group' => $s->group,
-                    'key'   => $s->key,
-                    'type'  => $s->type,
-                    'value' => $s->value,
-                ];
-            }),
+            'data' => $data,
         ]);
     }
 
     public function updateGroup(Request $request, string $group)
     {
         $payload = $request->validate([
-            'values'        => ['required', 'array'],
-            'values.*.key'   => ['required', 'string'],
+            'values' => ['required', 'array'],
+            'values.*.key' => ['required', 'string'],
             'values.*.value' => ['nullable'],
-            'values.*.type'  => ['nullable', 'string'],
+            'values.*.type' => ['nullable', 'string'],
         ]);
 
         foreach ($payload['values'] as $item) {
-            $key  = $item['key'];
+            $key = $item['key'];
             $type = $item['type'] ?? 'string';
             $value = $item['value'];
 
@@ -56,17 +60,20 @@ class SettingController extends Controller
             ->orderBy('key')
             ->get();
 
+        // Return as key-value pairs for easier frontend usage
+        $data = [];
+        foreach ($settings as $setting) {
+            $value = $setting->value;
+            // If value is array with 'value' key, extract it
+            if (is_array($value) && isset($value['value'])) {
+                $data[$setting->key] = $value['value'];
+            } else {
+                $data[$setting->key] = $value;
+            }
+        }
+
         return response()->json([
-            'data' => $settings->map(function (Setting $s) {
-                return [
-                    'id'    => $s->id,
-                    'group' => $s->group,
-                    'key'   => $s->key,
-                    'type'  => $s->type,
-                    'value' => $s->value,
-                ];
-            }),
+            'data' => $data,
         ]);
     }
 }
-

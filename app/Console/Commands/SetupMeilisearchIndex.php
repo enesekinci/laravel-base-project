@@ -28,6 +28,7 @@ class SetupMeilisearchIndex extends Command
     {
         if (config('scout.driver') !== 'meilisearch') {
             $this->error('Scout driver is not set to meilisearch. Please set SCOUT_DRIVER=meilisearch in .env');
+
             return 1;
         }
 

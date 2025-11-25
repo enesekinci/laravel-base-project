@@ -23,11 +23,11 @@ class OrderItem extends Model
     ];
 
     protected $casts = [
-        'unit_price'     => 'float',
-        'subtotal'       => 'float',
+        'unit_price' => 'float',
+        'subtotal' => 'float',
         'discount_total' => 'float',
-        'tax_total'      => 'float',
-        'total'          => 'float',
+        'tax_total' => 'float',
+        'total' => 'float',
     ];
 
     public function order()

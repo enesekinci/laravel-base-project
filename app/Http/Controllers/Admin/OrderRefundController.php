@@ -14,7 +14,7 @@ class OrderRefundController extends Controller
 {
     public function __construct(
         protected PaymentGatewayManager $gatewayManager,
-        protected OrderStateService     $orderStateService,
+        protected OrderStateService $orderStateService,
     ) {}
 
     public function refund(Request $request, Order $order)
@@ -54,16 +54,16 @@ class OrderRefundController extends Controller
 
         // Refund transaction kaydı
         $refundTransaction = Transaction::create([
-            'order_id'              => $order->id,
-            'payment_method_id'     => $order->payment_method_id,
-            'gateway'               => $paymentTransaction->gateway,
+            'order_id' => $order->id,
+            'payment_method_id' => $order->payment_method_id,
+            'gateway' => $paymentTransaction->gateway,
             'gateway_transaction_id' => $result->refundTransactionId,
-            'type'                  => 'refund',
-            'status'                => 'success',
-            'amount'                => $data['amount'],
-            'currency'              => $order->currency ?? 'TRY',
-            'message'               => $result->message ?? 'Refund success',
-            'processed_at'          => now(),
+            'type' => 'refund',
+            'status' => 'success',
+            'amount' => $data['amount'],
+            'currency' => $order->currency ?? 'TRY',
+            'message' => $result->message ?? 'Refund success',
+            'processed_at' => now(),
         ]);
 
         $this->orderStateService->markRefunded($order);
@@ -72,7 +72,7 @@ class OrderRefundController extends Controller
 
         return response()->json([
             'data' => [
-                'order_id'         => $order->id,
+                'order_id' => $order->id,
                 'refund_transaction_id' => $refundTransaction->id,
             ],
         ]);

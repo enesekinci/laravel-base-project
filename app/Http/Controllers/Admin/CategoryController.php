@@ -19,16 +19,16 @@ class CategoryController extends Controller
         if ($search = $request->query('search')) {
             $likeOperator = DatabaseHelper::getCaseInsensitiveLikeOperator();
             $query->where(function ($q) use ($search, $likeOperator) {
-                $q->where('name', $likeOperator, '%' . $search . '%')
-                    ->orWhere('slug', $likeOperator, '%' . $search . '%');
+                $q->where('name', $likeOperator, '%'.$search.'%')
+                    ->orWhere('slug', $likeOperator, '%'.$search.'%');
             });
         }
 
-        if (!is_null($request->query('parent_id'))) {
+        if (! is_null($request->query('parent_id'))) {
             $query->where('parent_id', $request->query('parent_id'));
         }
 
-        if (!is_null($request->query('is_active'))) {
+        if (! is_null($request->query('is_active'))) {
             $val = (int) $request->query('is_active') === 1;
             $query->where('is_active', $val);
         }
@@ -56,11 +56,11 @@ class CategoryController extends Controller
         $nodes = [];
         foreach ($all as $cat) {
             $nodes[$cat->id] = [
-                'id'        => $cat->id,
-                'name'      => $cat->name,
-                'slug'      => $cat->slug,
+                'id' => $cat->id,
+                'name' => $cat->name,
+                'slug' => $cat->slug,
                 'parent_id' => $cat->parent_id,
-                'children'  => [],
+                'children' => [],
             ];
         }
 
@@ -90,7 +90,7 @@ class CategoryController extends Controller
     {
         $data = $request->validated();
 
-        $data['is_active']  = $data['is_active'] ?? true;
+        $data['is_active'] = $data['is_active'] ?? true;
         $data['sort_order'] = $data['sort_order'] ?? 0;
 
         $category = Category::create($data);
@@ -127,7 +127,7 @@ class CategoryController extends Controller
 
     public function toggleActive(Category $category)
     {
-        $category->is_active = !$category->is_active;
+        $category->is_active = ! $category->is_active;
         $category->save();
 
         return new AdminCategoryResource($category);

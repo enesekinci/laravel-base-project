@@ -40,7 +40,7 @@ class TransactionController extends Controller
         if ($search = $request->query('search')) {
             $likeOperator = DatabaseHelper::getCaseInsensitiveLikeOperator();
             $query->where(function ($q) use ($search, $likeOperator) {
-                $q->where('gateway_transaction_id', $likeOperator, '%' . $search . '%')
+                $q->where('gateway_transaction_id', $likeOperator, '%'.$search.'%')
                     ->orWhere('id', $search);
             });
         }
@@ -73,7 +73,7 @@ class TransactionController extends Controller
     {
         $data = $request->validated();
 
-        if (!isset($data['currency'])) {
+        if (! isset($data['currency'])) {
             $data['currency'] = 'TRY';
         }
 

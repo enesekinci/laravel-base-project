@@ -21,8 +21,7 @@ class Page extends Model
     ];
 
     protected $casts = [
-        'is_active'      => 'bool',
+        'is_active' => 'bool',
         'show_in_footer' => 'bool',
     ];
 }
-

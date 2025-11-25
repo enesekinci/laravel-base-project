@@ -25,7 +25,7 @@ class MenuItem extends Model
 
     protected $casts = [
         'sort_order' => 'int',
-        'is_active'  => 'bool',
+        'is_active' => 'bool',
     ];
 
     public function menu(): BelongsTo
@@ -43,4 +43,3 @@ class MenuItem extends Model
         return $this->hasMany(MenuItem::class, 'parent_id')->orderBy('sort_order');
     }
 }
-

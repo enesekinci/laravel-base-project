@@ -17,25 +17,25 @@ class UpdateCouponRequest extends FormRequest
         $couponId = $this->route('coupon')?->id ?? null;
 
         return [
-            'code'   => [
+            'code' => [
                 'sometimes',
                 'required',
                 'string',
                 'max:255',
                 Rule::unique('coupons', 'code')->ignore($couponId),
             ],
-            'type'   => ['sometimes', 'required', 'string', 'in:percent,fixed,free_shipping'],
-            'value'  => ['sometimes', 'required_if:type,percent,required_if:type,fixed', 'numeric', 'min:0'],
+            'type' => ['sometimes', 'required', 'string', 'in:percent,fixed,free_shipping'],
+            'value' => ['sometimes', 'required_if:type,percent,required_if:type,fixed', 'numeric', 'min:0'],
 
-            'min_cart_total'       => ['sometimes', 'nullable', 'numeric', 'min:0'],
+            'min_cart_total' => ['sometimes', 'nullable', 'numeric', 'min:0'],
 
-            'usage_limit'          => ['sometimes', 'nullable', 'integer', 'min:1'],
+            'usage_limit' => ['sometimes', 'nullable', 'integer', 'min:1'],
             'usage_limit_per_user' => ['sometimes', 'nullable', 'integer', 'min:1'],
 
-            'is_active'            => ['sometimes', 'boolean'],
+            'is_active' => ['sometimes', 'boolean'],
 
-            'starts_at'            => ['sometimes', 'nullable', 'date'],
-            'ends_at'              => ['sometimes', 'nullable', 'date', 'after_or_equal:starts_at'],
+            'starts_at' => ['sometimes', 'nullable', 'date'],
+            'ends_at' => ['sometimes', 'nullable', 'date', 'after_or_equal:starts_at'],
         ];
     }
 }

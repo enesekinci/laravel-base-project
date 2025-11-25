@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
-use App\Models\ProductAttributeValue;
-use App\Models\Product;
 use App\Models\Attribute;
+use App\Models\Product;
+use App\Models\ProductAttributeValue;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ProductAttributeValueFactory extends Factory

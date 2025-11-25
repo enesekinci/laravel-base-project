@@ -12,8 +12,8 @@ class TaxClassFactory extends Factory
     public function definition(): array
     {
         return [
-            'name'      => 'KDV 18',
-            'rate'      => 18,
+            'name' => 'KDV 18',
+            'rate' => 18,
             'is_active' => true,
         ];
     }

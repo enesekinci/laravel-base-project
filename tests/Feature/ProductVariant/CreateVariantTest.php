@@ -14,7 +14,7 @@ it('attaches option values to a variant', function () {
     $value = \App\Models\OptionValue::factory()->create();
 
     $variant->optionValues()->attach($value->id, [
-        'option_id' => $value->option_id
+        'option_id' => $value->option_id,
     ]);
 
     expect($variant->optionValues()->count())->toBe(1);

@@ -18,9 +18,9 @@ class PaymentGatewayManager
     public function resolve(PaymentMethod $method): PaymentGateway
     {
         return match ($method->code) {
-            'paytr'  => $this->paytr,
+            'paytr' => $this->paytr,
             'iyzico' => $this->iyzico,
-            default  => throw new InvalidArgumentException("Unsupported payment method: {$method->code}"),
+            default => throw new InvalidArgumentException("Unsupported payment method: {$method->code}"),
         };
     }
 }

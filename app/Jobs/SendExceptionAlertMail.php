@@ -16,6 +16,7 @@ class SendExceptionAlertMail implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $tries = 3;
+
     public $timeout = 30;
 
     public function __construct(
@@ -31,8 +32,9 @@ class SendExceptionAlertMail implements ShouldQueue
     {
         $adminEmail = config('mail.admin_email', config('mail.from.address'));
 
-        if (!$adminEmail) {
+        if (! $adminEmail) {
             logger()->warning('Exception alert email not sent: admin_email not configured');
+
             return;
         }
 

@@ -60,16 +60,16 @@ class AddressController extends Controller
     private function validateData(Request $request, bool $update = false): array
     {
         $rules = [
-            'type'       => ['required', 'string', 'in:shipping,billing'],
+            'type' => ['required', 'string', 'in:shipping,billing'],
             'first_name' => ['required', 'string', 'max:255'],
-            'last_name'  => ['required', 'string', 'max:255'],
-            'phone'      => ['nullable', 'string', 'max:30'],
-            'country'    => ['required', 'string', 'max:2'],
-            'city'       => ['required', 'string', 'max:255'],
-            'district'   => ['nullable', 'string', 'max:255'],
-            'postcode'   => ['nullable', 'string', 'max:20'],
-            'line_1'     => ['required', 'string', 'max:255'],
-            'line_2'     => ['nullable', 'string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
+            'phone' => ['nullable', 'string', 'max:30'],
+            'country' => ['required', 'string', 'max:2'],
+            'city' => ['required', 'string', 'max:255'],
+            'district' => ['nullable', 'string', 'max:255'],
+            'postcode' => ['nullable', 'string', 'max:20'],
+            'line_1' => ['required', 'string', 'max:255'],
+            'line_2' => ['nullable', 'string', 'max:255'],
             'is_default' => ['nullable', 'boolean'],
         ];
 

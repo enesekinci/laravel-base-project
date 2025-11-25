@@ -1,34 +1,24 @@
 <?php
 
-use App\Models\User;
 use App\Models\PaymentMethod;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-if (!function_exists('adminUser')) {
-    function adminUser(): User
-    {
-        $user = User::factory()->create();
-        test()->actingAs($user, 'sanctum');
-        return $user;
-    }
-}
-
 it('lists payment methods with filters', function () {
     adminUser();
 
     $m1 = PaymentMethod::factory()->create([
-        'name'      => 'PayTR',
-        'code'      => 'paytr',
-        'type'      => 'online',
+        'name' => 'PayTR',
+        'code' => 'paytr',
+        'type' => 'online',
         'is_active' => true,
     ]);
 
     $m2 = PaymentMethod::factory()->create([
-        'name'      => 'Bank Transfer',
-        'code'      => 'bank_transfer',
-        'type'      => 'offline',
+        'name' => 'Bank Transfer',
+        'code' => 'bank_transfer',
+        'type' => 'offline',
         'is_active' => false,
     ]);
 
@@ -51,12 +41,12 @@ it('creates a payment method', function () {
     adminUser();
 
     $payload = [
-        'name'       => 'Iyzico',
-        'code'       => 'iyzico',
-        'type'       => 'online',
-        'is_active'  => true,
+        'name' => 'Iyzico',
+        'code' => 'iyzico',
+        'type' => 'online',
+        'is_active' => true,
         'sort_order' => 5,
-        'config'     => ['api_key' => 'test'],
+        'config' => ['api_key' => 'test'],
     ];
 
     $res = $this->postJson('/api/admin/payment-methods', $payload);
@@ -67,8 +57,8 @@ it('creates a payment method', function () {
         ->assertJsonPath('data.is_active', true);
 
     $this->assertDatabaseHas('payment_methods', [
-        'code'      => 'iyzico',
-        'type'      => 'online',
+        'code' => 'iyzico',
+        'type' => 'online',
         'is_active' => true,
     ]);
 });
@@ -90,14 +80,14 @@ it('updates a payment method', function () {
     adminUser();
 
     $m = PaymentMethod::factory()->create([
-        'name'      => 'PayTR',
-        'code'      => 'paytr',
-        'type'      => 'online',
+        'name' => 'PayTR',
+        'code' => 'paytr',
+        'type' => 'online',
         'is_active' => true,
     ]);
 
     $payload = [
-        'name'      => 'PayTR Updated',
+        'name' => 'PayTR Updated',
         'is_active' => false,
     ];
 
@@ -108,8 +98,8 @@ it('updates a payment method', function () {
         ->assertJsonPath('data.is_active', false);
 
     $this->assertDatabaseHas('payment_methods', [
-        'id'        => $m->id,
-        'name'      => 'PayTR Updated',
+        'id' => $m->id,
+        'name' => 'PayTR Updated',
         'is_active' => false,
     ]);
 });
@@ -131,7 +121,7 @@ it('soft deletes and restores a payment method', function () {
         ->assertJsonPath('data.id', $m->id);
 
     $this->assertDatabaseHas('payment_methods', [
-        'id'         => $m->id,
+        'id' => $m->id,
         'deleted_at' => null,
     ]);
 });

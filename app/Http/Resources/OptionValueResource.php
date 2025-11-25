@@ -9,10 +9,10 @@ class OptionValueResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id'     => $this->id,
-            'value'  => $this->value,
+            'id' => $this->id,
+            'value' => $this->value,
             'option' => [
-                'id'   => $this->option->id,
+                'id' => $this->option->id,
                 'name' => $this->option->name,
             ],
         ];

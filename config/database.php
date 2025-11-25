@@ -180,4 +180,16 @@ return [
 
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Slow Query Threshold
+    |--------------------------------------------------------------------------
+    |
+    | This option defines the threshold in milliseconds for slow queries.
+    | Queries taking longer than this threshold will be logged and alerted.
+    |
+    */
+
+    'slow_query_threshold_ms' => env('DB_SLOW_QUERY_THRESHOLD_MS', 500),
+
 ];

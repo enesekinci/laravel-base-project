@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ProductVariant extends Model
 {
@@ -15,10 +15,10 @@ class ProductVariant extends Model
 
     protected $casts = [
         'manage_stock' => 'boolean',
-        'in_stock'     => 'boolean',
-        'is_active'    => 'boolean',
+        'in_stock' => 'boolean',
+        'is_active' => 'boolean',
         'special_price_start' => 'date',
-        'special_price_end'   => 'date',
+        'special_price_end' => 'date',
     ];
 
     public function product()
@@ -50,7 +50,7 @@ class ProductVariant extends Model
 
         $basePrice = $this->price !== null ? (float) $this->price : $productPrice;
 
-        if (!$this->special_price || !$this->special_price_type) {
+        if (! $this->special_price || ! $this->special_price_type) {
             return $basePrice;
         }
 
@@ -70,6 +70,7 @@ class ProductVariant extends Model
 
         if ($this->special_price_type === 'percent') {
             $discount = $basePrice * ((float) $this->special_price / 100);
+
             return round($basePrice - $discount, 2);
         }
 
@@ -78,7 +79,7 @@ class ProductVariant extends Model
 
     public function isInStock(): bool
     {
-        if (!$this->manage_stock) {
+        if (! $this->manage_stock) {
             return (bool) $this->in_stock;
         }
 

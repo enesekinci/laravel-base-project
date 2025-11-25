@@ -19,7 +19,7 @@ class ProductFilters
 
         $filters = $this->request->query('filter', []);
 
-        if (!is_array($filters)) {
+        if (! is_array($filters)) {
             return $query;
         }
 

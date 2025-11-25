@@ -1,13 +1,13 @@
 <?php
 
-use App\Models\Product;
-use App\Models\ProductVariant;
 use App\Models\Option;
 use App\Models\OptionValue;
+use App\Models\Product;
+use App\Models\ProductVariant;
 
 it('filters in API by color and size together', function () {
     $color = Option::factory()->create(['name' => 'Renk']);
-    $size  = Option::factory()->create(['name' => 'Beden']);
+    $size = Option::factory()->create(['name' => 'Beden']);
 
     $black = OptionValue::factory()->create(['option_id' => $color->id, 'value' => 'Siyah']);
     $white = OptionValue::factory()->create(['option_id' => $color->id, 'value' => 'Beyaz']);
@@ -32,10 +32,9 @@ it('filters in API by color and size together', function () {
     ]);
 
     // filtre: renk = siyah, beden = M
-    $response = $this->getJson('/api/products?filter[color]=' . $black->id . '&filter[size]=' . $sizeM->id);
+    $response = $this->getJson('/api/products?filter[color]='.$black->id.'&filter[size]='.$sizeM->id);
 
     $response->assertStatus(200)
         ->assertJsonCount(1, 'data')
         ->assertJsonPath('data.0.id', $product1->id);
 });
-

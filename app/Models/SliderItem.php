@@ -26,8 +26,8 @@ class SliderItem extends Model
 
     protected $casts = [
         'sort_order' => 'int',
-        'is_active'  => 'bool',
-        'meta'       => 'array',
+        'is_active' => 'bool',
+        'meta' => 'array',
     ];
 
     public function slider(): BelongsTo
@@ -40,4 +40,3 @@ class SliderItem extends Model
         return $this->belongsTo(MediaFile::class, 'media_file_id');
     }
 }
-

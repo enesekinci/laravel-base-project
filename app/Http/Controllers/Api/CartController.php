@@ -73,7 +73,7 @@ class CartController extends Controller
 
         $updated = $this->cartService->updateItemQuantity($cart, $cartItem, $quantity);
 
-        if (!$updated) {
+        if (! $updated) {
             return response()->json([
                 'data' => null,
             ], 200);

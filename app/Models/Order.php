@@ -39,15 +39,15 @@ class Order extends Model
     ];
 
     protected $casts = [
-        'billing_address'  => 'array',
+        'billing_address' => 'array',
         'shipping_address' => 'array',
-        'subtotal'         => 'float',
-        'discount_total'   => 'float',
-        'tax_total'        => 'float',
-        'shipping_total'   => 'float',
-        'grand_total'      => 'float',
-        'coupon_discount'  => 'float',
-        'placed_at'        => 'datetime',
+        'subtotal' => 'float',
+        'discount_total' => 'float',
+        'tax_total' => 'float',
+        'shipping_total' => 'float',
+        'grand_total' => 'float',
+        'coupon_discount' => 'float',
+        'placed_at' => 'datetime',
     ];
 
     public function user()

@@ -14,8 +14,8 @@ class AttributeValueFactory extends Factory
     {
         return [
             'attribute_id' => Attribute::factory(),
-            'value'        => ucfirst($this->faker->word),
-            'sort_order'   => 0,
+            'value' => ucfirst($this->faker->word),
+            'sort_order' => 0,
         ];
     }
 }

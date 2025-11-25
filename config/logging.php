@@ -22,6 +22,22 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Request Logging Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Enable or disable request logging globally.
+    | Excluded paths will not be logged.
+    |
+    */
+
+    'enable_request_logging' => env('LOG_REQUESTS_ENABLED', true),
+
+    'excluded_request_paths' => explode(',', env('LOG_REQUESTS_EXCLUDED_PATHS', '/up,/health')),
+
+    'slow_request_threshold_ms' => env('LOG_SLOW_REQUEST_THRESHOLD_MS', 500),
+
+    /*
+    |--------------------------------------------------------------------------
     | Deprecations Log Channel
     |--------------------------------------------------------------------------
     |
@@ -125,6 +141,46 @@ return [
 
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
+        ],
+
+        'requests' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/requests.log'),
+            'level' => env('LOG_LEVEL', 'info'),
+            'days' => env('LOG_REQUESTS_DAYS', 30),
+            'replace_placeholders' => true,
+        ],
+
+        'slow-sql' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/slow-sql.log'),
+            'level' => env('LOG_LEVEL', 'warning'),
+            'days' => env('LOG_SLOW_SQL_DAYS', 90),
+            'replace_placeholders' => true,
+        ],
+
+        'security' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/security.log'),
+            'level' => env('LOG_LEVEL', 'warning'),
+            'days' => env('LOG_SECURITY_DAYS', 365),
+            'replace_placeholders' => true,
+        ],
+
+        'admin-actions' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/admin-actions.log'),
+            'level' => env('LOG_LEVEL', 'info'),
+            'days' => env('LOG_ADMIN_ACTIONS_DAYS', 365),
+            'replace_placeholders' => true,
+        ],
+
+        'errors' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/errors.log'),
+            'level' => env('LOG_LEVEL', 'error'),
+            'days' => env('LOG_ERRORS_DAYS', 90),
+            'replace_placeholders' => true,
         ],
 
     ],

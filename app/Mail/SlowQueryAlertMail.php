@@ -21,7 +21,7 @@ class SlowQueryAlertMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: '⚠️ Slow Query Alert - ' . config('app.name'),
+            subject: '⚠️ Slow Query Alert - '.config('app.name'),
         );
     }
 
@@ -30,11 +30,11 @@ class SlowQueryAlertMail extends Mailable
         return new Content(
             view: 'emails.slow-query-alert',
             with: [
-                'sql'      => $this->sql,
-                'time'     => $this->time,
+                'sql' => $this->sql,
+                'time' => $this->time,
                 'bindings' => $this->bindings,
-                'appName'  => config('app.name'),
-                'appUrl'   => config('app.url'),
+                'appName' => config('app.name'),
+                'appUrl' => config('app.url'),
             ],
         );
     }

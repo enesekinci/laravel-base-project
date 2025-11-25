@@ -22,10 +22,10 @@ class ShippingMethod extends Model
     ];
 
     protected $casts = [
-        'price'          => 'float',
+        'price' => 'float',
         'min_cart_total' => 'float',
-        'is_active'      => 'bool',
-        'sort_order'     => 'int',
-        'config'         => 'array',
+        'is_active' => 'bool',
+        'sort_order' => 'int',
+        'config' => 'array',
     ];
 }

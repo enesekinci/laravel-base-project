@@ -21,4 +21,3 @@ class PostCategory extends Model
         return $this->belongsToMany(Post::class, 'post_post_category');
     }
 }
-

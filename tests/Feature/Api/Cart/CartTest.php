@@ -1,10 +1,10 @@
 <?php
 
-use App\Models\User;
-use App\Models\Product;
-use App\Models\ProductVariant;
 use App\Models\Cart;
 use App\Models\CartItem;
+use App\Models\Product;
+use App\Models\ProductVariant;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -13,6 +13,7 @@ function actingUser()
 {
     $user = User::factory()->create();
     test()->actingAs($user);
+
     return $user;
 }
 
@@ -46,7 +47,7 @@ it('adds a product to cart and calculates totals', function () {
 
     $payload = [
         'product_id' => $product->id,
-        'quantity'   => 2,
+        'quantity' => 2,
     ];
 
     $response = $this->postJson('/api/cart/items', $payload);
@@ -89,13 +90,13 @@ it('uses variant price when adding variant to cart', function () {
 
     $variant = ProductVariant::factory()->create([
         'product_id' => $product->id,
-        'price'      => 150,
+        'price' => 150,
     ]);
 
     $payload = [
-        'product_id'        => $product->id,
+        'product_id' => $product->id,
         'product_variant_id' => $variant->id,
-        'quantity'          => 1,
+        'quantity' => 1,
     ];
 
     $response = $this->postJson('/api/cart/items', $payload);
@@ -119,13 +120,13 @@ it('increments quantity when adding same product+variant again', function () {
 
     $variant = ProductVariant::factory()->create([
         'product_id' => $product->id,
-        'price'      => 120,
+        'price' => 120,
     ]);
 
     $payload = [
-        'product_id'        => $product->id,
+        'product_id' => $product->id,
         'product_variant_id' => $variant->id,
-        'quantity'          => 1,
+        'quantity' => 1,
     ];
 
     $this->postJson('/api/cart/items', $payload)->assertStatus(201);
@@ -150,12 +151,12 @@ it('updates cart item quantity', function () {
 
     $this->postJson('/api/cart/items', [
         'product_id' => $product->id,
-        'quantity'   => 2,
+        'quantity' => 2,
     ])->assertStatus(201);
 
     $item = CartItem::first();
 
-    $response = $this->putJson('/api/cart/items/' . $item->id, [
+    $response = $this->putJson('/api/cart/items/'.$item->id, [
         'quantity' => 5,
     ]);
 
@@ -179,12 +180,12 @@ it('removes cart item when quantity set to zero', function () {
 
     $this->postJson('/api/cart/items', [
         'product_id' => $product->id,
-        'quantity'   => 2,
+        'quantity' => 2,
     ])->assertStatus(201);
 
     $item = CartItem::first();
 
-    $response = $this->putJson('/api/cart/items/' . $item->id, [
+    $response = $this->putJson('/api/cart/items/'.$item->id, [
         'quantity' => 0,
     ]);
 
@@ -206,12 +207,12 @@ it('deletes cart item via delete endpoint', function () {
 
     $this->postJson('/api/cart/items', [
         'product_id' => $product->id,
-        'quantity'   => 1,
+        'quantity' => 1,
     ])->assertStatus(201);
 
     $item = CartItem::first();
 
-    $response = $this->deleteJson('/api/cart/items/' . $item->id);
+    $response = $this->deleteJson('/api/cart/items/'.$item->id);
 
     $response->assertStatus(204);
 
@@ -226,7 +227,7 @@ it('validates quantity and product existence', function () {
 
     $response = $this->postJson('/api/cart/items', [
         'product_id' => 999999,
-        'quantity'   => 0,
+        'quantity' => 0,
     ]);
 
     $response->assertStatus(422)

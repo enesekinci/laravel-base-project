@@ -38,19 +38,19 @@ class PerformanceTestSeeder extends Seeder
         $sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
         $materials = ['Pamuk', 'Polyester', 'Keten', 'Yün', 'İpek'];
 
-        $colorValues = collect($colors)->map(fn($color) => OptionValue::factory()->create([
+        $colorValues = collect($colors)->map(fn ($color) => OptionValue::factory()->create([
             'option_id' => $colorOption->id,
-            'value'     => $color,
+            'value' => $color,
         ]));
 
-        $sizeValues = collect($sizes)->map(fn($size) => OptionValue::factory()->create([
+        $sizeValues = collect($sizes)->map(fn ($size) => OptionValue::factory()->create([
             'option_id' => $sizeOption->id,
-            'value'     => $size,
+            'value' => $size,
         ]));
 
-        $materialValues = collect($materials)->map(fn($material) => OptionValue::factory()->create([
+        $materialValues = collect($materials)->map(fn ($material) => OptionValue::factory()->create([
             'option_id' => $materialOption->id,
-            'value'     => $material,
+            'value' => $material,
         ]));
 
         // Attributes (10-20 attribute)
@@ -61,9 +61,9 @@ class PerformanceTestSeeder extends Seeder
         $attributeSet->attributes()->attach($attributes->pluck('id')->toArray());
 
         // Products (1-2 bin ürün)
-        $products = Product::factory()->count(1500)->create(function () use ($brands, $taxClasses, $categories) {
+        $products = Product::factory()->count(1500)->create(function () use ($brands, $taxClasses) {
             return [
-                'brand_id'     => $brands->random()->id,
+                'brand_id' => $brands->random()->id,
                 'tax_class_id' => $taxClasses->random()->id,
             ];
         });
@@ -78,7 +78,7 @@ class PerformanceTestSeeder extends Seeder
             $selectedAttributes = $attributes->random(rand(3, 8));
             foreach ($selectedAttributes as $attribute) {
                 ProductAttributeValue::factory()->create([
-                    'product_id'   => $product->id,
+                    'product_id' => $product->id,
                     'attribute_id' => $attribute->id,
                     'value_string' => fake()->word(),
                 ]);
@@ -92,7 +92,7 @@ class PerformanceTestSeeder extends Seeder
             for ($i = 0; $i < $variantCount; $i++) {
                 $variant = ProductVariant::factory()->create([
                     'product_id' => $product->id,
-                    'sku'        => $product->sku . '-' . Str::upper(Str::random(4)),
+                    'sku' => $product->sku.'-'.Str::upper(Str::random(4)),
                 ]);
 
                 // Her variant'a rastgele option value'lar ata
@@ -101,9 +101,9 @@ class PerformanceTestSeeder extends Seeder
                 $selectedMaterial = $materialValues->random();
 
                 $variant->optionValues()->attach([
-                    $selectedColor->id    => ['option_id' => $colorOption->id],
-                    $selectedSize->id     => ['option_id' => $sizeOption->id],
-                    $selectedMaterial->id  => ['option_id' => $materialOption->id],
+                    $selectedColor->id => ['option_id' => $colorOption->id],
+                    $selectedSize->id => ['option_id' => $sizeOption->id],
+                    $selectedMaterial->id => ['option_id' => $materialOption->id],
                 ]);
             }
         });

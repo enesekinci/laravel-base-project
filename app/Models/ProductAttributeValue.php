@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class ProductAttributeValue extends Model
 {
@@ -35,15 +35,14 @@ class ProductAttributeValue extends Model
         $type = $this->attribute->type ?? 'text';
 
         return match ($type) {
-            'integer'    => $this->value_int,
-            'decimal'    => $this->value_decimal,
-            'boolean'    => (bool) $this->value_int,
-            'date'       => $this->value_datetime,
+            'integer' => $this->value_int,
+            'decimal' => $this->value_decimal,
+            'boolean' => (bool) $this->value_int,
+            'date' => $this->value_datetime,
             'select',
             'multiselect' => $this->optionValue?->value,
-            'textarea'   => $this->value_text,
-            default      => $this->value_string,
+            'textarea' => $this->value_text,
+            default => $this->value_string,
         };
     }
 }
-

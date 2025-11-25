@@ -1,20 +1,11 @@
 <?php
 
 use App\Models\MediaFile;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
 uses(RefreshDatabase::class);
-
-if (!function_exists('adminUser')) {
-    function adminUser(): User {
-        $user = User::factory()->create();
-        test()->actingAs($user, 'sanctum');
-        return $user;
-    }
-}
 
 it('uploads a media file and stores record', function () {
     adminUser();
@@ -24,9 +15,9 @@ it('uploads a media file and stores record', function () {
     $file = UploadedFile::fake()->image('photo.jpg', 800, 600)->size(1024);
 
     $payload = [
-        'file'       => $file,
+        'file' => $file,
         'collection' => 'products',
-        'alt'        => 'Product image',
+        'alt' => 'Product image',
         'is_private' => false,
     ];
 
@@ -48,10 +39,10 @@ it('uploads a media file and stores record', function () {
     $data = $res->json('data');
 
     $this->assertDatabaseHas('media_files', [
-        'id'         => $data['id'],
-        'filename'   => 'photo.jpg',
+        'id' => $data['id'],
+        'filename' => 'photo.jpg',
         'collection' => 'products',
-        'alt'        => 'Product image',
+        'alt' => 'Product image',
     ]);
 
     Storage::disk('public')->assertExists($data['path']);
@@ -62,12 +53,12 @@ it('lists media files with filters', function () {
 
     $m1 = MediaFile::factory()->create([
         'collection' => 'products',
-        'alt'        => 'Red shirt',
+        'alt' => 'Red shirt',
     ]);
 
     $m2 = MediaFile::factory()->create([
         'collection' => 'banners',
-        'alt'        => 'Big banner',
+        'alt' => 'Big banner',
         'is_private' => true,
     ]);
 
@@ -93,13 +84,13 @@ it('updates media metadata', function () {
 
     $m = MediaFile::factory()->create([
         'collection' => 'products',
-        'alt'        => 'Old alt',
+        'alt' => 'Old alt',
         'is_private' => false,
     ]);
 
     $payload = [
         'collection' => 'banners',
-        'alt'        => 'New alt',
+        'alt' => 'New alt',
         'is_private' => true,
     ];
 
@@ -111,9 +102,9 @@ it('updates media metadata', function () {
         ->assertJsonPath('data.is_private', true);
 
     $this->assertDatabaseHas('media_files', [
-        'id'         => $m->id,
+        'id' => $m->id,
         'collection' => 'banners',
-        'alt'        => 'New alt',
+        'alt' => 'New alt',
         'is_private' => true,
     ]);
 });
@@ -135,7 +126,7 @@ it('soft deletes and restores a media file', function () {
         ->assertJsonPath('data.id', $m->id);
 
     $this->assertDatabaseHas('media_files', [
-        'id'         => $m->id,
+        'id' => $m->id,
         'deleted_at' => null,
     ]);
 });
@@ -148,4 +139,3 @@ it('validates media upload payload', function () {
     $res->assertStatus(422)
         ->assertJsonValidationErrors(['file']);
 });
-

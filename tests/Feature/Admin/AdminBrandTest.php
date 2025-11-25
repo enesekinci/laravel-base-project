@@ -1,32 +1,22 @@
 <?php
 
-use App\Models\User;
 use App\Models\Brand;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-if (!function_exists('adminUser')) {
-    function adminUser(): User
-    {
-        $user = User::factory()->create();
-        test()->actingAs($user);
-        return $user;
-    }
-}
-
 it('lists brands with filters for admin', function () {
     adminUser();
 
     $b1 = Brand::factory()->create([
-        'name'      => 'Nike',
-        'slug'      => 'nike',
+        'name' => 'Nike',
+        'slug' => 'nike',
         'is_active' => true,
     ]);
 
     $b2 = Brand::factory()->create([
-        'name'      => 'Adidas',
-        'slug'      => 'adidas',
+        'name' => 'Adidas',
+        'slug' => 'adidas',
         'is_active' => false,
     ]);
 
@@ -62,9 +52,9 @@ it('creates a brand', function () {
     adminUser();
 
     $payload = [
-        'name'      => 'Puma',
-        'slug'      => 'puma',
-        'logo'      => 'brands/puma.png',
+        'name' => 'Puma',
+        'slug' => 'puma',
+        'logo' => 'brands/puma.png',
         'is_active' => true,
     ];
 
@@ -75,9 +65,9 @@ it('creates a brand', function () {
         ->assertJsonPath('data.slug', 'puma');
 
     $this->assertDatabaseHas('brands', [
-        'name'      => 'Puma',
-        'slug'      => 'puma',
-        'logo'      => 'brands/puma.png',
+        'name' => 'Puma',
+        'slug' => 'puma',
+        'logo' => 'brands/puma.png',
         'is_active' => true,
     ]);
 });
@@ -98,16 +88,16 @@ it('updates a brand', function () {
     adminUser();
 
     $brand = Brand::factory()->create([
-        'name'      => 'Old Name',
-        'slug'      => 'old-name',
-        'logo'      => null,
+        'name' => 'Old Name',
+        'slug' => 'old-name',
+        'logo' => null,
         'is_active' => true,
     ]);
 
     $payload = [
-        'name'      => 'New Name',
-        'slug'      => 'new-name',
-        'logo'      => 'brands/new.png',
+        'name' => 'New Name',
+        'slug' => 'new-name',
+        'logo' => 'brands/new.png',
         'is_active' => false,
     ];
 
@@ -120,10 +110,10 @@ it('updates a brand', function () {
         ->assertJsonPath('data.is_active', false);
 
     $this->assertDatabaseHas('brands', [
-        'id'        => $brand->id,
-        'name'      => 'New Name',
-        'slug'      => 'new-name',
-        'logo'      => 'brands/new.png',
+        'id' => $brand->id,
+        'name' => 'New Name',
+        'slug' => 'new-name',
+        'logo' => 'brands/new.png',
         'is_active' => false,
     ]);
 });
@@ -145,7 +135,7 @@ it('soft deletes and restores a brand', function () {
         ->assertJsonPath('data.id', $brand->id);
 
     $this->assertDatabaseHas('brands', [
-        'id'         => $brand->id,
+        'id' => $brand->id,
         'deleted_at' => null,
     ]);
 });

@@ -1,13 +1,13 @@
 <?php
 
-use App\Models\Product;
 use App\Models\Option;
 use App\Models\OptionValue;
+use App\Models\Product;
 use App\Services\ProductVariantGenerator;
 
 it('generates all combinations of options', function () {
     $product = Product::factory()->create();
-    $generator = new ProductVariantGenerator();
+    $generator = new ProductVariantGenerator;
 
     $colorOption = Option::factory()->create(['name' => 'Renk']);
     $black = OptionValue::factory()->create(['option_id' => $colorOption->id, 'value' => 'Siyah']);

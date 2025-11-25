@@ -24,13 +24,13 @@ class Coupon extends Model
     ];
 
     protected $casts = [
-        'value'             => 'float',
-        'min_cart_total'    => 'float',
-        'usage_limit'       => 'int',
+        'value' => 'float',
+        'min_cart_total' => 'float',
+        'usage_limit' => 'int',
         'usage_limit_per_user' => 'int',
-        'used_count'        => 'int',
-        'is_active'         => 'bool',
-        'starts_at'         => 'datetime',
-        'ends_at'           => 'datetime',
+        'used_count' => 'int',
+        'is_active' => 'bool',
+        'starts_at' => 'datetime',
+        'ends_at' => 'datetime',
     ];
 }

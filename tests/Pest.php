@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\User;
+
 uses(
     Tests\TestCase::class,
     Illuminate\Foundation\Testing\RefreshDatabase::class
@@ -17,3 +19,14 @@ uses()->beforeEach(function () {
         }
     }
 })->in('Feature', 'Unit');
+
+// Global test helpers
+if (! function_exists('adminUser')) {
+    function adminUser(): User
+    {
+        $user = User::factory()->create(['is_admin' => true]);
+        test()->actingAs($user, 'web');
+
+        return $user;
+    }
+}

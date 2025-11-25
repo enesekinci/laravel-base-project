@@ -8,7 +8,6 @@ use App\Http\Requests\Admin\UpdateSliderItemRequest;
 use App\Http\Resources\Admin\AdminSliderItemResource;
 use App\Models\Slider;
 use App\Models\SliderItem;
-use Illuminate\Http\Request;
 
 class SliderItemController extends Controller
 {

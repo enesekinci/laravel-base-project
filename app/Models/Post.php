@@ -49,4 +49,3 @@ class Post extends Model
         return $this->belongsToMany(PostTag::class, 'post_post_tag');
     }
 }
-

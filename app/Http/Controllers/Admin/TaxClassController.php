@@ -18,17 +18,17 @@ class TaxClassController extends Controller
 
         if ($search = $request->query('search')) {
             $likeOperator = DatabaseHelper::getCaseInsensitiveLikeOperator();
-            $query->where('name', $likeOperator, '%' . $search . '%');
+            $query->where('name', $likeOperator, '%'.$search.'%');
         }
 
-        if (!is_null($request->query('is_active'))) {
+        if (! is_null($request->query('is_active'))) {
             $val = (int) $request->query('is_active') === 1;
             $query->where('is_active', $val);
         }
 
         $taxes = $query
             ->orderBy('name')
-            ->paginate((int)$request->query('per_page', 50));
+            ->paginate((int) $request->query('per_page', 50));
 
         return AdminTaxClassResource::collection($taxes);
     }

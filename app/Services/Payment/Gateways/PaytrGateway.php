@@ -32,19 +32,19 @@ class PaytrGateway implements PaymentGateway
         // Örnek (pseudo):
         // $token = $this->client->initPayment([...]);
 
-        $redirectUrl = 'https://www.paytr.com/odeme/guvenli/' . 'TOKEN_HERE';
+        $redirectUrl = 'https://www.paytr.com/odeme/guvenli/'.'TOKEN_HERE';
 
         // Transaction kaydı
         Transaction::create([
-            'order_id'              => $order->id,
-            'payment_method_id'     => $order->payment_method_id,
-            'gateway'               => 'paytr',
+            'order_id' => $order->id,
+            'payment_method_id' => $order->payment_method_id,
+            'gateway' => 'paytr',
             'gateway_transaction_id' => null, // token veya sonra gelecek id
-            'type'                  => 'payment',
-            'status'                => 'pending',
-            'amount'                => $order->grand_total,
-            'currency'              => $order->currency ?? 'TRY',
-            'message'               => 'PayTR payment initiated',
+            'type' => 'payment',
+            'status' => 'pending',
+            'amount' => $order->grand_total,
+            'currency' => $order->currency ?? 'TRY',
+            'message' => 'PayTR payment initiated',
         ]);
 
         return new PaymentInitResult(
@@ -61,7 +61,7 @@ class PaytrGateway implements PaymentGateway
 
         Log::info('PayTR callback payload', $payload);
 
-        $orderId = (int)($payload['order_id'] ?? 0);
+        $orderId = (int) ($payload['order_id'] ?? 0);
         $success = ($payload['status'] ?? '') === 'success';
 
         $transactionId = $payload['transaction_id'] ?? null;
@@ -75,17 +75,17 @@ class PaytrGateway implements PaymentGateway
 
         if ($success) {
             $transaction?->update([
-                'status'                => 'success',
+                'status' => 'success',
                 'gateway_transaction_id' => $transactionId,
-                'message'               => 'Payment success',
-                'processed_at'          => now(),
+                'message' => 'Payment success',
+                'processed_at' => now(),
             ]);
 
             $this->orderStateService->markAsPaid($order);
         } else {
             $transaction?->update([
-                'status'       => 'failed',
-                'message'      => $payload['failed_reason'] ?? 'Payment failed',
+                'status' => 'failed',
+                'message' => $payload['failed_reason'] ?? 'Payment failed',
                 'processed_at' => now(),
             ]);
 
@@ -94,7 +94,7 @@ class PaytrGateway implements PaymentGateway
 
         return new PaymentCallbackResult(
             success: $success,
-            orderReference: (string)$order->id,
+            orderReference: (string) $order->id,
             transactionId: $transactionId,
             message: $success ? 'Success' : 'Failed',
         );
@@ -105,12 +105,12 @@ class PaytrGateway implements PaymentGateway
         // Burada PayTR refund API çağrısı yapılır
         Log::info('PayTR refund requested', [
             'transaction_id' => $paymentTransaction->gateway_transaction_id,
-            'amount'         => $amount,
+            'amount' => $amount,
         ]);
 
         // pseudo: $refundId = $this->client->refund(...);
 
-        $refundId = 'PAYTR_REFUND_' . uniqid();
+        $refundId = 'PAYTR_REFUND_'.uniqid();
 
         return new PaymentRefundResult(
             success: true,

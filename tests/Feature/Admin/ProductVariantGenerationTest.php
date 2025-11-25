@@ -1,18 +1,9 @@
 <?php
 
-use App\Models\User;
-use App\Models\Product;
 use App\Models\Option;
 use App\Models\OptionValue;
+use App\Models\Product;
 use App\Models\ProductVariant;
-
-if (!function_exists('adminUser')) {
-    function adminUser(): User {
-        $user = User::factory()->create();
-        test()->actingAs($user);
-        return $user;
-    }
-}
 
 it('generates product variants from options', function () {
     adminUser();
@@ -21,21 +12,21 @@ it('generates product variants from options', function () {
     $colorOption = Option::factory()->create(['name' => 'Renk']);
     $black = OptionValue::factory()->create([
         'option_id' => $colorOption->id,
-        'value'     => 'Siyah',
+        'value' => 'Siyah',
     ]);
     $white = OptionValue::factory()->create([
         'option_id' => $colorOption->id,
-        'value'     => 'Beyaz',
+        'value' => 'Beyaz',
     ]);
 
     $sizeOption = Option::factory()->create(['name' => 'Beden']);
     $sizeS = OptionValue::factory()->create([
         'option_id' => $sizeOption->id,
-        'value'     => 'S',
+        'value' => 'S',
     ]);
     $sizeM = OptionValue::factory()->create([
         'option_id' => $sizeOption->id,
-        'value'     => 'M',
+        'value' => 'M',
     ]);
 
     $payload = [
@@ -50,13 +41,13 @@ it('generates product variants from options', function () {
             ],
         ],
         'base' => [
-            'price'      => 299.90,
-            'quantity'   => 10,
+            'price' => 299.90,
+            'quantity' => 10,
         ],
     ];
 
     $response = $this->postJson(
-        route('admin.products.variants.generate', $product),
+        route('api.admin.products.variants.generate', $product),
         $payload
     );
 
@@ -85,13 +76,13 @@ it('skips existing variant combinations', function () {
     $colorOption = Option::factory()->create(['name' => 'Renk']);
     $black = OptionValue::factory()->create([
         'option_id' => $colorOption->id,
-        'value'     => 'Siyah',
+        'value' => 'Siyah',
     ]);
 
     $sizeOption = Option::factory()->create(['name' => 'Beden']);
     $sizeM = OptionValue::factory()->create([
         'option_id' => $sizeOption->id,
-        'value'     => 'M',
+        'value' => 'M',
     ]);
 
     // Mevcut varyant oluştur
@@ -115,11 +106,10 @@ it('skips existing variant combinations', function () {
     ];
 
     $response = $this->postJson(
-        route('admin.products.variants.generate', $product),
+        route('api.admin.products.variants.generate', $product),
         $payload
     );
 
     expect($response->json('meta.created_count'))->toBe(0);
     expect(ProductVariant::where('product_id', $product->id)->count())->toBe(1);
 });
-

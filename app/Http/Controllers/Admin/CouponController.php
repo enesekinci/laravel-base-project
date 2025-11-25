@@ -18,14 +18,14 @@ class CouponController extends Controller
 
         if ($search = $request->query('search')) {
             $likeOperator = DatabaseHelper::getCaseInsensitiveLikeOperator();
-            $query->where('code', $likeOperator, '%' . $search . '%');
+            $query->where('code', $likeOperator, '%'.$search.'%');
         }
 
         if ($type = $request->query('type')) {
             $query->where('type', $type);
         }
 
-        if (!is_null($request->query('is_active'))) {
+        if (! is_null($request->query('is_active'))) {
             $val = (int) $request->query('is_active') === 1;
             $query->where('is_active', $val);
         }
@@ -62,7 +62,7 @@ class CouponController extends Controller
     {
         $data = $request->validated();
 
-        if (!array_key_exists('is_active', $data)) {
+        if (! array_key_exists('is_active', $data)) {
             $data['is_active'] = true;
         }
 
@@ -100,7 +100,7 @@ class CouponController extends Controller
 
     public function toggleActive(Coupon $coupon)
     {
-        $coupon->is_active = !$coupon->is_active;
+        $coupon->is_active = ! $coupon->is_active;
         $coupon->save();
 
         return new AdminCouponResource($coupon);

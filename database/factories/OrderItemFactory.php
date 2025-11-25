@@ -5,7 +5,6 @@ namespace Database\Factories;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
-use App\Models\ProductVariant;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class OrderItemFactory extends Factory
@@ -19,19 +18,19 @@ class OrderItemFactory extends Factory
         $subtotal = $unitPrice * $quantity;
 
         return [
-            'order_id'        => Order::factory(),
-            'product_id'      => Product::factory(),
+            'order_id' => Order::factory(),
+            'product_id' => Product::factory(),
             'product_variant_id' => null,
-            'name'            => $this->faker->words(3, true),
-            'sku'             => $this->faker->unique()->bothify('SKU-####'),
-            'unit_price'      => $unitPrice,
-            'quantity'        => $quantity,
-            'tax_class_id'    => null,
-            'tax_rate'        => 0,
-            'subtotal'        => $subtotal,
-            'discount_total'  => 0,
-            'tax_total'       => 0,
-            'total'           => $subtotal,
+            'name' => $this->faker->words(3, true),
+            'sku' => $this->faker->unique()->bothify('SKU-####'),
+            'unit_price' => $unitPrice,
+            'quantity' => $quantity,
+            'tax_class_id' => null,
+            'tax_rate' => 0,
+            'subtotal' => $subtotal,
+            'discount_total' => 0,
+            'tax_total' => 0,
+            'total' => $subtotal,
         ];
     }
 }

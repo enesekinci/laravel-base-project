@@ -1,19 +1,10 @@
 <?php
 
-use App\Models\User;
 use App\Models\Option;
 use App\Models\OptionValue;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
-
-if (!function_exists('adminUser')) {
-    function adminUser(): User {
-        $user = User::factory()->create();
-        test()->actingAs($user);
-        return $user;
-    }
-}
 
 it('lists options with their values for admin', function () {
     adminUser();
@@ -29,20 +20,20 @@ it('lists options with their values for admin', function () {
     ]);
 
     $red = OptionValue::factory()->create([
-        'option_id'  => $color->id,
-        'value'      => 'Red',
+        'option_id' => $color->id,
+        'value' => 'Red',
         'sort_order' => 1,
     ]);
 
     $blue = OptionValue::factory()->create([
-        'option_id'  => $color->id,
-        'value'      => 'Blue',
+        'option_id' => $color->id,
+        'value' => 'Blue',
         'sort_order' => 2,
     ]);
 
     $small = OptionValue::factory()->create([
-        'option_id'  => $size->id,
-        'value'      => 'S',
+        'option_id' => $size->id,
+        'value' => 'S',
         'sort_order' => 1,
     ]);
 
@@ -89,8 +80,8 @@ it('shows a single option with values', function () {
     ]);
 
     $red = OptionValue::factory()->create([
-        'option_id'  => $option->id,
-        'value'      => 'Red',
+        'option_id' => $option->id,
+        'value' => 'Red',
         'sort_order' => 1,
     ]);
 
@@ -121,8 +112,8 @@ it('creates an option with values', function () {
     adminUser();
 
     $payload = [
-        'name'   => 'Color',
-        'type'   => 'select',
+        'name' => 'Color',
+        'type' => 'select',
         'values' => [
             ['value' => 'Red',  'sort_order' => 1],
             ['value' => 'Blue', 'sort_order' => 2],
@@ -137,19 +128,19 @@ it('creates an option with values', function () {
     $optionId = $res->json('data.id');
 
     $this->assertDatabaseHas('options', [
-        'id'   => $optionId,
+        'id' => $optionId,
         'name' => 'Color',
         'type' => 'select',
     ]);
 
     $this->assertDatabaseHas('option_values', [
         'option_id' => $optionId,
-        'value'     => 'Red',
+        'value' => 'Red',
     ]);
 
     $this->assertDatabaseHas('option_values', [
         'option_id' => $optionId,
-        'value'     => 'Blue',
+        'value' => 'Blue',
     ]);
 });
 
@@ -174,14 +165,14 @@ it('updates an option and syncs its values', function () {
     ]);
 
     $red = OptionValue::factory()->create([
-        'option_id'  => $option->id,
-        'value'      => 'Red',
+        'option_id' => $option->id,
+        'value' => 'Red',
         'sort_order' => 1,
     ]);
 
     $blue = OptionValue::factory()->create([
-        'option_id'  => $option->id,
-        'value'      => 'Blue',
+        'option_id' => $option->id,
+        'value' => 'Blue',
         'sort_order' => 2,
     ]);
 
@@ -190,12 +181,12 @@ it('updates an option and syncs its values', function () {
         'type' => 'select',
         'values' => [
             [
-                'id'         => $red->id,
-                'value'      => 'Red Updated',
+                'id' => $red->id,
+                'value' => 'Red Updated',
                 'sort_order' => 10,
             ],
             [
-                'value'      => 'Green',
+                'value' => 'Green',
                 'sort_order' => 30,
             ],
         ],
@@ -208,22 +199,22 @@ it('updates an option and syncs its values', function () {
 
     // Red updated
     $this->assertDatabaseHas('option_values', [
-        'id'         => $red->id,
-        'option_id'  => $option->id,
-        'value'      => 'Red Updated',
+        'id' => $red->id,
+        'option_id' => $option->id,
+        'value' => 'Red Updated',
         'sort_order' => 10,
     ]);
 
     // Blue silinmiş olmalı
     $this->assertDatabaseMissing('option_values', [
-        'id'        => $blue->id,
+        'id' => $blue->id,
         'option_id' => $option->id,
     ]);
 
     // Green eklenmiş olmalı
     $this->assertDatabaseHas('option_values', [
-        'option_id'  => $option->id,
-        'value'      => 'Green',
+        'option_id' => $option->id,
+        'value' => 'Green',
         'sort_order' => 30,
     ]);
 });
@@ -241,4 +232,3 @@ it('soft deletes an option', function () {
         'id' => $option->id,
     ]);
 });
-

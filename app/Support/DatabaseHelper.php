@@ -12,7 +12,7 @@ class DatabaseHelper
      */
     public static function getCaseInsensitiveLikeOperator(?Connection $connection = null): string
     {
-        if (!$connection) {
+        if (! $connection) {
             $connection = \Illuminate\Support\Facades\DB::connection();
         }
 

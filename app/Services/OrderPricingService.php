@@ -42,28 +42,28 @@ class OrderPricingService
 
                 // çok basic tax: product->taxClass->rate kullandığını varsayıyorum
                 $taxClass = $product->taxClass ?? null;
-                $taxRate  = $taxClass ? (float) $taxClass->rate : 0;
+                $taxRate = $taxClass ? (float) $taxClass->rate : 0;
 
                 $lineSubtotal = $unitPrice * $qty;
-                $lineTax      = $taxRate > 0 ? $lineSubtotal * $taxRate / 100 : 0;
-                $lineTotal    = $lineSubtotal + $lineTax;
+                $lineTax = $taxRate > 0 ? $lineSubtotal * $taxRate / 100 : 0;
+                $lineTotal = $lineSubtotal + $lineTax;
 
                 $subtotal += $lineSubtotal;
                 $taxTotal += $lineTax;
 
                 $itemsData[] = [
-                    'product_id'        => $product->id,
-                    'product_variant_id'=> $variant?->id,
-                    'name'              => $product->name,
-                    'sku'               => $variant?->sku ?? $product->sku,
-                    'unit_price'        => $unitPrice,
-                    'quantity'          => $qty,
-                    'tax_class_id'      => $taxClass?->id,
-                    'tax_rate'          => $taxRate,
-                    'subtotal'          => $lineSubtotal,
-                    'discount_total'    => 0,
-                    'tax_total'         => $lineTax,
-                    'total'             => $lineTotal,
+                    'product_id' => $product->id,
+                    'product_variant_id' => $variant?->id,
+                    'name' => $product->name,
+                    'sku' => $variant?->sku ?? $product->sku,
+                    'unit_price' => $unitPrice,
+                    'quantity' => $qty,
+                    'tax_class_id' => $taxClass?->id,
+                    'tax_rate' => $taxRate,
+                    'subtotal' => $lineSubtotal,
+                    'discount_total' => 0,
+                    'tax_total' => $lineTax,
+                    'total' => $lineTotal,
                 ];
             }
 
@@ -83,7 +83,7 @@ class OrderPricingService
             }
 
             // 3. Shipping (şimdilik basit: sabit 0 veya payload'tan)
-            $shippingTotal = (float)($payload['shipping_total'] ?? 0);
+            $shippingTotal = (float) ($payload['shipping_total'] ?? 0);
 
             // 4. Grand total
             $grandTotal = $subtotal - $discountTotal + $taxTotal + $shippingTotal;
@@ -92,25 +92,25 @@ class OrderPricingService
             }
 
             // 5. Order oluştur
-            $order = new Order();
-            $order->user_id         = $payload['user_id'] ?? null;
-            $order->status          = 'pending';
-            $order->payment_status  = 'pending';
-            $order->payment_method  = $payload['payment_method'] ?? null;
-            $order->currency        = $payload['currency'] ?? 'TRY';
-            $order->subtotal        = $subtotal;
-            $order->discount_total  = $discountTotal;
-            $order->tax_total       = $taxTotal;
-            $order->shipping_total  = $shippingTotal;
-            $order->grand_total     = $grandTotal;
-            $order->coupon_code     = $coupon?->code;
+            $order = new Order;
+            $order->user_id = $payload['user_id'] ?? null;
+            $order->status = 'pending';
+            $order->payment_status = 'pending';
+            $order->payment_method = $payload['payment_method'] ?? null;
+            $order->currency = $payload['currency'] ?? 'TRY';
+            $order->subtotal = $subtotal;
+            $order->discount_total = $discountTotal;
+            $order->tax_total = $taxTotal;
+            $order->shipping_total = $shippingTotal;
+            $order->grand_total = $grandTotal;
+            $order->coupon_code = $coupon?->code;
             $order->coupon_discount = $couponDiscount;
             $order->billing_address = $payload['billing_address'] ?? null;
-            $order->shipping_address= $payload['shipping_address'] ?? null;
-            $order->customer_email  = $payload['customer_email'] ?? null;
-            $order->customer_name   = $payload['customer_name'] ?? null;
-            $order->customer_phone  = $payload['customer_phone'] ?? null;
-            $order->placed_at       = Carbon::now();
+            $order->shipping_address = $payload['shipping_address'] ?? null;
+            $order->customer_email = $payload['customer_email'] ?? null;
+            $order->customer_name = $payload['customer_name'] ?? null;
+            $order->customer_phone = $payload['customer_phone'] ?? null;
+            $order->placed_at = Carbon::now();
             $order->save();
 
             // 6. OrderItem'ları yaz
@@ -152,7 +152,7 @@ class OrderPricingService
             ->where('is_active', true)
             ->first();
 
-        if (!$coupon) {
+        if (! $coupon) {
             throw new RuntimeException('Invalid coupon code');
         }
 
@@ -178,4 +178,3 @@ class OrderPricingService
         return $coupon;
     }
 }
-

@@ -16,13 +16,13 @@ class CartService
         return Cart::firstOrCreate(
             [
                 'user_id' => $user->id,
-                'status'  => 'active',
+                'status' => 'active',
             ],
             [
                 'currency' => 'TRY',
                 'items_count' => 0,
-                'subtotal'    => 0,
-                'total'       => 0,
+                'subtotal' => 0,
+                'total' => 0,
             ]
         );
     }
@@ -47,10 +47,10 @@ class CartService
                 $item->unit_price = $unitPrice; // son fiyatı baz al
             } else {
                 $item = new CartItem([
-                    'product_id'        => $product->id,
+                    'product_id' => $product->id,
                     'product_variant_id' => $variant?->id,
-                    'quantity'          => $quantity,
-                    'unit_price'        => $unitPrice,
+                    'quantity' => $quantity,
+                    'unit_price' => $unitPrice,
                 ]);
                 $item->cart()->associate($cart);
             }
@@ -70,7 +70,8 @@ class CartService
             if ($quantity <= 0) {
                 $item->delete();
                 $this->recalculateCart($cart);
-                return null;
+
+                return;
             }
 
             $item->quantity = $quantity;
@@ -108,7 +109,7 @@ class CartService
         $itemsCount = $cart->items->count();
 
         $cart->subtotal = $subtotal;
-        $cart->total    = $subtotal; // ileride kargo/indirim ekleriz
+        $cart->total = $subtotal; // ileride kargo/indirim ekleriz
         $cart->items_count = $itemsCount;
 
         $cart->save();

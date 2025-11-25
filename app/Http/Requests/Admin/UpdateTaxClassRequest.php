@@ -14,8 +14,8 @@ class UpdateTaxClassRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'      => ['sometimes', 'required', 'string', 'max:255'],
-            'rate'      => ['sometimes', 'required', 'numeric', 'min:0', 'max:100'],
+            'name' => ['sometimes', 'required', 'string', 'max:255'],
+            'rate' => ['sometimes', 'required', 'numeric', 'min:0', 'max:100'],
             'is_active' => ['sometimes', 'boolean'],
         ];
     }

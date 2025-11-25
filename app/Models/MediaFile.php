@@ -27,9 +27,9 @@ class MediaFile extends Model
     ];
 
     protected $casts = [
-        'size'       => 'integer',
-        'width'      => 'integer',
-        'height'     => 'integer',
+        'size' => 'integer',
+        'width' => 'integer',
+        'height' => 'integer',
         'is_private' => 'boolean',
     ];
 
@@ -39,7 +39,7 @@ class MediaFile extends Model
 
     public function getUrlAttribute(): ?string
     {
-        if (!$this->path) {
+        if (! $this->path) {
             return null;
         }
 
@@ -51,4 +51,3 @@ class MediaFile extends Model
         return $this->belongsTo(User::class);
     }
 }
-

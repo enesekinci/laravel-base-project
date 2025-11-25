@@ -1,35 +1,25 @@
 <?php
 
-use App\Models\User;
 use App\Models\ShippingMethod;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-if (!function_exists('adminUser')) {
-    function adminUser(): User
-    {
-        $user = User::factory()->create();
-        test()->actingAs($user, 'sanctum');
-        return $user;
-    }
-}
-
 it('lists shipping methods with filters', function () {
     adminUser();
 
     $m1 = ShippingMethod::factory()->create([
-        'name'      => 'Free Shipping',
-        'code'      => 'free_shipping',
-        'type'      => 'free_shipping',
+        'name' => 'Free Shipping',
+        'code' => 'free_shipping',
+        'type' => 'free_shipping',
         'is_active' => true,
         'sort_order' => 1,
     ]);
 
     $m2 = ShippingMethod::factory()->create([
-        'name'      => 'Flat Rate',
-        'code'      => 'flat_rate',
-        'type'      => 'flat_rate',
+        'name' => 'Flat Rate',
+        'code' => 'flat_rate',
+        'type' => 'flat_rate',
         'is_active' => false,
         'sort_order' => 2,
     ]);
@@ -62,13 +52,13 @@ it('creates a shipping method', function () {
     adminUser();
 
     $payload = [
-        'name'           => 'Flat Rate',
-        'code'           => 'flat_rate',
-        'type'           => 'flat_rate',
-        'price'          => 25,
+        'name' => 'Flat Rate',
+        'code' => 'flat_rate',
+        'type' => 'flat_rate',
+        'price' => 25,
         'min_cart_total' => 0,
-        'is_active'      => true,
-        'sort_order'     => 10,
+        'is_active' => true,
+        'sort_order' => 10,
     ];
 
     $res = $this->postJson('/api/admin/shipping-methods', $payload);
@@ -80,8 +70,8 @@ it('creates a shipping method', function () {
     expect((float) $data['price'])->toBe(25.0);
 
     $this->assertDatabaseHas('shipping_methods', [
-        'code'      => 'flat_rate',
-        'price'     => 25,
+        'code' => 'flat_rate',
+        'price' => 25,
         'is_active' => true,
     ]);
 });
@@ -103,16 +93,16 @@ it('updates a shipping method', function () {
     adminUser();
 
     $m = ShippingMethod::factory()->create([
-        'name'      => 'Flat Rate',
-        'code'      => 'flat_rate',
-        'type'      => 'flat_rate',
-        'price'     => 10,
+        'name' => 'Flat Rate',
+        'code' => 'flat_rate',
+        'type' => 'flat_rate',
+        'price' => 10,
         'is_active' => true,
     ]);
 
     $payload = [
-        'name'      => 'Flat Rate Updated',
-        'price'     => 20,
+        'name' => 'Flat Rate Updated',
+        'price' => 20,
         'is_active' => false,
     ];
 
@@ -126,9 +116,9 @@ it('updates a shipping method', function () {
     expect((float) $data['price'])->toBe(20.0);
 
     $this->assertDatabaseHas('shipping_methods', [
-        'id'        => $m->id,
-        'name'      => 'Flat Rate Updated',
-        'price'     => 20,
+        'id' => $m->id,
+        'name' => 'Flat Rate Updated',
+        'price' => 20,
         'is_active' => false,
     ]);
 });
@@ -150,7 +140,7 @@ it('soft deletes and restores a shipping method', function () {
         ->assertJsonPath('data.id', $m->id);
 
     $this->assertDatabaseHas('shipping_methods', [
-        'id'         => $m->id,
+        'id' => $m->id,
         'deleted_at' => null,
     ]);
 });

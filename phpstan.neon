@@ -1,0 +1,28 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    paths:
+        - app
+        - config
+        - database
+        - routes
+        - tests
+
+    # Rule level (0-9)
+    level: 8
+
+    ignoreErrors:
+        # Laravel specific patterns
+        - '#PHPDoc tag @var#'
+
+    excludePaths:
+        - ./*/*/FileToIgnore.php
+
+    checkMissingIterableValueType: false
+    checkGenericClassInNonGenericObjectType: false
+
+    # Laravel specific
+    checkMissingCallableSignature: true
+    checkTooWideReturnTypesInProtectedAndPublicMethods: true
+

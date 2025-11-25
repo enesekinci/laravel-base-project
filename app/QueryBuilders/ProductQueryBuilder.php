@@ -36,7 +36,7 @@ class ProductQueryBuilder extends Builder
     {
         $include = $request->query('include', '');
 
-        if (!$include) {
+        if (! $include) {
             return [];
         }
 

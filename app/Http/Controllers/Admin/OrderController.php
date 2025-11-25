@@ -30,7 +30,7 @@ class OrderController extends Controller
         $paymentStatus = $request->query('payment_status');
         $couponCode = $request->query('coupon_code');
         $search = $request->query('search');
-        $perPage = (int)$request->query('per_page', 20);
+        $perPage = (int) $request->query('per_page', 20);
 
         $query = Order::query()->with('items')
             ->when($status, function ($query, $status) {
@@ -66,7 +66,7 @@ class OrderController extends Controller
     public function updateStatus(Request $request, Order $order)
     {
         $data = $request->validate([
-            'status'         => ['required', 'string', 'in:pending,paid,cancelled,shipped,completed,refunded'],
+            'status' => ['required', 'string', 'in:pending,paid,cancelled,shipped,completed,refunded'],
             'payment_status' => ['nullable', 'string', 'in:pending,paid,failed,refunded'],
         ]);
 

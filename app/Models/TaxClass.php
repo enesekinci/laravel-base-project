@@ -16,7 +16,7 @@ class TaxClass extends Model
     ];
 
     protected $casts = [
-        'rate'      => 'float',
+        'rate' => 'float',
         'is_active' => 'bool',
     ];
 }

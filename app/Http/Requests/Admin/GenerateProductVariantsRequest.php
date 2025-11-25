@@ -14,16 +14,15 @@ class GenerateProductVariantsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'options'               => ['required', 'array', 'min:1'],
-            'options.*.option_id'   => ['required', 'integer', 'exists:options,id'],
-            'options.*.value_ids'   => ['required', 'array', 'min:1'],
+            'options' => ['required', 'array', 'min:1'],
+            'options.*.option_id' => ['required', 'integer', 'exists:options,id'],
+            'options.*.value_ids' => ['required', 'array', 'min:1'],
             'options.*.value_ids.*' => ['required', 'integer', 'exists:option_values,id'],
 
-            'base'                  => ['nullable', 'array'],
-            'base.price'            => ['nullable', 'numeric', 'min:0'],
-            'base.manage_stock'     => ['nullable', 'boolean'],
-            'base.quantity'         => ['nullable', 'integer', 'min:0'],
+            'base' => ['nullable', 'array'],
+            'base.price' => ['nullable', 'numeric', 'min:0'],
+            'base.manage_stock' => ['nullable', 'boolean'],
+            'base.quantity' => ['nullable', 'integer', 'min:0'],
         ];
     }
 }
-

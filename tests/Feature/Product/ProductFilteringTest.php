@@ -1,26 +1,26 @@
 <?php
 
-use App\Models\Product;
-use App\Models\ProductVariant;
+use App\Models\Attribute;
 use App\Models\Option;
 use App\Models\OptionValue;
-use App\Models\Attribute;
+use App\Models\Product;
 use App\Models\ProductAttributeValue;
+use App\Models\ProductVariant;
 
 function createProductWithColorAndSize(string $colorValue, string $sizeValue): Product
 {
     $colorOption = Option::firstOrCreate(['name' => 'Renk'], ['type' => 'select']);
-    $sizeOption  = Option::firstOrCreate(['name' => 'Beden'], ['type' => 'select']);
+    $sizeOption = Option::firstOrCreate(['name' => 'Beden'], ['type' => 'select']);
 
     $color = OptionValue::create([
         'option_id' => $colorOption->id,
-        'value'     => $colorValue,
+        'value' => $colorValue,
         'sort_order' => 0,
     ]);
 
     $size = OptionValue::create([
         'option_id' => $sizeOption->id,
-        'value'     => $sizeValue,
+        'value' => $sizeValue,
         'sort_order' => 0,
     ]);
 
@@ -28,13 +28,13 @@ function createProductWithColorAndSize(string $colorValue, string $sizeValue): P
 
     $variant = ProductVariant::factory()->create([
         'product_id' => $product->id,
-        'quantity'   => 10,
-        'in_stock'   => true,
+        'quantity' => 10,
+        'in_stock' => true,
     ]);
 
     $variant->optionValues()->attach([
         $color->id => ['option_id' => $colorOption->id],
-        $size->id  => ['option_id' => $sizeOption->id],
+        $size->id => ['option_id' => $sizeOption->id],
     ]);
 
     return $product;
@@ -45,11 +45,11 @@ it('filters products by color option value', function () {
     $whiteProduct = createProductWithColorAndSize('Beyaz', 'L');
 
     $colorOption = Option::where('name', 'Renk')->firstOrFail();
-    $blackValue  = OptionValue::where('option_id', $colorOption->id)
+    $blackValue = OptionValue::where('option_id', $colorOption->id)
         ->where('value', 'Siyah')
         ->firstOrFail();
 
-    $response = $this->getJson('/api/products?filter[color]=' . $blackValue->id);
+    $response = $this->getJson('/api/products?filter[color]='.$blackValue->id);
 
     $response->assertStatus(200)
         ->assertJsonCount(1, 'data')
@@ -58,23 +58,23 @@ it('filters products by color option value', function () {
 
 it('filters products by attribute (e.g. material)', function () {
     $materialAttr = Attribute::factory()->create([
-        'name'          => 'Materyal',
-        'slug'          => 'material',
-        'type'          => 'text',
+        'name' => 'Materyal',
+        'slug' => 'material',
+        'type' => 'text',
         'is_filterable' => true,
     ]);
 
     $cottonProduct = Product::factory()->create();
-    $polyProduct   = Product::factory()->create();
+    $polyProduct = Product::factory()->create();
 
     ProductAttributeValue::create([
-        'product_id'   => $cottonProduct->id,
+        'product_id' => $cottonProduct->id,
         'attribute_id' => $materialAttr->id,
         'value_string' => 'Pamuk',
     ]);
 
     ProductAttributeValue::create([
-        'product_id'   => $polyProduct->id,
+        'product_id' => $polyProduct->id,
         'attribute_id' => $materialAttr->id,
         'value_string' => 'Polyester',
     ]);

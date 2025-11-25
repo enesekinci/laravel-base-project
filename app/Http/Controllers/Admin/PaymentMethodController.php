@@ -19,8 +19,8 @@ class PaymentMethodController extends Controller
         if ($search = $request->query('search')) {
             $likeOperator = DatabaseHelper::getCaseInsensitiveLikeOperator();
             $query->where(function ($q) use ($search, $likeOperator) {
-                $q->where('name', $likeOperator, '%' . $search . '%')
-                    ->orWhere('code', $likeOperator, '%' . $search . '%');
+                $q->where('name', $likeOperator, '%'.$search.'%')
+                    ->orWhere('code', $likeOperator, '%'.$search.'%');
             });
         }
 
@@ -28,7 +28,7 @@ class PaymentMethodController extends Controller
             $query->where('type', $type);
         }
 
-        if (!is_null($request->query('is_active'))) {
+        if (! is_null($request->query('is_active'))) {
             $val = (int) $request->query('is_active') === 1;
             $query->where('is_active', $val);
         }
@@ -51,7 +51,7 @@ class PaymentMethodController extends Controller
     public function store(StorePaymentMethodRequest $request)
     {
         $data = $request->validated();
-        $data['is_active']  = $data['is_active'] ?? true;
+        $data['is_active'] = $data['is_active'] ?? true;
         $data['sort_order'] = $data['sort_order'] ?? 0;
 
         $method = PaymentMethod::create($data);
@@ -86,7 +86,7 @@ class PaymentMethodController extends Controller
 
     public function toggleActive(PaymentMethod $payment_method)
     {
-        $payment_method->is_active = !$payment_method->is_active;
+        $payment_method->is_active = ! $payment_method->is_active;
         $payment_method->save();
 
         return new AdminPaymentMethodResource($payment_method);

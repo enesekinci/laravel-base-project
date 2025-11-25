@@ -21,21 +21,21 @@ class ProductController extends Controller
         if ($search = $request->query('search')) {
             $likeOperator = DatabaseHelper::getCaseInsensitiveLikeOperator();
             $query->where(function ($q) use ($search, $likeOperator) {
-                $q->where('name', $likeOperator, '%' . $search . '%')
-                  ->orWhere('sku', $likeOperator, '%' . $search . '%');
+                $q->where('name', $likeOperator, '%'.$search.'%')
+                    ->orWhere('sku', $likeOperator, '%'.$search.'%');
             });
         }
 
-        if (!is_null($request->query('brand_id'))) {
+        if (! is_null($request->query('brand_id'))) {
             $query->where('brand_id', $request->query('brand_id'));
         }
 
-        if (!is_null($request->query('is_active'))) {
+        if (! is_null($request->query('is_active'))) {
             $val = (int) $request->query('is_active') === 1;
             $query->where('is_active', $val);
         }
 
-        if (!is_null($request->query('in_stock'))) {
+        if (! is_null($request->query('in_stock'))) {
             $val = (int) $request->query('in_stock') === 1;
             $query->where('in_stock', $val);
         }
@@ -55,7 +55,14 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
-        $product->load(['brand', 'categories', 'images']);
+        $product->load([
+            'brand',
+            'categories',
+            'images',
+            'attributes',
+            'variants.optionValues.option',
+            'attributeValues.attribute',
+        ]);
 
         return new AdminProductResource($product);
     }
@@ -68,14 +75,14 @@ class ProductController extends Controller
         unset($data['category_ids']);
 
         // default flags
-        $data['is_active']    = $data['is_active'] ?? true;
+        $data['is_active'] = $data['is_active'] ?? true;
         $data['manage_stock'] = $data['manage_stock'] ?? true;
-        $data['in_stock']     = $data['in_stock'] ?? true;
-        $data['quantity']     = $data['quantity'] ?? 0;
+        $data['in_stock'] = $data['in_stock'] ?? true;
+        $data['quantity'] = $data['quantity'] ?? 0;
 
         $product = Product::create($data);
 
-        if (!empty($categoryIds)) {
+        if (! empty($categoryIds)) {
             $product->categories()->sync($categoryIds);
         }
 
@@ -96,7 +103,7 @@ class ProductController extends Controller
         $product->fill($data);
         $product->save();
 
-        if (!is_null($categoryIds)) {
+        if (! is_null($categoryIds)) {
             $product->categories()->sync($categoryIds);
         }
 
@@ -124,7 +131,7 @@ class ProductController extends Controller
 
     public function toggleActive(Product $product)
     {
-        $product->is_active = !$product->is_active;
+        $product->is_active = ! $product->is_active;
         $product->save();
 
         $product->load(['brand', 'categories']);

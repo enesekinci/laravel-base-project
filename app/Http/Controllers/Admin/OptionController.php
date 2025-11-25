@@ -20,7 +20,7 @@ class OptionController extends Controller
 
         if ($search = $request->query('search')) {
             $likeOperator = DatabaseHelper::getCaseInsensitiveLikeOperator();
-            $query->where('name', $likeOperator, '%' . $search . '%');
+            $query->where('name', $likeOperator, '%'.$search.'%');
         }
 
         if ($type = $request->query('type')) {
@@ -55,8 +55,8 @@ class OptionController extends Controller
 
             foreach ($valuesData as $val) {
                 OptionValue::create([
-                    'option_id'  => $option->id,
-                    'value'      => $val['value'],
+                    'option_id' => $option->id,
+                    'value' => $val['value'],
                     'sort_order' => $val['sort_order'] ?? 0,
                 ]);
             }
@@ -79,23 +79,23 @@ class OptionController extends Controller
         unset($data['values']);
 
         DB::transaction(function () use ($option, $data, $valuesData) {
-            if (!empty($data)) {
+            if (! empty($data)) {
                 $option->fill($data);
                 $option->save();
             }
 
-            if (!is_null($valuesData)) {
+            if (! is_null($valuesData)) {
                 $keepIds = [];
 
                 foreach ($valuesData as $val) {
-                    if (!empty($val['id'])) {
+                    if (! empty($val['id'])) {
                         // update existing
                         $ov = OptionValue::where('id', $val['id'])
                             ->where('option_id', $option->id)
                             ->first();
 
                         if ($ov) {
-                            $ov->value      = $val['value'];
+                            $ov->value = $val['value'];
                             $ov->sort_order = $val['sort_order'] ?? 0;
                             $ov->save();
 
@@ -104,8 +104,8 @@ class OptionController extends Controller
                     } else {
                         // create new
                         $ov = OptionValue::create([
-                            'option_id'  => $option->id,
-                            'value'      => $val['value'],
+                            'option_id' => $option->id,
+                            'value' => $val['value'],
                             'sort_order' => $val['sort_order'] ?? 0,
                         ]);
                         $keepIds[] = $ov->id;

@@ -14,9 +14,9 @@ class UpdateProductVariantRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'sku'       => ['sometimes', 'nullable', 'string', 'max:255'],
-            'price'     => ['sometimes', 'required', 'numeric', 'min:0'],
-            'quantity'  => ['sometimes', 'required', 'integer', 'min:0'],
+            'sku' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'price' => ['sometimes', 'required', 'numeric', 'min:0'],
+            'quantity' => ['sometimes', 'required', 'integer', 'min:0'],
             'is_active' => ['sometimes', 'boolean'],
         ];
     }

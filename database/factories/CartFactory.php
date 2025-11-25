@@ -13,12 +13,12 @@ class CartFactory extends Factory
     public function definition()
     {
         return [
-            'user_id'    => User::factory(),
-            'status'     => 'active',
-            'currency'   => 'TRY',
+            'user_id' => User::factory(),
+            'status' => 'active',
+            'currency' => 'TRY',
             'items_count' => 0,
-            'subtotal'   => 0,
-            'total'      => 0,
+            'subtotal' => 0,
+            'total' => 0,
         ];
     }
 }
