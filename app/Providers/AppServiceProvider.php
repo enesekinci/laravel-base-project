@@ -68,16 +68,6 @@ class AppServiceProvider extends ServiceProvider
             return Limit::perMinute(60)->by($request->ip());
         });
 
-        RateLimiter::for('api-search', function ($request) {
-            // Arama endpoint'i için: dakikada 30 istek
-            return Limit::perMinute(30)->by($request->ip());
-        });
-
-        RateLimiter::for('api-cart', function ($request) {
-            // Sepet işlemleri için: dakikada 120 istek
-            return Limit::perMinute(120)->by($request->user()?->id ?? $request->ip());
-        });
-
         // Auth routes için rate limiting (brute force koruması)
         RateLimiter::for('auth', function ($request) {
             // Login ve register için: dakikada 5 istek
@@ -88,18 +78,6 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('password-reset', function ($request) {
             // Password reset için: saatte 3 istek
             return Limit::perHour(3)->by($request->ip());
-        });
-
-        // Fraud prevention: Checkout için rate limiting
-        RateLimiter::for('checkout', function ($request) {
-            // Checkout için: saatte 10 istek (aynı IP'den çok fazla order önleme)
-            return Limit::perHour(10)->by($request->ip());
-        });
-
-        // Fraud prevention: Order creation için rate limiting
-        RateLimiter::for('order-creation', function ($request) {
-            // Order creation için: dakikada 5 istek
-            return Limit::perMinute(5)->by($request->ip());
         });
 
         // API Response Macros - Uniform JSON response formatı

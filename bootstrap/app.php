@@ -24,7 +24,6 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
             'log-admin-action' => \App\Http\Middleware\LogAdminAction::class,
-            'log-payment-callback' => \App\Http\Middleware\LogPaymentCallback::class,
         ]);
 
         // Request logging middleware (global)

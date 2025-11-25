@@ -10,8 +10,6 @@ class StoreHomeSeeder extends Seeder
     {
         $this->call([
             SliderSeeder::class,
-            CategorySeeder::class,
-            BrandSeeder::class,
             BlogPostSeeder::class,
         ]);
     }

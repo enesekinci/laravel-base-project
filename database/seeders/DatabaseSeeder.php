@@ -26,8 +26,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call([
-            ProductDemoSeeder::class,
-            StoreHomeSeeder::class,
+            // Base project: Only basic seeders
         ]);
     }
 }
