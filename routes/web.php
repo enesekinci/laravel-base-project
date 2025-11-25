@@ -5,7 +5,9 @@ use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [\App\Http\Controllers\Store\HomeController::class, 'index'])->name('home');
+Route::get('/', function () {
+    return view('welcome');
+})->name('home');
 
 // Auth routes (web guard) - Rate limited for brute force protection
 Route::get('/login', [\App\Http\Controllers\Auth\WebAuthController::class, 'showLogin'])->name('login');
@@ -29,9 +31,7 @@ Route::post('/logout', function () {
 // Admin Component Showcase
 Route::get('/admin/components', [ComponentController::class, 'index'])->name('admin.components')->middleware(['auth', 'admin']);
 
-Route::middleware(['auth'])->prefix('account')->name('account.')->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-});
+// Account routes removed for base project
 
 // Admin Web Routes (Blade views)
 // Base project: Only dashboard and components showcase

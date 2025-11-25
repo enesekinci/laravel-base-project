@@ -521,19 +521,8 @@
                                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                                 </svg>
                             </span>
-                            <input
-                                type="text"
-                                id="sidebar-menu-search"
-                                class="form-control"
-                                placeholder="Menüde ara..."
-                                autocomplete="off"
-                            />
-                            <button
-                                type="button"
-                                id="sidebar-menu-search-clear"
-                                class="btn btn-link text-muted d-none"
-                                style="padding: 0.375rem 0.5rem; text-decoration: none"
-                            >
+                            <input type="text" id="sidebar-menu-search" class="form-control" placeholder="Menüde ara..." autocomplete="off" />
+                            <button type="button" id="sidebar-menu-search-clear" class="btn btn-link text-muted d-none" style="padding: 0.375rem 0.5rem; text-decoration: none">
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     width="18"
