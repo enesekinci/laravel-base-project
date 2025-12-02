@@ -22,6 +22,12 @@ if [ "$APP_ENV" != "local" ]; then
     php artisan route:clear || true
     php artisan view:clear || true
     php artisan optimize || true
+    
+    # Octane için özel optimizasyonlar
+    if [ -n "$OCTANE_SERVER" ] || [ "$OCTANE_SERVER" != "" ]; then
+        echo "🚀 Optimizing for Octane..."
+        php artisan octane:install --server=${OCTANE_SERVER:-frankenphp} --no-interaction || true
+    fi
 fi
 
 echo "✅ Laravel is ready!"

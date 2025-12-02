@@ -13,9 +13,13 @@ return [
     | framework. This connection is utilized if another isn't explicitly
     | specified when running a cache operation inside the application.
     |
+    | Redis önerilir: Hızlı, ölçeklenebilir ve production-ready
+    | Database: Development için uygun, production'da yavaş olabilir
+    | File: Basit projeler için uygun
+    |
     */
 
-    'default' => env('CACHE_STORE', 'database'),
+    'default' => env('CACHE_STORE', 'redis'),
 
     /*
     |--------------------------------------------------------------------------
@@ -74,7 +78,10 @@ return [
 
         'redis' => [
             'driver' => 'redis',
+            // Cache için ayrı Redis connection kullan (database 1)
+            // Bu sayede cache verileri diğer Redis verilerinden ayrılır
             'connection' => env('REDIS_CACHE_CONNECTION', 'cache'),
+            // Cache lock için default connection kullan
             'lock_connection' => env('REDIS_CACHE_LOCK_CONNECTION', 'default'),
         ],
 
@@ -112,6 +119,6 @@ return [
     |
     */
 
-    'prefix' => env('CACHE_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')).'-cache-'),
+    'prefix' => env('CACHE_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')) . '-cache-'),
 
 ];

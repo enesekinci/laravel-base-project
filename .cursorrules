@@ -1,0 +1,12 @@
+# Cursor AI Commit Message Language
+# Commit mesajları Türkçe olmalı
+commit_message_language: turkish
+
+# Git Commit Best Practices
+- Commit mesajları Türkçe yazılmalı
+- Commit mesajları açıklayıcı ve anlaşılır olmalı
+- Feature eklemeleri: "feat: ..." formatında
+- Bug fix'ler: "fix: ..." formatında
+- Refactoring: "refactor: ..." formatında
+- Config değişiklikleri: "config: ..." formatında
+
