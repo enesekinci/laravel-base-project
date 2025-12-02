@@ -23,7 +23,7 @@ class ExceptionAlertMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: '🚨 Exception Alert - ' . config('app.name'),
+            subject: '🚨 Exception Alert - '.config('app.name'),
         );
     }
 

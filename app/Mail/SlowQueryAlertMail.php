@@ -22,7 +22,7 @@ class SlowQueryAlertMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: '⚠️ Slow Query Alert - ' . config('app.name'),
+            subject: '⚠️ Slow Query Alert - '.config('app.name'),
         );
     }
 
