@@ -24,7 +24,9 @@ return [
         'telescope*',
         'horizon*',
         '_boost/browser-logs',
-        'api/*', // API endpoint'lerinde Debugbar'ı gizle (opsiyonel)
+        // 'api/*', // API endpoint'lerinde Debugbar'ı gizle (opsiyonel)
+        // Not: API route'larında Debugbar HTML inject etmez (JSON response'u bozmamak için)
+        // Ancak request'leri storage'a kaydeder ve web arayüzünden görüntülenebilir
     ],
 
     /*
