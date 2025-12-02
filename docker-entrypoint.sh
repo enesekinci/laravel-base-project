@@ -3,12 +3,19 @@ set -e
 
 echo "🚀 Starting Laravel application..."
 
-# Fix permissions
+# Fix permissions (runtime'da da yapılmalı)
 echo "🔧 Fixing permissions..."
+mkdir -p /var/www/html/storage/logs || true
+mkdir -p /var/www/html/storage/framework/cache || true
+mkdir -p /var/www/html/storage/framework/sessions || true
+mkdir -p /var/www/html/storage/framework/views || true
 chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache || true
 chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache || true
-mkdir -p /var/www/html/storage/logs || true
 chmod -R 775 /var/www/html/storage/logs || true
+# Log dosyalarını oluştur (eğer yoksa)
+touch /var/www/html/storage/logs/laravel.log || true
+chown www-data:www-data /var/www/html/storage/logs/laravel.log || true
+chmod 664 /var/www/html/storage/logs/laravel.log || true
 
 # Run migrations (will fail gracefully if database is not ready)
 echo "📦 Running migrations..."

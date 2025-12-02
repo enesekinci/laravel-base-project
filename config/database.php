@@ -157,6 +157,10 @@ return [
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
             // Tüm Redis key'lerine prefix ekle (çoklu uygulama desteği)
+            // ÖNEMLİ: Aynı Redis instance'ını birden fazla proje kullanıyorsa,
+            // her proje için UNIQUE prefix kullanmak ŞART!
+            // Örnek: 'project-a-', 'project-b-', 'ecommerce-', 'api-'
+            // Prefix olmadan key collision olur ve projeler birbirinin verilerini okur!
             'prefix' => env('REDIS_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')) . '-database-'),
             // Persistent connection kullan (performans için)
             'persistent' => env('REDIS_PERSISTENT', false),

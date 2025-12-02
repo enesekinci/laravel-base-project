@@ -57,7 +57,8 @@ RUN install-php-extensions \
     bcmath \
     gd \
     zip \
-    opcache
+    opcache \
+    redis
 
 # Supervisor kurulumu (process management için)
 RUN apt-get update && apt-get install -y supervisor && rm -rf /var/lib/apt/lists/*
@@ -76,10 +77,14 @@ RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 WORKDIR /var/www/html
 
 # Permissions (FrankenPHP image'ında www-data user'ı var)
-RUN chown -R www-data:www-data /var/www/html \
+# Storage ve logs dizinlerini oluştur ve permissions ayarla
+RUN mkdir -p /var/www/html/storage/logs \
+    && mkdir -p /var/www/html/storage/framework/cache \
+    && mkdir -p /var/www/html/storage/framework/sessions \
+    && mkdir -p /var/www/html/storage/framework/views \
+    && chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/storage \
     && chmod -R 775 /var/www/html/bootstrap/cache \
-    && mkdir -p /var/www/html/storage/logs \
     && chmod -R 775 /var/www/html/storage/logs
 
 # FrankenPHP için Caddy config (opsiyonel, varsayılan ayarlar genellikle yeterli)
