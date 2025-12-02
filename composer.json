@@ -11,9 +11,13 @@
     "require": {
         "php": "^8.2",
         "laravel/framework": "^12.0",
+        "laravel/horizon": "^5.40",
         "laravel/octane": "^2.13",
+        "laravel/pulse": "^1.4",
+        "laravel/reverb": "^1.6",
         "laravel/sanctum": "^4.2",
         "laravel/scout": "^10.22",
+        "laravel/socialite": "^5.23",
         "laravel/tinker": "^2.10.1",
         "meilisearch/meilisearch-php": "^1.16"
     },
@@ -25,6 +29,7 @@
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.24",
         "laravel/sail": "^1.41",
+        "laravel/telescope": "^5.15",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
         "pestphp/pest": "^4.1"
