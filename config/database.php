@@ -58,10 +58,18 @@ return [
             'prefix_indexes' => true,
             'strict' => true,
             'engine' => null,
-            'options' => extension_loaded('pdo_mysql') ? array_filter([
-                // PHP 8.5+ için yeni format, backward compatibility için eski format da destekleniyor
-                (defined('Pdo\Mysql::ATTR_SSL_CA') ? \Pdo\Mysql::ATTR_SSL_CA : \PDO::MYSQL_ATTR_SSL_CA) => env('MYSQL_ATTR_SSL_CA'),
-            ]) : [],
+            // Octane için persistent connection (performans kritik!)
+            // Her request'te yeni connection açmak yerine mevcut connection'ı kullanır
+            'options' => extension_loaded('pdo_mysql') ? array_merge(
+                array_filter([
+                    // PHP 8.5+ için yeni format, backward compatibility için eski format da destekleniyor
+                    (defined('Pdo\Mysql::ATTR_SSL_CA') ? \Pdo\Mysql::ATTR_SSL_CA : \PDO::MYSQL_ATTR_SSL_CA) => env('MYSQL_ATTR_SSL_CA'),
+                ]),
+                // Persistent connection (Octane için önemli)
+                [
+                    \PDO::ATTR_PERSISTENT => env('DB_PERSISTENT', true),
+                ]
+            ) : [],
         ],
 
         'mariadb' => [
@@ -163,9 +171,10 @@ return [
             // her proje için UNIQUE prefix kullanmak ŞART!
             // Örnek: 'project-a-', 'project-b-', 'ecommerce-', 'api-'
             // Prefix olmadan key collision olur ve projeler birbirinin verilerini okur!
-            'prefix' => env('REDIS_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')).'-database-'),
-            // Persistent connection kullan (performans için)
-            'persistent' => env('REDIS_PERSISTENT', false),
+            'prefix' => env('REDIS_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')) . '-database-'),
+            // Persistent connection kullan (Octane için performans kritik!)
+            // Her request'te yeni connection açmak yerine mevcut connection'ı kullanır
+            'persistent' => env('REDIS_PERSISTENT', true),
         ],
 
         // Default connection: Genel kullanım (Queue, Session, vb.)

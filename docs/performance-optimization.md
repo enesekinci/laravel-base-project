@@ -1,228 +1,120 @@
-# Performance Optimization Checklist
+# Performance Optimization Guide
 
-## Index Kontrolü ✅
+## Response Time Optimizasyonları
 
-### Tamamlanan Index'ler
+### 1. Database Persistent Connection ✅
 
-#### `products` tablosu
+- **Sorun**: Her request'te yeni database connection açılıyor (10-50ms overhead)
+- **Çözüm**: `config/database.php` içinde `PDO::ATTR_PERSISTENT => true` eklendi
+- **Etki**: Connection overhead'i ortadan kaldırır, ~20-40ms kazanç
 
--   ✅ `product_id` (foreign key)
--   ✅ `brand_id` (index)
--   ✅ `tax_class_id` (index)
--   ✅ `slug` (index)
--   ✅ `sku` (index)
--   ✅ `name` (index) - **Yeni eklendi**
--   ✅ `is_active` (index)
--   ✅ `in_stock` (index)
+### 2. Redis Persistent Connection ✅
 
-#### `product_variants` tablosu
+- **Sorun**: Her request'te yeni Redis connection açılıyor (5-15ms overhead)
+- **Çözüm**: `config/database.php` içinde `persistent => true` eklendi
+- **Etki**: Connection overhead'i ortadan kaldırır, ~10-20ms kazanç
 
--   ✅ `product_id` (index)
--   ✅ `sku` (index)
--   ✅ `is_active` (index)
--   ✅ `in_stock` (index)
+### 3. Octane Worker Sayısı ✅
 
-#### `variant_option_values` tablosu
+- **Sorun**: `--workers=auto` yetersiz olabilir
+- **Çözüm**: `docker/supervisor/supervisord.conf` içinde `--workers=8` olarak ayarlandı
+- **Etki**: Daha fazla eşzamanlı request işlenebilir, latency azalır
 
--   ✅ `variant_id` (index)
--   ✅ `option_id` (index)
--   ✅ `option_value_id` (index)
--   ✅ Unique constraint: `[variant_id, option_id, option_value_id]`
+### 4. Max Requests Artırıldı ✅
 
-#### `product_attribute_values` tablosu
+- **Sorun**: Worker'lar çok sık yeniden başlatılıyor (memory leak önleme)
+- **Çözüm**: `--max-requests=1000` olarak artırıldı (500'den)
+- **Etki**: Worker restart overhead'i azalır
 
--   ✅ `product_id` (index)
--   ✅ `attribute_id` (index)
--   ✅ `option_value_id` (index)
--   ✅ Composite index: `[product_id, attribute_id]`
+## Beklenen Performans İyileştirmeleri
 
-#### `option_values` tablosu
+### Önceki Durum (150-200ms)
 
--   ✅ `option_id` (index)
--   ✅ `sort_order` (index)
+- Network latency: ~50-80ms
+- SSL/TLS handshake: ~20-30ms
+- Database connection: ~10-50ms
+- Redis connection: ~5-15ms
+- Application processing: ~20-30ms
+- **Toplam: ~150-200ms**
 
-#### `attributes` tablosu
+### Optimize Edilmiş Durum (50-80ms hedef)
 
--   ✅ `slug` (index)
--   ✅ `is_filterable` (index)
--   ✅ `option_id` (index)
+- Network latency: ~50-80ms (değişmez)
+- SSL/TLS handshake: ~20-30ms (değişmez)
+- Database connection: ~0ms (persistent) ✅
+- Redis connection: ~0ms (persistent) ✅
+- Application processing: ~10-20ms (worker optimizasyonu) ✅
+- **Toplam: ~80-130ms (hedef: 50-80ms)**
 
-## Search Optimizasyonu ✅
+## Ek Optimizasyon Önerileri
 
-### Database Driver Uyumluluğu
+### 1. Response Caching
 
--   PostgreSQL: `ILIKE` (case-insensitive)
--   SQLite/MySQL: `LIKE` (case-insensitive via collation)
--   Otomatik driver kontrolü eklendi
-
-### Search Parametresi
-
-```
-GET /api/products?search=shirt&filter[color]=10&filter[attribute][material]=Pamuk
+```php
+// routes/web.php veya controller'da
+Route::get('/up', function () {
+    return response()->json(['status' => 'ok'], 200);
+})->middleware('cache.headers:public;max_age=60');
 ```
 
-**Arama Alanları:**
+### 2. Database Query Optimization
 
--   `name` (ILIKE/LIKE)
--   `sku` (ILIKE/LIKE)
+- Index'leri kontrol et
+- N+1 query problemlerini çöz
+- Eager loading kullan
 
-## Test Coverage ✅
+### 3. Redis Response Cache
 
-### Search Testleri
-
--   ✅ Name ile arama
--   ✅ SKU ile arama
--   ✅ Search + Filter kombinasyonu
-
-## Performance Test Seeder
-
-### Kullanım
-
-```bash
-php artisan db:seed --class=PerformanceTestSeeder
+```php
+// Health check için response cache
+Route::get('/up', function () {
+    return Cache::remember('health-check', 10, function () {
+        return response()->json(['status' => 'ok'], 200);
+    });
+});
 ```
 
-### Oluşturulan Veri
+### 4. OPcache Optimizasyonu
 
--   **1,500 ürün**
--   **10 marka**
--   **8 kategori**
--   **3 option** (Renk, Beden, Malzeme)
--   **15 attribute**
--   **Her ürüne 2-5 variant**
--   **Her ürüne 3-8 attribute değeri**
+- `opcache.enable=1`
+- `opcache.memory_consumption=256`
+- `opcache.max_accelerated_files=20000`
 
-### Toplam Veri
+### 5. CDN Kullanımı
 
--   ~1,500 product
--   ~4,500-7,500 product_variant
--   ~4,500-12,000 product_attribute_value
--   ~13,500-22,500 variant_option_values
+- Static asset'ler için CDN
+- Cloudflare veya benzeri servis
 
-## EXPLAIN ANALYZE Senaryoları
+## Test Sonuçları
 
-### Senaryo 1: Basit Search
+### wrk Test (100 connections, 30s)
 
-```sql
-EXPLAIN ANALYZE
-SELECT * FROM products
-WHERE name LIKE '%shirt%' OR sku LIKE '%shirt%';
-```
+- **Önceki**: ~1721 req/s, 60ms latency
+- **Hedef**: ~3000+ req/s, 30-50ms latency
 
-**Beklenen:**
+### Apache Bench (1000 requests, 50 concurrent)
 
--   `name` index kullanımı (prefix search için)
--   `sku` index kullanımı
-
-### Senaryo 2: Filter + Search
-
-```sql
-EXPLAIN ANALYZE
-SELECT * FROM products
-WHERE (name LIKE '%shirt%' OR sku LIKE '%shirt%')
-AND EXISTS (
-    SELECT 1 FROM product_variants
-    WHERE product_variants.product_id = products.id
-    AND EXISTS (
-        SELECT 1 FROM variant_option_values
-        JOIN option_values ON option_values.id = variant_option_values.option_value_id
-        WHERE variant_option_values.variant_id = product_variants.id
-        AND option_values.id = 10
-    )
-);
-```
-
-**Beklenen:**
-
--   `product_variants.product_id` index
--   `variant_option_values.variant_id` index
--   `variant_option_values.option_value_id` index
-
-### Senaryo 3: Attribute Filter + Search
-
-```sql
-EXPLAIN ANALYZE
-SELECT * FROM products
-WHERE (name LIKE '%shirt%' OR sku LIKE '%shirt%')
-AND EXISTS (
-    SELECT 1 FROM product_attribute_values
-    JOIN attributes ON attributes.id = product_attribute_values.attribute_id
-    WHERE product_attribute_values.product_id = products.id
-    AND attributes.slug = 'material'
-    AND attributes.is_filterable = true
-    AND product_attribute_values.value_string = 'Pamuk'
-);
-```
-
-**Beklenen:**
-
--   `product_attribute_values.[product_id, attribute_id]` composite index
--   `attributes.slug` index
--   `attributes.is_filterable` index
-
-## İleri Seviye Optimizasyonlar (Gelecek)
-
-### 1. Full-Text Search (PostgreSQL)
-
-```sql
--- GIN index ile full-text search
-CREATE INDEX products_name_fts_idx ON products
-USING gin(to_tsvector('turkish', name));
-
--- Arama sorgusu
-SELECT * FROM products
-WHERE to_tsvector('turkish', name) @@ to_tsquery('turkish', 'shirt');
-```
-
-### 2. Partial Index'ler
-
-```sql
--- Sadece aktif ürünler için index
-CREATE INDEX products_active_name_idx ON products(name)
-WHERE is_active = true;
-```
-
-### 3. Composite Index'ler
-
-```sql
--- Sık kullanılan kombinasyonlar için
-CREATE INDEX products_active_in_stock_idx ON products(is_active, in_stock);
-```
-
-### 4. Search Engine Entegrasyonu
-
--   Meilisearch / Typesense / Elasticsearch
--   Product index'i otomatik sync
--   Search API → Search engine → Product IDs → DB'den preload
+- **Önceki**: ~213 req/s, 235ms response time
+- **Hedef**: ~500+ req/s, 100-150ms response time
 
 ## Monitoring
 
-### Query Performance
+### Octane Admin Port
 
-```php
-// Laravel Debugbar veya Telescope ile
-DB::enableQueryLog();
-$products = Product::query()->withIncludes($request)->applyFilters($request)->paginate(15);
-dd(DB::getQueryLog());
+```bash
+# Worker durumunu kontrol et
+curl http://localhost:2019/workers
 ```
 
-### Slow Query Log
+### Response Time Monitoring
 
-PostgreSQL'de:
+- Laravel Telescope (development)
+- Application Performance Monitoring (APM) tools
+- Custom logging middleware
 
-```sql
--- Slow query log aktif et
-ALTER SYSTEM SET log_min_duration_statement = 1000; -- 1 saniye
-SELECT pg_reload_conf();
-```
+## Notlar
 
-## Checklist
-
--   [x] Tüm kritik index'ler eklendi
--   [x] Search parametresi eklendi
--   [x] Database driver uyumluluğu
--   [x] Search testleri yazıldı
--   [x] Performance test seeder oluşturuldu
--   [ ] EXPLAIN ANALYZE çalıştırıldı (manuel)
--   [ ] Slow query log kontrol edildi
--   [ ] Full-text search entegrasyonu (ileride)
+- Persistent connection'lar Octane için kritik öneme sahip
+- Worker sayısı CPU core sayısına göre ayarlanmalı (genellikle core \* 2)
+- Max requests çok yüksek olursa memory leak riski artar
+- Production'da monitoring ve alerting kurulmalı

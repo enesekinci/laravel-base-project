@@ -3,6 +3,10 @@ set -e
 
 echo "🚀 Starting Laravel application..."
 
+# Octane worker sayısını ayarla (default: 8, CPU core sayısına göre optimize edilebilir)
+export OCTANE_WORKERS=${OCTANE_WORKERS:-8}
+export OCTANE_MAX_REQUESTS=${OCTANE_MAX_REQUESTS:-1000}
+
 # Fix permissions (runtime'da da yapılmalı)
 echo "🔧 Fixing permissions..."
 mkdir -p /var/www/html/storage/logs || true
