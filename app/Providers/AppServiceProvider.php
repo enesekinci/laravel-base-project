@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Log;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -32,14 +33,19 @@ class AppServiceProvider extends ServiceProvider
         // preventLazyLoading: Production'da da aktif (sadece warning, exception değil)
         if (config('app.prevent_lazy_loading', true)) {
             Model::preventLazyLoading(
-                ! $this->app->isProduction() // Production'da exception değil, sadece warning
+                ! app()->isProduction() // Production'da exception değil, sadece warning
             );
         }
 
-        if ($this->app->environment('local', 'development', 'staging')) {
+        // preventAccessingMissingAttributes: Sadece development'ta aktif
+        // Production'da bu tür hatalar zaten test edilmiş olmalı
+        if (!app()->isProduction()) {
             Model::preventAccessingMissingAttributes();
         }
 
+        // preventSilentlyDiscardingAttributes: Her zaman aktif (güvenlik açısından kritik)
+        // Mass assignment sırasında $fillable/$guarded dışındaki attribute'ların
+        // sessizce atılmasını engeller - bu bir güvenlik açığı olabilir
         Model::preventSilentlyDiscardingAttributes();
 
         // Slow SQL threshold (configurable via env)
@@ -47,7 +53,7 @@ class AppServiceProvider extends ServiceProvider
 
         DB::whenQueryingForLongerThan($slowQueryThreshold, function ($connection, $event) {
             // Slow SQL log channel'a yaz
-            logger()->channel('slow-sql')->warning('Slow query detected', [
+            Log::channel('slow-sql')->warning('Slow query detected', [
                 'sql' => $event->sql,
                 'time' => $event->time,
                 'bindings' => $event->bindings,
