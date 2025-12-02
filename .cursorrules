@@ -1,12 +1,23 @@
-# Cursor AI Commit Message Language
-# Commit mesajları Türkçe olmalı
-commit_message_language: turkish
+# Cursor AI Commit Message Configuration
+# Commit mesajları her zaman Türkçe yazılmalıdır
 
-# Git Commit Best Practices
-- Commit mesajları Türkçe yazılmalı
-- Commit mesajları açıklayıcı ve anlaşılır olmalı
+## Commit Message Language
+- Tüm commit mesajları Türkçe olmalıdır
+- AI commit özelliği kullanıldığında Türkçe mesaj üretmelidir
+- İngilizce commit mesajı yazılmamalıdır
+
+## Commit Message Format
 - Feature eklemeleri: "feat: ..." formatında
 - Bug fix'ler: "fix: ..." formatında
 - Refactoring: "refactor: ..." formatında
 - Config değişiklikleri: "config: ..." formatında
+- Documentation: "docs: ..." formatında
+- Performance: "perf: ..." formatında
+
+## Examples
+- ✅ "feat: Laravel Octane entegrasyonu eklendi"
+- ✅ "fix: Redis cache bağlantı sorunu düzeltildi"
+- ✅ "refactor: Dockerfile yapısı optimize edildi"
+- ❌ "feat: Added Laravel Octane integration"
+- ❌ "fix: Fixed Redis cache connection issue"
 
