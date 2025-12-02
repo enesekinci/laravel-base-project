@@ -2,7 +2,8 @@
 
 return [
     App\Providers\AppServiceProvider::class,
-    App\Providers\ResponseMacroServiceProvider::class,
-    App\Providers\RateLimitServiceProvider::class,
     App\Providers\DatabaseMonitoringServiceProvider::class,
+    App\Providers\HorizonServiceProvider::class,
+    App\Providers\RateLimitServiceProvider::class,
+    App\Providers\ResponseMacroServiceProvider::class,
 ];

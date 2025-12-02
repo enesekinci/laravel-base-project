@@ -162,7 +162,9 @@ return [
     'redis' => [
 
         // Redis client: phpredis (önerilen, daha hızlı) veya predis
-        'client' => env('REDIS_CLIENT', 'phpredis'),
+        // Local'de Redis extension yoksa 'predis' kullan (pure PHP, extension gerektirmez)
+        // Production'da Redis extension varsa 'phpredis' kullan (daha hızlı)
+        'client' => env('REDIS_CLIENT', extension_loaded('redis') ? 'phpredis' : 'predis'),
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
@@ -171,7 +173,7 @@ return [
             // her proje için UNIQUE prefix kullanmak ŞART!
             // Örnek: 'project-a-', 'project-b-', 'ecommerce-', 'api-'
             // Prefix olmadan key collision olur ve projeler birbirinin verilerini okur!
-            'prefix' => env('REDIS_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')) . '-database-'),
+            'prefix' => env('REDIS_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')).'-database-'),
             // Persistent connection kullan (Octane için performans kritik!)
             // Her request'te yeni connection açmak yerine mevcut connection'ı kullanır
             'persistent' => env('REDIS_PERSISTENT', true),
