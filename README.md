@@ -18,6 +18,7 @@ Proje Domain-Driven Design (DDD) yapısına göre organize edilmiştir:
 - **Settings** - Settings modülü (Setting)
 
 Her modül kendi içinde:
+
 - Models
 - Controllers (Admin, Api)
 - Services
@@ -39,53 +40,94 @@ içerir.
 - Composer
 - Node.js & NPM
 - PostgreSQL veya MySQL
-- Redis (opsiyonel, cache için)
+- Redis (cache ve queue için)
+- Meilisearch (search engine için)
+- Laravel Valet (macOS için önerilen)
 
 ### Adımlar
 
 1. **Projeyi klonlayın:**
+
 ```bash
 git clone <repository-url>
 cd laravel-base-project
 ```
 
 2. **Bağımlılıkları yükleyin:**
+
 ```bash
 composer install
 npm install
 ```
 
-3. **Environment dosyasını oluşturun:**
+3. **Local servisleri kurun (macOS):**
+
+```bash
+# PostgreSQL, Redis, Meilisearch kurulumu
+./scripts/setup-local-services.sh
+```
+
+**Not:** Linux veya Windows kullanıyorsanız, servisleri manuel olarak kurmanız gerekiyor.
+
+4. **Environment dosyasını oluşturun:**
+
 ```bash
 cp .env.example .env
 php artisan key:generate
 ```
 
-4. **Veritabanını yapılandırın:**
-`.env` dosyasında veritabanı bilgilerinizi güncelleyin:
+5. **Veritabanını yapılandırın:**
+   `.env` dosyasında veritabanı bilgilerinizi güncelleyin:
+
 ```env
 DB_CONNECTION=pgsql
 DB_HOST=127.0.0.1
 DB_PORT=5432
 DB_DATABASE=laravel
-DB_USERNAME=postgres
+DB_USERNAME=$(whoami)  # macOS'ta genellikle kullanıcı adınız
 DB_PASSWORD=
+
+REDIS_HOST=127.0.0.1
+REDIS_PORT=6379
+
+MEILISEARCH_HOST=http://127.0.0.1:7700
+MEILISEARCH_KEY=your_master_key_here
 ```
 
-5. **Migration'ları çalıştırın:**
+6. **Veritabanını oluşturun:**
+
+```bash
+createdb laravel
+```
+
+7. **Migration'ları çalıştırın:**
+
 ```bash
 php artisan migrate
 ```
 
-6. **Asset'leri build edin:**
+8. **Asset'leri build edin:**
+
 ```bash
 npm run build
 ```
 
-7. **Development server'ı başlatın:**
+9. **Meilisearch index'lerini ayarlayın:**
+
 ```bash
-php artisan serve
+php artisan meilisearch:setup-products
+php artisan scout:import "App\Models\Product"
 ```
+
+10. **Valet ile siteyi bağlayın (macOS):**
+
+```bash
+valet link laravel-base-project
+# veya
+valet park
+```
+
+Artık `http://laravel-base-project.test` adresinden erişebilirsiniz.
 
 ## 📁 Klasör Yapısı
 
@@ -133,6 +175,7 @@ MODULE_CMS_ENABLED=false
 ```
 
 Modül ServiceProvider'ları şu işlemleri yapar:
+
 - Repository binding'leri
 - Policy kayıtları
 - Event listener kayıtları
@@ -145,6 +188,7 @@ Tüm environment variables `.env.example` dosyasında tanımlanmıştır. Projey
 ### API Versioning
 
 API route'ları versioning ile yapılandırılmıştır:
+
 - `/api/v1/*` - Version 1 API routes
 - Gelecekte `/api/v2/*` - Version 2 API routes
 
@@ -181,6 +225,39 @@ Yavaş query'leri raporlar:
 ```bash
 php artisan db:slow-queries-report
 ```
+
+## 🚢 Deployment
+
+### Production Deployment
+
+Production'da sadece **Dockerfile** kullanılır. PostgreSQL, Redis ve Meilisearch sunucuda ayrı ayrı çalışır.
+
+#### Coolify ile Deployment
+
+1. **Coolify'da Laravel uygulaması oluşturun**
+    - Coolify dashboard'a giriş yapın
+    - "New Resource" > "Dockerfile" seçin
+    - Repository'yi bağlayın
+
+2. **Sunucuda servisleri hazırlayın**
+    - PostgreSQL: Coolify'ın "PostgreSQL Database" özelliğini kullanın veya ayrı bir servis olarak kurun
+    - Redis: Ayrı bir servis olarak kurun
+    - Meilisearch: Ayrı bir servis olarak kurun
+
+3. **Environment Variables'ları ayarlayın**
+    - Coolify dashboard'da environment variables bölümüne gidin
+    - `.env.example` dosyasındaki tüm değişkenleri ekleyin
+    - Özellikle şunları ayarlayın:
+        - `APP_KEY` - `php artisan key:generate` ile oluşturun
+        - `DB_HOST` - PostgreSQL servisinin hostname'i
+        - `REDIS_HOST` - Redis servisinin hostname'i
+        - `MEILISEARCH_HOST` - Meilisearch servisinin hostname'i
+
+4. **Deploy edin**
+    - Coolify Dockerfile'ı kullanarak uygulamayı deploy edecek
+    - Migration'lar otomatik olarak çalışacak (docker-entrypoint.sh içinde)
+
+Detaylı bilgi için: [Deployment Guide](docs/deployment-guide.md)
 
 ## 📚 Dokümantasyon
 

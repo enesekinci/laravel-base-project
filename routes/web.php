@@ -12,7 +12,7 @@ Route::get('/', function () {
 // Auth routes (web guard) - Rate limited for brute force protection
 // These routes are loaded from app/Domains/Auth/routes.php via ModuleServiceProvider
 // Keeping them here for now to maintain compatibility
-Route::get('/login', [\App\Domains\Auth\Controllers\WebAuthController::class, 'showLogin'])->name('login');
+Route::get('/login', [\App\Domains\Auth\Controllers\WebAuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [\App\Domains\Auth\Controllers\WebAuthController::class, 'login'])->middleware('throttle:auth');
 Route::get('/register', [\App\Domains\Auth\Controllers\WebAuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [\App\Domains\Auth\Controllers\WebAuthController::class, 'register'])->middleware('throttle:auth');

@@ -2,7 +2,173 @@
 
 Bu doküman, projeyi production ortamına deploy etmek için gerekli adımları açıklar.
 
-## Gereksinimler
+## Deployment Yöntemleri
+
+Bu proje iki farklı yöntemle deploy edilebilir:
+
+1. **Coolify ile Deployment** (Önerilen) - Dockerfile kullanarak otomatik deployment
+2. **Manuel Deployment** - Geleneksel sunucu kurulumu
+
+## Local Development
+
+### macOS Kurulumu
+
+macOS'ta local development için gerekli servisleri (PostgreSQL, Redis, Meilisearch) kurmak için:
+
+```bash
+# Setup script'i çalıştır
+./scripts/setup-local-services.sh
+```
+
+Bu script:
+
+- PostgreSQL 16 kurar ve başlatır
+- Redis kurar ve başlatır
+- Meilisearch kurar (manuel başlatma gerekir)
+
+**Not:** Laravel Valet kullanılıyorsa, uygulama Valet üzerinden çalışır. Docker Compose kullanılmaz.
+
+### Linux/Windows Kurulumu
+
+Linux veya Windows kullanıyorsanız, servisleri manuel olarak kurmanız gerekiyor:
+
+- **PostgreSQL:** Sistem paket yöneticisi ile kurun
+- **Redis:** Sistem paket yöneticisi ile kurun
+- **Meilisearch:** Docker ile veya binary indirerek kurun
+
+Detaylı bilgi için: [Meilisearch Setup](meilisearch-setup.md)
+
+## Coolify ile Production Deployment
+
+Production'da sadece **Dockerfile** kullanılır. PostgreSQL, Redis ve Meilisearch sunucuda ayrı ayrı çalışır.
+
+### Gereksinimler
+
+- Coolify kurulu bir sunucu
+- Docker
+- Git repository erişimi
+- Sunucuda PostgreSQL, Redis ve Meilisearch servisleri (ayrı ayrı)
+
+### Adımlar
+
+1. **Sunucuda Servisleri Hazırlama**
+
+    **PostgreSQL:**
+    - Coolify'ın "PostgreSQL Database" özelliğini kullanın veya
+    - Ayrı bir servis olarak kurun
+    - Hostname'i not edin (örn: `postgres.internal` veya IP adresi)
+
+    **Redis:**
+    - Ayrı bir servis olarak kurun
+    - Hostname'i not edin (örn: `redis.internal` veya IP adresi)
+
+    **Meilisearch:**
+    - Ayrı bir servis olarak kurun
+    - Hostname'i not edin (örn: `meilisearch.internal:7700` veya IP adresi)
+
+2. **Coolify'da Laravel Uygulaması Oluşturma**
+    - Coolify dashboard'a giriş yapın
+    - "New Resource" > "Dockerfile" seçin
+    - Proje adını girin
+
+3. **Repository Bağlama**
+    - Git repository URL'inizi girin
+    - Branch'i seçin (genellikle `main` veya `master`)
+    - Build path'i kontrol edin (genellikle root `/`)
+
+4. **Environment Variables Ayarlama**
+
+    Coolify dashboard'da environment variables bölümüne gidin ve `.env.example` dosyasındaki tüm değişkenleri ekleyin.
+
+    **Önemli Notlar:**
+    - `DB_HOST` - PostgreSQL servisinin hostname'i (örn: `postgres.internal`)
+    - `REDIS_HOST` - Redis servisinin hostname'i (örn: `redis.internal`)
+    - `MEILISEARCH_HOST` - Meilisearch servisinin hostname'i (örn: `http://meilisearch.internal:7700`)
+    - `APP_KEY` - `php artisan key:generate` ile oluşturun
+    - `DB_PASSWORD` - PostgreSQL şifresi
+    - `MEILISEARCH_KEY` - Meilisearch master key
+    - `APP_URL` - Production domain'iniz
+
+    Örnek environment variables:
+
+    ```env
+    APP_NAME=Laravel
+    APP_ENV=production
+    APP_DEBUG=false
+    APP_KEY=base64:...
+    APP_URL=https://yourdomain.com
+    DB_CONNECTION=pgsql
+    DB_HOST=postgres.internal
+    DB_PORT=5432
+    DB_DATABASE=laravel
+    DB_USERNAME=postgres
+    DB_PASSWORD=secure_password_here
+    REDIS_HOST=redis.internal
+    REDIS_PORT=6379
+    REDIS_DB=0
+    CACHE_STORE=redis
+    QUEUE_CONNECTION=redis
+    SCOUT_DRIVER=meilisearch
+    MEILISEARCH_HOST=http://meilisearch.internal:7700
+    MEILISEARCH_KEY=your_master_key_here
+    # ... diğer değişkenler .env.example dosyasında
+    ```
+
+5. **Deploy Etme**
+    - "Deploy" butonuna tıklayın
+    - Coolify otomatik olarak:
+        - Dockerfile'ı kullanarak image'ı build edecek
+        - Container'ı başlatacak
+        - Health check'leri kontrol edecek
+        - Migration'ları çalıştıracak (docker-entrypoint.sh içinde)
+
+6. **Post-Deployment İşlemleri**
+
+    Meilisearch index'lerini ayarlayın:
+
+    ```bash
+    # Coolify terminal'den veya SSH ile
+    docker exec -it laravel-app php artisan meilisearch:setup-products
+    docker exec -it laravel-app php artisan scout:import "App\Models\Product"
+    ```
+
+7. **Domain ve SSL**
+    - Coolify dashboard'da domain ekleyin
+    - SSL sertifikası otomatik olarak Let's Encrypt ile oluşturulacak
+
+### Neden Ayrı Servisler?
+
+Production'da servisleri ayrı tutmanın avantajları:
+
+- **Bağımsız Yönetim:** App deploy ederken DB/Redis/Meili'ye dokunmazsınız
+- **Scale Edilebilirlik:** App'i scale edebilirsiniz, DB/Redis/Meili sabit kalır
+- **Güvenlik:** Her servis kendi lifecycle'ına sahiptir
+- **Bakım:** PostgreSQL upgrade, Redis tuning gibi işlemler bağımsız yapılabilir
+- **Kaynak Yönetimi:** Her servis için ayrı kaynak limitleri koyabilirsiniz
+
+### Troubleshooting
+
+**Database bağlantı hatası:**
+
+- `DB_HOST` değerinin doğru olduğundan emin olun (PostgreSQL servisinin hostname'i)
+- Network connectivity'yi kontrol edin
+- PostgreSQL servisinin çalıştığını kontrol edin
+
+**Redis bağlantı hatası:**
+
+- `REDIS_HOST` değerinin doğru olduğundan emin olun (Redis servisinin hostname'i)
+- Network connectivity'yi kontrol edin
+- Redis servisinin çalıştığını kontrol edin
+
+**Meilisearch bağlantı hatası:**
+
+- `MEILISEARCH_HOST` değerinin doğru olduğundan emin olun (örn: `http://meilisearch.internal:7700`)
+- Network connectivity'yi kontrol edin
+- Meilisearch servisinin çalıştığını kontrol edin
+
+## Manuel Deployment
+
+### Gereksinimler
 
 - PHP 8.2+ (CLI ve FPM)
 - Composer 2.x
@@ -439,4 +605,3 @@ php artisan optimize
 1. [Development Setup](development-setup.md) - Local development
 2. [API Documentation](api-documentation.md) - API kullanımı
 3. [Module Management](module-management.md) - Modül yönetimi
-
