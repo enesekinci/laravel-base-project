@@ -68,7 +68,10 @@ return [
 
         'redis' => [
             'driver' => 'redis',
-            'connection' => env('REDIS_QUEUE_CONNECTION', 'default'),
+            // Queue için ayrı Redis connection kullan (database 2)
+            // Bu sayede queue job'ları cache ve session'dan ayrılır
+            // ÖNEMLİ: Queue database'inde eviction policy "noeviction" olmalı
+            'connection' => env('REDIS_QUEUE_CONNECTION', 'queue'),
             'queue' => env('REDIS_QUEUE', 'default'),
             'retry_after' => (int) env('REDIS_QUEUE_RETRY_AFTER', 90),
             'block_for' => null,

@@ -35,6 +35,15 @@ Schedule::command('db:slow-queries-report')
     ->onOneServer()
     ->appendOutputTo(storage_path('logs/slow-queries-report.log'));
 
+// PostgreSQL performans raporu (haftalık, sorun tespit edilirse mail gönder)
+Schedule::command('db:performance-report --send-mail')
+    ->weekly()
+    ->mondays()
+    ->at('09:00')
+    ->withoutOverlapping()
+    ->onOneServer()
+    ->appendOutputTo(storage_path('logs/postgres-performance-report.log'));
+
 // ----------------------------------------------------------------------------
 // HER DAKİKA İŞLER
 // ----------------------------------------------------------------------------

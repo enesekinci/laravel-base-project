@@ -36,6 +36,10 @@ return [
 
     'slow_request_threshold_ms' => env('LOG_SLOW_REQUEST_THRESHOLD_MS', 500),
 
+    'query_count_threshold' => env('LOG_QUERY_COUNT_THRESHOLD', 20),
+
+    'include_query_count_header' => env('LOG_INCLUDE_QUERY_COUNT_HEADER', false),
+
     /*
     |--------------------------------------------------------------------------
     | Deprecations Log Channel
@@ -105,7 +109,7 @@ return [
             'handler_with' => [
                 'host' => env('PAPERTRAIL_URL'),
                 'port' => env('PAPERTRAIL_PORT'),
-                'connectionString' => 'tls://'.env('PAPERTRAIL_URL').':'.env('PAPERTRAIL_PORT'),
+                'connectionString' => 'tls://' . env('PAPERTRAIL_URL') . ':' . env('PAPERTRAIL_PORT'),
             ],
             'processors' => [PsrLogMessageProcessor::class],
         ],

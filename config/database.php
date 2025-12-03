@@ -139,11 +139,15 @@ return [
     | such as Memcached. You may define your connection settings here.
     |
     | Redis Connection Yapısı:
-    | - default: Genel kullanım (database 0) - Queue, Session vb.
+    | - default: Genel kullanım (database 0) - Session, genel veriler
     | - cache: Cache için ayrı database (database 1) - Cache verileri
+    | - queue: Queue job'ları için ayrı database (database 2) - Queue job'ları
     |
     | Her connection farklı Redis database kullanır (0-15 arası)
     | Bu sayede veriler birbirinden ayrılır ve performans artar.
+    |
+    | ÖNEMLİ: Queue için ayrı database kullanmak güvenlik açısından kritik!
+    | Queue database'inde eviction policy "noeviction" olmalı (job'lar uçmasın)
     |
     */
 
@@ -189,6 +193,22 @@ return [
             'password' => env('REDIS_PASSWORD'),
             'port' => env('REDIS_PORT', '6379'),
             'database' => env('REDIS_CACHE_DB', '1'), // Database 1: Cache verileri
+            'max_retries' => env('REDIS_MAX_RETRIES', 3),
+            'backoff_algorithm' => env('REDIS_BACKOFF_ALGORITHM', 'decorrelated_jitter'),
+            'backoff_base' => env('REDIS_BACKOFF_BASE', 100),
+            'backoff_cap' => env('REDIS_BACKOFF_CAP', 1000),
+        ],
+
+        // Queue connection: Queue job'ları için ayrı database (güvenlik için)
+        // ÖNEMLİ: Queue job'larının uçmaması için ayrı database kullanılmalı
+        // Eviction policy: noeviction (job'lar asla silinmez)
+        'queue' => [
+            'url' => env('REDIS_QUEUE_URL'),
+            'host' => env('REDIS_QUEUE_HOST', env('REDIS_HOST', '127.0.0.1')),
+            'username' => env('REDIS_QUEUE_USERNAME', env('REDIS_USERNAME')),
+            'password' => env('REDIS_QUEUE_PASSWORD', env('REDIS_PASSWORD')),
+            'port' => env('REDIS_QUEUE_PORT', env('REDIS_PORT', '6379')),
+            'database' => env('REDIS_QUEUE_DB', '2'), // Database 2: Queue job'ları
             'max_retries' => env('REDIS_MAX_RETRIES', 3),
             'backoff_algorithm' => env('REDIS_BACKOFF_ALGORITHM', 'decorrelated_jitter'),
             'backoff_base' => env('REDIS_BACKOFF_BASE', 100),

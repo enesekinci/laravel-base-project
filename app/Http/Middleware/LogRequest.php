@@ -43,7 +43,22 @@ class LogRequest
             'status_code' => $response->getStatusCode(),
             'response_time_ms' => round($duration, 2),
             'user_agent' => $request->userAgent(),
+            'timezone' => $request->header('client-time-zone'),
+            'urs_id' => $request->header('urs-id'),
+            'urss_id' => $request->header('urss-id'),
         ];
+
+        // Request body'yi logla (password alanları hariç)
+        $requestData = $request->except(['password', 'new_pass', 'new_re_pass', 'password_confirmation']);
+        if (! empty($requestData)) {
+            $logData['request'] = $requestData;
+        }
+
+        // File upload'ları logla
+        $fileNames = $this->extractFileNames($request);
+        if (! empty($fileNames)) {
+            $logData['files'] = $fileNames;
+        }
 
         // Requests log channel'a yaz
         Log::channel('requests')->info('HTTP Request', $logData);
@@ -63,5 +78,37 @@ class LogRequest
         }
 
         return $response;
+    }
+
+    /**
+     * Request'ten file name'leri çıkar
+     *
+     * @return array<int, string>
+     */
+    protected function extractFileNames(Request $request): array
+    {
+        $fileNames = [];
+
+        try {
+            foreach ($request->all() as $item) {
+                if (is_array($item)) {
+                    foreach ($item as $file) {
+                        if (! is_array($file) && ! empty($file) && is_file($file)) {
+                            $fileNames[] = $file->getClientOriginalName();
+                        }
+                    }
+                } elseif (! is_array($item) && ! empty($item) && is_file($item)) {
+                    $fileNames[] = $item->getClientOriginalName();
+                }
+            }
+        } catch (\Exception $ex) {
+            // File extraction hatası olursa sessizce devam et
+            Log::error('File name extraction failed', [
+                'error' => $ex->getMessage(),
+                'request_path' => $request->path(),
+            ]);
+        }
+
+        return $fileNames;
     }
 }

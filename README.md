@@ -156,6 +156,32 @@ API versioning `ApiVersion` middleware ile yapılır.
 php artisan test
 ```
 
+## 🔍 Database Monitoring
+
+### PostgreSQL Performans Raporu
+
+PostgreSQL performans metriklerini toplar ve sorunları tespit eder:
+
+```bash
+# Raporu oluştur
+php artisan db:performance-report
+
+# Raporu oluştur ve sorun varsa mail gönder
+php artisan db:performance-report --send-mail
+```
+
+Komut haftalık olarak otomatik çalışır (Pazartesi 09:00) ve sorun tespit edilirse admin email adresine uyarı maili gönderir.
+
+Detaylı bilgi için: [PostgreSQL Performance Report](docs/README_pg_performance.md)
+
+### Slow Queries Raporu
+
+Yavaş query'leri raporlar:
+
+```bash
+php artisan db:slow-queries-report
+```
+
 ## 📚 Dokümantasyon
 
 - [Laravel 12 Documentation](https://laravel.com/docs/12.x)
@@ -166,6 +192,7 @@ php artisan test
 - [API Documentation](docs/api-documentation.md) - API kullanımı ve endpoint'ler
 - [Deployment Guide](docs/deployment-guide.md) - Production deployment rehberi
 - [Domain Structure](docs/domain-structure.md) - DDD yapısı ve modül organizasyonu
+- [PostgreSQL Performance Report](docs/README_pg_performance.md) - PostgreSQL performans raporu ve monitoring
 
 ## 🔧 Best Practices
 

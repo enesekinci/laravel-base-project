@@ -86,6 +86,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Supported Locales
+    |--------------------------------------------------------------------------
+    |
+    | Uygulama tarafından desteklenen locale'lerin listesi.
+    | SetLocale middleware'i bu listeyi kullanır.
+    |
+    */
+
+    'supported_locales' => explode(',', (string) env('APP_SUPPORTED_LOCALES', 'tr,en')),
+
+    /*
+    |--------------------------------------------------------------------------
     | Encryption Key
     |--------------------------------------------------------------------------
     |

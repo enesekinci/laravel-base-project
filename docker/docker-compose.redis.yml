@@ -1,0 +1,44 @@
+# ============================================================================
+# Redis Queue Docker Compose Örneği
+# ============================================================================
+# Bu dosya, Laravel queue için güvenli Redis konfigürasyonu içerir.
+# docker-compose -f docker/docker-compose.redis.yml up -d
+# ============================================================================
+
+version: '3.8'
+
+services:
+    redis:
+        image: redis:7-alpine
+        container_name: laravel-redis-queue
+        command: >
+            redis-server
+            --appendonly yes
+            --appendfsync everysec
+            --maxmemory 2gb
+            --maxmemory-policy noeviction
+            --save 900 1
+            --save 300 10
+            --save 60 10000
+            --requirepass ${REDIS_PASSWORD:-}
+        volumes:
+            - redis-data:/data
+            - ./redis-queue.conf:/usr/local/etc/redis/redis.conf:ro
+        ports:
+            - '${REDIS_PORT:-6379}:6379'
+        restart: unless-stopped
+        healthcheck:
+            test: ['CMD', 'redis-cli', 'ping']
+            interval: 10s
+            timeout: 3s
+            retries: 3
+        networks:
+            - laravel-network
+
+volumes:
+    redis-data:
+        driver: local
+
+networks:
+    laravel-network:
+        driver: bridge
