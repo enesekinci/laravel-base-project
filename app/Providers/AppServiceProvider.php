@@ -13,7 +13,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Repository bindings artık her modülün kendi ServiceProvider'ında yapılıyor
     }
 
     /**
@@ -41,5 +41,7 @@ class AppServiceProvider extends ServiceProvider
         // Mass assignment sırasında $fillable/$guarded dışındaki attribute'ların
         // sessizce atılmasını engeller - bu bir güvenlik açığı olabilir
         Model::preventSilentlyDiscardingAttributes();
+
+        // Policies ve Event Listeners artık her modülün kendi ServiceProvider'ında yapılıyor
     }
 }

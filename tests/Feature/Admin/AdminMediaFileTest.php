@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\MediaFile;
+use App\Domains\Media\Models\MediaFile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;

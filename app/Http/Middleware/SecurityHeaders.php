@@ -18,7 +18,7 @@ class SecurityHeaders
         $response = $next($request);
 
         // X-Frame-Options
-        $response->headers->set('X-Frame-Options', 'SAMEORIGIN');
+        $response->headers->set('X-Frame-Options', 'DENY');
 
         // X-Content-Type-Options
         $response->headers->set('X-Content-Type-Options', 'nosniff');

@@ -68,6 +68,7 @@ return [
         WorkerStarting::class => [
             EnsureUploadedFilesAreValid::class,
             EnsureUploadedFilesCanBeMoved::class,
+            \App\Listeners\PreloadOctaneServices::class,
         ],
 
         RequestReceived::class => [

@@ -60,6 +60,19 @@ return [
             'report' => false,
         ],
 
+        'bunnycdn' => [
+            'driver' => 's3',
+            'key' => env('BUNNYCDN_STORAGE_KEY'),
+            'secret' => env('BUNNYCDN_STORAGE_SECRET'),
+            'region' => env('BUNNYCDN_STORAGE_REGION', 'ny'),
+            'bucket' => env('BUNNYCDN_STORAGE_ZONE'),
+            'url' => env('BUNNYCDN_STORAGE_URL'),
+            'endpoint' => env('BUNNYCDN_STORAGE_ENDPOINT', 'https://storage.bunnycdn.com'),
+            'use_path_style_endpoint' => true,
+            'throw' => false,
+            'report' => false,
+        ],
+
     ],
 
     /*

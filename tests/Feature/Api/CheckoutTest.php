@@ -1,5 +1,6 @@
 <?php
 
+use App\Domains\Crm\Models\User;
 use App\Models\Address;
 use App\Models\Cart;
 use App\Models\CartItem;
@@ -8,7 +9,6 @@ use App\Models\PaymentMethod;
 use App\Models\Product;
 use App\Models\ShippingMethod;
 use App\Models\TaxClass;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 

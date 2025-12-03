@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\MediaFile;
-use App\Models\Post;
-use App\Models\PostCategory;
-use App\Models\PostTag;
-use App\Models\User;
+use App\Domains\Blog\Models\Post;
+use App\Domains\Blog\Models\PostCategory;
+use App\Domains\Blog\Models\PostTag;
+use App\Domains\Crm\Models\User;
+use App\Domains\Media\Models\MediaFile;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 

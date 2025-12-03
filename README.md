@@ -1,59 +1,183 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Laravel Base Project
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Bu proje, **CMS, CRM veya E-ticaret** projeleri için hazırlanmış bir **base/havuz proje**dir. Fork edildiğinde gereksiz modüller silinebilir ve sadece ihtiyaç duyulan modüller kalabilir.
 
-## About Laravel
+## 🎯 Proje Amacı
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Bu proje, SaaS yönetilecek bir sistemde olabilecek **ortak modülleri** içerir. Her modül **tamamen bağımsız**dır ve gereksiz modüller kolayca kaldırılabilir.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 📦 Modüller
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Proje Domain-Driven Design (DDD) yapısına göre organize edilmiştir:
 
-## Learning Laravel
+- **Auth** - Authentication modülü (Login, Register, Password Reset)
+- **Blog** - Blog modülü (Post, PostCategory, PostTag)
+- **CMS** - Content Management modülü (Page, Menu, Slider, ContentBlock)
+- **CRM** - Customer Relationship Management modülü (User, AdminActionLog)
+- **Media** - Media Management modülü (MediaFile)
+- **Settings** - Settings modülü (Setting)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+Her modül kendi içinde:
+- Models
+- Controllers (Admin, Api)
+- Services
+- Requests (FormRequest)
+- Resources (API Resources)
+- Policies
+- Events & Listeners
+- Jobs
+- Notifications
+- Routes
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+içerir.
 
-## Laravel Sponsors
+## 🚀 Kurulum
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Gereksinimler
 
-### Premium Partners
+- PHP 8.2+
+- Composer
+- Node.js & NPM
+- PostgreSQL veya MySQL
+- Redis (opsiyonel, cache için)
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### Adımlar
 
-## Contributing
+1. **Projeyi klonlayın:**
+```bash
+git clone <repository-url>
+cd laravel-base-project
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+2. **Bağımlılıkları yükleyin:**
+```bash
+composer install
+npm install
+```
 
-## Code of Conduct
+3. **Environment dosyasını oluşturun:**
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+4. **Veritabanını yapılandırın:**
+`.env` dosyasında veritabanı bilgilerinizi güncelleyin:
+```env
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=laravel
+DB_USERNAME=postgres
+DB_PASSWORD=
+```
 
-## Security Vulnerabilities
+5. **Migration'ları çalıştırın:**
+```bash
+php artisan migrate
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+6. **Asset'leri build edin:**
+```bash
+npm run build
+```
 
-## License
+7. **Development server'ı başlatın:**
+```bash
+php artisan serve
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 📁 Klasör Yapısı
+
+```
+app/
+  Domains/
+    Auth/              # Authentication modülü
+    Blog/              # Blog modülü
+    Cms/               # CMS modülü
+    Crm/               # CRM modülü
+    Media/             # Media modülü
+    Settings/          # Settings modülü
+  Http/
+    Controllers/       # Shared controllers (HealthCheck, Dashboard)
+    Middleware/        # Middleware'ler
+  Providers/           # Service Providers
+  Jobs/                # Shared Jobs
+  Mail/                # Shared Mail classes
+  Notifications/       # Shared Notifications
+  Support/             # Helper classes
+
+database/
+  migrations/
+    auth/              # Auth modülü migration'ları
+    blog/              # Blog modülü migration'ları
+    cms/               # CMS modülü migration'ları
+    crm/               # CRM modülü migration'ları
+    media/             # Media modülü migration'ları
+    settings/          # Settings modülü migration'ları
+```
+
+## ⚙️ Yapılandırma
+
+### Modül Yönetimi
+
+Modüller `config/modules.php` dosyasından yönetilir. Her modülün kendi `{Module}ServiceProvider`'ı vardır ve `ModuleServiceProvider` tarafından otomatik olarak yüklenir.
+
+**Not:** Bu proje ağır modül paketleri (nwidart/laravel-modules gibi) kullanmaz. Bunun yerine Laravel'in native ServiceProvider sistemi ile hafif ve performanslı bir yapı kullanılır. Bu yaklaşım Octane + FrankenPHP ile mükemmel çalışır ve gereksiz overhead yaratmaz.
+
+Bir modülü devre dışı bırakmak için:
+
+```env
+MODULE_BLOG_ENABLED=false
+MODULE_CMS_ENABLED=false
+```
+
+Modül ServiceProvider'ları şu işlemleri yapar:
+- Repository binding'leri
+- Policy kayıtları
+- Event listener kayıtları
+- Route yükleme
+
+### Environment Variables
+
+Tüm environment variables `.env.example` dosyasında tanımlanmıştır. Projeyi başlatmadan önce `.env` dosyasını oluşturup gerekli değerleri güncelleyin.
+
+### API Versioning
+
+API route'ları versioning ile yapılandırılmıştır:
+- `/api/v1/*` - Version 1 API routes
+- Gelecekte `/api/v2/*` - Version 2 API routes
+
+API versioning `ApiVersion` middleware ile yapılır.
+
+## 🧪 Test
+
+```bash
+php artisan test
+```
+
+## 📚 Dokümantasyon
+
+- [Laravel 12 Documentation](https://laravel.com/docs/12.x)
+- [Project Roadmap](docs/project-roadmap.md)
+- [Laravel Packages Guide](docs/laravel-packages-guide.md)
+- [Module Management](docs/module-management.md) - Modül yönetimi ve ServiceProvider yapısı
+- [Development Setup](docs/development-setup.md) - Local development kurulum rehberi
+- [API Documentation](docs/api-documentation.md) - API kullanımı ve endpoint'ler
+- [Deployment Guide](docs/deployment-guide.md) - Production deployment rehberi
+- [Domain Structure](docs/domain-structure.md) - DDD yapısı ve modül organizasyonu
+
+## 🔧 Best Practices
+
+Bu proje aşağıdaki best practice'leri uygular:
+
+- **Service Layer Pattern** - Business logic Service class'larında
+- **FormRequest Validation** - Tüm validation'lar FormRequest'lerde
+- **Policies** - Authorization logic Policy'lerde
+- **API Resources** - Standart API response formatı
+- **Events & Listeners** - Modüller arası iletişim için Event-driven pattern
+- **Domain-Driven Design** - Modül bazlı organizasyon
+
+## 📝 License
+
+Bu proje MIT lisansı altında lisanslanmıştır.

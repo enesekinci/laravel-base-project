@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Models\MediaFile;
-use App\Models\User;
+use App\Domains\Crm\Models\User;
+use App\Domains\Media\Models\MediaFile;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

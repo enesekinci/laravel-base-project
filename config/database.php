@@ -52,24 +52,16 @@ return [
             'username' => env('DB_USERNAME', 'root'),
             'password' => env('DB_PASSWORD', ''),
             'unix_socket' => env('DB_SOCKET', ''),
-            'charset' => env('DB_CHARSET', 'utf8mb4'),
-            'collation' => env('DB_COLLATION', 'utf8mb4_unicode_ci'),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
             'prefix_indexes' => true,
             'strict' => true,
             'engine' => null,
             // Octane için persistent connection (performans kritik!)
-            // Her request'te yeni connection açmak yerine mevcut connection'ı kullanır
-            'options' => extension_loaded('pdo_mysql') ? array_merge(
-                array_filter([
-                    // PHP 8.5+ için yeni format, backward compatibility için eski format da destekleniyor
-                    (defined('Pdo\Mysql::ATTR_SSL_CA') ? \Pdo\Mysql::ATTR_SSL_CA : \PDO::MYSQL_ATTR_SSL_CA) => env('MYSQL_ATTR_SSL_CA'),
-                ]),
-                // Persistent connection (Octane için önemli)
-                [
-                    \PDO::ATTR_PERSISTENT => env('DB_PERSISTENT', true),
-                ]
-            ) : [],
+            'options' => extension_loaded('pdo_mysql') ? [
+                \PDO::ATTR_PERSISTENT => true,
+            ] : [],
         ],
 
         'mariadb' => [
@@ -81,16 +73,12 @@ return [
             'username' => env('DB_USERNAME', 'root'),
             'password' => env('DB_PASSWORD', ''),
             'unix_socket' => env('DB_SOCKET', ''),
-            'charset' => env('DB_CHARSET', 'utf8mb4'),
-            'collation' => env('DB_COLLATION', 'utf8mb4_unicode_ci'),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
             'prefix_indexes' => true,
             'strict' => true,
             'engine' => null,
-            'options' => extension_loaded('pdo_mysql') ? array_filter([
-                // PHP 8.5+ için yeni format, backward compatibility için eski format da destekleniyor
-                (defined('Pdo\Mysql::ATTR_SSL_CA') ? \Pdo\Mysql::ATTR_SSL_CA : \PDO::MYSQL_ATTR_SSL_CA) => env('MYSQL_ATTR_SSL_CA'),
-            ]) : [],
         ],
 
         'pgsql' => [
@@ -101,7 +89,7 @@ return [
             'database' => env('DB_DATABASE', 'laravel'),
             'username' => env('DB_USERNAME', 'root'),
             'password' => env('DB_PASSWORD', ''),
-            'charset' => env('DB_CHARSET', 'utf8'),
+            'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
             'search_path' => 'public',
@@ -116,7 +104,7 @@ return [
             'database' => env('DB_DATABASE', 'laravel'),
             'username' => env('DB_USERNAME', 'root'),
             'password' => env('DB_PASSWORD', ''),
-            'charset' => env('DB_CHARSET', 'utf8'),
+            'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
             // 'encrypt' => env('DB_ENCRYPT', 'yes'),
@@ -220,5 +208,6 @@ return [
     */
 
     'slow_query_threshold_ms' => env('DB_SLOW_QUERY_THRESHOLD_MS', 500),
+    'slow_query_limit' => env('DB_SLOW_QUERY_LIMIT', 50),
 
 ];

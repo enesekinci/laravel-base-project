@@ -5,10 +5,12 @@ Laravel Debugbar API route'larında da kullanılabilir, ancak bazı önemli fark
 ## 🔍 Nasıl Çalışır?
 
 ### Web Route'ları (HTML Response)
+
 - Debugbar HTML response'a **inject edilir** (sayfanın altında görünür)
 - JavaScript ile interaktif debug arayüzü
 
 ### API Route'ları (JSON Response)
+
 - Debugbar **JSON response'a inject edilmez** (response'u bozmamak için)
 - Request'ler **storage'a kaydedilir**
 - Web arayüzünden (`/_debugbar`) görüntülenebilir
@@ -41,6 +43,7 @@ http://localhost/_debugbar/open
 ```
 
 Bu sayfada:
+
 - Tüm API request'leri listelenir
 - Her request'in detayları görüntülenebilir
 - Query'ler, log'lar, exception'lar görülebilir
@@ -70,6 +73,7 @@ Route::get('/users', function () {
 ```
 
 **Görüntüleme:**
+
 1. API endpoint'ini çağır: `GET /api/users`
 2. `http://localhost/_debugbar/open` adresine git
 3. Son request'i seç ve detayları gör
@@ -81,11 +85,12 @@ Frontend'den gelen AJAX request'leri de yakalanır:
 ```javascript
 // Frontend
 fetch('/api/users')
-    .then(response => response.json())
-    .then(data => console.log(data));
+    .then((response) => response.json())
+    .then((data) => console.log(data))
 ```
 
 **Görüntüleme:**
+
 - `http://localhost/_debugbar/open` adresinden AJAX request'ini görüntüle
 
 ### 3. API Response Headers
@@ -165,11 +170,11 @@ class UserController extends Controller
     {
         // Debugbar bu request'i yakalar
         \Debugbar::info('Fetching users');
-        
+
         $users = User::with('posts')->get();
-        
+
         \Debugbar::addMessage('Found ' . $users->count() . ' users', 'info');
-        
+
         return response()->json($users);
     }
 }
@@ -181,11 +186,11 @@ class UserController extends Controller
 2. `http://localhost/_debugbar/open` adresine git
 3. Request'i seç
 4. Detayları gör:
-   - Queries (kaç query, süreleri)
-   - Log messages
-   - Memory usage
-   - Route info
-   - Request/Response data
+    - Queries (kaç query, süreleri)
+    - Log messages
+    - Memory usage
+    - Route info
+    - Request/Response data
 
 ## 🚀 Alternatif: Telescope
 
@@ -200,4 +205,3 @@ Telescope daha detaylı ve production-ready bir çözümdür.
 ---
 
 **Son Güncelleme:** 2025-01-02
-

@@ -10,6 +10,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "darkaonline/l5-swagger": "^9.0",
         "laravel/framework": "^12.0",
         "laravel/horizon": "^5.40",
         "laravel/octane": "^2.13",
@@ -73,6 +74,15 @@
         "analyse": [
             "./vendor/bin/phpstan analyse"
         ],
+        "optimize": [
+            "@php artisan optimize"
+        ],
+        "optimize-clear": [
+            "@php artisan config:clear",
+            "@php artisan route:clear",
+            "@php artisan view:clear",
+            "@php artisan event:clear"
+        ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"
@@ -103,7 +113,8 @@
         "sort-packages": true,
         "allow-plugins": {
             "pestphp/pest-plugin": true,
-            "php-http/discovery": true
+            "php-http/discovery": true,
+            "wikimedia/composer-merge-plugin": true
         }
     },
     "minimum-stability": "stable",

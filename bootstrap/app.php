@@ -25,18 +25,22 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
             'log-admin-action' => \App\Http\Middleware\LogAdminAction::class,
+            'api.version' => \App\Http\Middleware\ApiVersion::class,
         ]);
 
         // Request logging middleware (global)
         $middleware->web(append: [
+            \App\Http\Middleware\ResponseTimerMiddleware::class,
             \App\Http\Middleware\LogRequest::class,
             \App\Http\Middleware\SecurityHeaders::class,
             \App\Http\Middleware\ForceHttps::class,
         ]);
 
         $middleware->api(append: [
+            \App\Http\Middleware\ResponseTimerMiddleware::class,
             \App\Http\Middleware\LogRequest::class,
             \App\Http\Middleware\SecurityHeaders::class,
+            \App\Http\Middleware\SetLocale::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

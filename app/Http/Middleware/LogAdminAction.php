@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\AdminActionLog;
+use App\Domains\Crm\Models\AdminActionLog;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -144,7 +144,21 @@ class LogAdminAction
             $parts = explode('.', $routeName);
             if (count($parts) >= 2) {
                 $modelName = str_replace('-', '', ucwords($parts[1], '-'));
-                $modelClass = "App\\Models\\{$modelName}";
+                // Try domain-based model classes first
+                $domainModelClasses = [
+                    "App\\Domains\\Blog\\Models\\{$modelName}",
+                    "App\\Domains\\Cms\\Models\\{$modelName}",
+                    "App\\Domains\\Crm\\Models\\{$modelName}",
+                    "App\\Domains\\Media\\Models\\{$modelName}",
+                    "App\\Domains\\Settings\\Models\\{$modelName}",
+                    "App\\Models\\{$modelName}", // Fallback to old location
+                ];
+
+                foreach ($domainModelClasses as $modelClass) {
+                    if (class_exists($modelClass)) {
+                        return $modelClass;
+                    }
+                }
 
                 if (class_exists($modelClass)) {
                     return $modelClass;

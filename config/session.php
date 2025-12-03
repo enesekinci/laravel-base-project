@@ -11,14 +11,23 @@ return [
     |
     | This option determines the default session driver that is utilized for
     | incoming requests. Laravel supports a variety of storage options to
-    | persist session data. Database storage is a great default choice.
+    | persist session data.
+    |
+    | Önerilen: "redis" - Octane + FrankenPHP ile en uygun seçenek
+    |           Yüksek performans, concurrent request'lerde sorunsuz çalışır
+    |           Horizontal scaling için ideal
+    |
+    | Alternatifler:
+    | - "database": Redis yoksa kullanılabilir, ama daha yavaş
+    | - "file": Octane ile kullanılmamalı (file locking problemleri)
+    | - "cookie": Sadece küçük veriler için, güvenlik riski var
     |
     | Supported: "file", "cookie", "database", "memcached",
     |            "redis", "dynamodb", "array"
     |
     */
 
-    'driver' => env('SESSION_DRIVER', 'database'),
+    'driver' => env('SESSION_DRIVER', 'redis'),
 
     /*
     |--------------------------------------------------------------------------
@@ -97,11 +106,15 @@ return [
     | define the cache store which should be used to store the session data
     | between requests. This must match one of your defined cache stores.
     |
+    | Redis kullanırken: 'redis' store'u kullan (cache ile aynı)
+    | Session'lar Redis'in default connection'ında (database 0) saklanır
+    | Cache verileri ise cache connection'ında (database 1) saklanır
+    |
     | Affects: "dynamodb", "memcached", "redis"
     |
     */
 
-    'store' => env('SESSION_STORE'),
+    'store' => env('SESSION_STORE', 'redis'),
 
     /*
     |--------------------------------------------------------------------------

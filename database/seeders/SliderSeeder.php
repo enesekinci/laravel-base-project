@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\MediaFile;
-use App\Models\Slider;
-use App\Models\SliderItem;
-use App\Models\User;
+use App\Domains\Cms\Models\Slider;
+use App\Domains\Cms\Models\SliderItem;
+use App\Domains\Crm\Models\User;
+use App\Domains\Media\Models\MediaFile;
 use Illuminate\Database\Seeder;
 
 class SliderSeeder extends Seeder
