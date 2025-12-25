@@ -305,7 +305,7 @@
                                     <div class="t-uppercontent">
                                         <h5>
                                             Yeni proje oluşturuldu :
-                                            <a href="javscript:void(0);"><span>[Fast Commerce]</span></a>
+                                            <a href="javscript:void(0);"><span>[Laravel Base Project]</span></a>
                                         </h5>
                                     </div>
                                     <p>{{ date('d M, Y') }}</p>

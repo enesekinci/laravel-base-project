@@ -5,7 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" />
         <meta name="csrf-token" content="{{ csrf_token() }}" />
-        <title>@yield('title', 'Admin') | Fast Commerce</title>
+        <title>@yield('title', 'Admin') | Laravel Base Project</title>
         <link rel="icon" type="image/x-icon" href="{{ asset('cork/src/assets/img/favicon.ico') }}" />
         <link href="{{ asset('cork/layouts/modern-dark-menu/css/light/loader.css') }}" rel="stylesheet" type="text/css" />
         <link href="{{ asset('cork/layouts/modern-dark-menu/css/dark/loader.css') }}" rel="stylesheet" type="text/css" />
@@ -466,7 +466,7 @@
                                 </a>
                             </div>
                             <div class="nav-item theme-text">
-                                <a href="{{ route('admin.dashboard') }}" class="nav-link">Fast Commerce</a>
+                                <a href="{{ route('admin.dashboard') }}" class="nav-link">Laravel Base Project</a>
                             </div>
                         </div>
                         <div class="nav-item sidebar-toggle">
@@ -635,7 +635,7 @@
                         <p class="">
                             Copyright ©
                             <span class="dynamic-year">{{ date('Y') }}</span>
-                            <a target="_blank" href="#">Fast Commerce</a>
+                            <a target="_blank" href="#">Laravel Base Project</a>
                             , Tüm hakları saklıdır.
                         </p>
                     </div>
