@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domains\Blog\Repositories;
 
 use App\Domains\Blog\Contracts\PostRepositoryInterface;

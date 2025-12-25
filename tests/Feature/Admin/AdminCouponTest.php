@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\Coupon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 
 uses(RefreshDatabase::class);
 
-it('lists coupons with filters for admin', function () {
+it('lists coupons with filters for admin', function (): void {
     adminUser();
 
     $now = Carbon::now();
@@ -81,7 +83,7 @@ it('lists coupons with filters for admin', function () {
     expect($ids4)->not()->toContain($c1->id);
 });
 
-it('shows a single coupon detail', function () {
+it('shows a single coupon detail', function (): void {
     adminUser();
 
     $coupon = Coupon::factory()->create([
@@ -106,7 +108,7 @@ it('shows a single coupon detail', function () {
     expect((float) $data['value'])->toBe(10.0);
 });
 
-it('creates a coupon', function () {
+it('creates a coupon', function (): void {
     adminUser();
 
     $startsAt = now()->addDay();
@@ -147,7 +149,7 @@ it('creates a coupon', function () {
     ]);
 });
 
-it('validates coupon create payload', function () {
+it('validates coupon create payload', function (): void {
     adminUser();
 
     $res = $this->postJson('/api/admin/coupons', [
@@ -160,7 +162,7 @@ it('validates coupon create payload', function () {
         ->assertJsonValidationErrors(['code', 'type', 'value']);
 });
 
-it('updates a coupon', function () {
+it('updates a coupon', function (): void {
     adminUser();
 
     $coupon = Coupon::factory()->create([
@@ -207,7 +209,7 @@ it('updates a coupon', function () {
     ]);
 });
 
-it('soft deletes and restores a coupon', function () {
+it('soft deletes and restores a coupon', function (): void {
     adminUser();
 
     $coupon = Coupon::factory()->create([
@@ -232,7 +234,7 @@ it('soft deletes and restores a coupon', function () {
     ]);
 });
 
-it('toggles coupon active status', function () {
+it('toggles coupon active status', function (): void {
     adminUser();
 
     $coupon = Coupon::factory()->create([

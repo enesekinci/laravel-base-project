@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -8,7 +10,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('sliders', function (Blueprint $table) {
+        Schema::create('sliders', function (Blueprint $table): void {
             $table->id();
             $table->string('name');              // "Home Main Slider"
             $table->string('code')->unique();    // "home_main"
@@ -21,7 +23,7 @@ return new class extends Migration
             $table->index('code');
         });
 
-        Schema::create('slider_items', function (Blueprint $table) {
+        Schema::create('slider_items', function (Blueprint $table): void {
             $table->id();
             $table->unsignedBigInteger('slider_id');
             $table->unsignedBigInteger('media_file_id')->nullable(); // görsel

@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\Order;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-it('lists orders for admin with filters', function () {
+it('lists orders for admin with filters', function (): void {
     adminUser();
 
     $o1 = Order::factory()->create([
@@ -38,7 +40,7 @@ it('lists orders for admin with filters', function () {
     expect($ids)->not()->toContain($o1->id);
 });
 
-it('updates order status and payment_status', function () {
+it('updates order status and payment_status', function (): void {
     adminUser();
 
     $order = Order::factory()->create([

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Jobs;
 
 use App\Mail\Error5xxAlertMail;
@@ -13,7 +15,10 @@ use Illuminate\Support\Facades\Mail;
 
 class Send5xxErrorAlertMail implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     public int $tries = 3;
 
@@ -24,7 +29,7 @@ class Send5xxErrorAlertMail implements ShouldQueue
         public string $url,
         public string $method,
         public string $ip,
-        public ?int $userId = null
+        public ?int $userId = null,
     ) {
         // Job'un hangi queue'da çalışacağını belirle
         $this->onQueue('emails');

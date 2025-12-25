@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\Product;
 
-it('searches products by name', function () {
+it('searches products by name', function (): void {
     $tshirt = Product::factory()->create([
         'name' => 'Basic T-Shirt',
         'sku' => 'TSHIRT-001',
@@ -20,7 +22,7 @@ it('searches products by name', function () {
         ->assertJsonPath('data.0.id', $tshirt->id);
 });
 
-it('searches products by sku', function () {
+it('searches products by sku', function (): void {
     $product1 = Product::factory()->create([
         'name' => 'Product One',
         'sku' => 'PROD-ABC-123',
@@ -38,7 +40,7 @@ it('searches products by sku', function () {
         ->assertJsonPath('data.0.id', $product1->id);
 });
 
-it('combines search with filters', function () {
+it('combines search with filters', function (): void {
     // Ürün 1: Basic Black T-Shirt
     $product1 = Product::factory()->create([
         'name' => 'Basic Black T-Shirt',
@@ -58,19 +60,19 @@ it('combines search with filters', function () {
     ]);
 
     // Renk option'ı oluştur
-    $colorOption = \App\Models\Option::factory()->create(['name' => 'Renk']);
-    $blackValue = \App\Models\OptionValue::factory()->create([
+    $colorOption = App\Models\Option::factory()->create(['name' => 'Renk']);
+    $blackValue = App\Models\OptionValue::factory()->create([
         'option_id' => $colorOption->id,
         'value' => 'Siyah',
     ]);
 
     // Ürün 1 ve 3'e siyah variant ekle
-    $variant1 = \App\Models\ProductVariant::factory()->create([
+    $variant1 = App\Models\ProductVariant::factory()->create([
         'product_id' => $product1->id,
     ]);
     $variant1->optionValues()->attach($blackValue->id, ['option_id' => $colorOption->id]);
 
-    $variant3 = \App\Models\ProductVariant::factory()->create([
+    $variant3 = App\Models\ProductVariant::factory()->create([
         'product_id' => $product3->id,
     ]);
     $variant3->optionValues()->attach($blackValue->id, ['option_id' => $colorOption->id]);

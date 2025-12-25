@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\Option;
 use App\Models\OptionValue;
 use App\Models\Product;
 use App\Models\ProductVariant;
 
-it('filters in API by color and size together', function () {
+it('filters in API by color and size together', function (): void {
     $color = Option::factory()->create(['name' => 'Renk']);
     $size = Option::factory()->create(['name' => 'Beden']);
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domains\Crm\Services;
 
 use App\Domains\Crm\Models\User;
@@ -8,7 +10,7 @@ use Illuminate\Database\Eloquent\Collection;
 class UserService
 {
     /**
-     * Get all users
+     * Get all users.
      */
     public function getAll(): Collection
     {
@@ -16,7 +18,7 @@ class UserService
     }
 
     /**
-     * Get user by ID
+     * Get user by ID.
      */
     public function find(int $id): ?User
     {
@@ -24,7 +26,7 @@ class UserService
     }
 
     /**
-     * Create a new user
+     * Create a new user.
      */
     public function create(array $data): User
     {
@@ -32,7 +34,7 @@ class UserService
     }
 
     /**
-     * Update a user
+     * Update a user.
      */
     public function update(User $user, array $data): bool
     {
@@ -40,7 +42,7 @@ class UserService
     }
 
     /**
-     * Delete a user
+     * Delete a user.
      */
     public function delete(User $user): bool
     {

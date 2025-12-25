@@ -1,59 +1,61 @@
 <?php
 
+declare(strict_types=1);
+
 /**
- * Config Validation Testleri
+ * Config Validation Testleri.
  *
  * Bu test sınıfı, config dosyalarındaki değerlerin geçerli olduğunu
  * ve uygulamanın çalışması için gerekli tüm ayarların mevcut olduğunu kontrol eder.
  */
-describe('Config Validation', function () {
-    it('app config geçerli değerlere sahip olmalı', function () {
+describe('Config Validation', function (): void {
+    it('app config geçerli değerlere sahip olmalı', function (): void {
         expect(config('app.name'))->not->toBeEmpty()
             ->and(config('app.env'))->toBeIn(['local', 'development', 'staging', 'production', 'testing'])
             ->and(config('app.url'))->toMatch('/^https?:\/\//');
     });
 
-    it('database connection geçerli driver kullanmalı', function () {
+    it('database connection geçerli driver kullanmalı', function (): void {
         $validDrivers = ['mysql', 'pgsql', 'sqlite', 'sqlsrv', 'mariadb'];
         expect(config('database.default'))->toBeIn($validDrivers);
     });
 
-    it('session driver geçerli driver kullanmalı', function () {
+    it('session driver geçerli driver kullanmalı', function (): void {
         $validDrivers = ['file', 'cookie', 'database', 'memcached', 'redis', 'dynamodb', 'array'];
         expect(config('session.driver'))->toBeIn($validDrivers);
     });
 
-    it('cache store geçerli store kullanmalı', function () {
+    it('cache store geçerli store kullanmalı', function (): void {
         $validStores = ['array', 'database', 'file', 'memcached', 'redis', 'dynamodb', 'octane', 'null'];
         expect(config('cache.default'))->toBeIn($validStores);
     });
 
-    it('queue connection geçerli connection kullanmalı', function () {
+    it('queue connection geçerli connection kullanmalı', function (): void {
         $validConnections = ['sync', 'database', 'beanstalkd', 'sqs', 'redis', 'deferred', 'background', 'failover', 'null'];
         expect(config('queue.default'))->toBeIn($validConnections);
     });
 
-    it('mail mailer geçerli mailer kullanmalı', function () {
+    it('mail mailer geçerli mailer kullanmalı', function (): void {
         $validMailers = ['smtp', 'sendmail', 'mailgun', 'ses', 'postmark', 'resend', 'log', 'array', 'failover'];
         expect(config('mail.default'))->toBeIn($validMailers);
     });
 
-    it('Octane server geçerli server kullanmalı', function () {
+    it('Octane server geçerli server kullanmalı', function (): void {
         $validServers = ['roadrunner', 'swoole', 'frankenphp'];
         expect(config('octane.server'))->toBeIn($validServers);
     });
 });
 
-describe('Required Config Values', function () {
-    it('app key tanımlı olmalı (production için kritik)', function () {
+describe('Required Config Values', function (): void {
+    it('app key tanımlı olmalı (production için kritik)', function (): void {
         // Test ortamında key olmayabilir, ama production'da olmalı
         if (config('app.env') === 'production') {
             expect(config('app.key'))->not->toBeEmpty();
         }
     });
 
-    it('database connection bilgileri eksiksiz olmalı', function () {
-        $connection = config('database.connections.' . config('database.default'));
+    it('database connection bilgileri eksiksiz olmalı', function (): void {
+        $connection = config('database.connections.'.config('database.default'));
         expect($connection)->toBeArray();
 
         // SQLite için host yok, diğerleri için host var
@@ -65,7 +67,7 @@ describe('Required Config Values', function () {
         expect($connection['database'] ?? null)->not->toBeEmpty();
     });
 
-    it('Redis connection bilgileri eksiksiz olmalı', function () {
+    it('Redis connection bilgileri eksiksiz olmalı', function (): void {
         $redis = config('database.redis.default');
         expect($redis)->toBeArray()
             ->and($redis['host'])->not->toBeEmpty()
@@ -73,15 +75,15 @@ describe('Required Config Values', function () {
     });
 });
 
-describe('Performance Configuration', function () {
-    it('lazy loading prevention aktif olmalı (production için)', function () {
+describe('Performance Configuration', function (): void {
+    it('lazy loading prevention aktif olmalı (production için)', function (): void {
         // Production'da lazy loading prevention aktif olmalı
         if (config('app.env') === 'production') {
             expect(config('app.prevent_lazy_loading'))->toBeTrue();
         }
     });
 
-    it('Redis persistent connection aktif olmalı (Octane için)', function () {
+    it('Redis persistent connection aktif olmalı (Octane için)', function (): void {
         expect(config('database.redis.options.persistent'))->toBeTrue();
     });
 });

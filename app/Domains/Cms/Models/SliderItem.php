@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domains\Cms\Models;
 
 use App\Domains\Media\Models\MediaFile;
@@ -14,7 +16,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class SliderItem extends Model
 {
     /** @use HasFactory<\Database\Factories\SliderItemFactory> */
-    use HasFactory, SoftDeletes;
+    use HasFactory;
+
+    use SoftDeletes;
 
     protected $fillable = [
         'slider_id',

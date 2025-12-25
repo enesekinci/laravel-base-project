@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domains\Auth\Controllers;
 
 use App\Domains\Auth\Services\AuthService;
@@ -10,7 +12,7 @@ use Illuminate\Http\Request;
 class RegisterController extends Controller
 {
     public function __construct(
-        protected AuthService $authService
+        protected AuthService $authService,
     ) {}
 
     public function register(Request $request): JsonResponse

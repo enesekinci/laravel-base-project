@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -8,7 +10,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('menus', function (Blueprint $table) {
+        Schema::create('menus', function (Blueprint $table): void {
             $table->id();
             $table->string('name');           // "Main Menu"
             $table->string('code')->unique(); // "main", "footer"
@@ -18,7 +20,7 @@ return new class extends Migration
             $table->index('code');
         });
 
-        Schema::create('menu_items', function (Blueprint $table) {
+        Schema::create('menu_items', function (Blueprint $table): void {
             $table->id();
             $table->unsignedBigInteger('menu_id');
             $table->unsignedBigInteger('parent_id')->nullable();

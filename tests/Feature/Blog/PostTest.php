@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Domains\Blog\Models\Post;
 use App\Domains\Crm\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-it('can list published posts', function () {
+it('can list published posts', function (): void {
     Post::factory()->create([
         'status' => 'published',
         'published_at' => now()->subDay(),
@@ -22,7 +24,7 @@ it('can list published posts', function () {
         ->assertJsonCount(1, 'data');
 });
 
-it('requires authentication to create a post', function () {
+it('requires authentication to create a post', function (): void {
     $user = User::factory()->create(['is_admin' => true]);
 
     $response = $this->actingAs($user, 'sanctum')

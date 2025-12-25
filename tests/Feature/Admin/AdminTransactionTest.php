@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\Order;
 use App\Models\PaymentMethod;
 use App\Models\Transaction;
@@ -7,7 +9,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-it('lists transactions with filters', function () {
+it('lists transactions with filters', function (): void {
     adminUser();
 
     $order = Order::factory()->create([
@@ -53,7 +55,7 @@ it('lists transactions with filters', function () {
     expect($ids3)->toContain($t1->id);
 });
 
-it('shows transaction detail with relations', function () {
+it('shows transaction detail with relations', function (): void {
     adminUser();
 
     $order = Order::factory()->create([
@@ -80,7 +82,7 @@ it('shows transaction detail with relations', function () {
         ->assertJsonPath('data.payment_method.code', 'paytr');
 });
 
-it('creates a transaction', function () {
+it('creates a transaction', function (): void {
     adminUser();
 
     $order = Order::factory()->create([
@@ -120,7 +122,7 @@ it('creates a transaction', function () {
     ]);
 });
 
-it('validates transaction create payload', function () {
+it('validates transaction create payload', function (): void {
     adminUser();
 
     $res = $this->postJson('/api/admin/transactions', [
@@ -133,7 +135,7 @@ it('validates transaction create payload', function () {
         ->assertJsonValidationErrors(['type', 'status', 'amount']);
 });
 
-it('updates a transaction', function () {
+it('updates a transaction', function (): void {
     adminUser();
 
     $t = Transaction::factory()->create([
@@ -164,7 +166,7 @@ it('updates a transaction', function () {
     ]);
 });
 
-it('deletes a transaction', function () {
+it('deletes a transaction', function (): void {
     adminUser();
 
     $t = Transaction::factory()->create();

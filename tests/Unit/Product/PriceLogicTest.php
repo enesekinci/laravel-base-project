@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\Product;
 use App\Models\ProductVariant;
 use Carbon\Carbon;
 
-it('uses base product price when variant price is null', function () {
+it('uses base product price when variant price is null', function (): void {
     $product = Product::factory()->create([
         'price' => 200,
     ]);
@@ -17,7 +19,7 @@ it('uses base product price when variant price is null', function () {
     expect($variant->getEffectivePrice())->toBe(200.0);
 });
 
-it('uses variant price when set', function () {
+it('uses variant price when set', function (): void {
     $product = Product::factory()->create([
         'price' => 200,
     ]);
@@ -30,7 +32,7 @@ it('uses variant price when set', function () {
     expect($variant->getEffectivePrice())->toBe(250.0);
 });
 
-it('applies special price when in date range', function () {
+it('applies special price when in date range', function (): void {
     Carbon::setTestNow('2025-01-10');
 
     $product = Product::factory()->create([
@@ -44,7 +46,7 @@ it('applies special price when in date range', function () {
     expect($product->getEffectivePrice())->toBe(150.0);
 });
 
-it('ignores special price when out of date range', function () {
+it('ignores special price when out of date range', function (): void {
     Carbon::setTestNow('2025-02-10');
 
     $product = Product::factory()->create([
@@ -58,7 +60,7 @@ it('ignores special price when out of date range', function () {
     expect($product->getEffectivePrice())->toBe(200.0);
 });
 
-it('handles percent special price', function () {
+it('handles percent special price', function (): void {
     Carbon::setTestNow('2025-01-10');
 
     $product = Product::factory()->create([

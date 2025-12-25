@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Providers;
 
 use Illuminate\Http\JsonResponse;
@@ -11,10 +13,7 @@ class ResponseMacroServiceProvider extends ServiceProvider
     /**
      * Register services.
      */
-    public function register(): void
-    {
-        //
-    }
+    public function register(): void {}
 
     /**
      * Bootstrap services.
@@ -25,13 +24,11 @@ class ResponseMacroServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // Başarılı response
-        Response::macro('success', function ($data = null, string $message = 'Success', int $statusCode = 200): JsonResponse {
-            return Response::json([
-                'success' => true,
-                'message' => $message,
-                'data' => $data,
-            ], $statusCode);
-        });
+        Response::macro('success', fn ($data = null, string $message = 'Success', int $statusCode = 200): JsonResponse => Response::json([
+            'success' => true,
+            'message' => $message,
+            'data' => $data,
+        ], $statusCode));
 
         // Hata response
         Response::macro('error', function (string $message = 'Error', int $statusCode = 400, array $errors = []): JsonResponse {
@@ -48,27 +45,21 @@ class ResponseMacroServiceProvider extends ServiceProvider
         });
 
         // 404 Not Found response
-        Response::macro('notFound', function (string $message = 'Resource not found'): JsonResponse {
-            return Response::json([
-                'success' => false,
-                'message' => $message,
-            ], 404);
-        });
+        Response::macro('notFound', fn (string $message = 'Resource not found'): JsonResponse => Response::json([
+            'success' => false,
+            'message' => $message,
+        ], 404));
 
         // 401 Unauthorized response
-        Response::macro('unauthorized', function (string $message = 'Unauthorized'): JsonResponse {
-            return Response::json([
-                'success' => false,
-                'message' => $message,
-            ], 401);
-        });
+        Response::macro('unauthorized', fn (string $message = 'Unauthorized'): JsonResponse => Response::json([
+            'success' => false,
+            'message' => $message,
+        ], 401));
 
         // 403 Forbidden response
-        Response::macro('forbidden', function (string $message = 'Forbidden'): JsonResponse {
-            return Response::json([
-                'success' => false,
-                'message' => $message,
-            ], 403);
-        });
+        Response::macro('forbidden', fn (string $message = 'Forbidden'): JsonResponse => Response::json([
+            'success' => false,
+            'message' => $message,
+        ], 403));
     }
 }

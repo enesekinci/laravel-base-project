@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\Product;
 use App\Models\ProductVariant;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-it('lists variants for a product for admin', function () {
+it('lists variants for a product for admin', function (): void {
     adminUser();
 
     $product = Product::factory()->create([
@@ -57,7 +59,7 @@ it('lists variants for a product for admin', function () {
     expect($ids)->not()->toContain($otherVariant->id);
 });
 
-it('updates variant price, quantity and active flag', function () {
+it('updates variant price, quantity and active flag', function (): void {
     adminUser();
 
     $product = Product::factory()->create([
@@ -92,7 +94,7 @@ it('updates variant price, quantity and active flag', function () {
     expect((bool) $variant->is_active)->toBeFalse();
 });
 
-it('returns 404 when updating variant that does not belong to product', function () {
+it('returns 404 when updating variant that does not belong to product', function (): void {
     adminUser();
 
     $product = Product::factory()->create();
@@ -109,7 +111,7 @@ it('returns 404 when updating variant that does not belong to product', function
     $response->assertStatus(404);
 });
 
-it('soft deletes a variant via admin', function () {
+it('soft deletes a variant via admin', function (): void {
     adminUser();
 
     $product = Product::factory()->create();
@@ -127,7 +129,7 @@ it('soft deletes a variant via admin', function () {
     ]);
 });
 
-it('validates variant update payload', function () {
+it('validates variant update payload', function (): void {
     adminUser();
 
     $product = Product::factory()->create();

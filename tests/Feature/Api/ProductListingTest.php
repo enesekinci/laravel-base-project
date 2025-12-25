@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\Attribute;
 use App\Models\Option;
 use App\Models\OptionValue;
@@ -7,7 +9,7 @@ use App\Models\Product;
 use App\Models\ProductAttributeValue;
 use App\Models\ProductVariant;
 
-it('returns paginated product list with basic fields', function () {
+it('returns paginated product list with basic fields', function (): void {
     Product::factory()->count(3)->create();
 
     $response = $this->getJson('/api/products');
@@ -33,7 +35,7 @@ it('returns paginated product list with basic fields', function () {
         ]);
 });
 
-it('includes variants and attributes in product listing when requested', function () {
+it('includes variants and attributes in product listing when requested', function (): void {
     $product = Product::factory()->create();
 
     $colorOption = Option::factory()->create(['name' => 'Renk']);

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
@@ -7,7 +9,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-it('lists products with filters for admin', function () {
+it('lists products with filters for admin', function (): void {
     adminUser();
 
     $brandA = Brand::factory()->create(['name' => 'Brand A']);
@@ -93,7 +95,7 @@ it('lists products with filters for admin', function () {
     expect($ids4)->not()->toContain($p2->id);
 });
 
-it('shows product detail with relations for admin', function () {
+it('shows product detail with relations for admin', function (): void {
     adminUser();
 
     $brand = Brand::factory()->create();
@@ -145,7 +147,7 @@ it('shows product detail with relations for admin', function () {
         ]);
 });
 
-it('creates a product with basic fields and categories', function () {
+it('creates a product with basic fields and categories', function (): void {
     adminUser();
 
     $brand = Brand::factory()->create();
@@ -192,7 +194,7 @@ it('creates a product with basic fields and categories', function () {
     ]);
 });
 
-it('updates a product and syncs categories', function () {
+it('updates a product and syncs categories', function (): void {
     adminUser();
 
     $brand1 = Brand::factory()->create();
@@ -257,7 +259,7 @@ it('updates a product and syncs categories', function () {
     ]);
 });
 
-it('soft deletes and restores a product', function () {
+it('soft deletes and restores a product', function (): void {
     adminUser();
 
     $product = Product::factory()->create();
@@ -287,7 +289,7 @@ it('soft deletes and restores a product', function () {
     ]);
 });
 
-it('toggles product active status', function () {
+it('toggles product active status', function (): void {
     adminUser();
 
     $product = Product::factory()->create([
@@ -309,7 +311,7 @@ it('toggles product active status', function () {
     expect((bool) $product->is_active)->toBeTrue();
 });
 
-it('validates product create payload', function () {
+it('validates product create payload', function (): void {
     adminUser();
 
     $res = $this->postJson('/api/admin/products', [

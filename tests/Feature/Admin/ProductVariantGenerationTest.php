@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\Option;
 use App\Models\OptionValue;
 use App\Models\Product;
 use App\Models\ProductVariant;
 
-it('generates product variants from options', function () {
+it('generates product variants from options', function (): void {
     adminUser();
     $product = Product::factory()->create();
 
@@ -69,7 +71,7 @@ it('generates product variants from options', function () {
     expect(ProductVariant::where('product_id', $product->id)->count())->toBe(4);
 });
 
-it('skips existing variant combinations', function () {
+it('skips existing variant combinations', function (): void {
     adminUser();
     $product = Product::factory()->create();
 

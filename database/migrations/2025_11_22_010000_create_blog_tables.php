@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -8,7 +10,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('post_categories', function (Blueprint $table) {
+        Schema::create('post_categories', function (Blueprint $table): void {
             $table->id();
             $table->string('name');
             $table->string('slug')->unique();
@@ -18,7 +20,7 @@ return new class extends Migration
             $table->index('slug');
         });
 
-        Schema::create('post_tags', function (Blueprint $table) {
+        Schema::create('post_tags', function (Blueprint $table): void {
             $table->id();
             $table->string('name');
             $table->string('slug')->unique();
@@ -28,7 +30,7 @@ return new class extends Migration
             $table->index('slug');
         });
 
-        Schema::create('posts', function (Blueprint $table) {
+        Schema::create('posts', function (Blueprint $table): void {
             $table->id();
             $table->unsignedBigInteger('author_id')->nullable();
             $table->unsignedBigInteger('media_file_id')->nullable(); // cover image
@@ -54,7 +56,7 @@ return new class extends Migration
             $table->index('published_at');
         });
 
-        Schema::create('post_post_category', function (Blueprint $table) {
+        Schema::create('post_post_category', function (Blueprint $table): void {
             $table->id();
             $table->unsignedBigInteger('post_id');
             $table->unsignedBigInteger('post_category_id');
@@ -65,7 +67,7 @@ return new class extends Migration
             $table->foreign('post_category_id')->references('id')->on('post_categories')->cascadeOnDelete();
         });
 
-        Schema::create('post_post_tag', function (Blueprint $table) {
+        Schema::create('post_post_tag', function (Blueprint $table): void {
             $table->id();
             $table->unsignedBigInteger('post_id');
             $table->unsignedBigInteger('post_tag_id');

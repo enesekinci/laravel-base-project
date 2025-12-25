@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -16,17 +18,17 @@ class Collection extends Model
         'description',
     ];
 
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
 
-        static::creating(function ($collection) {
+        static::creating(function ($collection): void {
             if (empty($collection->slug)) {
                 $collection->slug = Str::slug($collection->name);
             }
         });
 
-        static::updating(function ($collection) {
+        static::updating(function ($collection): void {
             if ($collection->isDirty('name') && empty($collection->slug)) {
                 $collection->slug = Str::slug($collection->name);
             }

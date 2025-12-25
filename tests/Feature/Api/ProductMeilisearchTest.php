@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\Attribute;
 use App\Models\Option;
 use App\Models\OptionValue;
@@ -8,17 +10,17 @@ use App\Models\ProductAttributeValue;
 use App\Models\ProductVariant;
 
 /**
- * Yardımcı: Product + variant + renk + materyal setup
+ * Yardımcı: Product + variant + renk + materyal setup.
  */
 function createSearchableTshirt(
     string $name,
     string $colorValue,
     string $sizeValue,
-    ?string $material = null
+    ?string $material = null,
 ): Product {
     $product = Product::factory()->create([
         'name' => $name,
-        'slug' => \Illuminate\Support\Str::slug($name).'-'.\Illuminate\Support\Str::random(5),
+        'slug' => Illuminate\Support\Str::slug($name).'-'.Illuminate\Support\Str::random(5),
         'price' => 299.90,
     ]);
 
@@ -65,15 +67,15 @@ function createSearchableTshirt(
     return $product->fresh();
 }
 
-it('searches products by text via Meilisearch', function () {
+it('searches products by text via Meilisearch', function (): void {
     if (config('scout.driver') !== 'meilisearch') {
         $this->markTestSkipped('Meilisearch driver is not set');
     }
 
     // Meilisearch client'ının bind edilip edilmediğini kontrol et
     try {
-        $client = app(\Meilisearch\Client::class);
-    } catch (\Exception $e) {
+        $client = app(Meilisearch\Client::class);
+    } catch (Exception $e) {
         $this->markTestSkipped('Meilisearch client is not available: '.$e->getMessage());
     }
     // Arrange: 2 tişört, 1 alakasız ürün
@@ -82,7 +84,7 @@ it('searches products by text via Meilisearch', function () {
 
     $p3 = Product::factory()->create([
         'name' => 'Coffee Mug',
-        'slug' => 'coffee-mug-'.\Illuminate\Support\Str::random(4),
+        'slug' => 'coffee-mug-'.Illuminate\Support\Str::random(4),
         'price' => 99.90,
     ]);
 
@@ -142,15 +144,15 @@ it('searches products by text via Meilisearch', function () {
     expect($ids)->not()->toContain($p3->id);
 });
 
-it('applies color and material filters via Meilisearch facets', function () {
+it('applies color and material filters via Meilisearch facets', function (): void {
     if (config('scout.driver') !== 'meilisearch') {
         $this->markTestSkipped('Meilisearch driver is not set');
     }
 
     // Meilisearch client'ının bind edilip edilmediğini kontrol et
     try {
-        $client = app(\Meilisearch\Client::class);
-    } catch (\Exception $e) {
+        $client = app(Meilisearch\Client::class);
+    } catch (Exception $e) {
         $this->markTestSkipped('Meilisearch client is not available: '.$e->getMessage());
     }
     // Arrange

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domains\Cms\Policies;
 
 use App\Domains\Cms\Models\Page;

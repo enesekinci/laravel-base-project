@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domains\Media\Models;
 
 use App\Domains\Crm\Models\User;
@@ -15,7 +17,9 @@ use Illuminate\Support\Facades\Storage;
 class MediaFile extends Model
 {
     /** @use HasFactory<\Database\Factories\MediaFileFactory> */
-    use HasFactory, SoftDeletes;
+    use HasFactory;
+
+    use SoftDeletes;
 
     protected $fillable = [
         'user_id',

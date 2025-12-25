@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domains\Settings\Services;
 
 use App\Domains\Settings\Models\Setting;
@@ -7,7 +9,7 @@ use App\Domains\Settings\Models\Setting;
 class SettingService
 {
     /**
-     * Get setting by group and key
+     * Get setting by group and key.
      */
     public function get(string $group, string $key, mixed $default = null): mixed
     {
@@ -23,7 +25,7 @@ class SettingService
     }
 
     /**
-     * Set setting value
+     * Set setting value.
      */
     public function set(string $group, string $key, mixed $value, string $type = 'string'): Setting
     {
@@ -33,14 +35,14 @@ class SettingService
                 'key' => $key,
             ],
             [
-                'value' => is_array($value) ? $value : ['value' => $value],
+                'value' => \is_array($value) ? $value : ['value' => $value],
                 'type' => $type,
             ]
         );
     }
 
     /**
-     * Get all settings by group
+     * Get all settings by group.
      */
     public function getGroup(string $group): \Illuminate\Database\Eloquent\Collection
     {

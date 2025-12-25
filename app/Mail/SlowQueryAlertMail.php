@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
@@ -10,13 +12,14 @@ use Illuminate\Queue\SerializesModels;
 
 class SlowQueryAlertMail extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     public function __construct(
         public string $sql,
         public float $time,
         /** @var array<int, mixed> */
-        public array $bindings
+        public array $bindings,
     ) {}
 
     public function envelope(): Envelope

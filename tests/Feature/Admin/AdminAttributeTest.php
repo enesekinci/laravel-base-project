@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\Attribute;
 use App\Models\AttributeSet;
 use App\Models\AttributeValue;
@@ -7,7 +9,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-it('lists attributes with values for admin', function () {
+it('lists attributes with values for admin', function (): void {
     adminUser();
 
     $set = AttributeSet::factory()->create();
@@ -76,7 +78,7 @@ it('lists attributes with values for admin', function () {
     expect($vals)->toContain('Polyester');
 });
 
-it('shows a single attribute with values', function () {
+it('shows a single attribute with values', function (): void {
     adminUser();
 
     $attr = Attribute::factory()->create([
@@ -118,7 +120,7 @@ it('shows a single attribute with values', function () {
     expect($values)->toContain('Cotton');
 });
 
-it('creates an attribute with values', function () {
+it('creates an attribute with values', function (): void {
     adminUser();
 
     $set = AttributeSet::factory()->create();
@@ -163,7 +165,7 @@ it('creates an attribute with values', function () {
     ]);
 });
 
-it('validates attribute create payload', function () {
+it('validates attribute create payload', function (): void {
     adminUser();
 
     $res = $this->postJson('/api/admin/attributes', [
@@ -176,7 +178,7 @@ it('validates attribute create payload', function () {
         ->assertJsonValidationErrors(['name', 'slug', 'type']);
 });
 
-it('updates an attribute and syncs values', function () {
+it('updates an attribute and syncs values', function (): void {
     adminUser();
 
     $set1 = AttributeSet::factory()->create();
@@ -258,7 +260,7 @@ it('updates an attribute and syncs values', function () {
     ]);
 });
 
-it('soft deletes an attribute', function () {
+it('soft deletes an attribute', function (): void {
     adminUser();
 
     $attr = Attribute::factory()->create();

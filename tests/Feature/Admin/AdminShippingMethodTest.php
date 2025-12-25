@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\ShippingMethod;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-it('lists shipping methods with filters', function () {
+it('lists shipping methods with filters', function (): void {
     adminUser();
 
     $m1 = ShippingMethod::factory()->create([
@@ -48,7 +50,7 @@ it('lists shipping methods with filters', function () {
     expect($ids2)->not()->toContain($m2->id);
 });
 
-it('creates a shipping method', function () {
+it('creates a shipping method', function (): void {
     adminUser();
 
     $payload = [
@@ -76,7 +78,7 @@ it('creates a shipping method', function () {
     ]);
 });
 
-it('validates shipping method create payload', function () {
+it('validates shipping method create payload', function (): void {
     adminUser();
 
     $res = $this->postJson('/api/admin/shipping-methods', [
@@ -89,7 +91,7 @@ it('validates shipping method create payload', function () {
         ->assertJsonValidationErrors(['name', 'code', 'type']);
 });
 
-it('updates a shipping method', function () {
+it('updates a shipping method', function (): void {
     adminUser();
 
     $m = ShippingMethod::factory()->create([
@@ -123,7 +125,7 @@ it('updates a shipping method', function () {
     ]);
 });
 
-it('soft deletes and restores a shipping method', function () {
+it('soft deletes and restores a shipping method', function (): void {
     adminUser();
 
     $m = ShippingMethod::factory()->create();
@@ -145,7 +147,7 @@ it('soft deletes and restores a shipping method', function () {
     ]);
 });
 
-it('toggles shipping method active status', function () {
+it('toggles shipping method active status', function (): void {
     adminUser();
 
     $m = ShippingMethod::factory()->create([

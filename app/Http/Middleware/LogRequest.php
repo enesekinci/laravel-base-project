@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Middleware;
 
-use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,9 +13,9 @@ class LogRequest
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param  \Closure(Request): (Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, \Closure $next): Response
     {
         // Request logging aktif mi kontrol et
         if (! config('logging.enable_request_logging', true)) {
@@ -23,7 +24,7 @@ class LogRequest
 
         // Hangi route'lar loglanacak kontrol et
         $excludedPaths = config('logging.excluded_request_paths', ['/up', '/health']);
-        if (in_array($request->path(), $excludedPaths)) {
+        if (\in_array($request->path(), $excludedPaths, true)) {
             return $next($request);
         }
 
@@ -81,7 +82,7 @@ class LogRequest
     }
 
     /**
-     * Request'ten file name'leri çıkar
+     * Request'ten file name'leri çıkar.
      *
      * @return array<int, string>
      */
@@ -91,13 +92,13 @@ class LogRequest
 
         try {
             foreach ($request->all() as $item) {
-                if (is_array($item)) {
+                if (\is_array($item)) {
                     foreach ($item as $file) {
-                        if (! is_array($file) && ! empty($file) && is_file($file)) {
+                        if (! \is_array($file) && ! empty($file) && is_file($file)) {
                             $fileNames[] = $file->getClientOriginalName();
                         }
                     }
-                } elseif (! is_array($item) && ! empty($item) && is_file($item)) {
+                } elseif (! \is_array($item) && ! empty($item) && is_file($item)) {
                     $fileNames[] = $item->getClientOriginalName();
                 }
             }

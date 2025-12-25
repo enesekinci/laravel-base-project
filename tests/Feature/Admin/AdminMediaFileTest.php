@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Domains\Media\Models\MediaFile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -7,7 +9,7 @@ use Illuminate\Support\Facades\Storage;
 
 uses(RefreshDatabase::class);
 
-it('uploads a media file and stores record', function () {
+it('uploads a media file and stores record', function (): void {
     adminUser();
 
     Storage::fake('public');
@@ -48,7 +50,7 @@ it('uploads a media file and stores record', function () {
     Storage::disk('public')->assertExists($data['path']);
 });
 
-it('lists media files with filters', function () {
+it('lists media files with filters', function (): void {
     adminUser();
 
     $m1 = MediaFile::factory()->create([
@@ -79,7 +81,7 @@ it('lists media files with filters', function () {
     expect($ids2)->not()->toContain($m2->id);
 });
 
-it('updates media metadata', function () {
+it('updates media metadata', function (): void {
     adminUser();
 
     $m = MediaFile::factory()->create([
@@ -109,7 +111,7 @@ it('updates media metadata', function () {
     ]);
 });
 
-it('soft deletes and restores a media file', function () {
+it('soft deletes and restores a media file', function (): void {
     adminUser();
 
     $m = MediaFile::factory()->create();
@@ -131,7 +133,7 @@ it('soft deletes and restores a media file', function () {
     ]);
 });
 
-it('validates media upload payload', function () {
+it('validates media upload payload', function (): void {
     adminUser();
 
     $res = $this->post('/api/admin/media', [], ['Accept' => 'application/json']);

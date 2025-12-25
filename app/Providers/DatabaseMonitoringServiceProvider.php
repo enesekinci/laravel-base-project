@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Providers;
 
 use App\Jobs\SendSlowQueryAlertMail;
@@ -12,10 +14,7 @@ class DatabaseMonitoringServiceProvider extends ServiceProvider
     /**
      * Register services.
      */
-    public function register(): void
-    {
-        //
-    }
+    public function register(): void {}
 
     /**
      * Bootstrap services.
@@ -28,7 +27,7 @@ class DatabaseMonitoringServiceProvider extends ServiceProvider
         // Slow SQL threshold (configurable via env)
         $slowQueryThreshold = config('database.slow_query_threshold_ms', 500);
 
-        DB::whenQueryingForLongerThan($slowQueryThreshold, function ($connection, $event) {
+        DB::whenQueryingForLongerThan($slowQueryThreshold, function ($connection, $event): void {
             // Slow SQL log channel'a yaz
             Log::channel('slow-sql')->warning('Slow query detected', [
                 'sql' => $event->sql,

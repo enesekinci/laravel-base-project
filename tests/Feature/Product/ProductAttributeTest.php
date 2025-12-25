@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\Attribute;
 use App\Models\Product;
 use App\Models\ProductAttributeValue;
 
-it('stores attribute values on a product', function () {
+it('stores attribute values on a product', function (): void {
     $product = Product::factory()->create();
     $attribute = Attribute::factory()->create();
 

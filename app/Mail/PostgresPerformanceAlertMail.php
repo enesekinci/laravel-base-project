@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
@@ -10,7 +12,8 @@ use Illuminate\Queue\SerializesModels;
 
 class PostgresPerformanceAlertMail extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     /**
      * Create a new message instance.
@@ -20,7 +23,7 @@ class PostgresPerformanceAlertMail extends Mailable
      */
     public function __construct(
         public array $metrics,
-        public array $issues
+        public array $issues,
     ) {}
 
     /**
@@ -28,13 +31,13 @@ class PostgresPerformanceAlertMail extends Mailable
      */
     public function envelope(): Envelope
     {
-        $issuesCount = count($this->issues);
-        $criticalCount = count(array_filter($this->issues, fn($issue) => $issue['severity'] === 'critical'));
+        $issuesCount = \count($this->issues);
+        $criticalCount = \count(array_filter($this->issues, fn ($issue) => $issue['severity'] === 'critical'));
 
         $subject = match (true) {
-            $criticalCount > 0 => "🔴 PostgreSQL Kritik Performans Sorunları ({$criticalCount}) - " . config('app.name'),
-            $issuesCount > 0 => "⚠️ PostgreSQL Performans Uyarıları ({$issuesCount}) - " . config('app.name'),
-            default => '📊 PostgreSQL Performans Raporu - ' . config('app.name'),
+            $criticalCount > 0 => "🔴 PostgreSQL Kritik Performans Sorunları ({$criticalCount}) - ".config('app.name'),
+            $issuesCount > 0 => "⚠️ PostgreSQL Performans Uyarıları ({$issuesCount}) - ".config('app.name'),
+            default => '📊 PostgreSQL Performans Raporu - '.config('app.name'),
         };
 
         return new Envelope(

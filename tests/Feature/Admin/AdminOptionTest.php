@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\Option;
 use App\Models\OptionValue;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-it('lists options with their values for admin', function () {
+it('lists options with their values for admin', function (): void {
     adminUser();
 
     $color = Option::factory()->create([
@@ -71,7 +73,7 @@ it('lists options with their values for admin', function () {
     expect($sizeValues)->toContain('S');
 });
 
-it('shows a single option with values', function () {
+it('shows a single option with values', function (): void {
     adminUser();
 
     $option = Option::factory()->create([
@@ -108,7 +110,7 @@ it('shows a single option with values', function () {
     expect($values)->toContain('Red');
 });
 
-it('creates an option with values', function () {
+it('creates an option with values', function (): void {
     adminUser();
 
     $payload = [
@@ -144,7 +146,7 @@ it('creates an option with values', function () {
     ]);
 });
 
-it('validates option create payload', function () {
+it('validates option create payload', function (): void {
     adminUser();
 
     $res = $this->postJson('/api/admin/options', [
@@ -156,7 +158,7 @@ it('validates option create payload', function () {
         ->assertJsonValidationErrors(['name', 'type']);
 });
 
-it('updates an option and syncs its values', function () {
+it('updates an option and syncs its values', function (): void {
     adminUser();
 
     $option = Option::factory()->create([
@@ -219,7 +221,7 @@ it('updates an option and syncs its values', function () {
     ]);
 });
 
-it('soft deletes an option', function () {
+it('soft deletes an option', function (): void {
     adminUser();
 
     $option = Option::factory()->create();

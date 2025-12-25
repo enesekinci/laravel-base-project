@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domains\Auth\Controllers;
 
 use App\Domains\Auth\Services\AuthService;
@@ -15,7 +17,7 @@ use Illuminate\Support\Facades\Password;
 class WebAuthController extends Controller
 {
     public function __construct(
-        protected AuthService $authService
+        protected AuthService $authService,
     ) {}
 
     public function showLoginForm(): View|RedirectResponse
@@ -115,7 +117,7 @@ class WebAuthController extends Controller
 
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
-            function (User $user, string $password) {
+            function (User $user, string $password): void {
                 $user->password = Hash::make($password);
                 $user->save();
             }

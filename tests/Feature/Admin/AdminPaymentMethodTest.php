@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\PaymentMethod;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-it('lists payment methods with filters', function () {
+it('lists payment methods with filters', function (): void {
     adminUser();
 
     $m1 = PaymentMethod::factory()->create([
@@ -37,7 +39,7 @@ it('lists payment methods with filters', function () {
     expect($ids2)->not()->toContain($m1->id);
 });
 
-it('creates a payment method', function () {
+it('creates a payment method', function (): void {
     adminUser();
 
     $payload = [
@@ -63,7 +65,7 @@ it('creates a payment method', function () {
     ]);
 });
 
-it('validates payment method create payload', function () {
+it('validates payment method create payload', function (): void {
     adminUser();
 
     $res = $this->postJson('/api/admin/payment-methods', [
@@ -76,7 +78,7 @@ it('validates payment method create payload', function () {
         ->assertJsonValidationErrors(['name', 'code', 'type']);
 });
 
-it('updates a payment method', function () {
+it('updates a payment method', function (): void {
     adminUser();
 
     $m = PaymentMethod::factory()->create([
@@ -104,7 +106,7 @@ it('updates a payment method', function () {
     ]);
 });
 
-it('soft deletes and restores a payment method', function () {
+it('soft deletes and restores a payment method', function (): void {
     adminUser();
 
     $m = PaymentMethod::factory()->create();
@@ -126,7 +128,7 @@ it('soft deletes and restores a payment method', function () {
     ]);
 });
 
-it('toggles payment method active status', function () {
+it('toggles payment method active status', function (): void {
     adminUser();
 
     $m = PaymentMethod::factory()->create([

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use App\Models\Setting;
@@ -24,7 +26,7 @@ class SettingsSeeder extends Seeder
                 ['group' => 'general', 'key' => $key],
                 [
                     'value' => ['value' => $value],
-                    'type' => is_bool($value) ? 'boolean' : (is_numeric($value) ? 'integer' : 'string'),
+                    'type' => \is_bool($value) ? 'boolean' : (is_numeric($value) ? 'integer' : 'string'),
                 ]
             );
         }
@@ -44,7 +46,7 @@ class SettingsSeeder extends Seeder
                 ['group' => 'storefront', 'key' => $key],
                 [
                     'value' => ['value' => $value],
-                    'type' => is_bool($value) ? 'boolean' : (is_numeric($value) ? 'integer' : 'string'),
+                    'type' => \is_bool($value) ? 'boolean' : (is_numeric($value) ? 'integer' : 'string'),
                 ]
             );
         }
@@ -66,7 +68,7 @@ class SettingsSeeder extends Seeder
                 ['group' => 'mail', 'key' => $key],
                 [
                     'value' => ['value' => $value],
-                    'type' => is_bool($value) ? 'boolean' : (is_numeric($value) ? 'integer' : 'string'),
+                    'type' => \is_bool($value) ? 'boolean' : (is_numeric($value) ? 'integer' : 'string'),
                 ]
             );
         }
@@ -85,7 +87,7 @@ class SettingsSeeder extends Seeder
                 ['group' => 'sms', 'key' => $key],
                 [
                     'value' => ['value' => $value],
-                    'type' => is_bool($value) ? 'boolean' : (is_numeric($value) ? 'integer' : 'string'),
+                    'type' => \is_bool($value) ? 'boolean' : (is_numeric($value) ? 'integer' : 'string'),
                 ]
             );
         }
@@ -107,7 +109,7 @@ class SettingsSeeder extends Seeder
                 ['group' => 'currency', 'key' => $key],
                 [
                     'value' => ['value' => $value],
-                    'type' => is_bool($value) ? 'boolean' : (is_numeric($value) ? 'integer' : 'string'),
+                    'type' => \is_bool($value) ? 'boolean' : (is_numeric($value) ? 'integer' : 'string'),
                 ]
             );
         }

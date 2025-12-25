@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\Attribute;
 use App\Models\Option;
 use App\Models\OptionValue;
@@ -8,7 +10,7 @@ use App\Models\ProductAttributeValue;
 use App\Models\ProductVariant;
 use Illuminate\Support\Str;
 
-it('returns product detail with variants and attributes', function () {
+it('returns product detail with variants and attributes', function (): void {
     $product = Product::factory()->create([
         'name' => 'Basic T-Shirt',
         'slug' => Str::slug('Basic T-Shirt').'-test',

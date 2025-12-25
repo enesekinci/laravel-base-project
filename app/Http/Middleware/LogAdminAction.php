@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Middleware;
 
 use App\Domains\Crm\Models\AdminActionLog;
-use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,9 +14,9 @@ class LogAdminAction
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param  \Closure(Request): (Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, \Closure $next): Response
     {
         $response = $next($request);
 
@@ -25,7 +26,7 @@ class LogAdminAction
         }
 
         $method = $request->method();
-        if (! in_array($method, ['POST', 'PUT', 'PATCH', 'DELETE'])) {
+        if (! \in_array($method, ['POST', 'PUT', 'PATCH', 'DELETE'], true)) {
             return $response;
         }
 
@@ -104,13 +105,13 @@ class LogAdminAction
             $lastPart = end($parts);
 
             // Özel action'lar
-            if (in_array($lastPart, ['store', 'update', 'destroy', 'restore', 'toggle-active'])) {
+            if (\in_array($lastPart, ['store', 'update', 'destroy', 'restore', 'toggle-active'], true)) {
                 return str_replace('-', '_', $lastPart);
             }
         }
 
         // Method name'den action çıkar
-        if (in_array($action, ['store', 'update', 'destroy', 'restore', 'toggleActive'])) {
+        if (\in_array($action, ['store', 'update', 'destroy', 'restore', 'toggleActive'], true)) {
             return $action === 'toggleActive' ? 'toggle_active' : $action;
         }
 
@@ -133,8 +134,8 @@ class LogAdminAction
         // Route parameter'larından model type çıkar
         $parameters = $route->parameters();
         foreach ($parameters as $key => $value) {
-            if (is_object($value)) {
-                return get_class($value);
+            if (\is_object($value)) {
+                return $value::class;
             }
         }
 
@@ -142,7 +143,7 @@ class LogAdminAction
         $routeName = $route->getName();
         if ($routeName) {
             $parts = explode('.', $routeName);
-            if (count($parts) >= 2) {
+            if (\count($parts) >= 2) {
                 $modelName = str_replace('-', '', ucwords($parts[1], '-'));
                 // Try domain-based model classes first
                 $domainModelClasses = [
@@ -179,7 +180,7 @@ class LogAdminAction
         // Route parameter'larından model id çıkar
         $parameters = $route->parameters();
         foreach ($parameters as $key => $value) {
-            if (is_object($value) && method_exists($value, 'getKey')) {
+            if (\is_object($value) && method_exists($value, 'getKey')) {
                 return $value->getKey();
             }
             if (is_numeric($value)) {

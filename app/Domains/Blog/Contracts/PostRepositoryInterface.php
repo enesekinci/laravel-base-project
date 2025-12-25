@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domains\Blog\Contracts;
 
 use App\Domains\Blog\Models\Post;

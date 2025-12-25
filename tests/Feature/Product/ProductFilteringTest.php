@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\Attribute;
 use App\Models\Option;
 use App\Models\OptionValue;
@@ -40,7 +42,7 @@ function createProductWithColorAndSize(string $colorValue, string $sizeValue): P
     return $product;
 }
 
-it('filters products by color option value', function () {
+it('filters products by color option value', function (): void {
     $blackProduct = createProductWithColorAndSize('Siyah', 'M');
     $whiteProduct = createProductWithColorAndSize('Beyaz', 'L');
 
@@ -56,7 +58,7 @@ it('filters products by color option value', function () {
         ->assertJsonPath('data.0.id', $blackProduct->id);
 });
 
-it('filters products by attribute (e.g. material)', function () {
+it('filters products by attribute (e.g. material)', function (): void {
     $materialAttr = Attribute::factory()->create([
         'name' => 'Materyal',
         'slug' => 'material',

@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Domains\Auth\Services\AuthService;
 use App\Domains\Crm\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-it('can register a new user', function () {
+it('can register a new user', function (): void {
     $service = new AuthService;
 
     $user = $service->register([
@@ -20,7 +22,7 @@ it('can register a new user', function () {
         ->and($user->is_admin)->toBeFalse();
 });
 
-it('can authenticate user with correct credentials', function () {
+it('can authenticate user with correct credentials', function (): void {
     $service = new AuthService;
     $user = User::factory()->create([
         'email' => 'test@example.com',
@@ -34,7 +36,7 @@ it('can authenticate user with correct credentials', function () {
         ->and($result['user']->id)->toBe($user->id);
 });
 
-it('returns null for invalid credentials', function () {
+it('returns null for invalid credentials', function (): void {
     $service = new AuthService;
     User::factory()->create([
         'email' => 'test@example.com',

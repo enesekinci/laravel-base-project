@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\Category;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-it('lists categories with filters for admin', function () {
+it('lists categories with filters for admin', function (): void {
     adminUser();
 
     $root1 = Category::factory()->create([
@@ -76,7 +78,7 @@ it('lists categories with filters for admin', function () {
     expect($ids4)->not()->toContain($root1->id);
 });
 
-it('returns category tree for admin', function () {
+it('returns category tree for admin', function (): void {
     adminUser();
 
     $root = Category::factory()->create([
@@ -141,7 +143,7 @@ it('returns category tree for admin', function () {
     expect($grandIds)->toContain($grandChild->id);
 });
 
-it('creates a category', function () {
+it('creates a category', function (): void {
     adminUser();
 
     $parent = Category::factory()->create();
@@ -170,7 +172,7 @@ it('creates a category', function () {
     ]);
 });
 
-it('validates category create payload', function () {
+it('validates category create payload', function (): void {
     adminUser();
 
     $res = $this->postJson('/api/admin/categories', [
@@ -182,7 +184,7 @@ it('validates category create payload', function () {
         ->assertJsonValidationErrors(['name', 'slug']);
 });
 
-it('updates a category', function () {
+it('updates a category', function (): void {
     adminUser();
 
     $parent1 = Category::factory()->create();
@@ -222,7 +224,7 @@ it('updates a category', function () {
     ]);
 });
 
-it('soft deletes and restores a category', function () {
+it('soft deletes and restores a category', function (): void {
     adminUser();
 
     $category = Category::factory()->create();
@@ -244,7 +246,7 @@ it('soft deletes and restores a category', function () {
     ]);
 });
 
-it('toggles category active status', function () {
+it('toggles category active status', function (): void {
     adminUser();
 
     $category = Category::factory()->create([

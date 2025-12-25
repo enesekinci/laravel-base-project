@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domains\Auth\Services;
 
 use App\Domains\Crm\Models\User;
@@ -8,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 class AuthService
 {
     /**
-     * Kullanıcı girişi yap
+     * Kullanıcı girişi yap.
      */
     public function login(string $email, string $password): ?User
     {
@@ -22,7 +24,7 @@ class AuthService
     }
 
     /**
-     * Yeni kullanıcı kaydı oluştur
+     * Yeni kullanıcı kaydı oluştur.
      */
     public function register(array $data): User
     {
@@ -36,7 +38,7 @@ class AuthService
     }
 
     /**
-     * Token oluştur
+     * Token oluştur.
      */
     public function createToken(User $user, string $name = 'customer'): string
     {
@@ -44,7 +46,7 @@ class AuthService
     }
 
     /**
-     * Token'ı sil (logout)
+     * Token'ı sil (logout).
      */
     public function revokeToken(User $user): void
     {

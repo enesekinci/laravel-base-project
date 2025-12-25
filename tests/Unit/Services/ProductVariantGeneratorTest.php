@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\Option;
 use App\Models\OptionValue;
 use App\Models\Product;
 use App\Services\ProductVariantGenerator;
 
-it('generates all combinations of options', function () {
+it('generates all combinations of options', function (): void {
     $product = Product::factory()->create();
     $generator = new ProductVariantGenerator;
 

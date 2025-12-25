@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
@@ -104,7 +106,7 @@ class HealthCheckController extends Controller
             $usedPercent = (($totalBytes - $freeBytes) / $totalBytes) * 100;
 
             $status = $usedPercent > 90 ? 'unhealthy' : ($usedPercent > 80 ? 'warning' : 'healthy');
-            $message = sprintf(
+            $message = \sprintf(
                 'Disk usage: %.2f%% (%.2f GB free of %.2f GB)',
                 $usedPercent,
                 $freeBytes / (1024 ** 3),
@@ -129,13 +131,13 @@ class HealthCheckController extends Controller
         try {
             $memoryUsage = memory_get_usage(true);
             $memoryPeak = memory_get_peak_usage(true);
-            $memoryLimit = ini_get('memory_limit');
+            $memoryLimit = \ini_get('memory_limit');
             $memoryLimitBytes = $this->convertToBytes($memoryLimit);
 
             $usagePercent = ($memoryUsage / $memoryLimitBytes) * 100;
 
             $status = $usagePercent > 90 ? 'unhealthy' : ($usagePercent > 80 ? 'warning' : 'healthy');
-            $message = sprintf(
+            $message = \sprintf(
                 'Memory usage: %.2f%% (%.2f MB / %s)',
                 $usagePercent,
                 $memoryUsage / (1024 ** 2),
@@ -155,7 +157,7 @@ class HealthCheckController extends Controller
     private function convertToBytes(string $value): int
     {
         $value = trim($value);
-        $last = strtolower($value[strlen($value) - 1]);
+        $last = strtolower($value[\strlen($value) - 1]);
         $value = (int) $value;
 
         return match ($last) {

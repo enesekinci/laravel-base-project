@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use App\Domains\Blog\Models\Post;
@@ -110,7 +112,7 @@ class BlogPostSeeder extends Seeder
                     'excerpt' => $postData['excerpt'],
                     'content' => $postData['content'],
                     'status' => 'published',
-                    'published_at' => now()->subDays(rand(1, 30)),
+                    'published_at' => now()->subDays(random_int(1, 30)),
                     'meta_title' => $postData['title'],
                     'meta_description' => $postData['excerpt'],
                 ]

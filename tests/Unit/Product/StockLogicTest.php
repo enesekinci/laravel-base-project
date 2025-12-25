@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\Product;
 use App\Models\ProductVariant;
 
-it('sets in_stock based on quantity when manage_stock enabled', function () {
+it('sets in_stock based on quantity when manage_stock enabled', function (): void {
     $product = Product::factory()->create([
         'manage_stock' => true,
         'quantity' => 10,
@@ -16,7 +18,7 @@ it('sets in_stock based on quantity when manage_stock enabled', function () {
     expect($product->isInStock())->toBeFalse();
 });
 
-it('respects manual in_stock when manage_stock disabled', function () {
+it('respects manual in_stock when manage_stock disabled', function (): void {
     $product = Product::factory()->create([
         'manage_stock' => false,
         'quantity' => 0,
@@ -29,7 +31,7 @@ it('respects manual in_stock when manage_stock disabled', function () {
     expect($product->isInStock())->toBeFalse();
 });
 
-it('variant stock overrides product stock', function () {
+it('variant stock overrides product stock', function (): void {
     $product = Product::factory()->create([
         'manage_stock' => true,
         'quantity' => 0,

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
@@ -63,7 +65,6 @@ class ResetPasswordNotification extends Notification
     public function toArray(mixed $notifiable): array
     {
         return [
-            //
         ];
     }
 }

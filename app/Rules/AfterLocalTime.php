@@ -1,14 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Rules;
 
 use Carbon\Carbon;
-use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Http\Request;
 
 /**
- * AfterLocalTime Validation Rule
+ * AfterLocalTime Validation Rule.
  *
  * Bu rule, client timezone'unda bir tarihin belirtilen tarihten sonra olup olmadığını kontrol eder.
  *
@@ -42,7 +43,7 @@ class AfterLocalTime implements ValidationRule
      *
      * @param  \Closure(string, ?string): \Illuminate\Translation\PotentiallyTranslatedString  $fail
      */
-    public function validate(string $attribute, mixed $value, Closure $fail): void
+    public function validate(string $attribute, mixed $value, \Closure $fail): void
     {
         // Timezone yoksa validation geç (opsiyonel)
         if (! $this->timeZoneString) {

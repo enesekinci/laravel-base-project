@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Scopes;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -7,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
 
 /**
- * IsActive Global Scope
+ * IsActive Global Scope.
  *
  * Bu scope, model'lerde is_active kolonunu otomatik olarak filtreler.
  * Sadece is_active = true olan kayıtlar döner.
@@ -27,8 +29,8 @@ class IsActiveScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        /** @var \Illuminate\Database\Eloquent\Model<TModel> $model */
-        $builder->where($model->getTable() . '.is_active', true);
+        /* @var \Illuminate\Database\Eloquent\Model<TModel> $model */
+        $builder->where($model->getTable().'.is_active', true);
     }
 
     /**
@@ -37,16 +39,14 @@ class IsActiveScope implements Scope
     public function extend(Builder $builder): void
     {
         // withInactive() method'u ekle - scope'u bypass etmek için
-        $builder->macro('withInactive', function (Builder $builder) {
-            return $builder->withoutGlobalScope(IsActiveScope::class);
-        });
+        $builder->macro('withInactive', fn (Builder $builder) => $builder->withoutGlobalScope(IsActiveScope::class));
 
         // onlyInactive() method'u ekle - sadece inactive kayıtları getirmek için
         $builder->macro('onlyInactive', function (Builder $builder) {
             $model = $builder->getModel();
 
             return $builder->withoutGlobalScope(IsActiveScope::class)
-                ->where($model->getTable() . '.is_active', false);
+                ->where($model->getTable().'.is_active', false);
         });
     }
 }

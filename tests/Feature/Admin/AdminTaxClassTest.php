@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\TaxClass;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-it('lists tax classes with filters', function () {
+it('lists tax classes with filters', function (): void {
     adminUser();
 
     $t1 = TaxClass::factory()->create([
@@ -35,7 +37,7 @@ it('lists tax classes with filters', function () {
     expect($ids2)->not()->toContain($t2->id);
 });
 
-it('creates a tax class', function () {
+it('creates a tax class', function (): void {
     adminUser();
 
     $payload = [
@@ -58,7 +60,7 @@ it('creates a tax class', function () {
     ]);
 });
 
-it('validates tax class create payload', function () {
+it('validates tax class create payload', function (): void {
     adminUser();
 
     $res = $this->postJson('/api/admin/tax-classes', [
@@ -70,7 +72,7 @@ it('validates tax class create payload', function () {
         ->assertJsonValidationErrors(['name', 'rate']);
 });
 
-it('updates a tax class', function () {
+it('updates a tax class', function (): void {
     adminUser();
 
     $tax = TaxClass::factory()->create([
@@ -102,7 +104,7 @@ it('updates a tax class', function () {
     ]);
 });
 
-it('deletes a tax class', function () {
+it('deletes a tax class', function (): void {
     adminUser();
 
     $tax = TaxClass::factory()->create();

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Jobs;
 
 use App\Mail\ExceptionAlertMail;
@@ -9,21 +11,23 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
-use Throwable;
 
 class SendExceptionAlertMail implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     public int $tries = 3;
 
     public int $timeout = 30;
 
     public function __construct(
-        public Throwable $exception,
+        public \Throwable $exception,
         public ?string $url = null,
         /** @var array<string, mixed> */
-        public ?array $context = []
+        public ?array $context = [],
     ) {
         // Job'un hangi queue'da çalışacağını belirle
         $this->onQueue('emails');

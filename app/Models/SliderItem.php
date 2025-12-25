@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,7 +15,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class SliderItem extends Model
 {
     /** @use HasFactory<\Database\Factories\SliderItemFactory> */
-    use HasFactory, SoftDeletes;
+    use HasFactory;
+
+    use SoftDeletes;
 
     protected $fillable = [
         'slider_id',

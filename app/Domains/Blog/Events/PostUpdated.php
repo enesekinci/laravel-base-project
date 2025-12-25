@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domains\Blog\Events;
 
 use App\Domains\Blog\Models\Post;
@@ -9,14 +11,14 @@ use Illuminate\Queue\SerializesModels;
 
 class PostUpdated
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable;
+    use InteractsWithSockets;
+    use SerializesModels;
 
     /**
      * Create a new event instance.
      */
     public function __construct(
-        public Post $post
-    ) {
-        //
-    }
+        public Post $post,
+    ) {}
 }

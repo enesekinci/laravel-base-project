@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\Brand;
 use App\Models\Product;
 use App\Models\TaxClass;
 use Illuminate\Support\Str;
 
-it('creates product via admin', function () {
+it('creates product via admin', function (): void {
     adminUser();
     $brand = Brand::factory()->create();
     $tax = TaxClass::factory()->create();
@@ -30,7 +32,7 @@ it('creates product via admin', function () {
     ]);
 });
 
-it('validates required fields on create', function () {
+it('validates required fields on create', function (): void {
     adminUser();
     $response = $this->postJson(route('api.admin.products.store'), []);
 
@@ -38,7 +40,7 @@ it('validates required fields on create', function () {
         ->assertJsonValidationErrors(['name', 'price']);
 });
 
-it('updates product via admin', function () {
+it('updates product via admin', function (): void {
     adminUser();
     $product = Product::factory()->create([
         'name' => 'Old Name',
@@ -61,7 +63,7 @@ it('updates product via admin', function () {
     ]);
 });
 
-it('soft deletes product via admin', function () {
+it('soft deletes product via admin', function (): void {
     adminUser();
     $product = Product::factory()->create();
 

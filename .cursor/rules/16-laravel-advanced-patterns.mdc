@@ -1,0 +1,384 @@
+---
+alwaysApply: true
+---
+
+# LARAVEL ADVANCED PATTERNS
+
+## Action/UseCase Pattern
+
+- **Action sınıfları tek bir sorumluluğa sahip olmalı**: `CreateProductAction`, `UpdateOrderAction`
+- **Action'lar transaction içinde çalışmalı** (birden fazla tablo yazılıyorsa)
+- **Action'lar event fırlatmalı** (yan etkiler için)
+- **Service'ler action'ları orkestre eder**, action'lar tek iş yapar
+
+```php
+// ✅ İyi - Action pattern
+class CreateProductAction
+{
+    public function __construct(
+        private readonly ProductRepository $repository
+    ) {}
+
+    public function execute(CreateProductData $data): Product
+    {
+        return DB::transaction(function () use ($data) {
+            $product = $this->repository->create($data->toArray());
+
+            if ($data->variations) {
+                $this->createVariations($product, $data->variations);
+            }
+
+            event(new ProductCreated($product));
+
+            return $product;
+        });
+    }
+}
+
+// ❌ Kötü - Controller'da business logic
+public function store(Request $request)
+{
+    $product = Product::create([...]);
+    // 50 satır business logic
+}
+```
+
+## Event-Driven Architecture
+
+- **Yan etkiler (mail, bildirim, log, dış sistem) Event/Listener ile yapılmalı**
+- **Event isimleri geçmiş zaman**: `ProductCreated`, `OrderCompleted`, `UserRegistered`
+- **Ağır işlemler Listener içinde queue'ya verilmeli**
+
+```php
+// ✅ İyi - Event kullanımı
+class CreateProductAction
+{
+    public function execute(CreateProductData $data): Product
+    {
+        $product = Product::create($data->toArray());
+        event(new ProductCreated($product)); // Event fırlat
+        return $product;
+    }
+}
+
+// Listener'da yan etkiler
+class SendProductCreatedNotification implements ShouldQueue
+{
+    public function handle(ProductCreated $event): void
+    {
+        Mail::to($event->product->user)->send(new ProductCreatedMail($event->product));
+    }
+}
+
+// ❌ Kötü - Controller'da yan etkiler
+public function store(Request $request)
+{
+    $product = Product::create([...]);
+    Mail::to($user)->send(...); // Yan etki controller'da
+    Log::info(...); // Yan etki controller'da
+}
+```
+
+## Queue ve Job Best Practices
+
+- **Mail/Notification/3rd party API = queue default**
+- **Job'lar retry/backoff/timeout belirlemeli**
+- **Idempotency düşünülmeli** (aynı job 2 kez çalışabilir)
+- **Failed job handling** eklenmeli
+
+```php
+// ✅ İyi - Queue kullanımı
+class SendInvoiceJob implements ShouldQueue
+{
+    use Dispatchable, InteractsWithQueue, Queueable;
+
+    public $tries = 3;
+    public $backoff = [60, 120, 300]; // 1dk, 2dk, 5dk
+
+    public function __construct(
+        public Order $order
+    ) {}
+
+    public function handle(): void
+    {
+        Mail::to($this->order->user)->send(new InvoiceMail($this->order));
+    }
+
+    public function failed(Throwable $exception): void
+    {
+        Log::error('Invoice sending failed', [
+            'order_id' => $this->order->id,
+            'error' => $exception->getMessage(),
+        ]);
+    }
+}
+
+// ❌ Kötü - Senkron çalıştırma
+Mail::to($order->user)->send(new InvoiceMail($order)); // Request'i yavaşlatır
+```
+
+## Transaction Kullanımı
+
+- **Birden fazla tabloya yazıyorsa transaction kullan**
+- **Transaction içinde event fırlatılabilir** (commit sonrası çalışır)
+
+```php
+// ✅ İyi - Transaction kullanımı
+DB::transaction(function () {
+    $order = Order::create([...]);
+    $payment = Payment::create(['order_id' => $order->id]);
+    $order->items()->createMany([...]);
+
+    event(new OrderCreated($order)); // Commit sonrası çalışır
+});
+
+// ❌ Kötü - Transaction yok
+$order = Order::create([...]);
+$payment = Payment::create(['order_id' => $order->id]); // Hata olursa tutarsızlık
+```
+
+## Error Handling
+
+- **Custom exception'lar domain-specific olmalı**
+- **Exception'lar render method'u ile response döndürmeli**
+- **API için JSON response, web için redirect**
+
+```php
+// ✅ İyi - Custom exception
+class ProductNotFoundException extends Exception
+{
+    public function render($request)
+    {
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Product not found',
+            ], 404);
+        }
+
+        return redirect()->route('products.index')
+            ->with('error', 'Product not found');
+    }
+}
+
+// Kullanım
+throw new ProductNotFoundException();
+```
+
+## Logging Best Practices
+
+- **Structured logging kullan** (context ile)
+- **Log channel'ları kullan** (farklı log dosyaları için)
+- **Correlation ID ekle** (request tracking için)
+
+```php
+// ✅ İyi - Structured logging
+Log::info('User registered', [
+    'user_id' => $user->id,
+    'email' => $user->email,
+    'ip' => request()->ip(),
+    'correlation_id' => request()->header('X-Correlation-ID'),
+]);
+
+// ❌ Kötü - String concatenation
+Log::info('User registered: ' . $user->email);
+```
+
+## Constants ve Enum Kullanımı
+
+- **Hardcoded string'ler yerine Enum kullan**
+- **Status, type, role gibi değerler için Enum kullan**
+
+```php
+// ✅ İyi - Enum kullanımı
+enum ProductStatus: string
+{
+    case DRAFT = 'draft';
+    case PUBLISHED = 'published';
+    case ARCHIVED = 'archived';
+}
+
+// Model'de
+protected function casts(): array
+{
+    return [
+        'status' => ProductStatus::class,
+    ];
+}
+
+// Kullanım
+if ($product->status === ProductStatus::PUBLISHED) {
+    // ...
+}
+
+// ❌ Kötü - Hardcoded string
+if ($product->status === 'published') {
+    // ...
+}
+```
+
+## Translation ve Internationalization
+
+- **Tüm string'leri translate et**
+- **Language dosyalarını kullan**
+
+```php
+// ✅ İyi - Translation kullanımı
+return back()->with('message', __('Product created successfully'));
+
+// Language dosyasında: lang/tr/messages.php
+return [
+    'product_created' => 'Ürün başarıyla oluşturuldu',
+];
+
+// ❌ Kötü - Hardcoded string
+return back()->with('message', 'Product created successfully');
+```
+
+## Date Handling
+
+- **Tarihleri datetime cast ile kaydet**
+- **Formatlama için accessor kullan**
+- **Blade'de Carbon method'ları kullan**
+
+```php
+// ✅ İyi - Date handling
+// Model'de
+protected function casts(): array
+{
+    return [
+        'published_at' => 'datetime',
+    ];
+}
+
+// Blade'de
+{{ $product->published_at->format('d.m.Y') }}
+{{ $product->published_at->diffForHumans() }}
+
+// ❌ Kötü - String formatlama
+{{ Carbon::createFromFormat('Y-d-m H-i', $product->published_at)->format('d.m.Y') }}
+```
+
+## Dependency Injection
+
+- **Constructor injection kullan**
+- **Facade kullanımından kaçın** (domain/action code'da)
+- **IoC container kullan**, `new Class()` kullanma
+
+```php
+// ✅ İyi - Dependency injection
+class ProductService
+{
+    public function __construct(
+        private readonly ProductRepository $repository,
+        private readonly CacheService $cache
+    ) {}
+}
+
+// ❌ Kötü - Facade veya new kullanımı
+class ProductService
+{
+    public function create($data)
+    {
+        $product = new Product(); // Tight coupling
+        Cache::put(...); // Facade kullanımı
+    }
+}
+```
+
+## Chunk ve Lazy Loading
+
+- **Büyük veri setleri için chunk kullan**
+- **Memory-efficient işlemler için lazy loading kullan**
+
+```php
+// ✅ İyi - Chunk kullanımı
+Product::chunk(200, function ($products) {
+    foreach ($products as $product) {
+        // İşlem
+    }
+});
+
+// ✅ İyi - Lazy loading
+Product::lazy()->each(function ($product) {
+    // İşlem
+});
+
+// ❌ Kötü - Tüm veriyi çekme
+$products = Product::all(); // Memory problemi
+foreach ($products as $product) {
+    // İşlem
+}
+```
+
+## API Resource Standartları
+
+- **Tüm API endpoint'leri Resource kullanmalı**
+- **whenLoaded ile conditional loading**
+- **Tutarlı response formatı**
+
+```php
+// ✅ İyi - API Resource
+class ProductResource extends JsonResource
+{
+    public function toArray($request): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'price' => $this->price,
+            'category' => new CategoryResource($this->whenLoaded('category')),
+            'created_at' => $this->created_at->toIso8601String(),
+        ];
+    }
+}
+
+// Kullanım
+return response()->json(new ProductResource($product), 201);
+return response()->json(ProductResource::collection($products));
+```
+
+## Configuration Management
+
+- **Runtime'da `env()` kullanma**, `config()` kullan
+- **Tüm env değerleri config dosyalarında olmalı**
+- **Default değerler config'de belirtilmeli**
+
+```php
+// ✅ İyi - Config kullanımı
+// config/services.php
+return [
+    'api_key' => env('API_KEY'),
+    'timeout' => env('API_TIMEOUT', 30), // Default değer
+];
+
+// Kullanım
+$apiKey = config('services.api_key');
+
+// ❌ Kötü - env() kullanımı
+$apiKey = env('API_KEY'); // Config cache kırılır
+```
+
+## Documentation Standards
+
+- **PHPDoc blokları kullan** (complex logic için)
+- **Kod kendini açıklamalı** (anlamlı isimler)
+- **Yorum satırları minimal olmalı**
+
+```php
+// ✅ İyi - Self-documenting code
+public function isInStock(): bool
+{
+    return $this->stock > 0;
+}
+
+// ❌ Kötü - Gereksiz yorum
+/**
+ * Checks if product is in stock
+ * @return bool Returns true if stock is greater than 0
+ */
+public function isInStock(): bool
+{
+    return $this->stock > 0; // Stock kontrolü
+}
+```

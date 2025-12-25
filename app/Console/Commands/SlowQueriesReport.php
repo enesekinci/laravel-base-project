@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
@@ -84,28 +86,26 @@ class SlowQueriesReport extends Command
         }
 
         $headers = ['Calls', 'Mean (ms)', 'Total (ms)', 'Query'];
-        $rows = array_map(static function ($stat) {
-            return [
-                number_format((int) $stat->calls),
-                number_format((float) $stat->mean_exec_time, 2),
-                number_format((float) $stat->total_exec_time, 2),
-                $stat->query,
-            ];
-        }, $slowQueries);
+        $rows = array_map(static fn ($stat) => [
+            number_format((int) $stat->calls),
+            number_format((float) $stat->mean_exec_time, 2),
+            number_format((float) $stat->total_exec_time, 2),
+            $stat->query,
+        ], $slowQueries);
 
         $this->table($headers, $rows);
 
         Log::info('Slow query raporu oluşturuldu', [
             'threshold_ms' => $thresholdMs,
             'limit' => $limit,
-            'result_count' => count($slowQueries),
+            'result_count' => \count($slowQueries),
         ]);
 
         return Command::SUCCESS;
     }
 
     /**
-     * pg_stat_statements extension'ının kurulu olup olmadığını kontrol et
+     * pg_stat_statements extension'ının kurulu olup olmadığını kontrol et.
      */
     protected function isExtensionInstalled(): bool
     {

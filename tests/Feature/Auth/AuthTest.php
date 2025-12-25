@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Domains\Crm\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-it('can register a new user via API', function () {
+it('can register a new user via API', function (): void {
     $response = $this->postJson('/api/v1/auth/register', [
         'name' => 'Test User',
         'email' => 'test@example.com',
@@ -28,7 +30,7 @@ it('can register a new user via API', function () {
     ]);
 });
 
-it('can login via API', function () {
+it('can login via API', function (): void {
     $user = User::factory()->create([
         'email' => 'test@example.com',
         'password' => bcrypt('password123'),
@@ -46,7 +48,7 @@ it('can login via API', function () {
         ]);
 });
 
-it('can get authenticated user via API', function () {
+it('can get authenticated user via API', function (): void {
     $user = User::factory()->create();
 
     $response = $this->actingAs($user, 'sanctum')
@@ -61,7 +63,7 @@ it('can get authenticated user via API', function () {
         ]);
 });
 
-it('can logout via API', function () {
+it('can logout via API', function (): void {
     $user = User::factory()->create();
     $token = $user->createToken('test')->plainTextToken;
 

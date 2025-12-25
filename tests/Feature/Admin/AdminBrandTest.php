@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\Brand;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-it('lists brands with filters for admin', function () {
+it('lists brands with filters for admin', function (): void {
     adminUser();
 
     $b1 = Brand::factory()->create([
@@ -48,7 +50,7 @@ it('lists brands with filters for admin', function () {
     expect($ids3)->not()->toContain($b1->id);
 });
 
-it('creates a brand', function () {
+it('creates a brand', function (): void {
     adminUser();
 
     $payload = [
@@ -72,7 +74,7 @@ it('creates a brand', function () {
     ]);
 });
 
-it('validates brand create payload', function () {
+it('validates brand create payload', function (): void {
     adminUser();
 
     $res = $this->postJson('/api/admin/brands', [
@@ -84,7 +86,7 @@ it('validates brand create payload', function () {
         ->assertJsonValidationErrors(['name', 'slug']);
 });
 
-it('updates a brand', function () {
+it('updates a brand', function (): void {
     adminUser();
 
     $brand = Brand::factory()->create([
@@ -118,7 +120,7 @@ it('updates a brand', function () {
     ]);
 });
 
-it('soft deletes and restores a brand', function () {
+it('soft deletes and restores a brand', function (): void {
     adminUser();
 
     $brand = Brand::factory()->create();
@@ -140,7 +142,7 @@ it('soft deletes and restores a brand', function () {
     ]);
 });
 
-it('toggles brand active status', function () {
+it('toggles brand active status', function (): void {
     adminUser();
 
     $brand = Brand::factory()->create([

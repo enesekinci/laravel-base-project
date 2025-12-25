@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
@@ -17,13 +19,10 @@ class ModuleServiceProvider extends ServiceProvider
     /**
      * Bootstrap services.
      */
-    public function boot(): void
-    {
-        //
-    }
+    public function boot(): void {}
 
     /**
-     * Modül ServiceProvider'larını kaydet
+     * Modül ServiceProvider'larını kaydet.
      */
     protected function registerModuleProviders(): void
     {
@@ -44,7 +43,7 @@ class ModuleServiceProvider extends ServiceProvider
     }
 
     /**
-     * Modül adını formatla (Auth, Blog, Cms, etc.)
+     * Modül adını formatla (Auth, Blog, Cms, etc.).
      */
     protected function getModuleName(string $module): string
     {

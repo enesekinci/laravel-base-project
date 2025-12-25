@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Domains\Crm\Models\User;
 use App\Models\Address;
 use App\Models\Cart;
@@ -24,7 +26,7 @@ if (! function_exists('actingUser')) {
     }
 }
 
-it('creates an order from cart and empties cart', function () {
+it('creates an order from cart and empties cart', function (): void {
     $user = actingUser();
 
     $tax = TaxClass::factory()->create(['rate' => 18]);
@@ -97,7 +99,7 @@ it('creates an order from cart and empties cart', function () {
     ]);
 });
 
-it('applies coupon discount on checkout', function () {
+it('applies coupon discount on checkout', function (): void {
     $user = actingUser();
 
     $product = Product::factory()->create([
@@ -120,7 +122,7 @@ it('applies coupon discount on checkout', function () {
     ]);
 
     // Cart'ı recalculate et
-    $cartService = app(\App\Services\CartService::class);
+    $cartService = app(App\Services\CartService::class);
     $cartService->recalculateCart($cart);
     $cart->refresh();
 
@@ -160,7 +162,7 @@ it('applies coupon discount on checkout', function () {
     $orderId = $res->json('order_id');
 
     // Order'ı veritabanından kontrol et
-    $order = \App\Models\Order::find($orderId);
+    $order = App\Models\Order::find($orderId);
     expect($order)->not->toBeNull();
     expect((float) $order->subtotal)->toBe(200.0);
     // Coupon işlemi henüz controller'da yok, bu yüzden discount_total 0 olacak

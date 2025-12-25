@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Traits;
 
 use App\Scopes\IsActiveScope;
 
 /**
- * IsActive Trait
+ * IsActive Trait.
  *
  * Bu trait, model'e IsActiveScope global scope'unu ekler.
  * Model'de is_active kolonu varsa, sadece aktif kayıtlar döner.

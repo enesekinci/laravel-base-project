@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\Option;
 use App\Models\OptionValue;
 use App\Models\Product;
 use App\Models\ProductVariant;
 
-it('generates variants for all option combinations', function () {
+it('generates variants for all option combinations', function (): void {
     adminUser();
     // Arrange
     $product = Product::factory()->create([
@@ -106,7 +108,7 @@ it('generates variants for all option combinations', function () {
     }
 });
 
-it('does not create duplicate variants when generate is called again', function () {
+it('does not create duplicate variants when generate is called again', function (): void {
     adminUser();
     // Arrange
     $product = Product::factory()->create([

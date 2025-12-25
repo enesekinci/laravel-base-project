@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domains\Media\Services;
 
 use App\Domains\Media\Models\MediaFile;
@@ -9,7 +11,7 @@ use Illuminate\Support\Facades\Storage;
 class MediaService
 {
     /**
-     * Upload a file and create media record
+     * Upload a file and create media record.
      */
     public function upload(UploadedFile $file, array $data = []): MediaFile
     {
@@ -29,7 +31,7 @@ class MediaService
     }
 
     /**
-     * Delete media file and record
+     * Delete media file and record.
      */
     public function delete(MediaFile $mediaFile): bool
     {

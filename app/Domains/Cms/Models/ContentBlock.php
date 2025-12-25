@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domains\Cms\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,7 +14,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class ContentBlock extends Model
 {
     /** @use HasFactory<\Database\Factories\ContentBlockFactory> */
-    use HasFactory, SoftDeletes;
+    use HasFactory;
+
+    use SoftDeletes;
 
     protected $fillable = [
         'key',

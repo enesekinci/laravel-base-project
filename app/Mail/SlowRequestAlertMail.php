@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
@@ -10,7 +12,8 @@ use Illuminate\Queue\SerializesModels;
 
 class SlowRequestAlertMail extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     public function __construct(
         public string $method,
@@ -18,7 +21,7 @@ class SlowRequestAlertMail extends Mailable
         public float $duration,
         public int $statusCode,
         public string $ip,
-        public ?int $userId = null
+        public ?int $userId = null,
     ) {}
 
     public function envelope(): Envelope

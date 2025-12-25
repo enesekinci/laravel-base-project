@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Middleware;
 
-use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,9 +13,9 @@ class SetLocale
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param  \Closure(Request): (Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, \Closure $next): Response
     {
         // Desteklenen locale'ler (config'den al veya default)
         $supportedLocales = config('app.supported_locales', ['tr', 'en']);
@@ -30,7 +31,7 @@ class SetLocale
             ?? config('app.locale', 'tr');
 
         // Desteklenen locale'ler içinde mi kontrol et
-        if (in_array($locale, $supportedLocales)) {
+        if (\in_array($locale, $supportedLocales, true)) {
             App::setLocale($locale);
         } else {
             // Desteklenmeyen locale ise default locale kullan
@@ -42,7 +43,7 @@ class SetLocale
 
     /**
      * Accept-Language header'ından locale çıkar
-     * Örnek: "tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7" -> "tr"
+     * Örnek: "tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7" -> "tr".
      */
     protected function extractLocaleFromAcceptLanguage(?string $acceptLanguage): ?string
     {

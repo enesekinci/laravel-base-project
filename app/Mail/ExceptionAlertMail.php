@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
@@ -7,17 +9,17 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
-use Throwable;
 
 class ExceptionAlertMail extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     public function __construct(
-        public Throwable $exception,
+        public \Throwable $exception,
         public ?string $url = null,
         /** @var array<string, mixed> */
-        public ?array $context = []
+        public ?array $context = [],
     ) {}
 
     public function envelope(): Envelope

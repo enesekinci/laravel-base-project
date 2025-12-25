@@ -1,0 +1,295 @@
+---
+alwaysApply: true
+---
+
+# LARAVEL ACTION PATTERN – DEFINITIVE RULESET
+
+Bu doküman Action vs Service tartışmasını bitirir ve Cursor'un otomatik doğru sınıf üretmesini sağlar.
+
+## 1️⃣ Action vs Service Karar Tablosu
+
+| Kriter                          | Action              | Service                  |
+| ------------------------------- | ------------------- | ------------------------ |
+| Temel amaç                      | Use-case / iş akışı | Ortak iş kuralı          |
+| Sorumluluk                      | Orchestration       | Hesaplama / domain logic |
+| Birden fazla adım               | ✅                  | ❌                       |
+| Transaction açar mı             | ✅                  | ❌                       |
+| Event / Job tetikler mi         | ✅                  | ❌                       |
+| Birden fazla Service çağırır mı | ✅                  | ❌                       |
+| Tek başına DB write yapar mı    | ✅                  | ⚠️ (tercihen hayır)      |
+| Controller'dan çağrılır mı      | ✅                  | ❌                       |
+| Başka Action'lardan çağrılır mı | ❌                  | ✅                       |
+| HTTP bağımlılığı                | ❌                  | ❌                       |
+
+## Net Karar Kuralları
+
+### Action Yaz
+
+- "Bir şey oluyor" hissi varsa
+- İş adım adım ilerliyorsa
+- Transaction gerekiyorsa
+- Event / Notification / Job tetikleniyorsa
+- Aynı işlem API + Job + Command'dan çağrılacaksa
+
+### Service Yaz
+
+- Hesaplama yapıyorsa
+- Kurallar içeriyorsa
+- Birden fazla Action tarafından kullanılıyorsa
+- "Nasıl" sorusuna cevap veriyorsa
+
+> **Kural:**  
+> Action = **Ne oluyor?**  
+> Service = **Nasıl oluyor?**
+
+## Anti-Pattern Alarmı 🚨
+
+❌ `OrderService` içinde:
+
+- create
+- update
+- cancel
+- refund
+- notify
+- sync
+
+varsa → **Mimari çöp.**
+
+Bunu şöyle parçala:
+
+- CreateOrderAction
+- CancelOrderAction
+- RefundOrderAction
+
+* PricingService
+* StockService
+
+## 2️⃣ Action Template Şablonu
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Actions\{Domain};
+
+use Illuminate\Support\Facades\DB;
+
+final class {ActionName}Action
+{
+    public function __construct(
+        // Service bağımlılıkları burada
+    ) {}
+
+    public function handle(array $data)
+    {
+        return DB::transaction(function () use ($data) {
+
+            /**
+             * ❌ Validation YOK
+             * ❌ Authorization YOK
+             * ❌ HTTP nesnesi YOK
+             */
+
+            // 1. Domain write
+            // 2. Service çağrıları
+            // 3. Event / Job / Notification
+            // 4. Return
+        });
+    }
+}
+```
+
+## 3️⃣ Action Dosya Yapısı
+
+```
+app/Actions/
+├── Order/
+│   ├── CreateOrderAction.php
+│   ├── CancelOrderAction.php
+│   └── RefundOrderAction.php
+├── Product/
+│   ├── CreateProductAction.php
+│   └── UpdateProductAction.php
+└── Cart/
+    ├── AddToCartAction.php
+    ├── RemoveFromCartAction.php
+    └── UpdateCartItemAction.php
+```
+
+## 4️⃣ Naming Kuralları
+
+### Action
+
+- Fiil + Nesne + Action
+- Tekil use-case
+- Genel isim YASAK
+
+❌ `HandleDataAction`  
+❌ `ProcessSomething`  
+✅ `CreateOrderAction`  
+✅ `PublishPostAction`
+
+### Service
+
+- Nesne + Service / Calculator / Resolver
+- Fiil içermez
+
+✅ `PricingService`  
+✅ `StockService`  
+✅ `VatCalculator`
+
+## 5️⃣ Transaction Kuralı (KIRMIZI ÇİZGİ)
+
+- **Birden fazla write → Action transaction açar**
+- **Service transaction AÇMAZ**
+- **Controller transaction AÇMAZ**
+
+```php
+// ✅ İyi - Action transaction açar
+class CreateOrderAction
+{
+    public function handle(array $data): Order
+    {
+        return DB::transaction(function () use ($data) {
+            $order = Order::create([...]);
+            $order->items()->createMany([...]);
+            event(new OrderCreated($order));
+            return $order;
+        });
+    }
+}
+
+// ❌ Kötü - Service transaction açmaz
+class OrderService
+{
+    public function create(array $data): Order
+    {
+        return DB::transaction(function () use ($data) {
+            // Service transaction açmaz!
+        });
+    }
+}
+```
+
+## 6️⃣ Event / Job Kuralı
+
+- **Event Action'dan fırlatılır**
+- **Listener / Job iş yapar**
+- **Action async iş yapmaz**
+
+```php
+// ✅ İyi - Action event fırlatır
+class CreateOrderAction
+{
+    public function handle(array $data): Order
+    {
+        $order = Order::create([...]);
+        event(new OrderCreated($order)); // Event fırlat
+        return $order;
+    }
+}
+
+// ❌ Kötü - Service event fırlatmaz
+class OrderService
+{
+    public function create(array $data): Order
+    {
+        $order = Order::create([...]);
+        event(new OrderCreated($order)); // Service event fırlatmaz!
+        return $order;
+    }
+}
+```
+
+## 7️⃣ Controller Kullanımı (İNCE OLACAK)
+
+```php
+// ✅ İyi - Controller Action çağırır
+public function store(StoreOrderRequest $request, CreateOrderAction $action)
+{
+    $order = $action->handle($request->validated());
+    return new OrderResource($order);
+}
+
+// ❌ Kötü - Controller Service çağırır (karmaşık iş için)
+public function store(StoreOrderRequest $request, OrderService $service)
+{
+    $order = $service->createFromCart([...]); // Karmaşık iş Service'de
+    return new OrderResource($order);
+}
+```
+
+**Controller:**
+
+- Request alır
+- Action çağırır
+- Response döner
+- Başka bir şey YAPMAZ
+
+## 8️⃣ Action İçinde OLMAMASI Gerekenler
+
+- Request / Response nesneleri
+- HTTP status code
+- JSON formatlama
+- `Auth::user()` çağrıları (parametre olarak ver)
+- Validation kuralları
+
+## 9️⃣ Test Stratejisi
+
+### Action Testi
+
+- HTTP YOK
+- Middleware YOK
+- Event fake'lenir
+
+```php
+it('sipariş oluşturur ve event fırlatır', function () {
+    Event::fake();
+
+    $action = new CreateOrderAction();
+    $order = $action->handle($data);
+
+    Event::assertDispatched(OrderCreated::class);
+    expect($order)->toBeInstanceOf(Order::class);
+});
+```
+
+### Controller Testleri
+
+- Sadece request + response doğrular
+- İş mantığı test ETMEZ
+
+## 🔟 Over-Engineering Koruması
+
+Aşağıdakilerden **en az 2 tanesi** doğruysa Action yaz:
+
+- [ ] Birden fazla adım var
+- [ ] Transaction gerekiyor
+- [ ] Event / Job var
+- [ ] Aynı iş başka yerden çağrılacak
+- [ ] Controller şişiyor
+
+**Aksi halde:**
+
+- ❌ Action yazma
+- ❌ Dosya çöplüğü oluşturma
+
+## 1️⃣1️⃣ Nihai Kural (Özet)
+
+- **Controller = HTTP**
+- **Action = Use-case**
+- **Service = Kural**
+- **Model = Veri**
+- **Event/Job = Side-effect**
+
+Bu sınırlar **DELİNMEZ**.
+
+## 1️⃣2️⃣ Son Uyarı ⚠️
+
+Action:
+
+- Küçük projede opsiyonel
+- Orta–büyük projede zorunlu
+- Yanlış kullanılırsa mimariyi BATIRIR
+- Doğru kullanılırsa projeyi 5 yıl taşır

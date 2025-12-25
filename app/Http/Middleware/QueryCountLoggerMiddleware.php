@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
-use Closure;
 use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -16,7 +15,7 @@ class QueryCountLoggerMiddleware
     /**
      * Handle an incoming request.
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, \Closure $next): Response
     {
         // Sadece production dışı ortamlarda aktif olsun
         if (app()->environment('production')) {
@@ -27,7 +26,7 @@ class QueryCountLoggerMiddleware
         $queryCount = 0;
 
         // Query event listener'ı ekle
-        DB::listen(function (QueryExecuted $query) use (&$queryCount) {
+        DB::listen(function (QueryExecuted $query) use (&$queryCount): void {
             $queryCount++;
         });
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domains\Cms\Services;
 
 use App\Domains\Cms\Models\Page;
@@ -8,7 +10,7 @@ use Illuminate\Database\Eloquent\Collection;
 class PageService
 {
     /**
-     * Get all active pages
+     * Get all active pages.
      */
     public function getActive(): Collection
     {
@@ -18,7 +20,7 @@ class PageService
     }
 
     /**
-     * Create a new page
+     * Create a new page.
      */
     public function create(array $data): Page
     {
@@ -26,7 +28,7 @@ class PageService
     }
 
     /**
-     * Update a page
+     * Update a page.
      */
     public function update(Page $page, array $data): bool
     {
@@ -34,7 +36,7 @@ class PageService
     }
 
     /**
-     * Delete a page
+     * Delete a page.
      */
     public function delete(Page $page): bool
     {

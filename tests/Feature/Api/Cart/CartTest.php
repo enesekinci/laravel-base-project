@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Domains\Crm\Models\User;
 use App\Models\Cart;
 use App\Models\CartItem;
@@ -17,7 +19,7 @@ function actingUser()
     return $user;
 }
 
-it('returns empty cart for user initially', function () {
+it('returns empty cart for user initially', function (): void {
     $user = actingUser();
 
     $response = $this->getJson('/api/cart');
@@ -38,7 +40,7 @@ it('returns empty cart for user initially', function () {
     expect($cart->status)->toBe('active');
 });
 
-it('adds a product to cart and calculates totals', function () {
+it('adds a product to cart and calculates totals', function (): void {
     $user = actingUser();
 
     $product = Product::factory()->create([
@@ -81,7 +83,7 @@ it('adds a product to cart and calculates totals', function () {
     expect((float) $item->total_price)->toBe(200.0);
 });
 
-it('uses variant price when adding variant to cart', function () {
+it('uses variant price when adding variant to cart', function (): void {
     $user = actingUser();
 
     $product = Product::factory()->create([
@@ -111,7 +113,7 @@ it('uses variant price when adding variant to cart', function () {
     expect((float) $cart->total)->toBe(150.0);
 });
 
-it('increments quantity when adding same product+variant again', function () {
+it('increments quantity when adding same product+variant again', function (): void {
     $user = actingUser();
 
     $product = Product::factory()->create([
@@ -142,7 +144,7 @@ it('increments quantity when adding same product+variant again', function () {
     expect((float) $cart->total)->toBe(240.0);
 });
 
-it('updates cart item quantity', function () {
+it('updates cart item quantity', function (): void {
     $user = actingUser();
 
     $product = Product::factory()->create([
@@ -171,7 +173,7 @@ it('updates cart item quantity', function () {
     expect((float) $cart->total)->toBe(250.0);
 });
 
-it('removes cart item when quantity set to zero', function () {
+it('removes cart item when quantity set to zero', function (): void {
     $user = actingUser();
 
     $product = Product::factory()->create([
@@ -198,7 +200,7 @@ it('removes cart item when quantity set to zero', function () {
     expect($cart->items_count)->toBe(0);
 });
 
-it('deletes cart item via delete endpoint', function () {
+it('deletes cart item via delete endpoint', function (): void {
     $user = actingUser();
 
     $product = Product::factory()->create([
@@ -222,7 +224,7 @@ it('deletes cart item via delete endpoint', function () {
     expect($cart->items_count)->toBe(0);
 });
 
-it('validates quantity and product existence', function () {
+it('validates quantity and product existence', function (): void {
     $user = actingUser();
 
     $response = $this->postJson('/api/cart/items', [

@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Middleware;
 
-use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,7 +16,7 @@ class ResponseTimerMiddleware
      * Response süresini ölçer ve X-Response-Time header'ı ekler.
      * 500ms üstü request'leri loglar.
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, \Closure $next): Response
     {
         $startTime = microtime(true);
 

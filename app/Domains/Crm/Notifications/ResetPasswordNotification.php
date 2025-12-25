@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domains\Crm\Notifications;
 
 use Illuminate\Bus\Queueable;
@@ -14,10 +16,8 @@ class ResetPasswordNotification extends Notification
      * Create a new notification instance.
      */
     public function __construct(
-        public string $token
-    ) {
-        //
-    }
+        public string $token,
+    ) {}
 
     /**
      * Get the notification's delivery channels.

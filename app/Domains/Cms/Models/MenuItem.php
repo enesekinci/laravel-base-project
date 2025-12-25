@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domains\Cms\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,7 +16,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class MenuItem extends Model
 {
     /** @use HasFactory<\Database\Factories\MenuItemFactory> */
-    use HasFactory, SoftDeletes;
+    use HasFactory;
+
+    use SoftDeletes;
 
     protected $fillable = [
         'menu_id',
@@ -45,7 +49,7 @@ class MenuItem extends Model
      */
     public function parent(): BelongsTo
     {
-        return $this->belongsTo(MenuItem::class, 'parent_id');
+        return $this->belongsTo(self::class, 'parent_id');
     }
 
     /**
@@ -53,6 +57,6 @@ class MenuItem extends Model
      */
     public function children(): HasMany
     {
-        return $this->hasMany(MenuItem::class, 'parent_id')->orderBy('sort_order');
+        return $this->hasMany(self::class, 'parent_id')->orderBy('sort_order');
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domains\Blog\Services;
 
 use App\Domains\Blog\Contracts\PostRepositoryInterface;
@@ -9,11 +11,11 @@ use Illuminate\Database\Eloquent\Collection;
 class PostService
 {
     public function __construct(
-        protected PostRepositoryInterface $repository
+        protected PostRepositoryInterface $repository,
     ) {}
 
     /**
-     * Get all published posts
+     * Get all published posts.
      */
     public function getPublished(): Collection
     {
@@ -24,7 +26,7 @@ class PostService
     }
 
     /**
-     * Create a new post
+     * Create a new post.
      */
     public function create(array $data): Post
     {
@@ -32,7 +34,7 @@ class PostService
     }
 
     /**
-     * Update a post
+     * Update a post.
      */
     public function update(Post $post, array $data): bool
     {
@@ -40,7 +42,7 @@ class PostService
     }
 
     /**
-     * Delete a post
+     * Delete a post.
      */
     public function delete(Post $post): bool
     {

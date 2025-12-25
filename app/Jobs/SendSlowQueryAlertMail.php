@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Jobs;
 
 use App\Mail\SlowQueryAlertMail;
@@ -12,7 +14,10 @@ use Illuminate\Support\Facades\Mail;
 
 class SendSlowQueryAlertMail implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     public int $tries = 3;
 
@@ -22,7 +27,7 @@ class SendSlowQueryAlertMail implements ShouldQueue
         public string $sql,
         public float $time,
         /** @var array<int, mixed> */
-        public array $bindings
+        public array $bindings,
     ) {
         // Job'un hangi queue'da çalışacağını belirle
         $this->onQueue('emails');
