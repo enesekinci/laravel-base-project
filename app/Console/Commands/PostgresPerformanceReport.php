@@ -56,12 +56,12 @@ class PostgresPerformanceReport extends Command
         $this->newLine();
 
         try {
-            $result = DB::selectOne('
+            $result = DB::selectOne("
                 SELECT
                   sum(blks_hit) * 100.0
                     / NULLIF(sum(blks_hit) + sum(blks_read), 0) AS cache_hit_ratio
                 FROM pg_stat_database
-            ');
+            ");
 
             $ratio = round($result->cache_hit_ratio ?? 0, 2);
 
@@ -73,12 +73,12 @@ class PostgresPerformanceReport extends Command
             } elseif ($ratio >= 95) {
                 $this->comment("⚠️  Kabul edilebilir (%95–99) - Çoğu veri RAM'den, bazı disk okumaları var");
             } elseif ($ratio >= 90) {
-                $this->warn('⚠️  İyileştirme gerekli (%90–95) - Sorgu/index/RAM ayarları incelenmeli');
+                $this->warn("⚠️  İyileştirme gerekli (%90–95) - Sorgu/index/RAM ayarları incelenmeli");
             } else {
-                $this->error('❌ Kritik (%90 altı) - Çok fazla disk okuma var, performans sorunu!');
+                $this->error("❌ Kritik (%90 altı) - Çok fazla disk okuma var, performans sorunu!");
             }
         } catch (\Exception $e) {
-            $this->error('Hata: '.$e->getMessage());
+            $this->error("Hata: " . $e->getMessage());
         }
 
         $this->newLine(2);
@@ -96,7 +96,7 @@ class PostgresPerformanceReport extends Command
         // Heap I/O
         $this->line('📊 Tablo Heap I/O (Tablo Verileri):');
         try {
-            $results = DB::select('
+            $results = DB::select("
                 SELECT
                   relname,
                   heap_blks_read,
@@ -110,7 +110,7 @@ class PostgresPerformanceReport extends Command
                 WHERE (heap_blks_hit + heap_blks_read) > 1000
                 ORDER BY hit_ratio ASC, (heap_blks_hit + heap_blks_read) DESC
                 LIMIT 30
-            ');
+            ");
 
             $headers = ['Tablo Adı', 'Disk Okuma', 'RAM Okuma', 'Hit Ratio %', 'Durum'];
             $rows = [];
@@ -138,7 +138,7 @@ class PostgresPerformanceReport extends Command
 
             $this->table($headers, $rows);
         } catch (\Exception $e) {
-            $this->error('Hata: '.$e->getMessage());
+            $this->error("Hata: " . $e->getMessage());
         }
 
         $this->newLine();
@@ -146,7 +146,7 @@ class PostgresPerformanceReport extends Command
         // Index I/O
         $this->line('📊 Index I/O (Index Verileri):');
         try {
-            $results = DB::select('
+            $results = DB::select("
                 SELECT
                   relname,
                   idx_blks_read,
@@ -160,7 +160,7 @@ class PostgresPerformanceReport extends Command
                 WHERE (idx_blks_hit + idx_blks_read) > 1000
                 ORDER BY index_cache_hit_ratio ASC, (idx_blks_hit + idx_blks_read) DESC
                 LIMIT 30
-            ');
+            ");
 
             $headers = ['Tablo Adı', 'Disk Okuma', 'RAM Okuma', 'Hit Ratio %', 'Durum'];
             $rows = [];
@@ -188,7 +188,7 @@ class PostgresPerformanceReport extends Command
 
             $this->table($headers, $rows);
         } catch (\Exception $e) {
-            $this->error('Hata: '.$e->getMessage());
+            $this->error("Hata: " . $e->getMessage());
         }
 
         $this->newLine(2);
@@ -204,7 +204,7 @@ class PostgresPerformanceReport extends Command
         $this->newLine();
 
         try {
-            $results = DB::select('
+            $results = DB::select("
                 SELECT
                   relname,
                   n_live_tup,
@@ -216,7 +216,7 @@ class PostgresPerformanceReport extends Command
                 WHERE (seq_scan + idx_scan) > 100 AND n_live_tup > 1000
                 ORDER BY index_usage_pct ASC, n_live_tup DESC
                 LIMIT 30
-            ');
+            ");
 
             $headers = ['Tablo Adı', 'Toplam Satır', 'Index Kullanım %', 'Durum'];
             $rows = [];
@@ -240,14 +240,14 @@ class PostgresPerformanceReport extends Command
                 $rows[] = [
                     $row->relname,
                     number_format($row->n_live_tup),
-                    $usage.'%',
-                    $status.' '.$statusText,
+                    $usage . '%',
+                    $status . ' ' . $statusText,
                 ];
             }
 
             $this->table($headers, $rows);
         } catch (\Exception $e) {
-            $this->error('Hata: '.$e->getMessage());
+            $this->error("Hata: " . $e->getMessage());
         }
 
         $this->newLine(2);
@@ -302,13 +302,13 @@ class PostgresPerformanceReport extends Command
                     number_format($row->n_dead_tup),
                     $ratio,
                     $row->table_size,
-                    $status.' '.$statusText,
+                    $status . ' ' . $statusText,
                 ];
             }
 
             $this->table($headers, $rows);
         } catch (\Exception $e) {
-            $this->error('Hata: '.$e->getMessage());
+            $this->error("Hata: " . $e->getMessage());
         }
 
         $this->newLine(2);
@@ -339,7 +339,7 @@ class PostgresPerformanceReport extends Command
 
                 $rows[] = [$config, $value, $description];
             } catch (\Exception $e) {
-                $rows[] = [$config, 'Hata: '.$e->getMessage(), $description];
+                $rows[] = [$config, 'Hata: ' . $e->getMessage(), $description];
             }
         }
 
@@ -359,7 +359,7 @@ class PostgresPerformanceReport extends Command
         // En çok toplam süre harcayan sorgular
         $this->line('⏱️  En Çok Toplam Süre Harcayan Sorgular (Sistemi En Çok Yoran):');
         try {
-            $results = DB::select('
+            $results = DB::select("
                 SELECT
                   query,
                   calls,
@@ -370,14 +370,14 @@ class PostgresPerformanceReport extends Command
                 FROM pg_stat_statements
                 ORDER BY total_exec_time DESC
                 LIMIT 20
-            ');
+            ");
 
             $headers = ['Sorgu (Önizleme)', 'Çağrı Sayısı', 'Toplam Süre (ms)', 'Ortalama (ms)', 'RAM Okuma', 'Disk Okuma'];
             $rows = [];
             $fullQueries = [];
 
             foreach ($results as $index => $row) {
-                $queryPreview = strlen($row->query) > 50 ? substr($row->query, 0, 50).'...' : $row->query;
+                $queryPreview = strlen($row->query) > 50 ? substr($row->query, 0, 50) . '...' : $row->query;
 
                 $rows[] = [
                     $queryPreview,
@@ -401,19 +401,19 @@ class PostgresPerformanceReport extends Command
             $this->table($headers, $rows);
 
             // Tam sorguları göster
-            if (! empty($fullQueries)) {
+            if (!empty($fullQueries)) {
                 $this->newLine();
                 $this->info('📋 Tam Sorgular (Kısa Kesilenler):');
                 $this->line('─────────────────────────────────');
                 foreach ($fullQueries as $item) {
-                    $this->line(($item['index']).'. Toplam: '.number_format($item['total_ms'], 2).'ms | Ortalama: '.number_format($item['mean_ms'], 2).'ms');
-                    $this->line('   '.$item['query']);
+                    $this->line(($item['index']) . '. Toplam: ' . number_format($item['total_ms'], 2) . 'ms | Ortalama: ' . number_format($item['mean_ms'], 2) . 'ms');
+                    $this->line('   ' . $item['query']);
                     $this->newLine();
                 }
             }
         } catch (\Exception $e) {
-            $this->error('Hata: '.$e->getMessage());
-            $this->warn('Not: pg_stat_statements extension aktif olmayabilir.');
+            $this->error("Hata: " . $e->getMessage());
+            $this->warn("Not: pg_stat_statements extension aktif olmayabilir.");
         }
 
         $this->newLine();
@@ -421,7 +421,7 @@ class PostgresPerformanceReport extends Command
         // En çok diske okuma yapan sorgular
         $this->line('💾 En Çok Diske Okuma Yapan Sorgular (Index/Heap Yetersiz):');
         try {
-            $results = DB::select('
+            $results = DB::select("
                 SELECT
                   query,
                   calls,
@@ -431,14 +431,14 @@ class PostgresPerformanceReport extends Command
                 FROM pg_stat_statements
                 ORDER BY shared_blks_read DESC
                 LIMIT 20
-            ');
+            ");
 
             $headers = ['Sorgu (Önizleme)', 'Çağrı Sayısı', 'Ortalama (ms)', 'Disk Okuma', 'RAM Okuma'];
             $rows = [];
             $fullQueries = [];
 
             foreach ($results as $index => $row) {
-                $queryPreview = strlen($row->query) > 50 ? substr($row->query, 0, 50).'...' : $row->query;
+                $queryPreview = strlen($row->query) > 50 ? substr($row->query, 0, 50) . '...' : $row->query;
 
                 $rows[] = [
                     $queryPreview,
@@ -461,18 +461,18 @@ class PostgresPerformanceReport extends Command
             $this->table($headers, $rows);
 
             // Tam sorguları göster
-            if (! empty($fullQueries)) {
+            if (!empty($fullQueries)) {
                 $this->newLine();
                 $this->info('📋 Tam Sorgular (Kısa Kesilenler):');
                 $this->line('─────────────────────────────────');
                 foreach ($fullQueries as $item) {
-                    $this->line(($item['index']).'. Ortalama: '.number_format($item['mean_ms'], 2).'ms | Disk Okuma: '.number_format($item['shared_blks_read']));
-                    $this->line('   '.$item['query']);
+                    $this->line(($item['index']) . '. Ortalama: ' . number_format($item['mean_ms'], 2) . 'ms | Disk Okuma: ' . number_format($item['shared_blks_read']));
+                    $this->line('   ' . $item['query']);
                     $this->newLine();
                 }
             }
         } catch (\Exception $e) {
-            $this->error('Hata: '.$e->getMessage());
+            $this->error("Hata: " . $e->getMessage());
         }
 
         $this->newLine(2);
