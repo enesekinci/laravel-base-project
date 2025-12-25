@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions\Cms;
 
-use App\Domains\Cms\Models\Page;
+use App\Models\Cms\Page;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 

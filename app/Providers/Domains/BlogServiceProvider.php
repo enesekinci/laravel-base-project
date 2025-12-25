@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Providers\Domains;
 
-use App\Domains\Blog\Contracts\PostRepositoryInterface;
-use App\Domains\Blog\Repositories\PostRepository;
+use App\Contracts\Blog\PostRepositoryInterface;
+use App\Repositories\Blog\PostRepository;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -31,14 +31,14 @@ class BlogServiceProvider extends ServiceProvider
     {
         // Register Policies
         Gate::policy(
-            \App\Domains\Blog\Models\Post::class,
-            \App\Domains\Blog\Policies\PostPolicy::class
+            \App\Models\Blog\Post::class,
+            \App\Policies\Blog\PostPolicy::class
         );
 
         // Register Event Listeners
         Event::listen(
-            \App\Domains\Blog\Events\PostCreated::class,
-            \App\Domains\Blog\Listeners\SendPostNotification::class
+            \App\Events\Blog\PostCreated::class,
+            \App\Listeners\Blog\SendPostNotification::class
         );
     }
 }

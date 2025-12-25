@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Domains\Blog\Models\Post;
-use App\Domains\Blog\Models\PostCategory;
-use App\Domains\Blog\Models\PostTag;
-use App\Domains\Crm\Models\User;
-use App\Domains\Media\Models\MediaFile;
+use App\Models\Blog\Post;
+use App\Models\Blog\PostCategory;
+use App\Models\Blog\PostTag;
+use App\Models\Crm\User;
+use App\Models\Media\MediaFile;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 

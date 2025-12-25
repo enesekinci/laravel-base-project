@@ -13,19 +13,21 @@ Proje, Domain-Driven Design (DDD) yapısına göre modüler bir yapıya sahiptir
 Her modül şu yapıya sahiptir:
 
 ```
-app/Domains/{Module}/
-├── Controllers/
-│   ├── Admin/
-│   └── Api/
-├── Models/
-├── Services/
-├── Requests/
-├── Resources/
-├── Policies/
-├── Events/
-├── Listeners/
-├── Jobs/
-└── Notifications/
+app/Controllers/{Module}/
+├── Admin/
+└── Api/
+app/Models/{Module}/
+app/Services/{Module}/
+app/Requests/{Module}/
+app/Resources/{Module}/
+app/Policies/{Module}/
+app/Events/{Module}/
+app/Listeners/{Module}/
+app/Jobs/{Module}/
+app/Notifications/{Module}/
+app/Actions/{Module}/      # (Opsiyonel)
+app/Contracts/{Module}/    # (Opsiyonel - Repository interfaces)
+app/Repositories/{Module}/  # (Opsiyonel - Repository implementations)
 
 app/Providers/Domains/
 └── {Module}ServiceProvider.php
@@ -58,8 +60,8 @@ Her modülün ServiceProvider'ı `app/Providers/Domains/{Module}ServiceProvider.
 
 namespace App\Providers\Domains;
 
-use App\Domains\Blog\Contracts\PostRepositoryInterface;
-use App\Domains\Blog\Repositories\PostRepository;
+use App\Contracts\Blog\PostRepositoryInterface;
+use App\Repositories\Blog\PostRepository;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -79,14 +81,14 @@ class BlogServiceProvider extends ServiceProvider
     {
         // Policy kayıtları
         Gate::policy(
-            \App\Domains\Blog\Models\Post::class,
-            \App\Domains\Blog\Policies\PostPolicy::class
+            \App\Models\Blog\Post::class,
+            \App\Policies\Blog\PostPolicy::class
         );
 
         // Event listener kayıtları
         Event::listen(
-            \App\Domains\Blog\Events\PostCreated::class,
-            \App\Domains\Blog\Listeners\SendPostNotification::class
+            \App\Events\Blog\PostCreated::class,
+            \App\Listeners\Blog\SendPostNotification::class
         );
     }
 }
@@ -141,7 +143,7 @@ MODULE_BLOG_ENABLED=false
 
 Yeni bir modül eklemek için:
 
-1. `app/Domains/{Module}/` klasör yapısını oluştur (Models, Controllers, Services, vb.)
+1. `app/Controllers/{Module}/`, `app/Models/{Module}/`, `app/Services/{Module}/` vb. klasör yapısını oluştur
 2. `app/Providers/Domains/{Module}ServiceProvider.php` dosyasını oluştur
 3. `routes/web.php` dosyasına admin route'larını ekle
 4. `routes/api.php` dosyasına API route'larını ekle
@@ -149,6 +151,9 @@ Yeni bir modül eklemek için:
     ```php
     'enabled' => [
         'newmodule' => env('MODULE_NEWMODULE_ENABLED', true),
+    ],
+    'namespaces' => [
+        'newmodule' => 'App\Controllers\NewModule',
     ],
     ```
 6. `.env.example` dosyasına environment variable ekle:
@@ -161,7 +166,7 @@ Yeni bir modül eklemek için:
 Bir modülü silmek için:
 
 1. `config/modules.php` dosyasından modülü kaldır veya `enabled` değerini `false` yap
-2. `app/Domains/{Module}/` klasörünü sil
+2. `app/Controllers/{Module}/`, `app/Models/{Module}/`, `app/Services/{Module}/` vb. klasörlerini sil
 3. `app/Providers/Domains/{Module}ServiceProvider.php` dosyasını sil
 4. `routes/web.php` ve `routes/api.php` dosyalarından modül route'larını kaldır
 5. `database/migrations/{module}/` klasörünü sil (varsa)
@@ -196,8 +201,8 @@ public function register(): void
 public function boot(): void
 {
     Gate::policy(
-        \App\Domains\Blog\Models\Post::class,
-        \App\Domains\Blog\Policies\PostPolicy::class
+        \App\Models\Blog\Post::class,
+        \App\Policies\Blog\PostPolicy::class
     );
 }
 ```
@@ -208,8 +213,8 @@ public function boot(): void
 public function boot(): void
 {
     Event::listen(
-        \App\Domains\Blog\Events\PostCreated::class,
-        \App\Domains\Blog\Listeners\SendPostNotification::class
+        \App\Events\Blog\PostCreated::class,
+        \App\Listeners\Blog\SendPostNotification::class
     );
 }
 ```

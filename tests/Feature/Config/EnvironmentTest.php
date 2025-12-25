@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Config;
  * Bu test sınıfı, tüm environment variable'ların doğru yüklendiğini
  * ve config dosyalarında eksik değişken olmadığını kontrol eder.
  */
+
 describe('Environment Variables', function (): void {
     it('uygulama temel ayarlarını yükler', function (): void {
         expect(config('app.name'))->not->toBeEmpty()
@@ -137,7 +138,7 @@ describe('Module Configuration', function (): void {
         $modules = ['auth', 'blog', 'cms', 'crm', 'media', 'settings'];
         foreach ($modules as $module) {
             expect(config("modules.namespaces.{$module}"))->toBeString()
-                ->and(config("modules.namespaces.{$module}"))->toStartWith('App\\Domains\\');
+                ->and(config("modules.namespaces.{$module}"))->toStartWith('App\\');
         }
     });
 });

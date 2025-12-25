@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Browser\Smoke;
 
-use App\Domains\Crm\Models\User;
+use App\Models\Crm\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
@@ -27,7 +27,7 @@ final class AuthSmokeTest extends DuskTestCase
             'is_admin' => true,
         ]);
 
-        $this->browse(function (Browser $browser) use ($user): void {
+        test()->browse(function (Browser $browser) use ($user): void {
             $browser->visit('/login')
                 ->waitFor('input[type="email"]', 5)
                 ->type('email', $user->email)

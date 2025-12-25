@@ -147,7 +147,7 @@ Bu doküman, base projenin mevcut durumunu ve yapılması gerekenleri listeler.
 
 ### 1. Code Organization
 
-- [x] **Domain Structure** - Feature-based klasör yapısı (app/Domains/ yapısı mevcut)
+- [x] **Domain Structure** - Feature-based klasör yapısı (app/ yapısı mevcut)
 - [ ] **Traits** - Reusable traits (HasSlug, HasMedia, etc.)
 - [ ] **Enums** - PHP 8.1+ enum kullanımı
 - [ ] **Value Objects** - Immutable value objects

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
-use App\Domains\Crm\Models\AdminActionLog;
+use App\Models\Crm\AdminActionLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
@@ -145,14 +145,13 @@ class LogAdminAction
             $parts = explode('.', $routeName);
             if (\count($parts) >= 2) {
                 $modelName = str_replace('-', '', ucwords($parts[1], '-'));
-                // Try domain-based model classes first
+                // Try module-based model classes
                 $domainModelClasses = [
-                    "App\\Domains\\Blog\\Models\\{$modelName}",
-                    "App\\Domains\\Cms\\Models\\{$modelName}",
-                    "App\\Domains\\Crm\\Models\\{$modelName}",
-                    "App\\Domains\\Media\\Models\\{$modelName}",
-                    "App\\Domains\\Settings\\Models\\{$modelName}",
-                    "App\\Models\\{$modelName}", // Fallback to old location
+                    "App\\Models\\Blog\\{$modelName}",
+                    "App\\Models\\Cms\\{$modelName}",
+                    "App\\Models\\Crm\\{$modelName}",
+                    "App\\Models\\Media\\{$modelName}",
+                    "App\\Models\\Settings\\{$modelName}",
                 ];
 
                 foreach ($domainModelClasses as $modelClass) {

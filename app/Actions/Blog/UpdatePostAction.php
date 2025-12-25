@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Actions\Blog;
 
-use App\Domains\Blog\Contracts\PostRepositoryInterface;
-use App\Domains\Blog\Events\PostUpdated;
-use App\Domains\Blog\Models\Post;
+use App\Contracts\Blog\PostRepositoryInterface;
+use App\Events\Blog\PostUpdated;
+use App\Models\Blog\Post;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 

@@ -7,7 +7,7 @@ namespace App\Http\Resources\Admin;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * @mixin \App\Domains\Cms\Models\ContentBlock
+ * @mixin \App\Models\Cms\ContentBlock
  */
 class AdminContentBlockResource extends JsonResource
 {

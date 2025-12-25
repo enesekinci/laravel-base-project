@@ -13,8 +13,8 @@ class SettingsSeeder extends Seeder
     {
         // General Settings
         $generalSettings = [
-            'site_name' => 'Fast Commerce',
-            'site_description' => 'Modern e-commerce platform',
+            'site_name' => 'Laravel Base Project',
+            'site_description' => 'Modern Laravel boilerplate',
             'site_email' => 'info@example.com',
             'site_phone' => '+90 555 123 4567',
             'site_address' => 'Istanbul, Turkey',
@@ -31,26 +31,6 @@ class SettingsSeeder extends Seeder
             );
         }
 
-        // Storefront Settings
-        $storefrontSettings = [
-            'products_per_page' => 24,
-            'enable_reviews' => true,
-            'enable_wishlist' => true,
-            'enable_comparison' => true,
-            'show_out_of_stock' => false,
-            'low_stock_threshold' => 10,
-        ];
-
-        foreach ($storefrontSettings as $key => $value) {
-            Setting::updateOrCreate(
-                ['group' => 'storefront', 'key' => $key],
-                [
-                    'value' => ['value' => $value],
-                    'type' => \is_bool($value) ? 'boolean' : (is_numeric($value) ? 'integer' : 'string'),
-                ]
-            );
-        }
-
         // Mail Settings
         $mailSettings = [
             'mail_driver' => 'smtp',
@@ -60,7 +40,7 @@ class SettingsSeeder extends Seeder
             'mail_password' => '',
             'mail_encryption' => 'tls',
             'mail_from_address' => 'noreply@example.com',
-            'mail_from_name' => 'Fast Commerce',
+            'mail_from_name' => 'Laravel Base Project',
         ];
 
         foreach ($mailSettings as $key => $value) {
@@ -85,28 +65,6 @@ class SettingsSeeder extends Seeder
         foreach ($smsSettings as $key => $value) {
             Setting::updateOrCreate(
                 ['group' => 'sms', 'key' => $key],
-                [
-                    'value' => ['value' => $value],
-                    'type' => \is_bool($value) ? 'boolean' : (is_numeric($value) ? 'integer' : 'string'),
-                ]
-            );
-        }
-
-        // Currency & Tax Settings
-        $currencySettings = [
-            'default_currency' => 'TRY',
-            'currency_symbol' => '₺',
-            'currency_position' => 'left',
-            'decimal_places' => 2,
-            'thousand_separator' => '.',
-            'decimal_separator' => ',',
-            'default_tax_class_id' => null,
-            'prices_include_tax' => false,
-        ];
-
-        foreach ($currencySettings as $key => $value) {
-            Setting::updateOrCreate(
-                ['group' => 'currency', 'key' => $key],
                 [
                     'value' => ['value' => $value],
                     'type' => \is_bool($value) ? 'boolean' : (is_numeric($value) ? 'integer' : 'string'),

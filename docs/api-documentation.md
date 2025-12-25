@@ -131,7 +131,7 @@ Tüm API response'ları Laravel API Resources kullanılarak formatlanır.
 ```php
 <?php
 
-namespace App\Domains\Blog\Resources;
+namespace App\Resources\Blog;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -154,7 +154,7 @@ class PostResource extends JsonResource
 ### Resource Collection
 
 ```php
-use App\Domains\Blog\Resources\PostResource;
+use App\Resources\Blog\PostResource;
 
 return PostResource::collection($posts);
 ```

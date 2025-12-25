@@ -21,8 +21,8 @@ class CmsServiceProvider extends ServiceProvider
     {
         // Register Policies
         Gate::policy(
-            \App\Domains\Cms\Models\Page::class,
-            \App\Domains\Cms\Policies\PagePolicy::class
+            \App\Models\Cms\Page::class,
+            \App\Policies\Cms\PagePolicy::class
         );
     }
 }

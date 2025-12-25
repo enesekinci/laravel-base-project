@@ -19,7 +19,7 @@ class UpdateSliderRequest extends FormRequest
      */
     public function rules(): array
     {
-        /** @var \App\Domains\Cms\Models\Slider|null $slider */
+        /** @var \App\Models\Cms\Slider|null $slider */
         $slider = $this->route('slider');
         $sliderId = $slider?->id;
 

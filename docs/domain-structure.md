@@ -15,109 +15,123 @@ Bu proje bir **base/havuz proje** olarak tasarlanmıştır. Fork edildiğinde ge
 
 ```
 app/
-  Domains/
-    Auth/              # Authentication modülü (ortak)
-      Models/
-      Controllers/
-        Admin/
-        Api/
-      Services/
-      Actions/
-      Requests/
-      Resources/
-      Policies/
-      Events/
-      Listeners/
-      Jobs/
-      Notifications/
-    
-    Blog/              # Blog modülü (CMS)
-      Models/
-        Post.php
-        PostCategory.php
-        PostTag.php
-      Controllers/
-        Admin/
-        Api/
-      Services/
-      Actions/
-      Requests/
-      Resources/
-      Policies/
-      Events/
-      Listeners/
-      Jobs/
-      Notifications/
-    
-    Cms/               # CMS modülü
-      Models/
-        Page.php
-        Menu.php
-        MenuItem.php
-        Slider.php
-        SliderItem.php
-        ContentBlock.php
-      Controllers/
-        Admin/
-        Api/
-      Services/
-      Actions/
-      Requests/
-      Resources/
-      Policies/
-      Events/
-      Listeners/
-      Jobs/
-      Notifications/
-    
-    Crm/               # CRM modülü
-      Models/
-        User.php
-        AdminActionLog.php
-      Controllers/
-        Admin/
-        Api/
-      Services/
-      Actions/
-      Requests/
-      Resources/
-      Policies/
-      Events/
-      Listeners/
-      Jobs/
-      Notifications/
-    
-    Media/             # Media modülü (ortak)
-      Models/
-        MediaFile.php
-      Controllers/
-        Admin/
-        Api/
-      Services/
-      Actions/
-      Requests/
-      Resources/
-      Policies/
-      Events/
-      Listeners/
-      Jobs/
-      Notifications/
-    
-    Settings/          # Settings modülü (ortak)
-      Models/
-        Setting.php
-      Controllers/
-        Admin/
-        Api/
-      Services/
-      Actions/
-      Requests/
-      Resources/
-      Policies/
-      Events/
-      Listeners/
-      Jobs/
-      Notifications/
+  Controllers/
+    Auth/              # Authentication controllers
+      Admin/
+      Api/
+    Blog/              # Blog controllers
+      Admin/
+      Api/
+    Cms/               # CMS controllers
+      Admin/
+      Api/
+    Crm/               # CRM controllers
+      Admin/
+      Api/
+    Media/             # Media controllers
+      Admin/
+      Api/
+    Settings/          # Settings controllers
+      Admin/
+      Api/
+
+  Models/
+    Blog/              # Blog models
+      Post.php
+      PostCategory.php
+      PostTag.php
+    Cms/               # CMS models
+      Page.php
+      Menu.php
+      MenuItem.php
+      Slider.php
+      SliderItem.php
+      ContentBlock.php
+    Crm/               # CRM models
+      User.php
+      AdminActionLog.php
+    Media/             # Media models
+      MediaFile.php
+    Settings/          # Settings models
+      Setting.php
+
+  Services/
+    Auth/              # Authentication services
+    Blog/              # Blog services
+    Cms/               # CMS services
+    Crm/               # CRM services
+    Media/             # Media services
+    Settings/          # Settings services
+
+  Actions/
+    Auth/               # Authentication actions
+    Blog/              # Blog actions
+    Cms/               # CMS actions
+    Crm/               # CRM actions
+    Media/             # Media actions
+    Settings/          # Settings actions
+
+  Contracts/
+    Blog/              # Blog repository interfaces
+
+  Repositories/
+    Blog/              # Blog repository implementations
+
+  Requests/
+    Auth/              # Authentication form requests
+    Blog/              # Blog form requests
+    Cms/               # CMS form requests
+    Crm/               # CRM form requests
+    Media/             # Media form requests
+    Settings/          # Settings form requests
+
+  Resources/
+    Auth/              # Authentication API resources
+    Blog/              # Blog API resources
+    Cms/               # CMS API resources
+    Crm/               # CRM API resources
+    Media/             # Media API resources
+    Settings/          # Settings API resources
+
+  Policies/
+    Auth/              # Authentication policies
+    Blog/              # Blog policies
+    Cms/               # CMS policies
+    Crm/               # CRM policies
+    Media/             # Media policies
+    Settings/          # Settings policies
+
+  Events/
+    Auth/              # Authentication events
+    Blog/              # Blog events
+    Cms/               # CMS events
+    Crm/               # CRM events
+    Media/             # Media events
+    Settings/          # Settings events
+
+  Listeners/
+    Auth/              # Authentication listeners
+    Blog/              # Blog listeners
+    Cms/               # CMS listeners
+    Crm/               # CRM listeners
+    Media/             # Media listeners
+    Settings/          # Settings listeners
+
+  Jobs/
+    Auth/              # Authentication jobs
+    Blog/              # Blog jobs
+    Cms/               # CMS jobs
+    Crm/               # CRM jobs
+    Media/             # Media jobs
+    Settings/          # Settings jobs
+
+  Notifications/
+    Auth/              # Authentication notifications
+    Blog/              # Blog notifications
+    Cms/               # CMS notifications
+    Crm/               # CRM notifications
+    Media/             # Media notifications
+    Settings/          # Settings notifications
 ```
 
 ## Modül Yapılandırması
@@ -141,6 +155,7 @@ Modül pasif edilmek istendiğinde `.env` dosyasında ilgili değişken `false` 
 ## Modül Route Yükleme
 
 Route'lar merkezi route dosyalarında tanımlanır:
+
 - **Web routes**: `routes/web.php` - Admin panel route'ları
 - **API routes**: `routes/api.php` - API route'ları
 
@@ -168,11 +183,11 @@ database/
     auth/
       2025_01_01_000000_create_users_table.php
       2025_01_01_000001_create_personal_access_tokens_table.php
-    
+
     blog/
       2025_01_01_000000_create_posts_table.php
       2025_01_01_000100_create_post_categories_table.php
-    
+
     cms/
       2025_01_01_000000_create_pages_table.php
       2025_01_01_000100_create_menus_table.php
@@ -237,7 +252,7 @@ class PostPolicy
     {
         return $user->isAdmin();
     }
-    
+
     public function create(User $user): bool
     {
         return $user->isAdmin();
@@ -268,7 +283,7 @@ class PostResource extends JsonResource
 
 Yeni bir modül eklemek için:
 
-1. `app/Domains/{Module}/` klasör yapısını oluştur (Models, Controllers, Services, vb.)
+1. `app/Controllers/{Module}/`, `app/Models/{Module}/`, `app/Services/{Module}/` vb. klasör yapısını oluştur
 2. `app/Providers/Domains/{Module}ServiceProvider.php` dosyasını oluştur
 3. `routes/web.php` dosyasına admin route'larını ekle
 4. `routes/api.php` dosyasına API route'larını ekle
@@ -291,20 +306,24 @@ class {Module}ServiceProvider extends ServiceProvider
     public function register(): void
     {
         // Repository binding'leri buraya
+        $this->app->bind(
+            \App\Contracts\{Module}\{Model}RepositoryInterface::class,
+            \App\Repositories\{Module}\{Model}Repository::class
+        );
     }
 
     public function boot(): void
     {
         // Policy kayıtları buraya
         Gate::policy(
-            \App\Domains\{Module}\Models\{Model}::class,
-            \App\Domains\{Module}\Policies\{Model}Policy::class
+            \App\Models\{Module}\{Model}::class,
+            \App\Policies\{Module}\{Model}Policy::class
         );
 
         // Event listener kayıtları buraya
         Event::listen(
-            \App\Domains\{Module}\Events\{Event}::class,
-            \App\Domains\{Module}\Listeners\{Listener}::class
+            \App\Events\{Module}\{Event}::class,
+            \App\Listeners\{Module}\{Listener}::class
         );
     }
 }
@@ -316,7 +335,7 @@ Route örneği (`routes/web.php`):
 // {Module} Module Routes
 if (config('modules.enabled.{module}', true)) {
     Route::prefix('admin/{module}')->middleware(['web', 'auth', 'admin'])->group(function () {
-        Route::resource('items', \App\Domains\{Module}\Controllers\Admin\{Controller}::class);
+        Route::resource('items', \App\Controllers\{Module}\Admin\{Controller}::class);
     });
 }
 ```
@@ -327,7 +346,7 @@ Route örneği (`routes/api.php`):
 // {Module} Module API Routes
 if (config('modules.enabled.{module}', true)) {
     Route::prefix('v1/{module}')->middleware(['api'])->group(function () {
-        Route::get('/items', [\App\Domains\{Module}\Controllers\Api\{Controller}::class, 'index']);
+        Route::get('/items', [\App\Controllers\{Module}\Api\{Controller}::class, 'index']);
     });
 }
 ```
@@ -337,7 +356,7 @@ if (config('modules.enabled.{module}', true)) {
 Bir modülü silmek için:
 
 1. `config/modules.php` dosyasından modülü kaldır veya `enabled` değerini `false` yap
-2. `app/Domains/{Module}/` klasörünü sil
+2. `app/{Module}/` klasörünü sil
 3. `app/Providers/Domains/{Module}ServiceProvider.php` dosyasını sil
 4. `routes/web.php` ve `routes/api.php` dosyalarından modül route'larını kaldır
 5. `database/migrations/{module}/` klasörünü sil
@@ -346,14 +365,14 @@ Bir modülü silmek için:
 
 Auth modülü şu yapıya sahiptir:
 
-- **Models**: Yok (User model'i CRM modülünde)
-- **Controllers**: LoginController, RegisterController, MeController, WebAuthController
-- **Services**: AuthService
+- **Models**: Yok (User model'i CRM modülünde: `App\Models\Crm\User`)
+- **Controllers**: `App\Controllers\Auth\LoginController`, `App\Controllers\Auth\RegisterController`, `App\Controllers\Auth\MeController`, `App\Controllers\Auth\WebAuthController`
+- **Services**: `App\Services\Auth\AuthService`
 - **Routes**: Web ve API route'ları
 
 ## Sonraki Adımlar
 
-1. ✅ Domain klasör yapısı oluşturuldu
+1. ✅ Tip bazlı klasör yapısı oluşturuldu (Controllers, Models, Services, vb.)
 2. ✅ Modül yapılandırma sistemi oluşturuldu
 3. ✅ Modül ServiceProvider yapısı oluşturuldu
 4. ✅ Auth modülü oluşturuldu
@@ -389,4 +408,3 @@ Media modülü ServiceProvider'ı (`app/Providers/Domains/MediaServiceProvider.p
 - **Policy Kayıtları**: `MediaFile` model'i için `MediaFilePolicy`
 
 **Not:** Route'lar artık ServiceProvider'da değil, `routes/web.php` ve `routes/api.php` dosyalarında tanımlanır.
-

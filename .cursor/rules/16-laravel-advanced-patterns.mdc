@@ -6,31 +6,31 @@ alwaysApply: true
 
 ## Action/UseCase Pattern
 
-- **Action sınıfları tek bir sorumluluğa sahip olmalı**: `CreateProductAction`, `UpdateOrderAction`
+- **Action sınıfları tek bir sorumluluğa sahip olmalı**: `CreatePostAction`, `UpdatePageAction`
 - **Action'lar transaction içinde çalışmalı** (birden fazla tablo yazılıyorsa)
 - **Action'lar event fırlatmalı** (yan etkiler için)
 - **Service'ler action'ları orkestre eder**, action'lar tek iş yapar
 
 ```php
 // ✅ İyi - Action pattern
-class CreateProductAction
+class CreatePostAction
 {
     public function __construct(
-        private readonly ProductRepository $repository
+        private readonly PostRepository $repository
     ) {}
 
-    public function execute(CreateProductData $data): Product
+    public function execute(CreatePostData $data): Post
     {
         return DB::transaction(function () use ($data) {
-            $product = $this->repository->create($data->toArray());
+            $post = $this->repository->create($data->toArray());
 
-            if ($data->variations) {
-                $this->createVariations($product, $data->variations);
+            if ($data->categories) {
+                $post->categories()->sync($data->categories);
             }
 
-            event(new ProductCreated($product));
+            event(new PostCreated($post));
 
-            return $product;
+            return $post;
         });
     }
 }
@@ -38,7 +38,7 @@ class CreateProductAction
 // ❌ Kötü - Controller'da business logic
 public function store(Request $request)
 {
-    $product = Product::create([...]);
+    $post = Post::create([...]);
     // 50 satır business logic
 }
 ```
@@ -46,34 +46,34 @@ public function store(Request $request)
 ## Event-Driven Architecture
 
 - **Yan etkiler (mail, bildirim, log, dış sistem) Event/Listener ile yapılmalı**
-- **Event isimleri geçmiş zaman**: `ProductCreated`, `OrderCompleted`, `UserRegistered`
+- **Event isimleri geçmiş zaman**: `PostCreated`, `PageUpdated`, `UserRegistered`
 - **Ağır işlemler Listener içinde queue'ya verilmeli**
 
 ```php
 // ✅ İyi - Event kullanımı
-class CreateProductAction
+class CreatePostAction
 {
-    public function execute(CreateProductData $data): Product
+    public function execute(CreatePostData $data): Post
     {
-        $product = Product::create($data->toArray());
-        event(new ProductCreated($product)); // Event fırlat
-        return $product;
+        $post = Post::create($data->toArray());
+        event(new PostCreated($post)); // Event fırlat
+        return $post;
     }
 }
 
 // Listener'da yan etkiler
-class SendProductCreatedNotification implements ShouldQueue
+class SendPostCreatedNotification implements ShouldQueue
 {
-    public function handle(ProductCreated $event): void
+    public function handle(PostCreated $event): void
     {
-        Mail::to($event->product->user)->send(new ProductCreatedMail($event->product));
+        Mail::to($event->post->author)->send(new PostCreatedMail($event->post));
     }
 }
 
 // ❌ Kötü - Controller'da yan etkiler
 public function store(Request $request)
 {
-    $product = Product::create([...]);
+    $post = Post::create([...]);
     Mail::to($user)->send(...); // Yan etki controller'da
     Log::info(...); // Yan etki controller'da
 }
@@ -88,7 +88,7 @@ public function store(Request $request)
 
 ```php
 // ✅ İyi - Queue kullanımı
-class SendInvoiceJob implements ShouldQueue
+class SendNotificationJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable;
 
@@ -96,25 +96,25 @@ class SendInvoiceJob implements ShouldQueue
     public $backoff = [60, 120, 300]; // 1dk, 2dk, 5dk
 
     public function __construct(
-        public Order $order
+        public Post $post
     ) {}
 
     public function handle(): void
     {
-        Mail::to($this->order->user)->send(new InvoiceMail($this->order));
+        Mail::to($this->post->author)->send(new PostPublishedMail($this->post));
     }
 
     public function failed(Throwable $exception): void
     {
-        Log::error('Invoice sending failed', [
-            'order_id' => $this->order->id,
+        Log::error('Notification sending failed', [
+            'post_id' => $this->post->id,
             'error' => $exception->getMessage(),
         ]);
     }
 }
 
 // ❌ Kötü - Senkron çalıştırma
-Mail::to($order->user)->send(new InvoiceMail($order)); // Request'i yavaşlatır
+Mail::to($post->author)->send(new PostPublishedMail($post)); // Request'i yavaşlatır
 ```
 
 ## Transaction Kullanımı
@@ -125,16 +125,16 @@ Mail::to($order->user)->send(new InvoiceMail($order)); // Request'i yavaşlatır
 ```php
 // ✅ İyi - Transaction kullanımı
 DB::transaction(function () {
-    $order = Order::create([...]);
-    $payment = Payment::create(['order_id' => $order->id]);
-    $order->items()->createMany([...]);
+    $post = Post::create([...]);
+    $post->categories()->sync([...]);
+    $post->tags()->sync([...]);
 
-    event(new OrderCreated($order)); // Commit sonrası çalışır
+    event(new PostCreated($post)); // Commit sonrası çalışır
 });
 
 // ❌ Kötü - Transaction yok
-$order = Order::create([...]);
-$payment = Payment::create(['order_id' => $order->id]); // Hata olursa tutarsızlık
+$post = Post::create([...]);
+$post->categories()->sync([...]); // Hata olursa tutarsızlık
 ```
 
 ## Error Handling
@@ -145,24 +145,24 @@ $payment = Payment::create(['order_id' => $order->id]); // Hata olursa tutarsız
 
 ```php
 // ✅ İyi - Custom exception
-class ProductNotFoundException extends Exception
+class PostNotFoundException extends Exception
 {
     public function render($request)
     {
         if ($request->expectsJson()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Product not found',
+                'message' => 'Post not found',
             ], 404);
         }
 
-        return redirect()->route('products.index')
-            ->with('error', 'Product not found');
+        return redirect()->route('admin.posts.index')
+            ->with('error', 'Post not found');
     }
 }
 
 // Kullanım
-throw new ProductNotFoundException();
+throw new PostNotFoundException();
 ```
 
 ## Logging Best Practices
@@ -191,7 +191,7 @@ Log::info('User registered: ' . $user->email);
 
 ```php
 // ✅ İyi - Enum kullanımı
-enum ProductStatus: string
+enum PostStatus: string
 {
     case DRAFT = 'draft';
     case PUBLISHED = 'published';
@@ -202,17 +202,17 @@ enum ProductStatus: string
 protected function casts(): array
 {
     return [
-        'status' => ProductStatus::class,
+        'status' => PostStatus::class,
     ];
 }
 
 // Kullanım
-if ($product->status === ProductStatus::PUBLISHED) {
+if ($post->status === PostStatus::PUBLISHED) {
     // ...
 }
 
 // ❌ Kötü - Hardcoded string
-if ($product->status === 'published') {
+if ($post->status === 'published') {
     // ...
 }
 ```
@@ -224,15 +224,15 @@ if ($product->status === 'published') {
 
 ```php
 // ✅ İyi - Translation kullanımı
-return back()->with('message', __('Product created successfully'));
+return back()->with('message', __('Post created successfully'));
 
 // Language dosyasında: lang/tr/messages.php
 return [
-    'product_created' => 'Ürün başarıyla oluşturuldu',
+    'post_created' => 'Yazı başarıyla oluşturuldu',
 ];
 
 // ❌ Kötü - Hardcoded string
-return back()->with('message', 'Product created successfully');
+return back()->with('message', 'Post created successfully');
 ```
 
 ## Date Handling
@@ -252,11 +252,11 @@ protected function casts(): array
 }
 
 // Blade'de
-{{ $product->published_at->format('d.m.Y') }}
-{{ $product->published_at->diffForHumans() }}
+{{ $post->published_at->format('d.m.Y') }}
+{{ $post->published_at->diffForHumans() }}
 
 // ❌ Kötü - String formatlama
-{{ Carbon::createFromFormat('Y-d-m H-i', $product->published_at)->format('d.m.Y') }}
+{{ Carbon::createFromFormat('Y-d-m H-i', $post->published_at)->format('d.m.Y') }}
 ```
 
 ## Dependency Injection
@@ -293,20 +293,20 @@ class ProductService
 
 ```php
 // ✅ İyi - Chunk kullanımı
-Product::chunk(200, function ($products) {
-    foreach ($products as $product) {
+Post::chunk(200, function ($posts) {
+    foreach ($posts as $post) {
         // İşlem
     }
 });
 
 // ✅ İyi - Lazy loading
-Product::lazy()->each(function ($product) {
+Post::lazy()->each(function ($post) {
     // İşlem
 });
 
 // ❌ Kötü - Tüm veriyi çekme
-$products = Product::all(); // Memory problemi
-foreach ($products as $product) {
+$posts = Post::all(); // Memory problemi
+foreach ($posts as $post) {
     // İşlem
 }
 ```
@@ -319,23 +319,23 @@ foreach ($products as $product) {
 
 ```php
 // ✅ İyi - API Resource
-class ProductResource extends JsonResource
+class PostResource extends JsonResource
 {
     public function toArray($request): array
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'price' => $this->price,
-            'category' => new CategoryResource($this->whenLoaded('category')),
+            'title' => $this->title,
+            'slug' => $this->slug,
+            'category' => new PostCategoryResource($this->whenLoaded('category')),
             'created_at' => $this->created_at->toIso8601String(),
         ];
     }
 }
 
 // Kullanım
-return response()->json(new ProductResource($product), 201);
-return response()->json(ProductResource::collection($products));
+return response()->json(new PostResource($post), 201);
+return response()->json(PostResource::collection($posts));
 ```
 
 ## Configuration Management

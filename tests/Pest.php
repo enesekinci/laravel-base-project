@@ -7,7 +7,7 @@ uses(
     // Illuminate\Foundation\Testing\DatabaseMigrations::class,
 )->in('Browser');
 
-use App\Domains\Crm\Models\User;
+use App\Models\Crm\User;
 
 uses(
     Tests\TestCase::class,

@@ -21,8 +21,8 @@ class MediaServiceProvider extends ServiceProvider
     {
         // Register Policies
         Gate::policy(
-            \App\Domains\Media\Models\MediaFile::class,
-            \App\Domains\Media\Policies\MediaFilePolicy::class
+            \App\Models\Media\MediaFile::class,
+            \App\Policies\Media\MediaFilePolicy::class
         );
     }
 }

@@ -37,7 +37,7 @@ it('aktif olmayan ürünleri filtreler', function () {
 ### ❌ Kötü - İngilizce Açıklamalar
 
 ```php
-it('lists products with filters for admin', function () {
+it('lists posts with filters for admin', function () {
     // test kodu
 });
 
@@ -45,7 +45,7 @@ it('creates a category', function () {
     // test kodu
 });
 
-it('shows product detail with relations', function () {
+it('shows post detail with relations', function () {
     // test kodu
 });
 ```
@@ -54,9 +54,9 @@ it('shows product detail with relations', function () {
 
 Test açıklamaları şu formatta olmalıdır:
 
-- **Özne + Fiil + Nesne**: "admin ürün listeler", "sistem kategori oluşturur"
-- **Fiil + Nesne**: "ürün oluşturur", "sipariş iptal eder"
-- **Durum belirten**: "aktif ürünleri gösterir", "silinmiş kayıtları filtreler"
+- **Özne + Fiil + Nesne**: "admin yazı listeler", "sistem kategori oluşturur"
+- **Fiil + Nesne**: "yazı oluşturur", "sayfa günceller"
+- **Durum belirten**: "yayınlanmış yazıları gösterir", "silinmiş kayıtları filtreler"
 
 ## Kapsam
 
@@ -77,8 +77,8 @@ Yeni test yazarken veya mevcut testleri güncellerken:
 
 ## Özel Durumlar
 
-- API endpoint isimleri İngilizce kalabilir: `it('GET /api/products endpoint\'i çalışır', ...)`
-- Model/Class isimleri İngilizce kalabilir: `it('Product model\'i doğru şekilde kaydedilir', ...)`
+- API endpoint isimleri İngilizce kalabilir: `it('GET /api/posts endpoint\'i çalışır', ...)`
+- Model/Class isimleri İngilizce kalabilir: `it('Post model\'i doğru şekilde kaydedilir', ...)`
 - Teknik terimler Türkçeleştirilemezse İngilizce kalabilir: `it('DataTable doğru şekilde render edilir', ...)`
 
 ## Kontrol Listesi

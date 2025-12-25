@@ -230,19 +230,19 @@ Tüm içerik `widget-content widget-content-area br-8 p-4` class'ları ile sarı
 @endpush
 ```
 
-## Örnek: Product Show View
+## Örnek: Post Show View
 
 ```blade
 @extends('admin.layouts.app')
 
-@section('title', 'Ürün Detay')
+@section('title', 'Yazı Detay')
 
 @section('content')
     <div class="page-meta">
         <nav class="breadcrumb-style-one" aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Panel</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('admin.products.index') }}">Ürünler</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('admin.posts.index') }}">Yazılar</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Detay</li>
             </ol>
         </nav>
@@ -252,10 +252,10 @@ Tüm içerik `widget-content widget-content-area br-8 p-4` class'ları ile sarı
         <div class="col-xl-8 col-lg-8 col-sm-12 layout-spacing">
             <div class="widget-content widget-content-area br-8 p-4">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h4 class="mb-0">{{ $product->name }}</h4>
+                    <h4 class="mb-0">{{ $post->title }}</h4>
                     <div>
-                        <a href="{{ route('admin.products.edit', $product) }}" class="btn btn-primary">Düzenle</a>
-                        <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">Geri Dön</a>
+                        <a href="{{ route('admin.posts.edit', $post) }}" class="btn btn-primary">Düzenle</a>
+                        <a href="{{ route('admin.posts.index') }}" class="btn btn-secondary">Geri Dön</a>
                     </div>
                 </div>
 
@@ -263,27 +263,27 @@ Tüm içerik `widget-content widget-content-area br-8 p-4` class'ları ile sarı
                     <div class="col-md-6">
                         <p>
                             <strong>ID:</strong>
-                            {{ $product->id }}
+                            {{ $post->id }}
                         </p>
                         <p>
-                            <strong>SKU:</strong>
-                            {{ $product->sku }}
+                            <strong>Slug:</strong>
+                            {{ $post->slug }}
                         </p>
                         <p>
-                            <strong>Fiyat:</strong>
-                            {{ number_format($product->price, 2) }} ₺
+                            <strong>Durum:</strong>
+                            <span class="badge badge-{{ $post->status === 'published' ? 'success' : 'warning' }}">
+                                {{ $post->status === 'published' ? 'Yayında' : 'Taslak' }}
+                            </span>
                         </p>
                     </div>
                     <div class="col-md-6">
                         <p>
-                            <strong>Durum:</strong>
-                            <span class="badge badge-{{ $product->is_active ? 'success' : 'danger' }}">
-                                {{ $product->is_active ? 'Aktif' : 'Pasif' }}
-                            </span>
+                            <strong>Oluşturulma:</strong>
+                            {{ $post->created_at->format('d.m.Y H:i') }}
                         </p>
                         <p>
-                            <strong>Stok:</strong>
-                            {{ $product->quantity }}
+                            <strong>Yayınlanma:</strong>
+                            {{ $post->published_at ? $post->published_at->format('d.m.Y H:i') : '-' }}
                         </p>
                     </div>
                 </div>
@@ -293,8 +293,8 @@ Tüm içerik `widget-content widget-content-area br-8 p-4` class'ları ile sarı
         <div class="col-xl-4 col-lg-4 col-sm-12 layout-spacing">
             <div class="widget-content widget-content-area br-8 p-4">
                 <h4 class="mb-4">Kategoriler</h4>
-                @foreach ($product->categories as $category)
-                    <p><a href="{{ route('admin.categories.show', $category) }}">{{ $category->name }}</a></p>
+                @foreach ($post->categories as $category)
+                    <p><a href="{{ route('admin.post-categories.show', $category) }}">{{ $category->name }}</a></p>
                 @endforeach
             </div>
         </div>

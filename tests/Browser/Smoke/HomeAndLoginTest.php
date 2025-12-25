@@ -17,7 +17,7 @@ final class HomeAndLoginTest extends DuskTestCase
      */
     public function test_home_page_opens(): void
     {
-        $this->browse(function (Browser $browser): void {
+        test()->browse(function (Browser $browser): void {
             $browser->visit('/')
                 ->pause(1000) // Sayfanın yüklenmesini bekle
                 ->assertPresent('body'); // Sayfada body elementi var mı kontrol et
@@ -29,7 +29,7 @@ final class HomeAndLoginTest extends DuskTestCase
      */
     public function test_login_page_opens(): void
     {
-        $this->browse(function (Browser $browser): void {
+        test()->browse(function (Browser $browser): void {
             $browser->visit('/login')
                 ->assertPresent('form');
         });

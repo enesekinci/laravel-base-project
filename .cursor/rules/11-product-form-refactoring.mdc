@@ -2,7 +2,7 @@
 alwaysApply: true
 ---
 
-# PRODUCT FORM REFACTORING KURALLARI
+# FORM REFACTORING KURALLARI
 
 ## Genel Sorunlar ve Çözümler
 
@@ -11,7 +11,6 @@ alwaysApply: true
 **Sorun:**
 
 - Form state (`useForm`) ve local state (`useState`) karışık kullanılıyor
-- `selectedCategories`, `selectedTags`, `productAttributes`, `selectedOptions`, `downloads` gibi veriler hem form state'te hem local state'te tutuluyor
 - Submit öncesi bu veriler birleştiriliyor, bu da hata riski yaratıyor
 
 **Çözüm:**
@@ -20,168 +19,50 @@ alwaysApply: true
 - Local state sadece UI state için kullanılmalı (modal açık/kapalı, dropdown açık/kapalı)
 - Submit öncesi transformasyon yapılacaksa, bunu `handleSubmit` içinde değil, `setData` ile yapmalı
 
-```tsx
-// ❌ Kötü - Local state ve form state karışık
-const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
-const { data, setData } = useForm({ category_ids: [] });
-
-// Submit'te birleştirme
-const formData = {
-    ...data,
-    categories: selectedCategories, // Riskli!
-};
-
-// ✅ İyi - Tek kaynak, form state
-const { data, setData } = useForm({
-    category_ids: [],
-    tag_ids: [],
-    attributes: [],
-    options: [],
-});
-
-// Direkt form state'i kullan
-setData('category_ids', selectedIds);
-```
-
 ### 2. Çok Fazla Handler Fonksiyonu
 
 **Sorun:**
 
-- Her işlem için ayrı handler: `addAttribute`, `removeAttribute`, `updateAttribute`, `addOption`, `removeOption`, `updateOption`, `addOptionValue`, `removeOptionValue`, `updateOptionValue` vb.
+- Her işlem için ayrı handler fonksiyonları
 - Bu fonksiyonlar component içinde tanımlanıyor, her render'da yeniden oluşturuluyor
 - Kod tekrarı çok fazla
 
 **Çözüm:**
 
 - **Generic handler'lar kullan**: `handleAdd`, `handleRemove`, `handleUpdate` gibi
-- **Custom hook'lara taşı**: Karmaşık state logic'i hook'lara taşı (örn: `useProductAttributes`, `useProductOptions`)
+- **Custom hook'lara taşı**: Karmaşık state logic'i hook'lara taşı
 - **useCallback kullan**: Handler'ları memoize et
-
-```tsx
-// ❌ Kötü - Her işlem için ayrı fonksiyon
-const addAttribute = () => { ... };
-const removeAttribute = (index: number) => { ... };
-const updateAttribute = (index: number, field: string, value: any) => { ... };
-const addOption = () => { ... };
-const removeOption = (index: number) => { ... };
-// ... 20+ fonksiyon
-
-// ✅ İyi - Generic handler + custom hook
-const { attributes, handlers } = useProductAttributes({
-    initialAttributes: [],
-    onChange: (attrs) => setData('attributes', attrs),
-});
-
-// Hook içinde:
-const add = useCallback(() => {
-    setAttributes([...attributes, createEmptyAttribute()]);
-}, [attributes]);
-
-const remove = useCallback((index: number) => {
-    setAttributes(attributes.filter((_, i) => i !== index));
-}, [attributes]);
-
-const update = useCallback((index: number, field: string, value: any) => {
-    const updated = [...attributes];
-    updated[index] = { ...updated[index], [field]: value };
-    setAttributes(updated);
-}, [attributes]);
-```
 
 ### 3. Component Bölme Eksikliği
 
 **Sorun:**
 
-- Options bölümü direkt sayfa içinde yazılmış (500+ satır)
-- Downloads bölümü direkt sayfa içinde
-- SEO, Pricing, Additional bölümleri direkt sayfa içinde
+- Büyük formlar direkt sayfa içinde yazılmış (500+ satır)
 - Component'ler çok büyük ve okunması zor
 
 **Çözüm:**
 
-- **Her bölüm ayrı component**: `ProductOptionsSection`, `ProductDownloadsSection`, `ProductSeoSection` vb.
-- **Component maksimum 200-300 satır**: Daha büyükse böl
+- **Her bölüm ayrı component**: Maksimum 200-300 satır
 - **Props interface'leri tanımla**: Her component'in props'u type-safe olmalı
-
-```tsx
-// ❌ Kötü - 500+ satır inline component
-<Card>
-    <CardHeader>Options</CardHeader>
-    <CardContent>
-        {/* 500 satır kod */}
-    </CardContent>
-</Card>
-
-// ✅ İyi - Ayrı component
-<ProductOptionsSection
-    options={data.options}
-    availableOptions={productOptions}
-    onChange={(options) => setData('options', options)}
-    errors={errors.options}
-/>
-```
 
 ### 4. Import Karmaşıklığı
 
 **Sorun:**
 
 - 60+ satır import
-- shadcn component'leri, hooks, types, utilities karışık
 - Kullanılmayan import'lar olabilir
 
 **Çözüm:**
 
-- **Barrel export kullan**: `@/components/products` gibi
+- **Barrel export kullan**
 - **Import gruplama**: React, Inertia, UI, Hooks, Types, Utils şeklinde grupla
 - **Kullanılmayan import'ları temizle**: ESLint ile kontrol et
-
-```tsx
-// ❌ Kötü - Dağınık import'lar
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { useProductVariants } from '@/hooks/use-product-variants';
-import { useProductVariations } from '@/hooks/use-product-variations';
-// ... 50+ satır
-
-// ✅ İyi - Gruplanmış import'lar
-// React & Inertia
-import { useEffect, useRef, useState } from 'react';
-import { Head, Link, router, useForm } from '@inertiajs/react';
-
-// UI Components
-import {
-    Button,
-    Card,
-    Input,
-    Label,
-    Select,
-    Table,
-    Textarea,
-} from '@/components/ui';
-
-// Product Components
-import {
-    ProductAttributesForm,
-    ProductGeneralForm,
-    ProductMediaUploader,
-    ProductVariantsSection,
-    ProductVariationsSection,
-} from '@/components/products';
-
-// Hooks
-import { useProductVariants, useProductVariations } from '@/hooks';
-
-// Types
-import type { ProductCreateProps, ProductFormData } from '@/types/product';
-```
 
 ### 5. Form Submit Karmaşıklığı
 
 **Sorun:**
 
 - `handleSubmit` içinde çok fazla transformasyon yapılıyor
-- Attributes, variants, media, options gibi veriler submit öncesi dönüştürülüyor
 - Bu transformasyonlar hata riski yaratıyor ve test edilmesi zor
 
 **Çözüm:**
@@ -190,95 +71,12 @@ import type { ProductCreateProps, ProductFormData } from '@/types/product';
 - **Submit öncesi hazırlık**: `handleSubmit` sadece birleştirme yapsın, transformasyon yapmasın
 - **Validation ekle**: Submit öncesi validation yap
 
-```tsx
-// ❌ Kötü - handleSubmit içinde transformasyon
-const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    // Attributes transformasyonu
-    const attributesArray = [];
-    productAttributes.forEach((attr) => {
-        // ... 20 satır transformasyon
-    });
-
-    // Variants transformasyonu
-    const variantsData = productVariants.map((variant) => ({
-        // ... 10 satır transformasyon
-    }));
-
-    // ... daha fazla transformasyon
-
-    router.post(store().url, formData);
-};
-
-// ✅ İyi - Hook'lar transformasyon yapsın
-const { getSubmitData: getAttributesData } = useProductAttributes({...});
-const { getSubmitData: getVariantsData } = useProductVariants({...});
-
-const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    // Sadece birleştirme
-    const formData = {
-        ...data,
-        attributes: getAttributesData(),
-        variants: getVariantsData(),
-        // ...
-    };
-
-    router.post(store().url, formData);
-};
-```
-
-### 6. Drag & Drop Karmaşıklığı
-
-**Sorun:**
-
-- DndContext, sensors, handlers her yerde tekrarlanıyor
-- Drag & drop logic'i component içinde dağınık
-- Her bölüm için ayrı drag handler yazılıyor
-
-**Çözüm:**
-
-- **Drag & drop hook'u oluştur**: `useDragAndDrop` hook'u ile merkezi yönetim
-- **Sensors'ı bir kere oluştur**: Component seviyesinde bir kere oluştur, prop olarak geç
-- **Generic drag handler**: Generic bir drag handler yaz, her bölüm için özelleştir
-
-```tsx
-// ❌ Kötü - Her yerde tekrar
-const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {...}),
-);
-
-<DndContext sensors={sensors} onDragEnd={handleAttributeDragEnd}>
-    {/* ... */}
-</DndContext>
-
-<DndContext sensors={sensors} onDragEnd={handleOptionDragEnd}>
-    {/* ... */}
-</DndContext>
-
-// ✅ İyi - Merkezi hook
-const { sensors, handleDragEnd } = useDragAndDrop({
-    onReorder: (items, oldIndex, newIndex) => {
-        const reordered = arrayMove(items, oldIndex, newIndex);
-        setData('attributes', reordered);
-    },
-});
-
-<DndContext sensors={sensors} onDragEnd={handleDragEnd}>
-    {/* ... */}
-</DndContext>
-```
-
-### 7. Type Safety Sorunları
+### 6. Type Safety Sorunları
 
 **Sorun:**
 
 - `@ts-expect-error` kullanımları var
 - Dynamic field name'ler type-safe değil
-- Optional chaining ve type assertion çok fazla
 
 **Çözüm:**
 
@@ -286,29 +84,11 @@ const { sensors, handleDragEnd } = useDragAndDrop({
 - **Type guard'lar**: Runtime type kontrolü için type guard'lar kullan
 - **Strict mode**: TypeScript strict mode açık olmalı
 
-```tsx
-// ❌ Kötü - Type safety yok
-onFieldChange={(field, value) => {
-    // @ts-expect-error - Dynamic field name
-    setData(field, value);
-}}
-
-// ✅ İyi - Type-safe
-type FormField = keyof ProductFormData;
-const handleFieldChange = <K extends FormField>(
-    field: K,
-    value: ProductFormData[K]
-) => {
-    setData(field, value);
-};
-```
-
-### 8. Prop Drilling
+### 7. Prop Drilling
 
 **Sorun:**
 
 - Component'lere çok fazla prop geçiliyor
-- `ProductGeneralForm`'a 15+ prop geçiliyor
 - Props değiştiğinde tüm component'ler etkileniyor
 
 **Çözüm:**
@@ -317,40 +97,7 @@ const handleFieldChange = <K extends FormField>(
 - **Compound component pattern**: İlgili component'leri birleştir
 - **Props object kullan**: Tek bir props object geç, içinde tüm veriler olsun
 
-```tsx
-// ❌ Kötü - Çok fazla prop
-<ProductGeneralForm
-    name={data.name}
-    slug={data.slug}
-    sku={data.sku}
-    description={data.description}
-    // ... 15+ prop
-/>
-
-// ✅ İyi - Tek props object
-<ProductGeneralForm
-    formData={data}
-    onChange={setData}
-    errors={errors}
-    options={{ brands, categories, tags, taxClasses }}
-/>
-```
-
-### 9. Inline Component'ler
-
-**Sorun:**
-
-- Options, Downloads, SEO bölümleri direkt sayfa içinde
-- Bu bölümler tekrar kullanılamıyor
-- Test edilmesi zor
-
-**Çözüm:**
-
-- **Her bölüm ayrı component**: `ProductOptionsSection.tsx`, `ProductDownloadsSection.tsx` vb.
-- **Reusable component'ler**: Component'ler başka sayfalarda da kullanılabilir olmalı
-- **Test edilebilir**: Her component ayrı test edilebilmeli
-
-### 10. Submit Öncesi Validation Eksikliği
+### 8. Submit Öncesi Validation Eksikliği
 
 **Sorun:**
 
@@ -364,37 +111,9 @@ const handleFieldChange = <K extends FormField>(
 - **Submit öncesi kontrol**: `handleSubmit` içinde validation yap
 - **Kullanıcı dostu hata mesajları**: Validation hatalarını kullanıcıya göster
 
-```tsx
-// ❌ Kötü - Validation yok
-const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    router.post(store().url, formData); // Backend hata dönecek
-};
-
-// ✅ İyi - Client-side validation
-const schema = z.object({
-    name: z.string().min(1, 'Ürün adı gereklidir'),
-    sku: z.string().min(1, 'SKU gereklidir'),
-    // ...
-});
-
-const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const result = schema.safeParse(data);
-    if (!result.success) {
-        // Hata mesajlarını göster
-        setValidationErrors(result.error.flatten().fieldErrors);
-        return;
-    }
-
-    router.post(store().url, formData);
-};
-```
-
 ## Refactoring Checklist
 
-Bir product form sayfasını refactor ederken şu adımları takip et:
+Bir form sayfasını refactor ederken şu adımları takip et:
 
 1. **State yönetimini düzenle**
     - [ ] Local state'leri form state'e taşı
@@ -426,43 +145,10 @@ Bir product form sayfasını refactor ederken şu adımları takip et:
     - [ ] Submit öncesi kontrol
     - [ ] Kullanıcı dostu hata mesajları
 
-7. **Drag & drop'u düzenle**
-    - [ ] Merkezi drag & drop hook'u
-    - [ ] Generic drag handler
-    - [ ] Sensors'ı bir kere oluştur
-
-8. **Test yaz**
+7. **Test yaz**
     - [ ] Her component için test
     - [ ] Hook'lar için test
     - [ ] Form submit için test
-
-## Örnek Refactored Component Yapısı
-
-```
-resources/js/
-├── pages/
-│   └── Admin/
-│       └── Products/
-│           └── Create.tsx              # Ana component, sadece orchestration
-├── components/
-│   └── products/
-│       ├── ProductGeneralForm.tsx      # General bilgiler
-│       ├── ProductAttributesSection.tsx # Attributes bölümü
-│       ├── ProductVariationsSection.tsx # Variations bölümü
-│       ├── ProductVariantsSection.tsx  # Variants bölümü
-│       ├── ProductOptionsSection.tsx    # Options bölümü
-│       ├── ProductDownloadsSection.tsx # Downloads bölümü
-│       ├── ProductMediaSection.tsx      # Media bölümü
-│       ├── ProductSeoSection.tsx       # SEO bölümü
-│       └── ProductPricingSection.tsx    # Pricing bölümü
-├── hooks/
-│   ├── use-product-attributes.ts        # Attributes state & logic
-│   ├── use-product-options.ts          # Options state & logic
-│   ├── use-product-downloads.ts         # Downloads state & logic
-│   └── use-drag-and-drop.ts            # Drag & drop logic
-└── types/
-    └── product.ts                       # Tüm product type'ları
-```
 
 ## Önemli Notlar
 

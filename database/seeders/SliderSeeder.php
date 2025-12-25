@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Domains\Cms\Models\Slider;
-use App\Domains\Cms\Models\SliderItem;
-use App\Domains\Crm\Models\User;
-use App\Domains\Media\Models\MediaFile;
+use App\Models\Cms\Slider;
+use App\Models\Cms\SliderItem;
+use App\Models\Crm\User;
+use App\Models\Media\MediaFile;
 use Illuminate\Database\Seeder;
 
 class SliderSeeder extends Seeder

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Gate;
  * Bu test sınıfı, modül ServiceProvider'larının doğru yüklendiğini
  * ve modül yapılandırmasının çalıştığını kontrol eder.
  */
+
 describe('Module ServiceProvider', function (): void {
     it('ModuleServiceProvider kayıtlı olmalı', function (): void {
         $providers = app()->getLoadedProviders();
@@ -69,7 +70,7 @@ describe('Module Configuration', function (): void {
         $modules = array_keys(config('modules.enabled', []));
         foreach ($modules as $module) {
             expect(config("modules.namespaces.{$module}"))->toBeString()
-                ->and(config("modules.namespaces.{$module}"))->toStartWith('App\\Domains\\');
+                ->and(config("modules.namespaces.{$module}"))->toStartWith('App\\');
         }
     });
 
@@ -81,29 +82,29 @@ describe('Module Configuration', function (): void {
     });
 });
 
-describe('Domain ServiceProviders', function (): void {
+describe('Module ServiceProviders', function (): void {
     it('Blog ServiceProvider repository binding yapmalı', function (): void {
         // Repository binding kontrolü
-        $interface = App\Domains\Blog\Contracts\PostRepositoryInterface::class;
+        $interface = App\Contracts\Blog\PostRepositoryInterface::class;
         $implementation = app($interface);
-        expect($implementation)->toBeInstanceOf(App\Domains\Blog\Repositories\PostRepository::class);
+        expect($implementation)->toBeInstanceOf(App\Repositories\Blog\PostRepository::class);
     });
 
     it('Blog ServiceProvider policy kayıtları yapmalı', function (): void {
-        $model = App\Domains\Blog\Models\Post::class;
+        $model = App\Models\Blog\Post::class;
         $policy = Gate::getPolicyFor($model);
-        expect($policy)->toBeInstanceOf(App\Domains\Blog\Policies\PostPolicy::class);
+        expect($policy)->toBeInstanceOf(App\Policies\Blog\PostPolicy::class);
     });
 
     it('Cms ServiceProvider policy kayıtları yapmalı', function (): void {
-        $model = App\Domains\Cms\Models\Page::class;
+        $model = App\Models\Cms\Page::class;
         $policy = Gate::getPolicyFor($model);
-        expect($policy)->toBeInstanceOf(App\Domains\Cms\Policies\PagePolicy::class);
+        expect($policy)->toBeInstanceOf(App\Policies\Cms\PagePolicy::class);
     });
 
     it('Media ServiceProvider policy kayıtları yapmalı', function (): void {
-        $model = App\Domains\Media\Models\MediaFile::class;
+        $model = App\Models\Media\MediaFile::class;
         $policy = Gate::getPolicyFor($model);
-        expect($policy)->toBeInstanceOf(App\Domains\Media\Policies\MediaFilePolicy::class);
+        expect($policy)->toBeInstanceOf(App\Policies\Media\MediaFilePolicy::class);
     });
 });

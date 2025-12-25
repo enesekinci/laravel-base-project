@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Domains\Auth\Services\AuthService;
-use App\Domains\Crm\Models\User;
+use App\Models\Crm\User;
+use App\Services\Auth\AuthService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -11,39 +11,43 @@ uses(RefreshDatabase::class);
 it('can register a new user', function (): void {
     $service = new AuthService;
 
+    $email = fake()->unique()->safeEmail();
     $user = $service->register([
         'name' => 'Test User',
-        'email' => 'test@example.com',
+        'email' => $email,
         'password' => 'password123',
     ]);
 
     expect($user)->toBeInstanceOf(User::class)
-        ->and($user->email)->toBe('test@example.com')
+        ->and($user->email)->toBe($email)
         ->and($user->is_admin)->toBeFalse();
 });
 
 it('can authenticate user with correct credentials', function (): void {
     $service = new AuthService;
+    $email = fake()->unique()->safeEmail();
     $user = User::factory()->create([
-        'email' => 'test@example.com',
+        'email' => $email,
         'password' => bcrypt('password123'),
     ]);
 
-    $result = $service->login('test@example.com', 'password123');
+    $result = $service->login($email, 'password123');
 
     expect($result)->not->toBeNull()
-        ->and($result)->toHaveKeys(['token', 'user'])
-        ->and($result['user']->id)->toBe($user->id);
+        ->and($result)->toBeInstanceOf(User::class)
+        ->and($result->id)->toBe($user->id)
+        ->and($result->email)->toBe($email);
 });
 
 it('returns null for invalid credentials', function (): void {
     $service = new AuthService;
+    $email = fake()->unique()->safeEmail();
     User::factory()->create([
-        'email' => 'test@example.com',
+        'email' => $email,
         'password' => bcrypt('password123'),
     ]);
 
-    $result = $service->login('test@example.com', 'wrong-password');
+    $result = $service->login($email, 'wrong-password');
 
     expect($result)->toBeNull();
 });

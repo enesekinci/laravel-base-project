@@ -33,13 +33,13 @@ return [
     */
 
     'namespaces' => [
-        'auth' => 'App\Domains\Auth',
-        'blog' => 'App\Domains\Blog',
-        'cms' => 'App\Domains\Cms',
-        'crm' => 'App\Domains\Crm',
-        'media' => 'App\Domains\Media',
-        'settings' => 'App\Domains\Settings',
-        'ecommerce' => 'App\Domains\Ecommerce',
+        'auth' => 'App\Controllers\Auth',
+        'blog' => 'App\Controllers\Blog',
+        'cms' => 'App\Controllers\Cms',
+        'crm' => 'App\Models\Crm',
+        'media' => 'App\Models\Media',
+        'settings' => 'App\Models\Settings',
+        'ecommerce' => 'App\Controllers\Ecommerce',
     ],
 
     /*

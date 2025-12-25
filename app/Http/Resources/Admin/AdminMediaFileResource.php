@@ -7,7 +7,7 @@ namespace App\Http\Resources\Admin;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * @mixin \App\Domains\Media\Models\MediaFile
+ * @mixin \App\Models\Media\MediaFile
  */
 class AdminMediaFileResource extends JsonResource
 {

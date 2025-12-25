@@ -258,8 +258,8 @@ MODULE_CMS_ENABLED=false
 
 ### Yeni Modül Ekleme
 
-1. `app/Domains/{Module}/` klasör yapısını oluştur
-2. `app/Domains/{Module}/Providers/{Module}ServiceProvider.php` oluştur
+1. `app/{Module}/` klasör yapısını oluştur
+2. `app/{Module}/Providers/{Module}ServiceProvider.php` oluştur
 3. `config/modules.php` dosyasına ekle
 4. `.env.example` dosyasına environment variable ekle
 

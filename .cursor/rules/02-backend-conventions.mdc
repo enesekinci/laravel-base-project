@@ -7,7 +7,6 @@ alwaysApply: true
 - Controllers sadece HTTP işini yapsın. İş kuralları Service / Action sınıflarında olsun: `app/Actions`, `app/Services`.
 - Request validation daima FormRequest ile.
 - Response'lar JSON'da resource veya DTO stili olsun. api/\* için Resource kullan.
-- E-ticaret domainlerini ayır: Products, Categories, Attributes, Customers, Orders, Payments, Shipping.
 - Model içinde sorgu şişirmeyin, Query Builder/Scopes kullanın.
 - Controller metodları maksimum 5-10 satır olmalı.
 - Dependency Injection kullan, container'a bağımlı olma.
@@ -31,9 +30,9 @@ public function store(Request $request)
 
 # NAMING CONVENTIONS
 
-- Controller isimleri tekil + "Controller" (örn: `ProductController`, `OrderController`).
-- Model isimleri tekil (örn: `User`, `Product`, `Order`).
-- Service isimleri tekil + "Service" (örn: `ProductService`, `OrderService`).
+- Controller isimleri tekil + "Controller" (örn: `PostController`, `PageController`).
+- Model isimleri tekil (örn: `User`, `Post`, `Page`).
+- Service isimleri tekil + "Service" (örn: `PostService`, `PageService`).
 - Form Request isimleri: `Store{Model}Request`, `Update{Model}Request`.
-- Event isimleri geçmiş zaman (örn: `ProductCreated`, `OrderCompleted`).
-- Job isimleri açıklayıcı + "Job" (örn: `SendEmailJob`, `ProcessPaymentJob`).
+- Event isimleri geçmiş zaman (örn: `PostCreated`, `PageUpdated`).
+- Job isimleri açıklayıcı + "Job" (örn: `SendEmailJob`, `ProcessNotificationJob`).

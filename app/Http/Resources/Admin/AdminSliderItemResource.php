@@ -7,7 +7,7 @@ namespace App\Http\Resources\Admin;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * @mixin \App\Domains\Cms\Models\SliderItem
+ * @mixin \App\Models\Cms\SliderItem
  */
 class AdminSliderItemResource extends JsonResource
 {

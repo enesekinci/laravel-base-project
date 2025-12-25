@@ -2,15 +2,16 @@
 
 declare(strict_types=1);
 
-use App\Domains\Crm\Models\User;
+use App\Models\Crm\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
 it('can register a new user via API', function (): void {
-    $response = $this->postJson('/api/v1/auth/register', [
+    $email = fake()->unique()->safeEmail();
+    $response = test()->postJson('/api/v1/auth/register', [
         'name' => 'Test User',
-        'email' => 'test@example.com',
+        'email' => $email,
         'password' => 'password123',
         'password_confirmation' => 'password123',
     ]);
@@ -25,19 +26,20 @@ it('can register a new user via API', function (): void {
             ],
         ]);
 
-    $this->assertDatabaseHas('users', [
-        'email' => 'test@example.com',
+    test()->assertDatabaseHas('users', [
+        'email' => $email,
     ]);
 });
 
 it('can login via API', function (): void {
+    $email = fake()->unique()->safeEmail();
     $user = User::factory()->create([
-        'email' => 'test@example.com',
+        'email' => $email,
         'password' => bcrypt('password123'),
     ]);
 
-    $response = $this->postJson('/api/v1/auth/login', [
-        'email' => 'test@example.com',
+    $response = test()->postJson('/api/v1/auth/login', [
+        'email' => $email,
         'password' => 'password123',
     ]);
 
@@ -51,7 +53,7 @@ it('can login via API', function (): void {
 it('can get authenticated user via API', function (): void {
     $user = User::factory()->create();
 
-    $response = $this->actingAs($user, 'sanctum')
+    $response = test()->actingAs($user, 'sanctum')
         ->getJson('/api/v1/auth/me');
 
     $response->assertStatus(200)
@@ -65,9 +67,8 @@ it('can get authenticated user via API', function (): void {
 
 it('can logout via API', function (): void {
     $user = User::factory()->create();
-    $token = $user->createToken('test')->plainTextToken;
 
-    $response = $this->withHeader('Authorization', "Bearer {$token}")
+    $response = test()->actingAs($user, 'sanctum')
         ->postJson('/api/v1/auth/logout');
 
     $response->assertStatus(200)

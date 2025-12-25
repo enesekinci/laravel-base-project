@@ -133,30 +133,51 @@ Artık `http://laravel-base-project.test` adresinden erişebilirsiniz.
 
 ```
 app/
-  Domains/
-    Auth/              # Authentication modülü
-    Blog/              # Blog modülü
-    Cms/               # CMS modülü
-    Crm/               # CRM modülü
-    Media/             # Media modülü
-    Settings/          # Settings modülü
+  Controllers/
+    Auth/          # Authentication controllers
+    Blog/          # Blog controllers
+    Cms/           # CMS controllers
+    Crm/           # CRM controllers
+    Media/         # Media controllers
+    Settings/      # Settings controllers
+  Models/
+    Blog/          # Blog models
+    Cms/           # CMS models
+    Crm/           # CRM models (User, AdminActionLog)
+    Media/         # Media models
+    Settings/      # Settings models
+  Services/
+    Auth/          # Authentication services
+    Blog/          # Blog services
+    Cms/           # CMS services
+    Crm/           # CRM services
+    Media/         # Media services
+    Settings/      # Settings services
+  Actions/         # Action classes (Blog, Cms)
+  Contracts/       # Repository interfaces (Blog)
+  Repositories/    # Repository implementations (Blog)
+  Policies/        # Policy classes (Blog, Cms, Media)
+  Events/          # Event classes (Blog)
+  Listeners/       # Listener classes (Blog)
+  Requests/        # Form Request classes
+  Resources/       # API Resource classes
   Http/
-    Controllers/       # Shared controllers (HealthCheck, Dashboard)
-    Middleware/        # Middleware'ler
-  Providers/           # Service Providers
-  Jobs/                # Shared Jobs
-  Mail/                # Shared Mail classes
-  Notifications/       # Shared Notifications
-  Support/             # Helper classes
+    Controllers/   # Shared controllers (HealthCheck, Dashboard)
+    Middleware/    # Middleware'ler
+  Providers/       # Service Providers
+  Jobs/            # Shared Jobs
+  Mail/            # Shared Mail classes
+  Notifications/   # Shared Notifications
+  Support/         # Helper classes
 
 database/
   migrations/
-    auth/              # Auth modülü migration'ları
-    blog/              # Blog modülü migration'ları
-    cms/               # CMS modülü migration'ları
-    crm/               # CRM modülü migration'ları
-    media/             # Media modülü migration'ları
-    settings/          # Settings modülü migration'ları
+    auth/          # Auth modülü migration'ları
+    blog/          # Blog modülü migration'ları
+    cms/           # CMS modülü migration'ları
+    crm/           # CRM modülü migration'ları
+    media/         # Media modülü migration'ları
+    settings/      # Settings modülü migration'ları
 ```
 
 ## ⚙️ Yapılandırma
