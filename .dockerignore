@@ -1,0 +1,83 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+*.md
+docs/
+README.md
+CLAUDE.md
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Testing
+tests/
+.phpunit.result.cache
+coverage/
+.phpunit.cache
+
+# Build artifacts
+node_modules/
+vendor/
+public/build/
+public/hot
+public/storage
+storage/*.key
+
+# Logs
+*.log
+storage/logs/
+storage/framework/cache/
+storage/framework/sessions/
+storage/framework/views/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Docker
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+
+# Temporary files
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
+
+# Development files
+build.log
+*.plan.md
+
+# Cork template (sadece public/cork kullanılacak)
+cork-template/
+
+# Porto template (sadece public/porto kullanılacak)
+# porto/ (eğer varsa)
+
+# Supervisor config (docker klasöründe zaten var)
+supervisor/
+
+# Scripts
+scripts/
+
+# Database
+*.sqlite
+*.sqlite-journal
+
+# Cache
+bootstrap/cache/*
+!bootstrap/cache/.gitignore
+

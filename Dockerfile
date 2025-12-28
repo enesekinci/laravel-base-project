@@ -3,7 +3,7 @@
 # ============================================================================
 FROM php:8.5-fpm-alpine AS builder
 
-# System dependencies ve build tools
+# System dependencies ve build tools (cache için ayrı layer)
 RUN apk add --no-cache \
     git \
     curl \
@@ -20,9 +20,9 @@ RUN apk add --no-cache \
     nodejs \
     npm
 
-# PHP extensions kurulumu
+# PHP extensions kurulumu (cache için ayrı layer)
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo_mysql pdo_pgsql pdo_sqlite mbstring exif pcntl bcmath gd zip
+    && docker-php-ext-install -j$(nproc) pdo_mysql pdo_pgsql pdo_sqlite mbstring exif pcntl bcmath gd zip
 
 # Composer kurulumu
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -30,13 +30,17 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Working directory
 WORKDIR /var/www/html
 
-# Composer dependencies
+# Composer dependencies (cache için ayrı layer)
 COPY composer.json composer.lock ./
-RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader --no-scripts
+RUN --mount=type=cache,target=/root/.composer/cache \
+    composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader --no-scripts
 
-# Node dependencies ve asset build
+# Node dependencies (cache için ayrı layer)
 COPY package.json package-lock.json* ./
-RUN npm ci || npm install
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci --prefer-offline --no-audit || npm install --prefer-offline --no-audit
+
+# Application files ve asset build
 COPY . .
 RUN npm run build && npm cache clean --force
 
@@ -47,6 +51,7 @@ RUN npm run build && npm cache clean --force
 FROM dunglas/frankenphp:latest
 
 # PHP extensions kurulumu (FrankenPHP image'ında install-php-extensions var)
+# Cache için ayrı layer - extension'lar değişmediği sürece cache'lenir
 RUN install-php-extensions \
     pdo_mysql \
     pdo_pgsql \
@@ -61,7 +66,9 @@ RUN install-php-extensions \
     redis
 
 # Supervisor kurulumu (process management için)
-RUN apt-get update && apt-get install -y supervisor && rm -rf /var/lib/apt/lists/*
+# Cache için ayrı layer
+RUN apt-get update && apt-get install -y --no-install-recommends supervisor && \
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/*
 
 # Application dosyalarını kopyala
 COPY --from=builder /var/www/html /var/www/html
