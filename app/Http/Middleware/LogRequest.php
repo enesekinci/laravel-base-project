@@ -67,15 +67,15 @@ class LogRequest
         // Slow request kontrolü (500ms threshold)
         $slowRequestThreshold = config('logging.slow_request_threshold_ms', 500);
         if ($duration > $slowRequestThreshold) {
-            // Slow request alert job'ını dispatch et
-            \App\Jobs\SendSlowRequestAlertMail::dispatch(
-                $request->method(),
-                $request->fullUrl(),
-                $duration,
-                $response->getStatusCode(),
-                $request->ip() ?? 'unknown',
-                $request->user()?->id
-            )->onQueue('emails');
+            // Slow request log channel'a yaz (sadece log, job dispatch yok)
+            Log::channel('slow-requests')->warning('Slow request detected', [
+                'method' => $request->method(),
+                'url' => $request->fullUrl(),
+                'duration' => $duration,
+                'status_code' => $response->getStatusCode(),
+                'ip' => $request->ip() ?? 'unknown',
+                'user_id' => $request->user()?->id,
+            ]);
         }
 
         return $response;

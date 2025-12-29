@@ -48,6 +48,20 @@ Schedule::command('db:performance-report --send-mail')
 // HER DAKİKA İŞLER
 // ----------------------------------------------------------------------------
 
+// Slow query log dosyasını oku, batch email gönder ve temizle (her 5 dakikada bir)
+Schedule::command('slow-query:process-logs --min-queries=5')
+    ->everyFiveMinutes()
+    ->withoutOverlapping()
+    ->onOneServer()
+    ->appendOutputTo(storage_path('logs/slow-query-processor.log'));
+
+// Alert log dosyalarını oku, batch email gönder ve temizle (her 5 dakikada bir)
+Schedule::command('alerts:process-logs --min-items=5')
+    ->everyFiveMinutes()
+    ->withoutOverlapping()
+    ->onOneServer()
+    ->appendOutputTo(storage_path('logs/alert-processor.log'));
+
 // Queue worker'lar supervisor veya systemd ile koşacak, scheduler'dan değil.
 // Bu yüzden burada queue:work komutu yok.
 

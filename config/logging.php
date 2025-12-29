@@ -109,7 +109,7 @@ return [
             'handler_with' => [
                 'host' => env('PAPERTRAIL_URL'),
                 'port' => env('PAPERTRAIL_PORT'),
-                'connectionString' => 'tls://'.env('PAPERTRAIL_URL').':'.env('PAPERTRAIL_PORT'),
+                'connectionString' => 'tls://' . env('PAPERTRAIL_URL') . ':' . env('PAPERTRAIL_PORT'),
             ],
             'processors' => [PsrLogMessageProcessor::class],
         ],
@@ -184,6 +184,30 @@ return [
             'path' => storage_path('logs/errors.log'),
             'level' => env('LOG_LEVEL', 'error'),
             'days' => env('LOG_ERRORS_DAYS', 90),
+            'replace_placeholders' => true,
+        ],
+
+        'slow-requests' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/slow-requests.log'),
+            'level' => env('LOG_LEVEL', 'warning'),
+            'days' => env('LOG_SLOW_REQUESTS_DAYS', 90),
+            'replace_placeholders' => true,
+        ],
+
+        '5xx-errors' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/5xx-errors.log'),
+            'level' => env('LOG_LEVEL', 'error'),
+            'days' => env('LOG_5XX_ERRORS_DAYS', 90),
+            'replace_placeholders' => true,
+        ],
+
+        'exceptions' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/exceptions.log'),
+            'level' => env('LOG_LEVEL', 'error'),
+            'days' => env('LOG_EXCEPTIONS_DAYS', 90),
             'replace_placeholders' => true,
         ],
 

@@ -8,10 +8,10 @@ use Illuminate\Support\Facades\Route;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        web: __DIR__.'/../routes/web.php',
-        api: __DIR__.'/../routes/api.php',
-        commands: __DIR__.'/../routes/console.php',
-        channels: __DIR__.'/../routes/channels.php',
+        web: __DIR__ . '/../routes/web.php',
+        api: __DIR__ . '/../routes/api.php',
+        commands: __DIR__ . '/../routes/console.php',
+        channels: __DIR__ . '/../routes/channels.php',
         health: '/up',
         then: function () {
             Route::get('/health/detailed', [\App\Http\Controllers\HealthCheckController::class, 'detailed'])->name('health.detailed');
@@ -19,7 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         // Auth middleware redirect path
-        $middleware->redirectGuestsTo(fn () => route('login'));
+        $middleware->redirectGuestsTo(fn() => route('login'));
 
         // Register admin middleware
         $middleware->alias([
@@ -60,20 +60,19 @@ return Application::configure(basePath: dirname(__DIR__))
             if ($e instanceof \Symfony\Component\HttpKernel\Exception\HttpException) {
                 $statusCode = $e->getStatusCode();
                 if ($statusCode >= 500 && $statusCode < 600) {
-                    try {
-                        \App\Jobs\Send5xxErrorAlertMail::dispatch(
-                            $e,
-                            request()->fullUrl(),
-                            request()->method(),
-                            request()->ip(),
-                            Auth::id()
-                        );
-                    } catch (Throwable $dispatchException) {
-                        logger()->error('Failed to dispatch 5xx error alert email', [
-                            'original_exception' => $e->getMessage(),
-                            'dispatch_exception' => $dispatchException->getMessage(),
-                        ]);
-                    }
+                    // 5xx error log channel'a yaz (sadece log, job dispatch yok)
+                    \Illuminate\Support\Facades\Log::channel('5xx-errors')->error('5xx Error detected', [
+                        'exception' => get_class($e),
+                        'message' => $e->getMessage(),
+                        'status_code' => $statusCode,
+                        'url' => request()->fullUrl(),
+                        'method' => request()->method(),
+                        'ip' => request()->ip(),
+                        'user_id' => Auth::id(),
+                        'file' => $e->getFile(),
+                        'line' => $e->getLine(),
+                        'trace' => $e->getTraceAsString(),
+                    ]);
                 }
 
                 return;
@@ -89,23 +88,18 @@ return Application::configure(basePath: dirname(__DIR__))
                 return;
             }
 
-            try {
-                \App\Jobs\SendExceptionAlertMail::dispatch(
-                    $e,
-                    request()->fullUrl(),
-                    [
-                        'method' => request()->method(),
-                        'ip' => request()->ip(),
-                        'user_agent' => request()->userAgent(),
-                        'user_id' => Auth::id(),
-                    ]
-                );
-            } catch (Throwable $dispatchException) {
-                // Mail gönderme hatası olursa sadece log'a yaz
-                logger()->error('Failed to dispatch exception alert email', [
-                    'original_exception' => $e->getMessage(),
-                    'dispatch_exception' => $dispatchException->getMessage(),
-                ]);
-            }
+            // Exception log channel'a yaz (sadece log, job dispatch yok)
+            \Illuminate\Support\Facades\Log::channel('exceptions')->error('Exception detected', [
+                'exception' => get_class($e),
+                'message' => $e->getMessage(),
+                'url' => request()->fullUrl(),
+                'method' => request()->method(),
+                'ip' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'user_id' => Auth::id(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
         });
     })->create();
