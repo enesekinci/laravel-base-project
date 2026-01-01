@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'default' => env('MAIL_MAILER', 'resend'),
+    'default' => env('MAIL_MAILER', env('APP_ENV') === 'local' ? 'log' : 'resend'),
 
     /*
     |--------------------------------------------------------------------------
