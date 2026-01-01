@@ -41,12 +41,15 @@ label.input {
 
 /* Input elements should not be flex containers - only their parent label should be */
 /* Input should align to center by being a flex item */
-/* Since input center is 8px above label center, move input down by 8px */
+/* Text inside input should be vertically centered */
 label.input > input {
     display: block !important;
     flex: 1;
     align-self: center !important;
-    transform: translateY(8px) !important;
+    line-height: 1.5 !important;
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+    vertical-align: middle !important;
 }
 
 /* Icon should be flex item centered in label */
