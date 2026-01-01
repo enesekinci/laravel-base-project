@@ -24,3 +24,8 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 data.ms/
+
+# Template kalıntıları (artık kullanılmıyor)
+/public/cork/
+/public/porto/
+/cork-template/

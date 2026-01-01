@@ -182,4 +182,3 @@ Fast-commerce projesinde yapılan migration, seeder, factory ve test yapısında
 ## Test Senaryoları
 
 1. Migration'ları çalıştırmak ve rollback yapmak
-2. Seeder'ları çalıştırmak

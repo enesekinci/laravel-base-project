@@ -1,7 +1,7 @@
 # ============================================================================
 # Build Stage - Dependencies ve asset'leri build et
 # ============================================================================
-FROM php:8.5-fpm-alpine AS builder
+FROM php:8.3-fpm-alpine AS builder
 
 # System dependencies ve build tools (cache için ayrı layer)
 RUN apk add --no-cache \

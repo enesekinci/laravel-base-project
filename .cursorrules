@@ -1,23 +1,87 @@
-# Cursor AI Commit Message Configuration
-# Commit mesajları her zaman Türkçe yazılmalıdır
+# Laravel 12 + Livewire 3 + MaryUI Coding Rules
 
-## Commit Message Language
-- Tüm commit mesajları Türkçe olmalıdır
-- AI commit özelliği kullanıldığında Türkçe mesaj üretmelidir
-- İngilizce commit mesajı yazılmamalıdır
+## Tech Stack
 
-## Commit Message Format
-- Feature eklemeleri: "feat: ..." formatında
-- Bug fix'ler: "fix: ..." formatında
-- Refactoring: "refactor: ..." formatında
-- Config değişiklikleri: "config: ..." formatında
-- Documentation: "docs: ..." formatında
-- Performance: "perf: ..." formatında
+- Laravel 12, PHP 8.3, Livewire 3, MaryUI, Pest PHP 4, Tailwind CSS 4
+- **Strictly use Livewire Class components (not Volt) for consistency with the existing architecture.**
 
-## Examples
-- ✅ "feat: Laravel Octane entegrasyonu eklendi"
-- ✅ "fix: Redis cache bağlantı sorunu düzeltildi"
-- ✅ "refactor: Dockerfile yapısı optimize edildi"
-- ❌ "feat: Added Laravel Octane integration"
-- ❌ "fix: Fixed Redis cache connection issue"
+## Livewire Guidelines
 
+1. **Livewire First:** Use Livewire for all dynamic UI. Do not use React/Vue/Inertia.
+2. **Class Components Only:** Always use Livewire Class components, never use Volt (single-file components).
+3. **Component Structure:**
+    - Components in `app/Livewire/{Module}/{Admin|Api}/ComponentName.php`
+    - Views in `resources/views/livewire/{module}/{admin|api}/component-name.blade.php`
+4. **Naming:** Component classes PascalCase, view files kebab-case
+
+## MaryUI Guidelines
+
+1. **MaryUI Components:** Always use `<x-mary-*>` syntax (e.g., `<x-mary-header>`, `<x-mary-input>`, `<x-mary-table>`).
+2. **No Raw CSS:** Avoid writing raw CSS classes if a MaryUI component exists.
+3. **Layout:** Use `<x-mary-main>` for admin layout with sidebar and navbar.
+4. **Forms:** Use MaryUI form components (`<x-mary-input>`, `<x-mary-textarea>`, `<x-mary-select>`, etc.)
+
+## Module-Based Structure
+
+**CRITICAL:** Every module must have all its files in its own folder structure:
+
+- `app/Models/{Module}/` - Models
+- `app/Controllers/{Module}/` - Controllers
+- `app/Livewire/{Module}/` - Livewire components
+- `app/Services/{Module}/` - Services
+- `app/Actions/{Module}/` - Actions
+- `app/Requests/{Module}/` - Form Requests
+- `app/Resources/{Module}/` - API Resources
+- `resources/views/livewire/{module}/` - Livewire views (lowercase)
+- `database/migrations/{module}/` - Migrations (lowercase)
+- `tests/Feature/{Module}/` - Feature tests
+- `tests/Unit/{Module}/` - Unit tests
+
+See `.cursor/rules/20-module-based-structure.mdc` for detailed structure.
+
+## Testing Requirements
+
+1. **Every feature MUST have a Pest test** (`php artisan make:test FeatureName --pest`).
+2. **Every Livewire component MUST have a test.**
+3. **Every Action/Service MUST have a unit test.**
+4. **Every API endpoint MUST have a feature test.**
+5. Test descriptions must be in Turkish (see `.cursor/rules/17-test-turkce-standards.mdc`).
+
+## Swagger/OpenAPI Requirements
+
+1. **Every API endpoint MUST have Swagger/OpenAPI annotations.**
+2. Use `@OA\Post`, `@OA\Get`, `@OA\Put`, `@OA\Delete` annotations.
+3. Use `@OA\Schema` for request/response DTOs.
+4. Base OpenAPI definition in base controller or routes file.
+
+## Code Style
+
+- Laravel Pint for PHP formatting
+- 4 space indentation
+- Opening brace on same line
+- Method chaining: each method on new line
+- Type hints required for all methods
+
+## Backend Conventions
+
+- Controllers only handle HTTP, business logic in Services/Actions
+- Always use FormRequest for validation
+- Use API Resources for JSON responses
+- Controller methods maximum 5-10 lines
+- Use Dependency Injection
+
+## Frontend Conventions
+
+- Livewire Class components (not Volt)
+- MaryUI components for all UI elements
+- Tailwind CSS 4 for styling (via MaryUI)
+- Alpine.js for simple interactions (compatible with Livewire)
+
+## DO NOT
+
+- Use Volt (single-file Livewire components)
+- Mix Blade + React/Vue/Inertia
+- Write raw CSS if MaryUI component exists
+- Create features without tests
+- Create API endpoints without Swagger annotations
+- Put files outside module folders

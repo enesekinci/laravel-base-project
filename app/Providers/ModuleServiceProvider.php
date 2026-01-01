@@ -19,7 +19,28 @@ class ModuleServiceProvider extends ServiceProvider
     /**
      * Bootstrap services.
      */
-    public function boot(): void {}
+    public function boot(): void
+    {
+        $this->registerMigrationPaths();
+    }
+
+    /**
+     * Modül migration path'lerini kaydet.
+     */
+    protected function registerMigrationPaths(): void
+    {
+        $migrationPaths = config('modules.migration_paths', []);
+
+        foreach ($migrationPaths as $module => $path) {
+            if (! config("modules.enabled.{$module}", false)) {
+                continue;
+            }
+
+            if (is_dir($path)) {
+                $this->loadMigrationsFrom($path);
+            }
+        }
+    }
 
     /**
      * Modül ServiceProvider'larını kaydet.

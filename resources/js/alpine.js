@@ -1,7 +1,10 @@
 import Alpine from 'alpinejs';
 
 // Alpine.js global store
-window.Alpine = Alpine;
+// Livewire zaten Alpine.js'i yüklüyor, bu yüzden sadece store'ları ekliyoruz
+if (!window.Alpine) {
+    window.Alpine = Alpine;
+}
 
 // Toast store
 Alpine.store('toast', {
@@ -101,5 +104,11 @@ Alpine.store('confirm', {
     }
 });
 
-Alpine.start();
+// Livewire zaten Alpine.js'i başlatıyor, bu yüzden sadece Livewire yoksa başlatıyoruz
+if (!window.Livewire) {
+    Alpine.start();
+} else {
+    // Livewire varsa, Alpine instance'ını Livewire'a bağlıyoruz
+    window.Alpine = window.Livewire.Alpine || Alpine;
+}
 

@@ -18,10 +18,12 @@ class WebAuthController extends Controller
         if (Auth::check()) {
             $isAdmin = Auth::user()?->isAdmin() ?? false;
 
-            return redirect()->route($isAdmin ? 'admin.dashboard' : 'account.dashboard');
+            return redirect()->route($isAdmin ? 'admin.dashboard' : 'home');
         }
 
-        return view('auth.login');
+        return view('auth.login', [
+            'title' => 'Giriş Yap',
+        ]);
     }
 
     public function showRegister(): \Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
@@ -29,15 +31,19 @@ class WebAuthController extends Controller
         if (Auth::check()) {
             $isAdmin = Auth::user()?->isAdmin() ?? false;
 
-            return redirect()->route($isAdmin ? 'admin.dashboard' : 'account.dashboard');
+            return redirect()->route($isAdmin ? 'admin.dashboard' : 'home');
         }
 
-        return view('auth.register');
+        return view('auth.register', [
+            'title' => 'Kayıt Ol',
+        ]);
     }
 
     public function showForgotPassword(): \Illuminate\Contracts\View\View
     {
-        return view('auth.forgot-password');
+        return view('auth.forgot-password', [
+            'title' => 'Şifremi Unuttum',
+        ]);
     }
 
     public function login(Request $request): \Illuminate\Http\RedirectResponse
@@ -102,6 +108,7 @@ class WebAuthController extends Controller
     public function showResetPassword(Request $request, ?string $token = null): \Illuminate\Contracts\View\View
     {
         return view('auth.reset-password', [
+            'title' => 'Şifre Sıfırla',
             'token' => $token,
             'email' => $request->email,
         ]);
@@ -109,25 +116,7 @@ class WebAuthController extends Controller
 
     public function resetPassword(Request $request): \Illuminate\Http\RedirectResponse
     {
-        $request->validate([
-            'token' => ['required'],
-            'email' => ['required', 'email'],
-            'password' => ['required', 'string', 'min:6', 'confirmed'],
-        ]);
-
-        $status = Password::reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
-            function (User $user, string $password): void {
-                $user->password = Hash::make($password);
-                $user->save();
-            }
-        );
-
-        if ($status === Password::PASSWORD_RESET) {
-            return redirect()->route('login')->with('status', __($status));
-        }
-
-        return back()->withInput($request->only('email'))
-            ->withErrors(['email' => __($status)]);
+        // Bu metod artık kullanılmıyor, Livewire component içinde handle ediliyor
+        return redirect()->route('login');
     }
 }

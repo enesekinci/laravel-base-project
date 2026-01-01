@@ -7,7 +7,7 @@ uses(
     // Illuminate\Foundation\Testing\DatabaseMigrations::class,
 )->in('Browser');
 
-use App\Models\Crm\User;
+use App\Models\User;
 
 uses(
     Tests\TestCase::class,
@@ -29,9 +29,9 @@ uses()->beforeEach(function (): void {
 
 // Global test helpers
 if (! function_exists('adminUser')) {
-    function adminUser(): User
+    function adminUser(): \App\Models\User
     {
-        $user = User::factory()->create(['is_admin' => true]);
+        $user = \App\Models\User::factory()->create(['is_admin' => true]);
         test()->actingAs($user, 'web');
 
         return $user;

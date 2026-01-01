@@ -36,13 +36,20 @@ içerir.
 
 ### Gereksinimler
 
-- PHP 8.2+
+- PHP 8.3+
 - Composer
 - Node.js & NPM
-- PostgreSQL veya MySQL
+- PostgreSQL (her zaman PostgreSQL kullanılacak)
 - Redis (cache ve queue için)
 - Meilisearch (search engine için)
 - Laravel Valet (macOS için önerilen)
+
+### Tech Stack
+
+- **Backend:** Laravel 12.x, PHP 8.3
+- **Frontend:** Livewire 3.x (Class Components), MaryUI, Tailwind CSS 4.x, Alpine.js 3.x
+- **Testing:** Pest PHP 4.x, Laravel Dusk
+- **API Documentation:** Swagger/OpenAPI (darkaonline/l5-swagger)
 
 ### Adımlar
 
@@ -133,34 +140,22 @@ Artık `http://laravel-base-project.test` adresinden erişebilirsiniz.
 
 ```
 app/
-  Controllers/
-    Auth/          # Authentication controllers
-    Blog/          # Blog controllers
-    Cms/           # CMS controllers
-    Crm/           # CRM controllers
-    Media/         # Media controllers
-    Settings/      # Settings controllers
-  Models/
-    Blog/          # Blog models
-    Cms/           # CMS models
-    Crm/           # CRM models (User, AdminActionLog)
-    Media/         # Media models
-    Settings/      # Settings models
-  Services/
-    Auth/          # Authentication services
-    Blog/          # Blog services
-    Cms/           # CMS services
-    Crm/           # CRM services
-    Media/         # Media services
-    Settings/      # Settings services
-  Actions/         # Action classes (Blog, Cms)
-  Contracts/       # Repository interfaces (Blog)
-  Repositories/    # Repository implementations (Blog)
-  Policies/        # Policy classes (Blog, Cms, Media)
-  Events/          # Event classes (Blog)
-  Listeners/       # Listener classes (Blog)
-  Requests/        # Form Request classes
-  Resources/       # API Resource classes
+  Domains/         # Modül bazlı klasörleme (DDD)
+    {ModuleName}/
+      Models/      # Modül modelleri
+      Controllers/
+        Admin/     # Admin paneli controller'ları
+        Api/       # API controller'ları
+      Services/    # İş mantığı servisleri
+      Actions/     # Tekil iş akışı (Action) sınıfları
+      Requests/
+        Admin/     # Admin Form Request'leri
+        Api/       # API Form Request'leri
+      Resources/   # API Resource sınıfları
+  Livewire/        # Livewire component'leri
+    {ModuleName}/
+      Admin/       # Admin paneli Livewire component'leri
+      Auth/        # Auth Livewire component'leri
   Http/
     Controllers/   # Shared controllers (HealthCheck, Dashboard)
     Middleware/    # Middleware'ler
@@ -169,6 +164,14 @@ app/
   Mail/            # Shared Mail classes
   Notifications/   # Shared Notifications
   Support/         # Helper classes
+
+resources/
+  views/
+    livewire/      # Livewire view'ları
+      {moduleName}/
+        admin/     # Admin paneli Livewire view'ları
+        auth/      # Auth Livewire view'ları
+    admin/         # Admin paneli Blade view'ları (Livewire wrapper'ları)
 
 database/
   migrations/
@@ -217,9 +220,25 @@ API versioning `ApiVersion` middleware ile yapılır.
 
 ## 🧪 Test
 
+Proje Pest PHP 4.x kullanmaktadır. Tüm testler Türkçe açıklamalarla yazılmıştır.
+
 ```bash
+# Tüm testleri çalıştır
 php artisan test
+
+# Belirli bir test dosyasını çalıştır
+php artisan test tests/Feature/Auth/LoginTest.php
+
+# Belirli bir test'i çalıştır
+php artisan test --filter="kullanıcı giriş yapar"
 ```
+
+### Test Standartları
+
+- Her feature için test yazılmalıdır
+- Test açıklamaları Türkçe olmalıdır
+- Livewire component'leri için feature test'leri yazılmalıdır
+- API endpoint'leri için feature test'leri yazılmalıdır
 
 ## 🔍 Database Monitoring
 
@@ -296,12 +315,17 @@ Detaylı bilgi için: [Deployment Guide](docs/deployment-guide.md)
 
 Bu proje aşağıdaki best practice'leri uygular:
 
+- **Livewire First** - Admin paneli Livewire Class Components ile yapılmıştır (Volt değil)
+- **MaryUI Components** - Tüm UI component'leri MaryUI kullanır (`<x-header>`, `<x-card>`, `<x-table>`, vb.)
 - **Service Layer Pattern** - Business logic Service class'larında
+- **Action Pattern** - Tekil iş akışları Action class'larında (CreatePostAction, UpdatePageAction)
 - **FormRequest Validation** - Tüm validation'lar FormRequest'lerde
 - **Policies** - Authorization logic Policy'lerde
 - **API Resources** - Standart API response formatı
+- **Swagger/OpenAPI** - Tüm API endpoint'leri Swagger ile dokümante edilmiştir
 - **Events & Listeners** - Modüller arası iletişim için Event-driven pattern
 - **Domain-Driven Design** - Modül bazlı organizasyon
+- **Test Coverage** - Her feature için Pest test'leri yazılmıştır
 
 ## 📝 License
 

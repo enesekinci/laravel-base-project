@@ -168,4 +168,3 @@ app/Providers/Domains/
 3. domain-structure.md dokümantasyonunu güncelle
 4. module-management.md dokümantasyonunu güncelle
 5. ModuleServiceProviderTest'i kontrol et ve gerekirse düzelt
-6. Tüm ServiceProvider'ları kontrol et ve namespace'leri doğrula
