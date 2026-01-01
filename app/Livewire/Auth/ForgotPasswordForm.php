@@ -39,6 +39,17 @@ class ForgotPasswordForm extends Component
         }
     }
 
+    /**
+     * MaryUI component'leri tarafından çağrılabilen toJSON method'u
+     * Component state'ini JSON formatında döndürür
+     */
+    public function toJSON(): array
+    {
+        return [
+            'email' => $this->email,
+        ];
+    }
+
     public function render()
     {
         return view('livewire.auth.forgot-password-form');

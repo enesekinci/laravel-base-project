@@ -44,6 +44,18 @@ class LoginForm extends Component
         }
     }
 
+    /**
+     * MaryUI component'leri tarafından çağrılabilen toJSON method'u
+     * Component state'ini JSON formatında döndürür
+     */
+    public function toJSON(): array
+    {
+        return [
+            'email' => $this->email,
+            'remember' => $this->remember,
+        ];
+    }
+
     public function render()
     {
         return view('livewire.auth.login-form');

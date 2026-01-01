@@ -59,6 +59,19 @@ class RegisterForm extends Component
         $this->redirect(route('home'), navigate: true);
     }
 
+    /**
+     * MaryUI component'leri tarafından çağrılabilen toJSON method'u
+     * Component state'ini JSON formatında döndürür
+     */
+    public function toJSON(): array
+    {
+        return [
+            'name' => $this->name,
+            'email' => $this->email,
+            'phone' => $this->phone,
+        ];
+    }
+
     public function render()
     {
         return view('livewire.auth.register-form');

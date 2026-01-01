@@ -67,6 +67,18 @@ class ResetPasswordForm extends Component
         }
     }
 
+    /**
+     * MaryUI component'leri tarafından çağrılabilen toJSON method'u
+     * Component state'ini JSON formatında döndürür
+     */
+    public function toJSON(): array
+    {
+        return [
+            'email' => $this->email,
+            'token' => $this->token ? '***' : '', // Token'ı güvenlik için gizle
+        ];
+    }
+
     public function render()
     {
         return view('livewire.auth.reset-password-form');
