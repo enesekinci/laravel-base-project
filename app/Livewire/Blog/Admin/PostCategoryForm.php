@@ -23,10 +23,22 @@ class PostCategoryForm extends Component
 
     public bool $slugManuallyEdited = false;
 
-    protected array $rules = [
-        'name' => ['required', 'string', 'max:255'],
-        'slug' => ['required', 'string', 'max:255', 'unique:post_categories,slug'],
-    ];
+    protected function rules(): array
+    {
+        $rules = [
+            'name' => ['required', 'string', 'max:255'],
+            'slug' => ['required', 'string', 'max:255'],
+        ];
+
+        // Slug unique rule - edit durumunda mevcut kaydı ignore et
+        if ($this->categoryId) {
+            $rules['slug'][] = 'unique:post_categories,slug,'.$this->categoryId;
+        } else {
+            $rules['slug'][] = 'unique:post_categories,slug';
+        }
+
+        return $rules;
+    }
 
     protected array $messages = [
         'name.required' => 'Kategori adı gereklidir.',
@@ -42,15 +54,12 @@ class PostCategoryForm extends Component
             $category = PostCategory::findOrFail($this->categoryId);
             $this->name = $category->name;
             $this->slug = $category->slug;
-
-            // Update unique rule for edit
-            $this->rules['slug'] = ['required', 'string', 'max:255', 'unique:post_categories,slug,'.$this->categoryId];
         }
     }
 
     public function updated($propertyName): void
     {
-        $this->validateOnly($propertyName);
+        $this->validateOnly($propertyName, $this->rules(), $this->messages);
 
         // Auto-generate slug from name if not manually edited
         if ($propertyName === 'name' && ! $this->slugManuallyEdited && empty($this->slug)) {
@@ -81,7 +90,7 @@ class PostCategoryForm extends Component
         // Normalize slug
         $this->slug = Str::slug($this->slug);
 
-        $this->validate($this->rules, $this->messages);
+        $this->validate($this->rules(), $this->messages);
 
         $data = [
             'name' => $this->name,
