@@ -8,7 +8,12 @@
 
                 <x-input label="Şifre" type="password" wire:model="password" icon="o-lock-closed" class="mb-4" />
 
-                <x-checkbox label="Beni Hatırla" wire:model="remember" class="mb-4" />
+                <div class="form-control mb-4">
+                    <label class="label cursor-pointer justify-start gap-3">
+                        <input type="checkbox" wire:model="remember" class="checkbox checkbox-primary" />
+                        <span class="label-text">Beni Hatırla</span>
+                    </label>
+                </div>
 
                 <x-button label="Giriş Yap" type="submit" class="btn-primary w-full" spinner="login" />
             </form>

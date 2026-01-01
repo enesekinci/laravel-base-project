@@ -8,7 +8,6 @@ export default defineConfig({
             input: [
                 'resources/css/app.css',
                 'resources/js/app.js',
-                'resources/js/alpine.js',
                 'resources/js/admin/init.js',
                 'resources/js/storefront/init.js',
             ],

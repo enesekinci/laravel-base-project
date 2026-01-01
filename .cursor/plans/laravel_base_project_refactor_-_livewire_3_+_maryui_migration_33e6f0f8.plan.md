@@ -554,10 +554,4 @@ Aşağıdaki modüller için Livewire component'ler, test'ler ve Swagger doküma
 - `resources/views/livewire/blog/post-category-index.blade.php`
 - `resources/views/livewire/blog/post-category-form.blade.php`
 
-**Command:**
-
-- `app/Console/Commands/ModuleRemoveCommand.php`
-
-**Kurallar:**
-
-- `.cursorrules`
+<<<<<<< Current (Your changes)**Command:**=======**Command:**

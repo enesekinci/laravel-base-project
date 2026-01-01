@@ -10,7 +10,15 @@
         @livewireStyles
         @stack('styles')
     </head>
-    <body class="min-h-screen font-sans antialiased bg-base-200">
+    <body class="min-h-screen font-sans antialiased bg-base-200" x-data x-init="$store.theme.init()">
+        {{-- Theme Toggle Button --}}
+        <div class="fixed top-4 right-4 z-50">
+            <button type="button" @click="$store.theme.toggle()" class="btn btn-primary btn-circle btn-sm shadow-lg" title="Tema Değiştir">
+                <x-icon name="o-sun" x-show="$store.theme.current === 'light'" class="w-5 h-5" />
+                <x-icon name="o-moon" x-show="$store.theme.current === 'dark'" class="w-5 h-5" />
+            </button>
+        </div>
+
         @yield('content')
 
         @livewireScripts

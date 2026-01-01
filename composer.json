@@ -23,6 +23,7 @@
         "livewire/livewire": "^3.0",
         "meilisearch/meilisearch-php": "^1.16",
         "predis/predis": "*",
+        "resend/resend-laravel": "^1.1",
         "robsontenorio/mary": "^2.5",
         "yajra/laravel-datatables-oracle": "^12.6"
     },

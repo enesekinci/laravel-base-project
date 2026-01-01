@@ -1,0 +1,3691 @@
+---
+alwaysApply: true
+---
+
+# MARYUI DOCUMENTATION REFERENCE
+
+## Official Documentation
+
+**ALWAYS refer to the official MaryUI documentation when working with MaryUI components:**
+
+- **Main Docs:** https://mary-ui.com/docs
+- **Installation:** https://mary-ui.com/docs/installation
+- **Bootcamp:** https://mary-ui.com/bootcamp
+- **Customizing:** https://mary-ui.com/docs/customizing
+- **Upgrading:** https://mary-ui.com/docs/upgrading
+
+## Key Principles
+
+1. **MaryUI does NOT ship custom CSS** - it relies on daisyUI and Tailwind for styling
+2. **Do NOT write custom CSS** for MaryUI components - use daisyUI and Tailwind classes instead
+3. **Customize styles** by inline overriding daisyUI and Tailwind CSS classes
+4. **For style reference** see daisyUI and Tailwind documentation
+5. **Pro tip:** Stick to the defaults, avoid to tweak things. DaisyUI themes are carefully hand crafted with all UX/UI things in mind.
+
+## Installation
+
+### Automatic Install
+
+```bash
+composer require robsontenorio/mary
+php artisan mary:install
+yarn dev  # or `npm run dev`
+```
+
+### Tailwind 4 Setup (app.css)
+
+```css
+/* Tailwind */
+@import 'tailwindcss';
+
+/* daisyUI */
+@plugin "daisyui" {
+    themes:
+        light --default,
+        dark --prefersdark;
+}
+
+/* maryUI */
+@source "../../vendor/robsontenorio/mary/src/View/Components/**/*.php";
+
+/* Dark theme variant support */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Laravel 12 defaults */
+@source "../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php";
+@source "../../storage/framework/views/*.php";
+@source "../**/*.blade.php";
+@source "../**/*.js";
+```
+
+### Vite Config
+
+```javascript
+import { defineConfig } from 'vite';
+import laravel from 'laravel-vite-plugin';
+import tailwindcss from '@tailwindcss/vite';
+
+export default defineConfig({
+    plugins: [
+        laravel({...}),
+        tailwindcss(),
+    ],
+});
+```
+
+## Component Usage
+
+### Component Prefix
+
+By default, MaryUI components use no prefix:
+
+- `<x-input />`
+- `<x-button />`
+- `<x-card />`
+
+If using starter kits (Breeze, Jetstream), components use `mary-` prefix:
+
+- `<x-mary-input />`
+- `<x-mary-button />`
+- `<x-mary-card />`
+
+Check `config/mary.php` for prefix configuration. Clear view cache after renaming:
+
+```bash
+php artisan view:clear
+```
+
+### Forms Components
+
+- **Input:** `<x-input label="Name" wire:model="name" icon="o-user" />`
+- **Textarea:** `<x-textarea label="Description" wire:model="description" />`
+- **Select:** `<x-select label="Category" wire:model="category" :options="$categories" />`
+- **Checkbox:** `<x-checkbox label="Remember me" wire:model="remember" />`
+- **Toggle:** `<x-toggle label="Enable" wire:model="enabled" />`
+- **Radio:** `<x-radio label="Option" wire:model="option" />`
+- **Datetime:** `<x-datetime label="Date" wire:model="date" />`
+- **File Upload:** `<x-file-upload label="File" wire:model="file" />`
+
+### Layout Components
+
+- **Main:** `<x-main>` - Main layout with sidebar and navbar
+- **Nav:** `<x-nav>` - Navigation bar
+- **Sidebar:** `<x-slot:sidebar>` - Sidebar slot
+- **Menu:** `<x-menu>` - Menu component
+- **Menu Item:** `<x-menu-item title="Dashboard" icon="o-home" link="/dashboard" />`
+- **Menu Sub:** `<x-menu-sub title="Settings" icon="o-cog">...</x-menu-sub>`
+
+### UI Components
+
+- **Button:** `<x-button label="Save" icon="o-check" class="btn-primary" />`
+- **Card:** `<x-card shadow><x-slot:title>Title</x-slot></x-card>`
+- **Header:** `<x-header title="Page Title" separator progress-indicator />`
+- **Badge:** `<x-badge value="New" class="badge-primary" />`
+- **Alert:** `<x-alert title="Success" description="Operation completed" icon="o-check-circle" />`
+- **Modal:** `<x-modal wire:model="showModal" title="Confirm">...</x-modal>`
+- **Drawer:** `<x-drawer wire:model="showDrawer" title="Menu">...</x-drawer>`
+- **Toast:** `<x-toast />` - Global toast notifications
+
+### List Data Components
+
+- **Table:** `<x-table :headers="$headers" :rows="$rows" />`
+- **List Item:** `<x-list-item :item="$user" value="name" sub-value="email" />`
+
+## Customizing
+
+### Theme Variables (Recommended)
+
+Use daisyUI theming system for global styles:
+
+```css
+@plugin "daisyui/theme" {
+    name: 'light';
+    default: true;
+    prefersdark: false;
+    color-scheme: light;
+
+    /* Custom styles */
+    --radius-field: 2.25rem;
+}
+```
+
+### Inline Override
+
+Any configuration or CSS provided by daisyUI or Tailwind are valid for maryUI components:
+
+- Customize: https://daisyui.com/docs/customize
+- Config: https://daisyui.com/docs/config
+- Colors: https://daisyui.com/docs/colors
+- Themes: https://daisyui.com/docs/themes
+
+### Input Components Style
+
+In maryUI v2, primary style was removed from all input components. Use defaults or add `primary` class:
+
+```blade
+{{-- Default --}}
+<x-input label="Input" />
+<x-select label="Select" />
+
+{{-- Primary style (if needed) --}}
+<x-input label="Input" class="input-primary" />
+<x-select label="Select" class="select-primary" />
+<x-checkbox label="Checkbox" class="checkbox-primary" />
+```
+
+## Upgrading from v1
+
+### Key Changes
+
+1. **Appearance:** Follows daisyUI's design system - more modern look
+2. **Tailwind 4:** Some CSS changes required (see Tailwind 4 upgrade guide)
+3. **daisyUI 5:** Small changes, check daisyUI changelog
+4. **Theme Toggle:** Tailwind 4 way (see Theme Toggle section)
+5. **Input Components:** Primary style removed, use defaults or add `primary` class
+
+### Upgrade Steps
+
+1. Upgrade to Laravel 12 (optional)
+2. Install maryUI v2: `composer require robsontenorio/mary:^2.0`
+3. Clear view cache: `php artisan view:clear`
+4. Adjust JS dependencies (remove tailwind.config.js, postcss.config.js)
+5. Update vite.config.js (add tailwindcss plugin)
+6. Update app.css (Tailwind 4 setup)
+
+## Troubleshooting
+
+### UI Glitches
+
+- Try removing `@tailwindcss/forms` plugin
+- Check daisyUI and Tailwind versions compatibility
+- Refer to MaryUI Bootcamp for examples
+- Check Tailwind 4 upgrade guide if using Tailwind 4
+
+### Icon Alignment Issues
+
+- MaryUI handles icon alignment internally via daisyUI/Tailwind
+- Do NOT add custom CSS for icon alignment
+- If issues occur, check MaryUI version and daisyUI compatibility
+- Use daisyUI/Tailwind classes for inline overrides if needed
+
+### Theme Issues
+
+- Ensure `@plugin "daisyui"` is correctly configured in app.css
+- Check `data-theme` attribute is set on `<html>` or `<body>`
+- Verify dark variant support: `@custom-variant dark (&:where(.dark, .dark *));`
+
+## Complete Documentation
+
+### Installation
+
+This package **does not ship any custom CSS** and relies on **daisyUI and Tailwind** for out-of-box styling. You can customize most of the components' styles, by inline overriding daisyUI and Tailwind CSS classes.
+
+Please, for further styles reference see [daisyUI](https://daisyui.com) and [Tailwind](https://tailwindcss.com).
+
+#### Bootcamp
+
+If you prefer a walkthrough guide, go to [maryUI Bootcamp](https://mary-ui.com/bootcamp/01) and get amazed how much you can do with minimal effort.
+
+#### Automatic Install
+
+After installing make sure to check the [Layout](https://mary-ui.com/docs/layout) and [Sidebar](https://mary-ui.com/docs/sidebar) docs.
+
+```bash
+composer require robsontenorio/mary
+php artisan mary:install
+```
+
+Then, start the dev server.
+
+```bash
+yarn dev   # or `npm run dev`
+```
+
+**You are done!**
+
+#### Renaming Components
+
+If for some reason you need to rename maryUI components using a custom prefix, publish the config file.
+
+```bash
+php artisan vendor:publish --tag mary.config
+```
+
+```php
+return [
+    /**
+     * Default is empty.
+     *    'prefix' => ''
+     *              <x-button />
+     *              <x-card />
+     *
+     * Renaming all components:
+     *    'prefix' => 'mary-'
+     *               <x-mary-button />
+     *               <x-mary-card />
+     */
+    'prefix' => ''
+];
+```
+
+Make sure to clear view cache after renaming.
+
+```bash
+php artisan view:clear
+```
+
+#### Starter Kits
+
+If you are facing some UI glitches, try to remove `@tailwindcss/forms` plugin.
+
+For existing projects that uses **starter kits** (Breeze, Jetstream and FluxUI), the installer will publish `config/mary.php` with a global prefix on maryUI components to avoid name collision.
+
+So, you need to use components like this: `x-mary-button`, `x-mary-card`, `x-mary-icon` ...
+
+The maryUI components provides a great DX that probably you may want to use its components instead.
+
+**Breeze:**
+
+```blade
+<div>
+    <x-input-label for="name" :value="__('Name')" />
+    <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
+    <x-input-error :messages="$errors->get('name')" class="mt-2" />
+</div>
+```
+
+**Jetstream:**
+
+```blade
+<div>
+    <x-label for="name" value="{{ __('Name') }}" />
+    <x-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
+</div>
+```
+
+**maryUI:**
+
+```blade
+<x-mary-input label="Name" wire:model="name" />
+```
+
+Still not convinced?
+
+Go to the [Bootcamp](https://mary-ui.com/bootcamp/01) and get amazed how much you can do with minimal effort, from the ground with no starter kits.
+
+### Input Component
+
+#### Basic Usage
+
+```blade
+<x-input label="Name" wire:model="name" placeholder="Your name" icon="o-user" hint="Your full name" />
+<x-input label="Right icon" wire:model="address" icon-right="o-map-pin" />
+<x-input label="Clearable" wire:model="name" placeholder="Clearable field" clearable />
+<x-input label="Prefix & Suffix" wire:model="name" prefix="www" suffix=".com" />
+<x-input label="Inline label" wire:model="name" placeholder="Hey, inline..." inline />
+```
+
+#### States
+
+```blade
+<x-input label="Disabled" value="It is disabled" disabled />
+<x-input label="Read only" value="Read only" readonly />
+```
+
+#### Popover
+
+```blade
+<x-input label="Name" wire:model="name" popover="Hey" />
+<x-input label="Name" wire:model="name" popover="Hello" popover-icon="o-information-circle" />
+```
+
+#### Password Component
+
+All above attributes will work with the password component.
+
+```blade
+<x-password label="Toggle" hint="It toggles visibility" wire:model="password" clearable />
+<x-password label="Right toggle" wire:model="password" right />
+<x-password label="Custom icons" wire:model="password" password-icon="o-lock-closed" password-visible-icon="o-lock-open" />
+<x-password label="Without toggle" wire:model="password" only-password inline />
+```
+
+#### Currency
+
+For currency input, you need to include the currency library in your `<head>`:
+
+```blade
+{{-- Currency --}}
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/robsontenorio/mary@0.44.2/libs/currency/currency.js"></script>
+```
+
+```blade
+<x-input label="Default money" wire:model="money1" prefix="USD" money />
+{{-- Notice that `locale` accepts any valid locale --}}
+<x-input label="Custom money" wire:model="money2" prefix="R$" locale="pt-BR" money />
+```
+
+#### Slots
+
+You can prepend or append elements to the input:
+
+```blade
+<x-input label="Prepend a select">
+    <x-slot:prepend>
+        {{-- Add `join-item` to all prepended elements --}}
+        <x-select icon="o-user" :options="$users" class="join-item bg-base-200" />
+    </x-slot>
+</x-input>
+
+<x-input label="Append a button">
+    <x-slot:append>
+        {{-- Add `join-item` to all appended elements --}}
+        <x-button label="I am a button" class="join-item btn-primary" />
+    </x-slot>
+</x-input>
+```
+
+### Component Documentation Links
+
+**Note:** All component documentation is available at `https://mary-ui.com/docs/components/{component-name}`
+
+#### Forms Components
+
+- **Input:** See Input Component section above
+
+**Note:** See detailed documentation for Form, Select, Checkbox, Toggle and Textarea below.
+
+##### Form
+
+**Basic Usage:**
+
+```blade
+<x-form wire:submit="save">
+    <x-input label="Name" wire:model="name" />
+    <x-input label="Email" wire:model="email" />
+    <x-slot:actions>
+        <x-button label="Cancel" @click="$wire.showModal = false" />
+        <x-button label="Save" type="submit" class="btn-primary" />
+    </x-slot>
+</x-form>
+```
+
+**No Separator:**
+
+```blade
+<x-form wire:submit="save" no-separator>
+    <x-input label="Name" wire:model="name" />
+    <x-slot:actions>
+        <x-button label="Save" type="submit" class="btn-primary" />
+    </x-slot>
+</x-form>
+```
+
+**With Separator:**
+
+```blade
+<x-form wire:submit="save" separator>
+    <x-input label="Name" wire:model="name" />
+    <x-slot:actions>
+        <x-button label="Save" type="submit" class="btn-primary" />
+    </x-slot>
+</x-form>
+```
+
+##### Select
+
+This component is intended to be used as a simple native HTML value selection. It renders nice on all devices.
+
+If you need a rich selection value interface or async search check the **Choices** component.
+
+**Basic Usage:**
+
+By default, it will look up for:
+
+- `$object->id` for option value.
+- `$object->name` for option display label.
+
+```blade
+<x-select label="Master user" wire:model="selectedUser" :options="$users" icon="o-user" />
+<x-select label="Right icon" wire:model="selectedUser" :options="$users" icon-right="o-user" />
+<x-select label="Prefix" wire:model="selectedUser" :options="$users" prefix="Hey" hint="Hey ho!" />
+<x-select label="Inline label" wire:model="selectedUser" icon="o-user" :options="$users" inline />
+```
+
+**Alternative Attributes:**
+
+Just set `option-value` and `option-label` representing the desired targets.
+
+```blade
+<x-select label="Alternative" wire:model="selectedUser2" :options="$users" option-value="custom_key" option-label="other_name" />
+```
+
+**Placeholder:**
+
+```blade
+<x-select label="Users" wire:model="selectedUser2" :options="$users" placeholder="Select a user" placeholder-value="0" {{-- Set a value for placeholder. Default is `null` --}} />
+```
+
+**States:**
+
+Notice that browser standards does not support "readonly".
+
+```blade
+<x-select label="Disabled" :options="$users" wire:model="selectedUser" disabled />
+```
+
+**Disabled Options:**
+
+```php
+@php
+$users = [
+    ['id' => 1, 'name' => 'Joe'],
+    ['id' => 2,'name' => 'Mary','disabled' => true] // <-- this
+];
+@endphp
+
+<x-select label="Disabled options" :options="$users" wire:model="selectedUser3" />
+```
+
+**Group:**
+
+This component uses the native HTML grouped select.
+
+```php
+@php
+$grouped = [
+    'Admins' => [
+        ['id' => 1, 'name' => 'Mary'],
+        ['id' => 2, 'name' => 'Giovanna'],
+        ['id' => 3, 'name' => 'Marina']
+    ],
+    'Users' => [
+        ['id' => 4, 'name' => 'John'],
+        ['id' => 5, 'name' => 'Doe'],
+        ['id' => 6, 'name' => 'Jane']
+    ],
+];
+@endphp
+
+<x-select-group label="Group Select" :options="$grouped" wire:model="selectedUser" />
+```
+
+**Slots:**
+
+You can **append or prepend** anything like this. Make sure to use appropriated css round class on left or right.
+
+```blade
+<x-select label="Slots" :options="$users" single>
+    <x-slot:prepend>
+        {{-- Add `join-item` to all prepended elements --}}
+        <x-button icon="o-trash" class="join-item" />
+    </x-slot>
+    <x-slot:append>
+        {{-- Add `join-item` to all appended elements --}}
+        <x-button label="Create" icon="o-plus" class="join-item btn-primary" />
+    </x-slot>
+</x-select>
+```
+
+##### Checkbox
+
+**Basic Usage:**
+
+```blade
+<x-checkbox label="Left" wire:model="item1" />
+<x-checkbox label="Left" wire:model="item1" hint="You agree with terms" />
+<x-checkbox label="Right" wire:model="item2" right />
+<x-checkbox label="Right" wire:model="item2" hint="You agree with terms" right />
+```
+
+**Custom Label Slot:**
+
+```blade
+<x-checkbox wire:model="item4" class="self-start">
+    <x-slot:label>
+        This is
+        <br />
+        a very
+        <br />
+        long line.
+    </x-slot>
+</x-checkbox>
+```
+
+##### Toggle
+
+**Basic Usage:**
+
+```blade
+<x-toggle label="Enable notifications" wire:model="notifications" />
+<x-toggle label="Right" wire:model="enabled" right />
+<x-toggle label="With hint" wire:model="enabled" hint="Enable this feature" />
+```
+
+**States:**
+
+```blade
+<x-toggle label="Disabled" wire:model="enabled" disabled />
+<x-toggle label="Checked disabled" wire:model="enabled" checked disabled />
+```
+
+##### Textarea
+
+**Basic Usage:**
+
+```blade
+<x-textarea label="Description" wire:model="description" />
+<x-textarea label="With hint" wire:model="description" hint="Enter a detailed description" />
+<x-textarea label="Inline label" wire:model="description" inline />
+```
+
+**States:**
+
+```blade
+<x-textarea label="Disabled" value="It is disabled" disabled />
+<x-textarea label="Read only" value="Read only" readonly />
+```
+
+**Rows:**
+
+```blade
+<x-textarea label="Custom rows" wire:model="description" rows="10" />
+```
+
+##### Group
+
+If you need a classic radio check the **Radio** component.
+
+**Default attributes:**
+
+By default, it will look up for:
+
+- `$object->id` for option value.
+- `$object->name` for option display label.
+
+```blade
+<x-group label="Select one" wire:model="selectedUser" :options="$users" hint="Pick one" />
+```
+
+**Alternative attributes:**
+
+Just set `option-value` and `option-label` representing the desired targets.
+
+```blade
+<x-group label="Select one" :options="$users" wire:model="selectedUser2" option-value="custom_key" option-label="other_name" class="[&:checked]:!btn-primary btn-sm" />
+```
+
+**Disable options:**
+
+You can disable options by setting the `disabled` attribute.
+
+```php
+@php
+$users = [
+    ['id' => 1, 'name' => 'John'],
+    ['id' => 2, 'name' => 'Doe'],
+    ['id' => 3, 'name' => 'Mary', 'disabled' => true], // <-- This
+    ['id' => 4, 'name' => 'Kate'],
+];
+@endphp
+
+<x-group label="Select one" wire:model="selectedUser3" :options="$users" />
+```
+
+##### Radio
+
+Alternatively check the **Group** component.
+
+**Default attributes:**
+
+By default, it will look up for:
+
+- `$object->id` for option value.
+- `$object->name` for option display label.
+
+```blade
+<x-radio label="Select one" wire:model="user1" :options="$users" />
+<x-radio label="Select one inline" wire:model="user2" :options="$users" inline />
+```
+
+**Hint:**
+
+```php
+@php
+$users = [
+    ['id' => 1 , 'name' => 'Administrator', 'hint' => 'Can do anything.' ],
+    ['id' => 2 , 'name' => 'Editor', 'hint' => 'Can not delete.' ],
+];
+@endphp
+
+<x-radio label="Select one option" wire:model="user3" :options="$users" />
+<x-radio label="Select one option" wire:model="user4" :options="$users" inline />
+```
+
+**Alternative attributes:**
+
+Just set `option-value` and `option-label` representing the desired targets.
+
+```php
+@php
+$users = [
+    ['custom_key' => 's134' , 'other_name' => 'Mary', 'my_hint' => 'I am Mary' ],
+    ['custom_key' => 'f782' , 'other_name' => 'Joe', 'my_hint' => 'I am Joe' ],
+];
+@endphp
+
+<x-radio
+    label="Select one"
+    :options="$users"
+    wire:model="user5"
+    option-value="custom_key"
+    option-label="other_name"
+    option-hint="my_hint"
+/>
+```
+
+**Disable options:**
+
+You can disable options by setting the `disabled` attribute.
+
+```php
+@php
+$users = [
+    ['id' => 1, 'name' => 'John'],
+    ['id' => 2, 'name' => 'Doe'],
+    ['id' => 3, 'name' => 'Mary', 'disabled' => true],
+    ['id' => 4, 'name' => 'Kate'],
+];
+@endphp
+
+<x-radio label="Select one" :options="$users" wire:model="user6" />
+```
+
+##### Color Picker
+
+This component uses the native OS color picker.
+
+```blade
+<x-colorpicker wire:model="color1" label="Pick a color" hint="A nice color" />
+<x-colorpicker wire:model="color2" label="Icon" icon="o-swatch" />
+<x-colorpicker wire:model="color3" label="Suffix" suffix="Hex code" />
+<x-colorpicker wire:model="color4" label="Color" placeholder="Inline example" inline />
+```
+
+- **Choices:** https://mary-ui.com/docs/components/choices
+
+##### Date Time
+
+**Native HTML:**
+
+If you have no constraints regarding dates' selection, just stick with this approach, which renders nice natively on all devices and covers most of the use cases.
+
+For advanced date picker see the **Date Picker** component.
+
+```blade
+<x-datetime label="My date" wire:model="myDate" />
+{{-- Notice `type="datetime-local"` --}}
+<x-datetime label="Date + Time" wire:model="myDate" type="datetime-local" />
+{{-- Notice `type="time"` --}}
+<x-datetime label="Time" wire:model="myDate" icon="o-calendar" type="time" inline />
+```
+
+##### File Upload
+
+This component is powered by Livewire's file upload, including all features like file size and type validation. Please, **first check Livewire docs** to proper setup file uploads before using this component.
+
+For multiple image upload see **Image Library** component.
+
+**Single file:**
+
+Livewire itself triggers real time validation for single file upload.
+
+```blade
+<x-file wire:model="file" label="Receipt" hint="Only PDF" accept="application/pdf" />
+```
+
+You can use validation rule from Laravel.
+
+```php
+#[Rule('required|max:10')]
+public $file;
+```
+
+**Multiple files:**
+
+Livewire itself **does not** trigger real time validation for multiple file upload, like single file upload. So, remember to call `$this->validate()` before saving the files.
+
+```blade
+<x-file wire:model="photos" label="Documents" multiple />
+```
+
+Here is a validation trick for multiple file upload.
+
+```php
+#[Rule(['photos' => 'required'])] // A separated rule to make it required
+#[Rule(['photos.*' => 'image|max:100'])] // Notice `*` syntax for validate each file
+public array $photos = [];
+```
+
+**Image preview:**
+
+It only works for single image. For multiple image upload see **Image Library** component.
+
+Use a html `img` as placeholder with the CSS that works best for you. In the following example we use fallback urls to cover scenarios like create or update.
+
+**Click** on image to change it.
+
+```blade
+<x-file wire:model="photo" accept="image/png, image/jpeg">
+    <img src="{{ $user->avatar ?? '/empty-user.jpg' }}" class="h-40 rounded-lg" />
+</x-file>
+```
+
+**Image Crop:**
+
+It only works for single image. For multiple image upload see **Image Library** component.
+
+First, add **Cropper.js** library.
+
+```blade
+<head>
+    ...
+    {{-- Cropper.js --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" />
+</head>
+```
+
+Now you can use the `crop-after-change` property.
+
+```blade
+<x-file wire:model="photo2" accept="image/png" crop-after-change>
+    <img src="{{ $user->avatar ?? '/empty-user.jpg' }}" class="h-40 rounded-lg" />
+</x-file>
+```
+
+You can set or override any **Cropper.js** option.
+
+```php
+@php
+$config = ['guides' => false];
+@endphp
+
+<x-file ... :crop-config="$config">
+    ...
+</x-file>
+```
+
+**Labels:**
+
+Here are all default labels.
+
+```blade
+<x-file ... change-text="Change" crop-text="Crop" crop-title-text="Crop image" crop-cancel-text="Cancel" crop-save-text="Crop">...</x-file>
+```
+
+##### Image Library
+
+This component manages **multiple image upload** and is powered by Livewire's file upload, including all its features like file validations. It also handles **automatic** storage persistence on **local** and **S3** disks.
+
+For simple use cases, prefer using the **File** component.
+
+**Example:**
+
+```blade
+<x-image-library wire:model="files" {{-- Temprary files --}} wire:library="library" {{-- Library metadata property --}} :preview="$library" {{-- Preview control --}} label="Product images" hint="Max 100Kb" />
+```
+
+**Setup:**
+
+First, add Cropper.js and Sortable.js.
+
+```blade
+<head>
+    ...
+    {{-- Cropper.js --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" />
+
+    {{-- Sortable.js --}}
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.1/Sortable.min.js"></script>
+</head>
+```
+
+Add a new `json` column on your migration files to represent the image library metadata.
+
+```php
+// Users table migration
+$table->json('library')->nullable();
+```
+
+Cast that column as `AsCollection`.
+
+```php
+// User model
+protected $casts = [
+    ...
+    'library' => AsCollection::class,
+];
+```
+
+**Example:**
+
+The following example considers that you named it as `library` and you are **editing an existing user**.
+
+```php
+use Livewire\WithFileUploads;
+use Mary\Traits\WithMediaSync;
+use Illuminate\Support\Collection;
+
+class extends Component
+{
+    // Add these Traits
+    use WithFileUploads, WithMediaSync;
+
+    // Temporary files
+    #[Rule(['files.*' => 'image|max:1024'])]
+    public array $files = [];
+
+    // Library metadata (optional validation)
+    #[Rule('required')]
+    public Collection $library;
+
+    // Editing this user
+    public User $user;
+
+    public function mount(): void
+    {
+        // Load existing library metadata from your model
+        $this->library = $this->user->library;
+
+        // Or ... an empty collection if this component creates a user
+        // $this->library = new Collection()
+    }
+
+    public function save(): void
+    {
+        // Your stuff ...
+
+        // Sync files and updates library metadata
+        $this->syncMedia($this->user);
+
+        // Or ... first create the user, if this component creates a user
+        // $user = User::create([...]);
+        // $this->syncMedia($user);
+    }
+}
+```
+
+**S3 storage:**
+
+Make sure to proper configure **CDN CORS** on your S3 provider, by listing your local and production environment addresses. Otherwise, cropper won't work.
+
+**Sync options:**
+
+If you are using default variable names described on "Setup" and "Example" topics above, **you are good to go**. Otherwise, here are all options for syncing media on storage.
+
+```php
+$this->syncMedia(
+    model: $this->user, // A model that has an image library
+    library: 'library', // The library metadata property on component
+    files: 'files', // Temp files property on component
+    storage_subpath: '', // Sub path on storage. Ex: '/users'
+    model_field: 'library', // The model column that represents the library metadata
+    visibility: 'public' // Visibility on storage
+    disk: 'public' // Storage disk. Also works with 's3'
+);
+```
+
+**Labels:**
+
+Here are all default labels.
+
+```blade
+<x-image-library ... change-text="Change" crop-text="Crop" remove-text="Remove" crop-title-text="Crop image" crop-cancel-text="Cancel" crop-save-text="Crop" add-files-text="Add images" />
+```
+
+**Cropper settings:**
+
+You can set or override any Cropper.js option.
+
+```php
+@php
+$config = ['guides' => false];
+@endphp
+
+<x-image-library ... :crop-config="$config" />
+```
+
+Once **Cropper.js** does not offer an easy way to customize its CSS, just inspect browser console to hack the CSS that works best for you. We are using the following on this page.
+
+```css
+.cropper-point {
+    width: 10px !important;
+    height: 10px !important;
+}
+```
+
+##### Range Slider
+
+Range slider is used to select a value by sliding a handle.
+
+The following examples uses `.live` to make sure you see the changes.
+
+**Basic:**
+
+```blade
+<x-range wire:model.live.debounce="level" label="Select a level" hint="Greater than 10." />
+```
+
+```php
+#[Rule('required|gt:10')]
+public int $level = 10;
+```
+
+**Step & Range:**
+
+You can also set the range limits with `min` and `max` attributes. Use the `step` attribute to control the increased value when sliding.
+
+```blade
+<x-range wire:model.live.debounce="level2" min="20" max="80" step="10" label="Select a level" hint="Greater than 30." class="range-primary range-xs" />
+```
+
+```php
+#[Rule('required|gt:30')]
+public int $level2 = 30;
+```
+
+##### Tags
+
+This component allows to enter any kind of text, without any preset or autocompletion values. It will automatically add the text as a tag when you hit enter.
+
+For complex multiple inputs or preset values see **Choices** component, that also supports online and offline search.
+
+```blade
+<x-tags label="Tags" wire:model="tags" icon="o-home" hint="Hit enter" clearable />
+```
+
+```php
+public array $tags = ['tech', 'gaming', 'art'];
+```
+
+#### List Data Components
+
+##### List Item
+
+By default, this will look up for:
+
+- `$object->name` as the main value.
+- `$object->avatar` as the picture url.
+
+```blade
+@foreach ($users as $user)
+    <x-list-item :item="$user" sub-value="username" link="/docs/installation" />
+@endforeach
+```
+
+**Alternative attributes:**
+
+```blade
+{{-- Notice `city.name`. It supports nested properties --}}
+<x-list-item :item="$user1" value="other_name" sub-value="city.name" avatar="other_avatar" />
+```
+
+**No separator & no hover:**
+
+```blade
+<x-list-item :item="$user" no-separator no-hover />
+```
+
+**Slots:**
+
+```blade
+<x-list-item :item="$user1">
+    <x-slot:avatar>
+        <x-badge value="top user" class="badge-primary badge-soft" />
+    </x-slot>
+    <x-slot:value>Custom value</x-slot>
+    <x-slot:sub-value>Custom sub-value</x-slot>
+    <x-slot:actions>
+        <x-button icon="o-trash" class="btn-sm" wire:click="delete(1)" spinner />
+    </x-slot>
+</x-list-item>
+```
+
+##### Table
+
+**Basic Usage:**
+
+```blade
+@php
+    $headers = [
+        ['key' => 'id', 'label' => '#'],
+        ['key' => 'name', 'label' => 'Name'],
+        ['key' => 'email', 'label' => 'Email'],
+    ];
+
+    $rows = [
+        ['id' => 1, 'name' => 'John', 'email' => 'john@example.com'],
+        ['id' => 2, 'name' => 'Jane', 'email' => 'jane@example.com'],
+    ];
+@endphp
+
+<x-table :headers="$headers" :rows="$rows" />
+```
+
+**With Actions:**
+
+```blade
+@php
+$headers = [
+    ['key' => 'id', 'label' => '#'],
+    ['key' => 'name', 'label' => 'Name'],
+    ['key' => 'actions', 'label' => 'Actions'],
+];
+
+$rows = [
+    ['id' => 1, 'name' => 'John'],
+    ['id' => 2, 'name' => 'Jane'],
+];
+@endphp
+
+<x-table :headers="$headers" :rows="$rows">
+    <x-slot:actions="{ $row }">
+        <x-button label="Edit" @click="$wire.edit({{ $row['id'] }})" />
+    </x-slot>
+</x-table>
+```
+
+**Sortable:**
+
+```blade
+@php
+    $headers = [
+        ['key' => 'id', 'label' => '#', 'sortable' => true],
+        ['key' => 'name', 'label' => 'Name', 'sortable' => true],
+    ];
+@endphp
+
+<x-table :headers="$headers" :rows="$rows" />
+```
+
+#### Menus Components
+
+##### Menu
+
+**Basic Usage:**
+
+```blade
+<x-menu>
+    <x-menu-item title="Dashboard" icon="o-home" link="/dashboard" />
+    <x-menu-item title="Users" icon="o-users" link="/users" />
+    <x-menu-item title="Settings" icon="o-cog" link="/settings" />
+</x-menu>
+```
+
+**With Submenu:**
+
+```blade
+<x-menu>
+    <x-menu-item title="Dashboard" icon="o-home" link="/dashboard" />
+    <x-menu-sub title="Settings" icon="o-cog">
+        <x-menu-item title="Profile" link="/settings/profile" />
+        <x-menu-item title="Security" link="/settings/security" />
+    </x-menu-sub>
+</x-menu>
+```
+
+**Active State:**
+
+```blade
+<x-menu>
+    <x-menu-item title="Dashboard" icon="o-home" link="/dashboard" active />
+    <x-menu-item title="Users" icon="o-users" link="/users" />
+</x-menu>
+```
+
+##### Dropdown
+
+Dropdowns plays nice with the **Menu** component. Under the hood It uses the Alpine's anchor plugin to control the position.
+
+Take a look at **Select** for value selection.
+
+**Basic:**
+
+```blade
+<x-dropdown>
+    <x-menu-item title="Archive" icon="o-archive-box" />
+    <x-menu-item title="Remove" icon="o-trash" />
+    <x-menu-item title="Restore" icon="o-arrow-path" />
+</x-dropdown>
+```
+
+**Custom Trigger:**
+
+```blade
+<x-dropdown>
+    <x-slot:trigger>
+        <x-button icon="o-bell" class="btn-circle" />
+    </x-slot>
+    <x-menu-item title="Archive" />
+    <x-menu-item title="Move" />
+</x-dropdown>
+```
+
+**Right alignment:**
+
+```blade
+{{-- Use `right` if dropdown is on right side of screen --}}
+<x-dropdown label="Hello" class="btn-warning" right>
+    <x-menu-item title="It should align correctly on right side" />
+    <x-menu-item title="Yes!" />
+</x-dropdown>
+```
+
+**Click propagation:**
+
+By default, any click closes the dropdown. Just use `@click.stop` or `wire:click.stop` to prevent this behavior.
+
+```blade
+<x-dropdown label="Settings">
+    {{-- By default any click closes dropdown --}}
+    <x-menu-item title="Close after click" />
+    <x-menu-separator />
+    {{-- Use `@click.STOP` to stop event propagation --}}
+    <x-menu-item title="Keep open after click" @click.stop="alert('Keep open')" />
+    {{-- Or `wire:click.stop` --}}
+    <x-menu-item title="Call wire:click" wire:click.stop="delete" />
+    <x-menu-separator />
+    <x-menu-item @click.stop="">
+        <x-checkbox label="Hard mode" hint="Make things harder" />
+    </x-menu-item>
+    <x-menu-item @click.stop="">
+        <x-checkbox label="Transparent checkout" hint="Make things easier" />
+    </x-menu-item>
+</x-dropdown>
+```
+
+**Spinner:**
+
+```blade
+<x-dropdown label="Settings">
+    <x-menu-item title="Spinner" wire:click.stop="delete2" spinner="delete2" />
+    <x-menu-item title="Spinner" wire:click.stop="delete3" spinner="delete3" icon="o-trash" />
+</x-dropdown>
+```
+
+**No anchor:**
+
+By default, this component works with Alpine's anchor plugin. If you don't want to use it, just add `no-x-anchor` to the dropdown to manually control the position.
+
+```blade
+<x-dropdown label="Default" no-x-anchor>
+    <x-menu-item title="Hey" />
+    <x-menu-item title="How are you?" />
+</x-dropdown>
+
+<x-dropdown label="Top" no-x-anchor top>
+    <x-menu-item title="Hey" />
+    <x-menu-item title="How are you?" />
+</x-dropdown>
+
+<x-dropdown label="Right" no-x-anchor right>
+    <x-menu-item title="Hey" />
+    <x-menu-item title="It should align correctly on right side?" />
+</x-dropdown>
+```
+
+**Scroll height:**
+
+You can add the `scroll` property to allow scrolling and control the height with `max-height`.
+
+```blade
+<x-dropdown label="Default">
+    @foreach ($array as $item)
+        <x-menu-item title="Dropdown Item {{ $item }}" />
+    @endforeach
+</x-dropdown>
+
+<x-dropdown label="Scroll" scroll>
+    @foreach ($array as $item)
+        <x-menu-item title="Dropdown Item {{ $item }}" />
+    @endforeach
+</x-dropdown>
+
+<x-dropdown label="Custom Scroll" scroll max-height="max-h-64">
+    @foreach ($array as $item)
+        <x-menu-item title="Dropdown Item {{ $item }}" />
+    @endforeach
+</x-dropdown>
+```
+
+#### Dialogs Components
+
+**Note:** See detailed documentation for Modal and Toast below.
+
+**Basic Usage:**
+
+```blade
+<x-modal wire:model="myModal1" title="Hey" class="backdrop-blur">
+    Press `ESC`, click outside or click `CANCEL` to close.
+    <x-slot:actions>
+        <x-button label="Cancel" @click="$wire.myModal1 = false" />
+    </x-slot>
+</x-modal>
+
+<x-button label="Open" @click="$wire.myModal1 = true" />
+```
+
+**Livewire Property:**
+
+```php
+public bool $myModal1 = false;
+```
+
+**Complex Modal with Form:**
+
+```blade
+<x-modal wire:model="myModal2" title="Hello" subtitle="Livewire example">
+    <x-form no-separator>
+        <x-input label="Name" icon="o-user" placeholder="The full name" />
+        <x-input label="Email" icon="o-envelope" placeholder="The e-mail" />
+        {{-- Notice we are using now the `actions` slot from `x-form`, not from modal --}}
+        <x-slot:actions>
+            <x-button label="Cancel" @click="$wire.myModal2 = false" />
+            <x-button label="Confirm" class="btn-primary" />
+        </x-slot>
+    </x-form>
+</x-modal>
+```
+
+**Persistent Modal:**
+
+Add the `persistent` attribute to prevent modal close on click outside or when pressing `ESC` key.
+
+```blade
+<x-modal wire:model="myModal3" title="Payment confirmation" persistent separator>
+    <div class="flex justify-between">
+        Please, wait ...
+        <x-loading class="loading-infinity" />
+    </div>
+    <x-slot:actions>
+        <x-button label="Cancel" @click="$wire.myModal3 = false" />
+    </x-slot>
+</x-modal>
+```
+
+**Styling:**
+
+Remember to add `box-class` custom classes on Tailwind **safelist**.
+
+```blade
+<x-modal wire:model="myModal4" class="backdrop-blur" box-class="bg-warning/30 border w-64">Hello!</x-modal>
+```
+
+**Disable Focus Trap:**
+
+By default the focus trap is enabled, but you can disable it by adding the `without-trap-focus` attribute.
+
+```blade
+<x-modal without-trap-focus ... />
+```
+
+**Events:**
+
+You can listen to the `open` and `close` events to perform actions when the modal is opened or closed.
+
+```blade
+<x-modal @close="$wire.someMethod()" @open="$wire.otherMethod()" ... />
+```
+
+##### Toast
+
+**Usage:**
+
+Place **toast tag** anywhere on the main layout.
+
+```blade
+<body>
+    ...
+    <x-toast />
+</body>
+```
+
+Import the `Toast` trait and call the `$this->toast(...)` method.
+
+```php
+use Mary\Traits\Toast;
+
+class MyComponent extends Component
+{
+    // Use this trait
+    use Toast;
+
+    public function save()
+    {
+        // Do your stuff here ...
+
+        // Toast
+        $this->toast(
+            type: 'success',
+            title: 'It is done!',
+            description: null, // optional (text)
+            position: 'toast-top toast-end', // optional (daisyUI classes)
+            icon: 'o-information-circle', // Optional (any icon)
+            css: 'alert-info', // Optional (daisyUI classes)
+            timeout: 3000, // optional (ms)
+            redirectTo: null // optional (uri)
+        );
+
+        // Shortcuts
+        $this->success(...);
+        $this->error(...);
+        $this->warning(...);
+        $this->info(...);
+    }
+}
+```
+
+For convenience this component flashes the following messages to make testing easier.
+
+```php
+session()->flash('mary.toast.title', $title);
+session()->flash('mary.toast.description', $description);
+```
+
+**Example:**
+
+The shortcuts are branded with default colors and icons.
+
+```blade
+<x-button label="Default" class="btn-success" wire:click="save" spinner />
+<x-button label="Quick" class="btn-error" wire:click="save2" spinner />
+<x-button label="Save and redirect" class="btn-warning" wire:click="save3" spinner />
+<x-button label="Custom Progress" class="btn-success" wire:click="save5" spinner />
+```
+
+```php
+public function save()
+{
+    // Your stuff here ...
+
+    // Toast
+    $this->success('We are done, check it out');
+}
+
+public function save2()
+{
+    // Your stuff here ...
+
+    // Toast
+    $this->error(
+        'It will last just 1 second ...',
+        timeout: 1000,
+        position: 'toast-bottom toast-start'
+    );
+}
+
+public function save3()
+{
+    // Your stuff here ...
+
+    // Toast
+    $this->warning(
+        'It is working with redirect',
+        'You were redirected to another url ...',
+        redirectTo: '/docs/components/form'
+    );
+}
+
+public function save5()
+{
+    // Your stuff here ...
+
+    // Toast
+    $this->success(
+        'Custom progress class',
+        progressClass: 'progress-error'
+    );
+}
+```
+
+**Default Position:**
+
+The default position is `toast-top toast-end`. You can change it by passing the `position` parameter.
+
+```blade
+<body>
+    ...
+    <x-toast position="toast-top toast-center" />
+</body>
+```
+
+**Custom Style:**
+
+You can use any daisyUI/Tailwind classes. It also supports HTML.
+
+```blade
+<x-button label="Like" wire:click="save4" icon="o-heart" spinner />
+```
+
+```php
+public function save4()
+{
+    // Your stuff here ...
+
+    // Toast
+    $this->warning(
+        'Wishlist <u>updated</u>',
+        'You will <strong>love it :)</strong>',
+        position: 'bottom-end',
+        icon: 'o-heart',
+        css: 'bg-pink-500 text-base-100'
+    );
+}
+```
+
+**Using an Exception:**
+
+The previous approach uses a Trait and works only inside Livewire components. If you are trying to trigger a toast from outside a Livewire context, you can use the `ToastException` to do so.
+
+```php
+use Mary\Exceptions\ToastException;
+
+public function notALivewireMethod()
+{
+    throw ToastException::error('Your operation could not complete');
+
+    // Shortcuts with the same API from Toast trait
+    throw ToastException::success(...);
+    throw ToastException::error(...);
+    throw ToastException::warning(...);
+    throw ToastException::info(...);
+}
+```
+
+If you want to disable preventDefault call, you can chain the `permitDefault()` method on your exception.
+
+```php
+use Mary\Exceptions\ToastException;
+
+public function notALivewireMethod()
+{
+    throw ToastException::info('Do not prevent default on client side')->permitDefault();
+}
+```
+
+##### Drawer
+
+**Basic Usage:**
+
+```blade
+<x-drawer wire:model="showDrawer" title="Menu" class="drawer-end">
+    <p>Drawer content here</p>
+    <x-slot:actions>
+        <x-button label="Close" @click="$wire.showDrawer = false" />
+    </x-slot>
+</x-drawer>
+
+<x-button label="Open Drawer" @click="$wire.showDrawer = true" />
+```
+
+**Livewire Property:**
+
+```php
+public bool $showDrawer = false;
+```
+
+**Positions:**
+
+```blade
+{{-- Left (default) --}}
+<x-drawer wire:model="showDrawer" title="Menu" />
+
+{{-- Right --}}
+<x-drawer wire:model="showDrawer" title="Menu" class="drawer-end" />
+
+{{-- Top --}}
+<x-drawer wire:model="showDrawer" title="Menu" class="drawer-top" />
+
+{{-- Bottom --}}
+<x-drawer wire:model="showDrawer" title="Menu" class="drawer-bottom" />
+```
+
+#### UI Components
+
+**Note:** See detailed documentation for Alert, Button and Card below.
+
+**Basic Usage:**
+
+```blade
+<x-alert title="You have 10 messages" icon="o-exclamation-triangle" />
+<x-alert title="Hey!" description="Ho!" icon="o-home" class="alert-warning" />
+<x-alert icon="o-exclamation-triangle" class="alert-success">
+    I am using the
+    <strong>default slot.</strong>
+</x-alert>
+```
+
+**With Actions:**
+
+```blade
+<x-alert title="With actions" description="Hi" icon="o-envelope" class="alert-info">
+    <x-slot:actions>
+        <x-button label="See" />
+    </x-slot>
+</x-alert>
+```
+
+**Soft and Outlined:**
+
+```blade
+<x-alert title="I am soft" icon="o-exclamation-triangle" class="alert-info alert-soft" />
+<x-alert title="I am outlined" icon="o-exclamation-triangle" class="alert-info alert-outline" />
+```
+
+**Dismissible:**
+
+```blade
+<x-alert title="Dismissible" description="Click the close icon" icon="o-exclamation-triangle" dismissible />
+```
+
+##### Avatar
+
+**Basic Usage:**
+
+```blade
+<x-avatar :image="$user->avatar" alt="My image" />
+{{-- Manipulate avatar imagem with CSS classes --}}
+<x-avatar :image="$user->avatar" class="!w-14 !rounded-lg" />
+{{-- Title --}}
+<x-avatar :image="$user->avatar" :title="$user->username" />
+{{-- Subtitle --}}
+<x-avatar :image="$user->avatar" :title="$user->username" :subtitle="$user->name" class="!w-10" />
+{{-- Placeholder --}}
+<x-avatar placeholder="RT" title="Robson Tenório" subtitle="@robsontenorio" class="!w-10" />
+```
+
+**Slots:**
+
+```blade
+<x-avatar :image="$user->avatar" class="!w-22">
+    <x-slot:title class="text-3xl !font-bold pl-2">
+        {{ $user->username }}
+    </x-slot>
+    <x-slot:subtitle class="grid gap-1 mt-2 pl-2 text-xs">
+        <x-icon name="o-paper-airplane" label="12 posts" />
+        <x-icon name="o-chat-bubble-left" label="45 comments" />
+    </x-slot>
+</x-avatar>
+```
+
+##### Breadcrumbs
+
+This component uses `ul` and `li` HTML tags. Make sure you have an extra rule to not override them on your custom CSS.
+
+**Default:**
+
+On small screens, it automatically hides all intermediate items.
+
+```php
+@php
+$breadcrumbs = [
+    ['label' => 'Home'],
+    ['label' => 'Documents'],
+    ['label' => 'Add document'],
+];
+@endphp
+
+<x-breadcrumbs :items="$breadcrumbs" />
+```
+
+**Custom separator, icons & links:**
+
+```php
+@php
+$breadcrumbs = [
+    [
+        'link' => '#default',
+        'icon' => 's-home',
+    ],
+    [
+        'label' => 'Documents',
+        'link' => '/docs/components/breadcrumbs',
+        'icon' => 'o-document',
+    ],
+    [
+        'label' => 'Add document',
+        'icon' => 'o-plus',
+    ],
+];
+@endphp
+
+<x-breadcrumbs :items="$breadcrumbs" separator="o-slash" />
+```
+
+**Tooltip & customization:**
+
+```php
+@php
+$breadcrumbs = [
+    [
+        'label' => 'Home',
+        'icon' => 'm-home',
+        'tooltip-left' => 'Tooltips are supported!',
+    ],
+    [
+        'label' => 'Documents',
+        'link' => '/docs/components/breadcrumbs',
+        'tooltip' => 'Default position is top!',
+    ],
+    [
+        'label' => 'Edit document',
+        'tooltip-bottom' => 'Positions are changable!',
+    ],
+    [
+        'label' => '# 42',
+        'tooltip-right' => 'And one from the right',
+    ],
+];
+@endphp
+
+<x-breadcrumbs
+    :items="$breadcrumbs"
+    separator="m-minus"
+    separator-class="text-warning"
+    class="bg-base-300 p-3 rounded-box"
+    icon-class="text-warning"
+    link-item-class="text-sm font-bold"
+/>
+```
+
+##### Button
+
+**Basic Usage:**
+
+```blade
+{{-- DEFAULT --}}
+<x-button label="Hi!" />
+
+{{-- COLOR AND STYLE --}}
+<x-button label="Hi!" class="btn-primary" />
+<x-button label="How" class="btn-warning" />
+<x-button label="Are" class="btn-success" />
+<x-button label="You?" class="btn-error btn-sm btn-soft" />
+
+{{-- SLOT --}}
+<x-button class="btn-primary btn-dash">With default slot 😃</x-button>
+
+{{-- CIRCLE --}}
+<x-button icon="o-user" class="btn-circle" />
+<x-button icon="o-user" class="btn-circle btn-outline" />
+
+{{-- SQUARE --}}
+<x-button icon="o-user" class="btn-circle btn-ghost" />
+<x-button icon="o-user" class="btn-square" />
+```
+
+**Icons:**
+
+```blade
+<x-button label="Hello" icon="o-check" />
+<x-button label="There" icon-right="o-x-circle" />
+```
+
+**Tooltips:**
+
+Tooltips are disabled on small screens.
+
+```blade
+<x-button label="Up" tooltip="Mary" />
+<x-button label="Bottom" tooltip-bottom="Joe" />
+<x-button label="Left" tooltip-left="Marina" />
+<x-button label="Right" tooltip-right="Amanda" />
+```
+
+**Badges:**
+
+```blade
+<x-button label="Hello" badge="12" />
+<x-button label="There" badge="8" badge-classes="badge-warning" />
+```
+
+**Responsive:**
+
+On small screens the label is hidden. Icon and badge are kept.
+
+```blade
+<x-button label="There" icon="o-home" badge="12" responsive />
+<x-button label="There" icon="o-check" responsive />
+```
+
+**Links:**
+
+You can make a button act as a link by placing a `link` property. You can use all the options described above for ordinary buttons.
+
+```blade
+{{-- It uses `wire:navigate` --}}
+<x-button label="Go to installation" link="/docs/installation" class="btn-ghost" />
+
+{{-- Notice `no-wire-navigate` --}}
+<x-button label="Go to demos" link="/docs/demos" no-wire-navigate class="btn-ghost" />
+
+{{-- Notice `external` for external links --}}
+<x-button label="Google" link="https://google.com" external icon="o-link" tooltip="Go away!" />
+```
+
+**Spinners:**
+
+```blade
+{{-- It automatically targets to self `wire:click` action --}}
+<x-button label="Self target" wire:click="save" icon-right="o-lock-closed" spinner />
+
+<x-form wire:submit="save2">
+    <x-input placeholder="Name" />
+    <x-slot:actions>
+        {{-- No target spinner --}}
+        <x-button label="No target" />
+
+        {{-- Target is `save2` --}}
+        <x-button label="Custom target" type="submit" class="btn-primary" spinner="save2" />
+    </x-slot>
+</x-form>
+```
+
+##### Badges
+
+**Basic Usage:**
+
+```blade
+<x-badge value="New" />
+<x-badge value="5" class="badge-primary" />
+<x-badge value="99+" class="badge-error" />
+```
+
+**Sizes:**
+
+```blade
+<x-badge value="New" class="badge-sm" />
+<x-badge value="New" />
+<x-badge value="New" class="badge-lg" />
+```
+
+**Colors:**
+
+```blade
+<x-badge value="Primary" class="badge-primary" />
+<x-badge value="Secondary" class="badge-secondary" />
+<x-badge value="Success" class="badge-success" />
+<x-badge value="Error" class="badge-error" />
+<x-badge value="Warning" class="badge-warning" />
+<x-badge value="Info" class="badge-info" />
+```
+
+**Outline:**
+
+```blade
+<x-badge value="New" class="badge-outline badge-primary" />
+```
+
+**Ghost:**
+
+```blade
+<x-badge value="New" class="badge-ghost" />
+```
+
+##### Card
+
+**Basics:**
+
+```blade
+<x-card title="Your stats" subtitle="Our findings about you" shadow separator>I have title, subtitle and separator.</x-card>
+
+<x-card title="Nice things">
+    I am using slots here.
+
+    <x-slot:figure>
+        <img src="https://picsum.photos/500/200" />
+    </x-slot>
+
+    <x-slot:menu>
+        <x-button icon="o-share" class="btn-circle btn-sm" />
+        <x-icon name="o-heart" class="cursor-pointer" />
+    </x-slot>
+
+    <x-slot:actions separator>
+        <x-button label="Ok" class="btn-primary" />
+    </x-slot>
+</x-card>
+```
+
+**Progress Indicator:**
+
+This feature only works when you have in place `title` and `separator` attributes.
+
+```blade
+{{-- Notice `progress-indicator` --}}
+<x-card title="Your stats" subtitle="Always triggers" separator progress-indicator>
+    <x-button label="Save" wire:click="save" />
+</x-card>
+
+{{-- Notice `progress-indicator` target --}}
+<x-card title="Your stats" subtitle="Only triggers with `save2`" separator progress-indicator="save2">
+    <x-button label="Save2" wire:click="save2" />
+</x-card>
+```
+
+**Styling:**
+
+```blade
+{{-- Notice `progress-indicator` --}}
+<x-card title="Style" separator class="p-2 bg-warning/40" body-class="p-2 bg-info">Hey!</x-card>
+```
+
+##### Carousel
+
+**Basic:**
+
+It supports swipe gestures on mobile.
+
+```php
+@php
+$slides = [
+    ['image' => '/photos/photo-1494253109108-2e30c049369b.jpg'],
+    ['image' => '/photos/photo-1565098772267-60af42b81ef2.jpg'],
+    ['image' => '/photos/photo-1559703248-dcaaec9fab78.jpg'],
+    ['image' => '/photos/photo-1572635148818-ef6fd45eb394.jpg'],
+];
+@endphp
+
+<x-carousel :slides="$slides" />
+```
+
+**No indicators:**
+
+```blade
+<x-carousel :slides="$slides" without-indicators />
+```
+
+**No arrows:**
+
+```blade
+{{-- Notice you can also override some wrapper CSS classes. --}}
+<x-carousel :slides="$slides" without-arrows class="!h-32 !rounded-none" />
+```
+
+**Autoplay:**
+
+```blade
+<x-carousel :slides="$slides" autoplay class="!h-32" />
+```
+
+You can change interval by passing the `interval` attribute.
+
+```blade
+{{-- Default interval is 2000 milliseconds. --}}
+<x-carousel ... autoplay interval="3000" />
+```
+
+**Full:**
+
+Play around removing some attributes. The only required attribute is `image`.
+
+```php
+@php
+$slides = [
+    [
+        'image' => '/photos/photo-1559703248-dcaaec9fab78.jpg',
+        'title' => 'Frontend developers',
+        'description' => 'We love last week frameworks.',
+        'url' => '/docs/installation',
+        'urlText' => 'Get started',
+    ],
+    [
+        'image' => '/photos/photo-1565098772267-60af42b81ef2.jpg',
+        'title' => 'Full stack developers',
+        'description' => 'Where burnout is just a fancy term for Tuesday.',
+    ],
+    [
+        'image' => '/photos/photo-1494253109108-2e30c049369b.jpg',
+        'url' => '/docs/installation',
+        'urlText' => 'Let`s go!',
+    ],
+    [
+        'image' => '/photos/photo-1572635148818-ef6fd45eb394.jpg',
+        'url' => '/docs/installation',
+    ],
+];
+@endphp
+
+<x-carousel :slides="$slides" />
+```
+
+**Custom slot:**
+
+By using the special blade directive `@scope` you have access to the current item from loop. Notice also you have access to the Laravel's `$loop` variable.
+
+```php
+@php
+$slides = [
+    [
+        'image' => '/photos/photo-1559703248-dcaaec9fab78.jpg',
+        'title' => 'Frontend developers',
+    ],
+    [
+        'image' => '/photos/photo-1565098772267-60af42b81ef2.jpg',
+        'title' => 'Full stack developers',
+    ],
+    [
+        'image' => '/photos/photo-1494253109108-2e30c049369b.jpg',
+        'title' => 'Hey!',
+    ],
+];
+@endphp
+
+<x-carousel :slides="$slides">
+    @scope('content', $slide)
+        <div class="mt-16 bg-red-500 font-bold text-white rounded p-2 w-fit mx-auto">
+            {{ $slide['title'] }} - {{ $loop->index }}
+        </div>
+    @endscope
+</x-carousel>
+```
+
+##### Collapse
+
+This component can be used for showing and hiding content. It can be used standalone or wrapped into the "Accordion" component.
+
+**Basic:**
+
+```blade
+<x-collapse separator>
+    <x-slot:heading>Hello</x-slot>
+    <x-slot:content>You!</x-slot>
+</x-collapse>
+```
+
+**Livewire:**
+
+```blade
+<x-collapse wire:model="show" separator class="bg-base-200">
+    <x-slot:heading>Hey</x-slot>
+    <x-slot:content>There!</x-slot>
+</x-collapse>
+```
+
+**Style and alternative icon:**
+
+```blade
+<x-collapse collapse-plus-minus>
+    <x-slot:heading class="bg-warning/20">How ...</x-slot>
+    <x-slot:content class="bg-primary/10">
+        <div class="mt-5">Are you?</div>
+    </x-slot>
+</x-collapse>
+```
+
+**No icon:**
+
+```blade
+<x-collapse no-icon>
+    <x-slot:heading>How ...</x-slot>
+    <x-slot:content>Are you ?</x-slot>
+</x-collapse>
+```
+
+**Accordion:**
+
+You can group multiple `x-collapse` by wrapping it on a `x-accordion` component.
+
+```blade
+<x-accordion wire:model="group">
+    <x-collapse name="group1">
+        <x-slot:heading>Group 1</x-slot>
+        <x-slot:content>Hello 1</x-slot>
+    </x-collapse>
+    <x-collapse name="group2">
+        <x-slot:heading>Group 2</x-slot>
+        <x-slot:content>Hello 2</x-slot>
+    </x-collapse>
+    <x-collapse name="group3">
+        <x-slot:heading>Group 3</x-slot>
+        <x-slot:content>Hello 3</x-slot>
+    </x-collapse>
+</x-accordion>
+```
+
+```php
+public string $group = 'group1';
+```
+
+##### Header
+
+**Basic Usage:**
+
+```blade
+<x-header title="Page Title" />
+<x-header title="Page Title" subtitle="Page subtitle" />
+<x-header title="Page Title" separator />
+```
+
+**With Progress Indicator:**
+
+```blade
+<x-header title="Page Title" separator progress-indicator />
+<x-header title="Page Title" separator progress-indicator="save" />
+```
+
+**With Actions:**
+
+```blade
+<x-header title="Page Title" separator>
+    <x-slot:actions>
+        <x-button label="Save" wire:click="save" />
+    </x-slot>
+</x-header>
+```
+
+##### Icon
+
+**Basic Usage:**
+
+```blade
+<x-icon name="o-home" />
+<x-icon name="o-user" class="w-6 h-6" />
+<x-icon name="o-cog" class="text-primary" />
+```
+
+**Sizes:**
+
+```blade
+<x-icon name="o-home" class="w-4 h-4" />
+<x-icon name="o-home" class="w-6 h-6" />
+<x-icon name="o-home" class="w-8 h-8" />
+```
+
+**Colors:**
+
+```blade
+<x-icon name="o-home" class="text-primary" />
+<x-icon name="o-home" class="text-secondary" />
+<x-icon name="o-home" class="text-success" />
+<x-icon name="o-home" class="text-error" />
+```
+
+##### Kbd
+
+Kbd is used to display keyboard shortcuts.
+
+```blade
+<x-kbd>A</x-kbd>
+<x-kbd class="kbd-lg">B</x-kbd>
+<x-kbd class="kbd-xl">C</x-kbd>
+```
+
+```blade
+Press
+<x-kbd>⌘</x-kbd>
+<x-kbd>P</x-kbd>
+to pay.
+```
+
+##### Pin
+
+**Default:**
+
+```blade
+<x-pin wire:model="pin1" size="3" />
+```
+
+**Numeric:**
+
+The `numeric` property modifies the behavior to accept only numbers.
+
+```blade
+<x-pin wire:model="pin2" size="4" numeric />
+```
+
+**Security:**
+
+You can use any compatible `text-secure` HTML symbol.
+
+```blade
+<x-pin wire:model="pin1" size="3" hide />
+<x-pin wire:model="pin1" size="3" hide hide-type="circle" />
+<x-pin wire:model="pin1" size="3" hide hide-type="square" />
+```
+
+**Events:**
+
+The `@completed` and `@incomplete` events are triggered respectively when the pin is completed or is incomplete.
+
+```blade
+<x-pin wire:model="pin3" size="5" @completed="$wire.show = true" @incomplete="$wire.show = false" />
+
+<template x-if="$wire.show">
+    <x-alert icon="o-check-circle" class="mt-5">
+        You have typed :
+        <span x-text="$wire.pin3"></span>
+    </x-alert>
+</template>
+```
+
+**Spacing:**
+
+You can remove the gap between the pins by using the `no-gap` property.
+
+```blade
+<x-pin wire:model="pin3" size="5" no-gap />
+```
+
+##### Popover
+
+This component uses the the built-in Alpine's anchor plugin.
+
+**Basic:**
+
+```blade
+<x-popover>
+    <x-slot:trigger>
+        <x-avatar :image="$user->avatar" :title="$user->username" />
+    </x-slot>
+    <x-slot:content>
+        From: {{ $user->city->name }}
+        <br />
+        Email: {{ $user->email }}
+    </x-slot>
+</x-popover>
+```
+
+**Position and Offset:**
+
+As this component uses Alpine's anchor plugin, you can use same parameters described on its docs for `offset` and `position`.
+
+```blade
+<x-popover position="top-start" offset="20">
+    <x-slot:trigger>
+        <x-button label="Hey" />
+    </x-slot>
+    <x-slot:content>How are you?</x-slot>
+</x-popover>
+```
+
+**Styling:**
+
+```blade
+<x-popover>
+    <x-slot:trigger class="bg-base-200 p-2 rounded-lg">
+        {{ $user->username }}
+    </x-slot>
+    <x-slot:content class="border border-warning !w-40 text-sm">
+        <x-avatar :image="$user->avatar" />
+        {{ $user->bio }}
+    </x-slot>
+</x-popover>
+```
+
+##### Progress
+
+**Basic Usage:**
+
+```blade
+<x-progress value="50" />
+<x-progress value="75" class="progress-primary" />
+<x-progress value="100" class="progress-success" />
+```
+
+**Colors:**
+
+```blade
+<x-progress value="50" class="progress-primary" />
+<x-progress value="50" class="progress-secondary" />
+<x-progress value="50" class="progress-success" />
+<x-progress value="50" class="progress-error" />
+<x-progress value="50" class="progress-warning" />
+<x-progress value="50" class="progress-info" />
+```
+
+**Sizes:**
+
+```blade
+<x-progress value="50" class="progress-xs" />
+<x-progress value="50" class="progress-sm" />
+<x-progress value="50" />
+<x-progress value="50" class="progress-lg" />
+```
+
+**With Label:**
+
+```blade
+<x-progress value="50" label="50%" />
+<x-progress value="75" label="75%" class="progress-primary" />
+```
+
+##### Rating
+
+**Example:**
+
+It controls the rating based on a integer number. For "not rated" set its model value as "0".
+
+```blade
+{{-- Not rated --}}
+{{-- public int $ranking0 = 0; --}}
+<x-rating wire:model="ranking0" />
+
+<x-rating wire:model="ranking1" class="bg-warning" total="8" />
+<x-rating wire:model="ranking2" class="!mask-circle" />
+<x-rating wire:model="ranking3" class="!mask-diamond bg-accent" />
+<x-rating wire:model="ranking4" class="!mask-heart bg-secondary rating-xl" />
+```
+
+##### Spotlight
+
+This component implements a global search feature triggered by a customizable shortcut. **It does not index your site**, so you need to implement by yourself a global search function.
+
+**Usage:**
+
+Place the **spotlight tag** somewhere on the main layout.
+
+```blade
+<body>
+    ...
+    <x-spotlight />
+</body>
+```
+
+Create a `App\Support\Spotlight` class with a `search` method that returns the result.
+
+```php
+namespace App\Support;
+
+class Spotlight
+{
+    public function search(Request $request)
+    {
+        // Do your search logic here
+        // IMPORTANT: apply any security concern here
+    }
+}
+```
+
+Make sure each item from your collection contains the following keys.
+
+```php
+[
+    'name' => 'Mary', // Any string
+    'description' => 'Software Engineer', // Any string
+    'link' => '/users/1', // Any valid route
+    'avatar' => 'http://...' // Any image url
+]
+```
+
+Instead of `avatar` you can use any pre-rendered blade `icon`.
+
+```php
+[
+    // ...
+    'icon' => Blade::render("<x-icon name='o-bolt' />")
+]
+```
+
+**You are done!**
+
+**Manual activation:**
+
+You can trigger the Spotlight component by dispatching a `mary-search-open` event. Probably you want to put this search button inside a navbar. In this case place an empty `x-data` as describe below.
+
+```blade
+{{-- Place an empty `x-data` on body --}}
+<body ... x-data>
+    ...
+    <nav>
+        {{-- Notice `@click.stop` --}}
+        <x-button label="Search" @click.stop="$dispatch('mary-search-open')" />
+    </nav>
+    <main>
+        {{ $slot }}
+    </main>
+    <x-spotlight />
+</body>
+```
+
+**Security:**
+
+As maryUI exposes a **public route** to make Spotlight work, remember to apply any security concern **directly on your search method**.
+
+**Example:**
+
+You can organize your search however you want. Don't be restricted exclusively to the approach shown in this example. But, here an example that mixes "users" and "app actions".
+
+```php
+namespace App\Support;
+
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Blade;
+
+class Spotlight
+{
+    public function search(Request $request)
+    {
+        // Example of security concern
+        // Guests can not search
+        if (!auth()->user()) {
+            return [];
+        }
+
+        return collect()
+            ->merge($this->actions($request->search))
+            ->merge($this->users($request->search));
+    }
+
+    // Database search
+    public function users(string $search = '')
+    {
+        return User::query()
+            ->where('name', 'like', "%$search%")
+            ->take(5)
+            ->get()
+            ->map(function (User $user) {
+                return [
+                    'avatar' => $user->profile_picture,
+                    'name' => $user->name,
+                    'description' => $user->email,
+                    'link' => "/users/{$user->id}"
+                ];
+            });
+    }
+
+    // Static search, but it could come from a database
+    public function actions(string $search = '')
+    {
+        $icon = Blade::render("<x-icon name='o-bolt' class='w-11 h-11 p-2 bg-warning/10 rounded-full' />");
+
+        return collect([
+            [
+                'name' => 'Create user',
+                'description' => 'Create a new user',
+                'icon' => $icon,
+                'link' => '/users/create'
+            ],
+            [
+                // More ...
+            ]
+        ])->filter(fn (array $item) => str($item['name'] . $item['description'])->contains($search, true));
+    }
+}
+```
+
+**Options:**
+
+You can change the `shortcut` with any combination supported by Livewire.
+
+```blade
+<x-spotlight shortcut="meta.slash" search-text="Find docs, app actions or users" no-results-text="Ops! Nothing here." url="/custom/search/url/here" />
+```
+
+**Changing the search class:**
+
+If for some reason you want to change the search class, publish the config file.
+
+```bash
+php artisan vendor:publish --tag mary.config
+```
+
+```php
+// ...
+'components' => [
+    'spotlight' => [
+        'class' => 'App\\Support\\Spotlight'
+    ]
+]
+```
+
+**Slots:**
+
+Add anything you want and dispatch a `mary-search` event with an extra query string.
+
+You can do it in many ways. But, in this example we built it with Alpine.
+
+```blade
+<x-spotlight>
+    <div
+        x-data="{ query: { withUsers: true, withActions: true } }"
+        x-init="
+            $watch('query', (value) =>
+                $dispatch('mary-search', new URLSearchParams(value).toString()),
+            )
+        "
+        class="flex gap-8 p-3"
+    >
+        <x-checkbox label="Users" x-model="query.withUsers" />
+        <x-checkbox label="Actions" x-model="query.withActions" />
+    </div>
+</x-spotlight>
+```
+
+Then, adjust your `search` method to handle those new request parameters.
+
+```php
+class Spotlight
+{
+    public function search(Request $request)
+    {
+        // Do your logic here
+    }
+}
+```
+
+##### Statistic
+
+```blade
+<x-stat title="Messages" value="44" icon="o-envelope" tooltip="Hello" color="text-primary" />
+
+<x-stat title="Sales" description="This month" value="22.124" icon="o-arrow-trending-up" tooltip-bottom="There" />
+
+<x-stat title="Lost" description="This month" value="34" icon="o-arrow-trending-down" tooltip-left="Ops!" />
+
+<x-stat title="Sales" description="This month" value="22.124" icon="o-arrow-trending-down" class="text-orange-500" color="text-pink-500" tooltip-right="Gosh!" />
+```
+
+##### Steps
+
+Alternately check the **Timeline** component.
+
+**Example:**
+
+This component uses `ul` and `li` HTML tags. Make sure you have an extra rule to not override them on your custom CSS.
+
+```blade
+<x-steps wire:model="step" class="border-y border-base-content/10 my-5 py-5">
+    <x-step step="1" text="Register">Register step</x-step>
+    <x-step step="2" text="Payment">Payment step</x-step>
+    <x-step step="3" text="Receive Product" class="bg-warning/20">Receive Product</x-step>
+</x-steps>
+
+{{-- Create some methods to increase/decrease the model to match the step number --}}
+{{-- You could use Alpine with `$wire` here --}}
+<x-button label="Previous" wire:click="prev" />
+<x-button label="Next" wire:click="next" />
+```
+
+```php
+// Step model
+public int $step = 2;
+```
+
+**Customizing:**
+
+Remember that if you are using deeper CSS classes than `steps-xxxx` provided by daisyUI you must configure the Tailwind **safelist**.
+
+Steps color and content.
+
+```blade
+<x-steps wire:model="example" steps-color="step-primary">
+    <x-step step="1" text="A" />
+    <x-step step="2" text="B" icon="o-user" />
+    <x-step step="3" text="C" data-content="✓" />
+</x-steps>
+```
+
+You can modify the stepper style itself using the `stepper-classes` attribute.
+
+```blade
+<x-steps wire:model="example" stepper-classes="w-full p-5 bg-base-200">
+    <x-step step="1" text="A" />
+    <x-step step="2" text="B" />
+    <x-step step="3" text="C" />
+</x-steps>
+```
+
+##### Swap
+
+This component allows you to swap between two states (`true` / `false`) using two elements with animations.
+
+If you have multiple `x-swap` on the same page make sure to set different ids.
+
+**Default:**
+
+```blade
+<x-swap wire:model="swap1" />
+```
+
+```php
+public bool $swap1 = false;
+```
+
+**Text content:**
+
+When providing the `true` or `false` attributes, the icons will be ignored.
+
+```blade
+<x-swap wire:model="swap2" true="ON" false="OFF" />
+```
+
+```php
+public bool $swap2 = true;
+```
+
+**Custom icons + size:**
+
+```blade
+<x-swap true-icon="o-speaker-wave" false-icon="o-speaker-x-mark" icon-size="h-8 w-8" />
+```
+
+**Animations:**
+
+It supports daisy-ui's swap animations.
+
+If you have multiple `x-swap` on the same page make sure to set different ids.
+
+```blade
+<x-swap id="fade" />
+<x-swap id="flip" class="swap-flip" />
+<x-swap id="rotate" class="swap-rotate" />
+```
+
+**Custom content:**
+
+It is possible to provide completely custom content. Please, note that the width will always be the width of the larger content.
+
+```blade
+<x-swap wire:model="swap3" id="custom">
+    <x-slot:true class="bg-warning rounded p-2">Custom true</x-slot>
+    <x-slot:false class="bg-secondary text-white p-2">Custom false</x-slot>
+</x-swap>
+```
+
+**Before and after:**
+
+You can add content before and after the content as well.
+
+```blade
+<x-swap id="slots" wire:model.live="swap4" class="flex gap-3">
+    <x-slot:before class="text-primary">BEFORE</x-slot>
+    <x-slot:after class="text-error">AFTER</x-slot>
+</x-swap>
+```
+
+##### Timeline
+
+Alternately check the **Steps** component.
+
+**Basic:**
+
+```blade
+{{-- Cut top edge with `first` --}}
+<x-timeline-item title="Register" first />
+
+<x-timeline-item title="Payment" subtitle="10/23/2023" />
+
+<x-timeline-item title="Analysis" subtitle="10/23/2023" description="Just checking" />
+
+{{-- Notice `pending` --}}
+<x-timeline-item title="Prepare" pending description="Prepare to ship" />
+
+{{-- Cut bottom edge with `last` --}}
+<x-timeline-item title="Shipment" pending last description="It is shiped :)" />
+```
+
+**Icons:**
+
+```blade
+<x-timeline-item title="Order placed" first icon="o-map-pin" />
+<x-timeline-item title="Payment confirmed" icon="o-credit-card" />
+<x-timeline-item title="Shipped" icon="o-paper-airplane" />
+<x-timeline-item title="Delivered" pending last icon="o-gift" />
+```
+
+**Customize:**
+
+```blade
+<x-timeline-item title="Order placed" first connector-active-class="border-s-success" bullet-active-class="bg-success" />
+
+<x-timeline-item title="Delivered" pending connector-pending-class="border-s-error" bullet-pending-class="bg-error" />
+```
+
+##### Tabs
+
+**Usage:**
+
+```blade
+<x-tabs wire:model="selectedTab">
+    <x-tab name="users-tab" label="Users" icon="o-users">
+        <div>Users</div>
+    </x-tab>
+    <x-tab name="tricks-tab" label="Tricks" icon="o-sparkles">
+        <div>Tricks</div>
+    </x-tab>
+    <x-tab name="musics-tab" label="Musics" icon="o-musical-note">
+        <div>Musics</div>
+    </x-tab>
+</x-tabs>
+
+<x-button label="Change to Musics" @click="$wire.selectedTab = 'musics-tab'" />
+```
+
+**Slots:**
+
+```blade
+<x-tabs wire:model="myTab">
+    <x-tab name="users-tab">
+        <x-slot:label>
+            Users
+            <x-badge value="3" class="badge-primary badge-sm" />
+        </x-slot>
+        <div>Users</div>
+    </x-tab>
+    <x-tab name="tricks-tab" label="Tricks">
+        <div>Tricks</div>
+    </x-tab>
+    <x-tab name="musics-tab" label="Musics">
+        <div>Musics</div>
+    </x-tab>
+</x-tabs>
+```
+
+**Disabled State:**
+
+```blade
+<x-tabs wire:model="someTab">
+    <x-tab name="users-tab" label="Users">
+        <div>Users</div>
+    </x-tab>
+    <x-tab name="tricks-tab" label="Tricks">
+        <div>Tricks</div>
+    </x-tab>
+    <x-tab name="musics-tab" label="Musics">
+        <div>Musics</div>
+    </x-tab>
+    <x-tab name="stars-tab" label="Stars" disabled>
+        <div>Stars</div>
+    </x-tab>
+</x-tabs>
+```
+
+**Hidden State:**
+
+```blade
+<x-tabs wire:model="someTab">
+    <x-tab name="users-tab" label="Users">
+        <div>Users</div>
+    </x-tab>
+    <x-tab name="tricks-tab" label="Tricks" hidden>
+        <div>Tricks</div>
+    </x-tab>
+    <x-tab name="musics-tab" label="Musics">
+        <div>Musics</div>
+    </x-tab>
+</x-tabs>
+```
+
+**Customisation:**
+
+Remember to add these custom classes on Tailwind **safelist**.
+
+```blade
+<x-tabs wire:model="tabSelected" active-class="bg-primary rounded !text-white" label-class="font-semibold" label-div-class="bg-primary/5 rounded w-fit p-2">
+    <x-tab name="users-tab" label="Users">
+        <div>All</div>
+    </x-tab>
+    <x-tab name="tricks-tab" label="Tricks">
+        <div>Tricks</div>
+    </x-tab>
+    <x-tab name="musics-tab" label="Musics">
+        <div>Musics</div>
+    </x-tab>
+</x-tabs>
+```
+
+##### Theme Toggle
+
+This component toggles between light/dark themes and includes an automatic persistent state.
+
+It is not expected to have more than one **x-theme-toggle** on the same page. Make sure to **refresh the page** while toying around with the theme toggle.
+
+**Setup:**
+
+Make sure your `app.css` has this settings.
+
+```css
+/* Tailwind */
+@import 'tailwindcss';
+
+/* daisyUI */
+@plugin "daisyui" {
+    themes:
+        light --default,
+        dark --prefersdark;
+}
+
+/* Dark theme variant support */
+@custom-variant dark (&:where(.dark, .dark *));
+```
+
+**Example:**
+
+```blade
+<x-theme-toggle />
+<x-theme-toggle class="btn btn-circle" />
+<x-theme-toggle class="btn btn-circle btn-ghost" />
+<x-theme-toggle class="btn" @theme-changed="console.log($event.detail)" />
+```
+
+**Manual activation:**
+
+You can toggle theme from anywhere by dispatching a `mary-toggle-theme` event.
+
+```blade
+<x-button label="Theme" icon="o-swatch" @click="$dispatch('mary-toggle-theme')" />
+```
+
+In this case place a hidden instance of `x-theme-toggle` on same layout file.
+
+```blade
+<body>
+    {{-- Main content --}}
+    <main>
+        {{ $slot }}
+    </main>
+
+    {{-- Side menu --}}
+    <x-menu>
+        <x-menu-item title="Theme" icon="o-swatch" @click="$dispatch('mary-toggle-theme')" />
+    </x-menu>
+
+    {{-- Theme toggle --}}
+    <x-theme-toggle class="hidden" />
+</body>
+```
+
+**Custom theme toggle:**
+
+It is not expected to have more than one **x-theme-toggle** on the same page. Make sure to **refresh the page** while toying around with the theme toggle.
+
+By default, this component uses the standard "light" and "dark" themes shipped with **daisyUI**. But, you can customize them by passing the theme names.
+
+First, you need to set this additional themes at `app.css` as described on daisyUI docs.
+
+```css
+@plugin "daisyui" {
+    themes:
+        light --default,
+        dark --prefersdark,
+        retro,
+        aqua;
+}
+```
+
+Then, set the theme names on `x-theme-toggle` component.
+
+```blade
+<x-theme-toggle darkTheme="aqua" lightTheme="retro" />
+```
+
+#### Third-party Components
+
+**Note:** These components require additional third-party libraries. Refer to official documentation for installation and setup: https://mary-ui.com/docs/components/{component-name}
+
+##### Choices
+
+Advanced select component with search, async loading, and multiple selection support. Use this when you need a rich selection interface beyond the basic Select component.
+
+This component is intended to be used to build complex selection interfaces for single and multiple values. It also supports **search** on frontend or server, when dealing with large lists.
+
+**Pro tip:** Most of time you just need a simple **Select** component, which renders nice natively on all devices.
+
+**Selection:**
+
+By default, it will look up for:
+
+- `$object->id` for option value.
+- `$object->name` for option display label.
+- `$object->avatar` for avatar picture.
+
+**Basic Usage:**
+
+```blade
+{{-- Notice `single` --}}
+<x-choices label="Single" wire:model="user_id" :options="$users" single clearable />
+
+{{-- public array $users_multi_ids = []; --}}
+<x-choices label="Multiple" wire:model="users_multi_ids" :options="$users" clearable />
+
+{{-- Custom options --}}
+<x-choices
+    label="Custom options"
+    wire:model="user_custom_id"
+    :options="$users"
+    option-label="username"
+    option-sub-label="city.name"
+    option-avatar="other_avatar"
+    icon="o-users"
+    height="max-h-96"
+    {{-- Default is `max-h-64` --}}
+    hint="It has custom options"
+    single
+/>
+```
+
+**Select All:**
+
+This option only works for **multiple and non-searchable** exclusively.
+
+```blade
+{{-- Notice `allow-all` --}}
+<x-choices label="Multiple" wire:model="users_all_ids" :options="$users" allow-all />
+
+<x-choices label="Multiple" wire:model="users_all2_ids" :options="$users" allow-all allow-all-text="Select all stuff" remove-all-text="Delete all things" />
+```
+
+**Compact mode:**
+
+This option only works for **multiple and non-searchable** exclusively.
+
+```blade
+{{-- Notice `compact` --}}
+<x-choices label="Compact" wire:model="users_compact_ids" :options="$users" compact />
+
+<x-choices label="Compact label" wire:model="users_compact2_ids" :options="$users" compact compact-text="stuff chosen" />
+```
+
+You can combine `allow-all` and `compact`:
+
+```blade
+<x-choices label="Select All + Compact" wire:model="users_all_compact_ids" :options="$users" compact allow-all />
+```
+
+**Searchable (frontend):**
+
+If you judge you don't have a huge list of items, you can make it searchable offline on **"frontend side"**. But, **if you have a huge list** it is a better idea to make it searchable on **"server side"**, otherwise you can face some slow down on frontend.
+
+```blade
+{{-- Notice `searchable` --}}
+{{-- Notice this is a different component, but with same API --}}
+<x-choices-offline label="Single (frontend)" wire:model="user_searchable_offline_id" :options="$users" placeholder="Search ..." single clearable searchable />
+
+<x-choices-offline label="Multiple (frontend)" wire:model="users_multi_searchable_offline_ids" :options="$users" placeholder="Search ..." clearable searchable />
+```
+
+**Searchable (server):**
+
+When dealing with large options list use `searchable` parameter. By default, it calls `search()` method to get fresh options from **"server side"** while typing. You can change the method's name by using `search-function` parameter.
+
+```blade
+{{-- Notice `searchable` + `single` --}}
+<x-choices label="Searchable + Single" wire:model="user_searchable_id" :options="$usersSearchable" placeholder="Search ..." single searchable />
+
+{{-- Notice custom `search-function` --}}
+<x-choices
+    label="Searchable + Multiple"
+    wire:model="users_multi_searchable_ids"
+    :options="$usersMultiSearchable"
+    placeholder="Search ..."
+    search-function="searchMulti"
+    no-result-text="Ops! Nothing here ..."
+    no-progress
+    searchable
+/>
+```
+
+You must also consider displaying pre-selected items on list, when it **first renders** and **while searching**. There are many approaches to make it work, but here is an example for **single search** using **Volt**:
+
+```php
+// Selected option
+public ?int $user_searchable_id = null;
+
+// Options list
+public Collection $usersSearchable;
+
+public function mount()
+{
+    // Fill options when component first renders
+    $this->search();
+}
+
+// Also called as you type
+public function search(string $value = '')
+{
+    // Besides the search results, you must include on demand selected option
+    $selectedOption = User::where('id', $this->user_searchable_id)->get();
+
+    $this->usersSearchable = User::query()
+        ->where('name', 'like', "%$value%")
+        ->take(5)
+        ->orderBy('name')
+        ->get()
+        ->merge($selectedOption); // <-- Adds selected option
+}
+```
+
+Sometimes you don't want to hit a datasource on **every keystroke**. So, you can make use of `debounce` to control over how often a network request is sent.
+
+Another approach is to use `min-chars` attribute to avoid hit **search method** itself until you have typed such amount of chars.
+
+```blade
+{{-- Notice `min-chars` and `debounce` --}}
+<x-choices
+    label="Searchable + Single + Debounce + Min chars"
+    wire:model="user_searchable_min_chars_id"
+    :options="$usersSearchableMinChars"
+    search-function="searchMinChars"
+    debounce="300ms"
+    {{-- Default is `250ms` --}}
+    min-chars="2"
+    {{-- Default is `0` --}}
+    hint="Type at least 2 chars"
+    single
+    searchable
+/>
+```
+
+You can pass any extra arbitrary search parameters like this:
+
+```blade
+{{-- Notice `search-function` with extra arbitrary parameters --}}
+<x-choices label="Extra parameters" wire:model="user_id" :options="$users" search-function="searchExtra(123, 'thing')" searchable />
+```
+
+```php
+public function search(string $value = '', int $extra1 = 0, string $extra2 = '')
+{
+    // The first parameter is the default and comes from the search input.
+}
+```
+
+**Slots:**
+
+You have full control on rendering items by using the `@scope('item', $object)` special blade directive. It injects the current `$object` from the loop's context and achieves the same behavior that you would expect from the Vue/React scoped slots.
+
+You can customize the list item and selected item slot. **Searchable (online) works with blade syntax**.
+
+```blade
+<x-choices label="Slots (online)" wire:model="user_custom_slot_id" :options="$users" single>
+    {{-- Item slot --}}
+    @scope('item', $user)
+        <x-list-item :item="$user" sub-value="bio">
+            <x-slot:avatar>
+                <x-icon name="o-user" class="bg-primary/10 p-2 w-9 h-9 rounded-full" />
+            </x-slot>
+            <x-slot:actions>
+                <x-badge :value="$user->username" class="badge-soft badge-primary badge-sm" />
+            </x-slot>
+        </x-list-item>
+    @endscope
+
+    {{-- Selection slot --}}
+    @scope('selection', $user)
+        {{ $user->name }} ({{ $user->username }})
+    @endscope
+</x-choices>
+```
+
+You can **append or prepend** anything like this. Make sure to use appropriated css round class on left or right.
+
+```blade
+<x-choices label="Slots" wire:model="user_custom_slot_id" :options="$users" single>
+    <x-slot:prepend>
+        {{-- Add `join-item` to all prepended elements --}}
+        <x-button icon="o-trash" class="join-item" />
+    </x-slot>
+    <x-slot:append>
+        {{-- Add `join-item` to all appended elements --}}
+        <x-button label="Create" icon="o-plus" class="join-item btn-primary" />
+    </x-slot>
+</x-choices>
+```
+
+**Note about large numbers:**
+
+This component uses the options `id` values to handle selection. It tries to determine if these values are a `int` or `string`.
+
+But, due to Javascript limitation with large numbers like these below, it will break.
+
+```php
+public array $options = [
+    [
+        'id' => 264454000038134081, # <-- Javascript won't handle this number
+        'name' => 'Test 1',
+    ],
+    [
+        'id' => '264454000038134082', # <-- It is good!
+        'name' => 'Test 2',
+    ],
+];
+```
+
+As workaround, define the `id` as a string and use **values-as-string** attribute instead.
+
+```blade
+<x-choices ... values-as-string />
+<x-choices-offline ... values-as-string />
+```
+
+**Events:**
+
+You can catch component events just like described on Livewire docs. In this case the component will trigger the `@change-selection` and it will contain the selected items keys.
+
+The payload contains a **single key** or an **array of keys**, depending on how you set the component. Because it is a custom event, you must access the key(s) via the `detail.value` property on the event.
+
+```blade
+<x-choices ... @change-selection="console.log($event.detail.value)" />
+<x-choices-offline ... @change-selection="console.log($event.detail.value)" />
+```
+
+**Documentation:** https://mary-ui.com/docs/components/choices
+
+##### Calendar
+
+This component is a wrapper around **Vanilla Calendar**. We have simplified its API to make it act as a **readonly calendar** for easily displaying events.
+
+**Pro tip:** If you need an input for date selection stick with **DateTime** or **DatePicker** component.
+
+**Install:**
+
+```blade
+<head>
+    ...
+    {{-- Vanilla Calendar --}}
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-calendar-pro@2.9.6/build/vanilla-calendar.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/vanilla-calendar-pro@2.9.6/build/vanilla-calendar.min.css" rel="stylesheet" />
+</head>
+```
+
+**Note:** In the following examples we use dynamic dates to keep this example updated to current month. Remember to configure **Tailwind safelist** when working with dynamic CSS classes.
+
+**Single month:**
+
+```blade
+@php
+    $events = [
+        [
+            'label' => 'Day off',
+            'description' => 'Playing <u>tennis.</u>',
+            'css' => '!bg-amber-200',
+            'date' => now()
+                ->startOfMonth()
+                ->addDays(3),
+        ],
+        [
+            'label' => 'Event at same day',
+            'description' => 'Hey there!',
+            'css' => '!bg-amber-200',
+            'date' => now()
+                ->startOfMonth()
+                ->addDays(3),
+        ],
+        [
+            'label' => 'Laracon',
+            'description' => 'Let`s go!',
+            'css' => '!bg-blue-200',
+            'range' => [
+                now()
+                    ->startOfMonth()
+                    ->addDays(13),
+                now()
+                    ->startOfMonth()
+                    ->addDays(15),
+            ],
+        ],
+    ];
+@endphp
+
+<x-calendar :events="$events" />
+
+{{-- Shortcuts config to `locale`, `sunday-start` and weekend-highlight --}}
+<x-calendar locale="pt-BR" weekend-highlight sunday-start />
+```
+
+**Multiple months:**
+
+```blade
+@php
+    $events = [
+        [
+            'label' => 'Business Travel',
+            'description' => 'Series A founding',
+            'css' => '!bg-red-200',
+            'range' => [
+                now()
+                    ->startOfMonth()
+                    ->addDays(12),
+                now()
+                    ->startOfMonth()
+                    ->addDays(19),
+            ],
+        ],
+    ];
+@endphp
+
+<x-calendar :events="$events" months="3" />
+```
+
+**Documentation:** https://mary-ui.com/docs/components/calendar
+
+##### Chart
+
+This component is a wrapper around **Chart.js**. So, it accepts any valid configuration described on its docs.
+
+**Pro tip:** If you need a simple progress bar see the **Progress** component.
+
+**Install:**
+
+```blade
+<head>
+    ...
+    {{-- Chart.js --}}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+```
+
+**Usage:**
+
+Check all available options in the **Chart.js** docs.
+
+```blade
+<div class="grid gap-5">
+    <x-button label="Randomize" wire:click="randomize" class="btn-primary" spinner />
+    <x-button label="Switch" wire:click="switch" spinner />
+</div>
+
+<x-chart wire:model="myChart" />
+```
+
+```php
+public array $myChart = [
+    'type' => 'pie',
+    'data' => [
+        'labels' => ['Mary', 'Joe', 'Ana'],
+        'datasets' => [
+            [
+                'label' => '# of Votes',
+                'data' => [12, 19, 3],
+            ]
+        ]
+    ],
+];
+
+public function randomize()
+{
+    Arr::set($this->myChart, 'data.datasets.0.data', [fake()->randomNumber(2), fake()->randomNumber(2), fake()->randomNumber(2)]);
+}
+
+public function switch()
+{
+    $type = $this->myChart['type'] == 'bar' ? 'pie' : 'bar';
+    Arr::set($this->myChart, 'type', $type);
+}
+```
+
+**Documentation:** https://mary-ui.com/docs/components/chart
+
+##### Code
+
+This component is a wrapper around **Ace Editor**. It is intended to be used on simple use cases, so do not expect a full featured code editor.
+
+**Note:** Why not Monaco Editor? It's heavier and requires a more complex setup.
+
+**Setup:**
+
+```blade
+<head>
+    ...
+    {{-- Ace Editor --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.39.1/ace.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.39.1/ext-language_tools.min.js"></script>
+</head>
+```
+
+**Example:**
+
+Ace Editor provides built-in support for common languages, including basic autocomplete and linting. It also includes a built-in search feature. Click inside the editor and hit `Cmd/Ctrl` + `F`.
+
+```blade
+<x-code wire:model="example1" label="Editor" hint="Javascript language." />
+```
+
+**Settings:**
+
+```blade
+<x-code wire:model="example2" language="properties" height="150px" line-height="3" print-margin="true" />
+```
+
+You can find the full list of supported languages and themes on the **Ace Editor demo page**. Just inspect the HTML of the dropdown menus to explore the available options.
+
+**Themes:**
+
+This component supports automatic theme switching. Try toggling the theme at the top of this page to see it in action.
+
+```blade
+<x-code wire:model="example3" dark-theme="cobalt" light-theme="dreamweaver" language="php" />
+```
+
+**Documentation:** https://mary-ui.com/docs/components/code
+
+##### Date Picker
+
+This component is a wrapper around **flatpickr**, for more details refer to its docs.
+
+**Pro tip:** For native date time selection see **Date Time** component.
+
+**Install:**
+
+```blade
+<head>
+    ...
+    {{-- Flatpickr --}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+</head>
+```
+
+**Usage:**
+
+See all `$config` options at **flatpickr's docs**.
+
+```blade
+@php
+    $config1 = ['altFormat' => 'd/m/Y'];
+    $config2 = ['mode' => 'range'];
+@endphp
+
+<x-datepicker label="Date" wire:model="myDate1" icon="o-calendar" hint="Hi!" />
+<x-datepicker label="Alt" wire:model="myDate2" icon="o-calendar" :config="$config1" />
+<x-datepicker label="Range" wire:model="myDate3" icon="o-calendar" :config="$config2" inline />
+```
+
+**Localization and global settings:**
+
+First add extra locale packages, then set up a global flatpickr object. See more at **flatpickr's docs**.
+
+```blade
+<head>
+    ...
+    {{-- Flatpickr --}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    {{-- It will not apply locale yet --}}
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/fr.js"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/pt.js"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/ru.js"></script>
+
+    {{-- You need to set here the default locale or any global flatpickr settings --}}
+    <script>
+        flatpickr.localize(flatpickr.l10ns.fr)
+    </script>
+</head>
+```
+
+**Per component:**
+
+Just add extra locale packages as described above, but **don't apply** global locale config. Instead, set locale on component config object.
+
+```blade
+@php
+    $config1 = ['locale' => 'pt'];
+    $config2 = ['locale' => 'fr'];
+@endphp
+
+<x-datepicker label="Portuguese" wire:model="myDate1" icon="o-calendar" :config="$config1" />
+<x-datepicker label="French" wire:model="myDate1" icon="o-calendar" :config="$config2" />
+```
+
+**Plugins:**
+
+Here is a example for `monthSelectPlugin`. Please, refer to flatpickr's docs for more plugins and how about to install them.
+
+```blade
+<head>
+    ...
+    {{-- MonthSelectPlugin --}}
+    <script src="https://unpkg.com/flatpickr/dist/plugins/monthSelect/index.js"></script>
+    <link href="https://unpkg.com/flatpickr/dist/plugins/monthSelect/style.css" rel="stylesheet" />
+</head>
+```
+
+```blade
+@php
+    $config1 = [
+        'plugins' => [
+            [
+                'monthSelectPlugin' => [
+                    'dateFormat' =>
+                        'm.y',
+                    'altFormat' =>
+                        'F Y',
+                ],
+            ],
+        ],
+    ];
+@endphp
+
+<x-datepicker label="Month" wire:model="myDate5" icon="o-calendar" :config="$config1" />
+```
+
+**Disable dates:**
+
+Here is a example for `disable`. Please, refer to flatpickr's docs for **more examples**.
+
+```blade
+@php
+    $config1 = [
+        // An array of dates
+        'disable' => [now()->addDays(1), now()->addDays(2), now()->addDays(3)],
+    ];
+@endphp
+
+<x-datepicker label="Date" wire:model="myDate6" icon="o-calendar" :config="$config1" />
+```
+
+**Documentation:** https://mary-ui.com/docs/components/datepicker
+
+##### Diff
+
+This component is a wrapper around **diff2html** with a simpler API to quickly show diff between two strings.
+
+**Install:**
+
+```blade
+<head>
+    ...
+    {{-- DIFF2HTML --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/xcode.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/diff2html@3.4.48/bundles/css/diff2html.min.css" />
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/diff2html@3.4.48/bundles/js/diff2html-ui.min.js"></script>
+</head>
+```
+
+**Examples:**
+
+```blade
+@php
+    $old = '{"age": 24, "name": "Mary"}';
+    $new = '{"age": 27, "name": "Marian"}';
+@endphp
+
+{{-- The `file-name` determines highlight language --}}
+<x-diff :old="$old" :new="$new" file-name="extra.json" />
+```
+
+**Documentation:** https://mary-ui.com/docs/components/diff
+
+##### Image Gallery
+
+This component is a wrapper around **PhotoSwipe** to easily display a nice image gallery. It supports swipe gestures on mobile devices.
+
+**Pro tip:** This a good option to display images from **Image Library** component.
+
+**Setup:**
+
+```blade
+<head>
+    ...
+    {{-- PhotoSwipe --}}
+    <script src="https://cdn.jsdelivr.net/npm/photoswipe@5.4.3/dist/umd/photoswipe.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/photoswipe@5.4.3/dist/umd/photoswipe-lightbox.umd.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/photoswipe@5.4.3/dist/photoswipe.min.css" rel="stylesheet" />
+</head>
+```
+
+**Basic:**
+
+By default, the height of previews will be equal to the original images heights. Use some CSS to set max height.
+
+```blade
+@php
+    $images = [
+        '/photos/photo-1559703248-dcaaec9fab78.jpg',
+        '/photos/photo-1572635148818-ef6fd45eb394.jpg',
+        '/photos/photo-1565098772267-60af42b81ef2.jpg',
+        '/photos/photo-1494253109108-2e30c049369b.jpg',
+        '/photos/photo-1550258987-190a2d41a8ba.jpg',
+    ];
+@endphp
+
+<x-image-gallery :images="$images" class="h-40 rounded-box" />
+```
+
+**Documentation:** https://mary-ui.com/docs/components/image-gallery
+
+##### Markdown Editor
+
+This component is a wrapper around **EasyMDE**. It **automatically** uploads images to **local** or **S3** disks.
+
+**Pro tip:** Also see the **Rich Text Editor** component.
+
+**Setup:**
+
+```blade
+<head>
+    ...
+    {{-- Make sure you have this --}}
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
+
+    {{-- EasyMDE --}}
+    <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css" />
+    <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
+</head>
+```
+
+If you are using the **local disk** remember to run this:
+
+```bash
+php artisan storage:link
+```
+
+**Example:**
+
+For security reasons, uploads only works for **authenticated users**. On all examples we already have a random user logged in.
+
+```blade
+<x-markdown wire:model="text" label="Blog post" />
+```
+
+**Upload settings:**
+
+By default, this component automatically uploads images to **local public disk** into **"markdown/"** folder. You can change it like this.
+
+```blade
+<x-markdown ... disk="s3" folder="super/cool/images" />
+```
+
+**Customizing:**
+
+You can add or override any setting provided by **EasyMDE**. Check its docs for more.
+
+```blade
+@php
+    $config = [
+        'spellChecker' => true,
+        'toolbar' => ['heading', 'bold', 'italic', '|', 'upload-image', 'preview'],
+        'maxHeight' => '200px',
+    ];
+@endphp
+
+<x-markdown wire:model="text2" :config="$config" />
+```
+
+**Preview style:**
+
+Remember that Tailwind get rid of the basic styles of `H1, H2, H3` ... So, you need to put it back on your `app.css` to make the **preview** and **side-by-side** buttons work nice.
+
+We have applied these style on this demo. Feel free to change it.
+
+```css
+.EasyMDEContainer h1 {
+    @apply text-4xl font-bold mb-5;
+}
+
+.EasyMDEContainer h2 {
+    @apply text-2xl font-bold mb-3;
+}
+
+.EasyMDEContainer h3 {
+    @apply text-lg font-bold mb-3;
+}
+```
+
+**Dark mode:**
+
+By default, the EasyMDE does not support natively the dark mode. If you want to support dark mode, here is a example. Feel free to change it.
+
+**Note:** Please, make sure you have configured the dark mode through the **Theme Toggle** component.
+
+```css
+.EasyMDEContainer .CodeMirror {
+    @apply bg-base-100 text-base-content;
+}
+
+.EasyMDEContainer .CodeMirror-cursor {
+    @apply border border-b-base-100;
+}
+
+.EasyMDEContainer .editor-toolbar > button:hover,
+.EasyMDEContainer .editor-toolbar > .active {
+    @apply bg-base-100 text-base-content;
+}
+```
+
+**Documentation:** https://mary-ui.com/docs/components/markdown
+
+##### Rich Text Editor
+
+This component is a wrapper around **TinyMCE**. It **automatically** uploads images and files to **local** or **S3** disks.
+
+**Pro tip:** Also see the **Markdown Editor** component.
+
+**Setup:**
+
+Create an account on TinyMCE site and replace `YOUR-KEY-HERE` on url below. If you don't want to rely on cloud setup, just download TinyMCE SDK and self-host the source code.
+
+Also remember to add your local and production addresses on the allowed domains list.
+
+```blade
+<head>
+    ...
+    {{-- Make sure you have this --}}
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
+
+    {{-- TinyMCE --}}
+    <script src="https://cdn.tiny.cloud/1/YOUR-KEY-HERE/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+</head>
+```
+
+If you are using the **local disk** remember to run this:
+
+```bash
+php artisan storage:link
+```
+
+**Example:**
+
+For security reasons, images and files uploads only works for **authenticated users**. On all examples we already have a random user logged in.
+
+```blade
+<x-editor wire:model="text" label="Description" hint="The full product description" />
+```
+
+**Upload settings:**
+
+By default, this component automatically uploads images and files to **local public disk** into **"editor/"** folder. You can change it like this.
+
+```blade
+<x-editor ... disk="s3" folder="super/cool/images" />
+```
+
+**Customizing:**
+
+You can add or override any setting provided by **TinyMCE**. Check its docs for more.
+
+```blade
+@php
+    $config = [
+        'plugins' => 'autoresize',
+        'min_height' => 150,
+        'max_height' => 250,
+        'statusbar' => false,
+        'toolbar' => 'undo redo | quickimage quicktable',
+        'quickbars_selection_toolbar' => 'bold italic link',
+    ];
+@endphp
+
+<x-editor wire:model="text2" :config="$config" />
+```
+
+**Dark mode:**
+
+Unfortunately, TinyMCE does not support dark mode toggle on the fly. But, if you refresh the page the editor will respect the user's preference.
+
+**Note:** Please, make sure you have configured the dark mode through the **Theme Toggle** component.
+
+**Documentation:** https://mary-ui.com/docs/components/editor
+
+##### Signature
+
+This component is a wrapper around **signature_pad**, for more details refer to its docs.
+
+**Setup:**
+
+```blade
+<head>
+    ...
+    {{-- Signature Pad --}}
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.2.0/dist/signature_pad.umd.min.js"></script>
+</head>
+```
+
+**Usage:**
+
+It just extracts the signature as a **base64 string** after the end of each stroke.
+
+```blade
+<x-signature wire:model="signature1" hint="Please, sign it." />
+```
+
+So, you can display it later as a regular image.
+
+```blade
+<img src="{{ $signature2 }}" class="bg-pink-100 h-24 rounded-lg" />
+```
+
+**Customize:**
+
+```blade
+{{-- Do not set the `width`. It is always 100% --}}
+<x-signature wire:model="signature3" clear-text="Delete it!" height="100" class="border-4 !bg-info/10" />
+```
+
+If you want to set the `width` use an outer div.
+
+```blade
+<div class="w-44">
+    <x-signature ... />
+</div>
+```
+
+You can set any configuration describe at **signature_pad** docs.
+
+```blade
+<x-signature wire:model="signature4" :config="['penColor' => 'red']" />
+```
+
+**Documentation:** https://mary-ui.com/docs/components/signature
+
+#### Main Sections
+
+- **Installation:** https://mary-ui.com/docs/installation
+- **Layout:** https://mary-ui.com/docs/layout
+- **Sidebar:** https://mary-ui.com/docs/sidebar
+- **Customizing:** https://mary-ui.com/docs/customizing
+- **Upgrading:** https://mary-ui.com/docs/upgrading
+- **Bootcamp:** https://mary-ui.com/bootcamp
+
+## Important Notes
+
+1. **No Custom CSS:** MaryUI does NOT ship custom CSS - rely on daisyUI/Tailwind
+2. **Stick to Defaults:** DaisyUI themes are carefully crafted - avoid unnecessary tweaks
+3. **Inline Override:** Use daisyUI/Tailwind classes for customization
+4. **Version Compatibility:** Ensure MaryUI v2, daisyUI 5, Tailwind CSS 4 compatibility
+5. **View Cache:** Always clear view cache after component prefix changes: `php artisan view:clear`

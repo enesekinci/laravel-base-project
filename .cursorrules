@@ -16,10 +16,14 @@
 
 ## MaryUI Guidelines
 
-1. **MaryUI Components:** Always use `<x-mary-*>` syntax (e.g., `<x-mary-header>`, `<x-mary-input>`, `<x-mary-table>`).
-2. **No Raw CSS:** Avoid writing raw CSS classes if a MaryUI component exists.
-3. **Layout:** Use `<x-mary-main>` for admin layout with sidebar and navbar.
-4. **Forms:** Use MaryUI form components (`<x-mary-input>`, `<x-mary-textarea>`, `<x-mary-select>`, etc.)
+**CRITICAL: Always refer to official MaryUI documentation: https://mary-ui.com/docs/installation**
+
+1. **MaryUI Components:** Use `<x-input />`, `<x-button />`, `<x-card />` etc. (no prefix by default, or `<x-mary-*>` if prefix configured)
+2. **No Custom CSS:** MaryUI does NOT ship custom CSS - it relies on daisyUI and Tailwind. Do NOT write custom CSS for MaryUI components.
+3. **Style Customization:** Customize styles by inline overriding daisyUI and Tailwind CSS classes only.
+4. **Component Reference:** See `.cursor/rules/21-maryui-documentation.mdc` for detailed MaryUI documentation reference.
+5. **Layout:** Use MaryUI layout components (`<x-main>`, `<x-nav>`, `<x-sidebar>`, etc.)
+6. **Forms:** Use MaryUI form components (`<x-input>`, `<x-textarea>`, `<x-select>`, etc.)
 
 ## Module-Based Structure
 
