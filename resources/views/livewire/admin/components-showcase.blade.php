@@ -1,48 +1,52 @@
 <div>
     <x-header title="MaryUI Components Showcase" separator>
-        <x-slot:middle class="!justify-end">
+        <x-slot:actions>
             <x-badge value="Tüm Componentler" class="badge-primary" />
         </x-slot>
     </x-header>
 
-    @push('styles')
-        {{-- Third-party libraries CSS --}}
-        {{-- Cropper.js --}}
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" />
+    @once
+        @push('styles')
+            {{-- Third-party libraries CSS --}}
+            {{-- Cropper.js --}}
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" />
 
-        {{-- Sortable.js (no CSS needed) --}}
+            {{-- Sortable.js (no CSS needed) --}}
 
-        {{-- Vanilla Calendar --}}
-        <link href="https://cdn.jsdelivr.net/npm/vanilla-calendar-pro@2.9.6/build/vanilla-calendar.min.css" rel="stylesheet" />
+            {{-- Vanilla Calendar --}}
+            <link href="https://cdn.jsdelivr.net/npm/vanilla-calendar-pro@2.9.6/build/vanilla-calendar.min.css" rel="stylesheet" />
 
-        {{-- Chart.js (no CSS needed) --}}
+            {{-- Chart.js (no CSS needed) --}}
 
-        {{-- Ace Editor --}}
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ace/1.39.1/theme/monokai.min.css" />
+            {{-- Ace Editor --}}
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ace/1.39.1/theme/monokai.min.css" />
 
-        {{-- Flatpickr --}}
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+            {{-- Flatpickr --}}
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
 
-        {{-- diff2html --}}
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/xcode.min.css" />
-        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/diff2html@3.4.48/bundles/css/diff2html.min.css" />
+            {{-- diff2html --}}
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/xcode.min.css" />
+            <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/diff2html@3.4.48/bundles/css/diff2html.min.css" />
 
-        {{-- PhotoSwipe --}}
-        <link href="https://cdn.jsdelivr.net/npm/photoswipe@5.4.3/dist/photoswipe.min.css" rel="stylesheet" />
+            {{-- PhotoSwipe --}}
+            <link href="https://cdn.jsdelivr.net/npm/photoswipe@5.4.3/dist/photoswipe.min.css" rel="stylesheet" />
 
-        {{-- EasyMDE --}}
-        <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css" />
+            {{-- EasyMDE --}}
+            <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css" />
 
-        {{-- TinyMCE (cloud based, no CSS link needed) --}}
+            {{-- TinyMCE (cloud based, no CSS link needed) --}}
 
-        {{-- Signature Pad (no CSS needed) --}}
-    @endpush
+            {{-- Signature Pad (no CSS needed) --}}
+        @endpush
+    @endonce
 
     <div class="space-y-4">
         {{-- Forms Components --}}
         <x-accordion wire:model="accordionGroup">
             <x-collapse name="forms" separator>
-                <x-slot:heading class="text-lg font-semibold">Forms Components</x-slot>
+                <x-slot:heading>
+                    <span class="text-lg font-semibold">Forms Components</span>
+                </x-slot>
                 <x-slot:content>
                     <div class="space-y-6 p-4">
                         {{-- Input --}}
@@ -155,7 +159,9 @@
 
             {{-- List Data Components --}}
             <x-collapse name="list-data" separator>
-                <x-slot:heading class="text-lg font-semibold">List Data Components</x-slot>
+                <x-slot:heading>
+                    <span class="text-lg font-semibold">List Data Components</span>
+                </x-slot>
                 <x-slot:content>
                     <div class="space-y-6 p-4">
                         {{-- Table --}}
@@ -183,7 +189,9 @@
 
             {{-- Menus Components --}}
             <x-collapse name="menus" separator>
-                <x-slot:heading class="text-lg font-semibold">Menus Components</x-slot>
+                <x-slot:heading>
+                    <span class="text-lg font-semibold">Menus Components</span>
+                </x-slot>
                 <x-slot:content>
                     <div class="space-y-6 p-4">
                         {{-- Menu --}}
@@ -214,7 +222,9 @@
 
             {{-- Dialogs Components --}}
             <x-collapse name="dialogs" separator>
-                <x-slot:heading class="text-lg font-semibold">Dialogs Components</x-slot>
+                <x-slot:heading>
+                    <span class="text-lg font-semibold">Dialogs Components</span>
+                </x-slot>
                 <x-slot:content>
                     <div class="space-y-6 p-4">
                         {{-- Modal --}}
@@ -280,7 +290,9 @@
 
             {{-- UI Components --}}
             <x-collapse name="ui" separator>
-                <x-slot:heading class="text-lg font-semibold">UI Components</x-slot>
+                <x-slot:heading>
+                    <span class="text-lg font-semibold">UI Components</span>
+                </x-slot>
                 <x-slot:content>
                     <div class="space-y-6 p-4">
                         {{-- Alert --}}
@@ -508,7 +520,9 @@
 
             {{-- Third-party Components --}}
             <x-collapse name="third-party" separator>
-                <x-slot:heading class="text-lg font-semibold">Third-party Components</x-slot>
+                <x-slot:heading>
+                    <span class="text-lg font-semibold">Third-party Components</span>
+                </x-slot>
                 <x-slot:content>
                     <div class="space-y-6 p-4">
                         {{-- Calendar --}}
@@ -595,43 +609,45 @@
         </x-accordion>
     </div>
 
-    @push('scripts')
-        {{-- Third-party libraries JS --}}
-        {{-- Cropper.js --}}
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+    @once
+        @push('scripts')
+            {{-- Third-party libraries JS --}}
+            {{-- Cropper.js --}}
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 
-        {{-- Sortable.js --}}
-        <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.1/Sortable.min.js"></script>
+            {{-- Sortable.js --}}
+            <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.1/Sortable.min.js"></script>
 
-        {{-- Vanilla Calendar --}}
-        <script src="https://cdn.jsdelivr.net/npm/vanilla-calendar-pro@2.9.6/build/vanilla-calendar.min.js"></script>
+            {{-- Vanilla Calendar --}}
+            <script src="https://cdn.jsdelivr.net/npm/vanilla-calendar-pro@2.9.6/build/vanilla-calendar.min.js"></script>
 
-        {{-- Chart.js --}}
-        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+            {{-- Chart.js --}}
+            <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
-        {{-- Ace Editor --}}
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.39.1/ace.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.39.1/ext-language_tools.min.js"></script>
+            {{-- Ace Editor --}}
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.39.1/ace.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.39.1/ext-language_tools.min.js"></script>
 
-        {{-- Flatpickr --}}
-        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+            {{-- Flatpickr --}}
+            <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
-        {{-- diff2html --}}
-        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/diff2html@3.4.48/bundles/js/diff2html-ui.min.js"></script>
+            {{-- diff2html --}}
+            <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/diff2html@3.4.48/bundles/js/diff2html-ui.min.js"></script>
 
-        {{-- PhotoSwipe --}}
-        <script src="https://cdn.jsdelivr.net/npm/photoswipe@5.4.3/dist/umd/photoswipe.umd.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/photoswipe@5.4.3/dist/umd/photoswipe-lightbox.umd.min.js"></script>
+            {{-- PhotoSwipe --}}
+            <script src="https://cdn.jsdelivr.net/npm/photoswipe@5.4.3/dist/umd/photoswipe.umd.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/photoswipe@5.4.3/dist/umd/photoswipe-lightbox.umd.min.js"></script>
 
-        {{-- EasyMDE --}}
-        <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
+            {{-- EasyMDE --}}
+            <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
 
-        {{-- TinyMCE --}}
-        {{-- Note: Requires API key, using CDN --}}
-        {{-- <script src="https://cdn.tiny.cloud/1/YOUR-KEY-HERE/tinymce/6/tinymce.min.js"></script> --}}
+            {{-- TinyMCE --}}
+            {{-- Note: Requires API key, using CDN --}}
+            {{-- <script src="https://cdn.tiny.cloud/1/YOUR-KEY-HERE/tinymce/6/tinymce.min.js"></script> --}}
 
-        {{-- Signature Pad --}}
-        <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.2.0/dist/signature_pad.umd.min.js"></script>
-    @endpush
+            {{-- Signature Pad --}}
+            <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.2.0/dist/signature_pad.umd.min.js"></script>
+        @endpush
+    @endonce
 </div>
 
