@@ -2,14 +2,17 @@
     <x-header title="Ayarlar" separator progress-indicator></x-header>
 
     <x-card>
-        <div class="tabs tabs-boxed mb-4">
+        <x-tabs wire:model="activeGroup">
             @foreach ($this->groups as $groupKey => $groupLabel)
-                <button wire:click="setGroup('{{ $groupKey }}')" class="tab {{ $activeGroup === $groupKey ? 'tab-active' : '' }}">
-                    {{ $groupLabel }}
-                </button>
+                <x-tab name="{{ $groupKey }}" label="{{ $groupLabel }}">
+                    {{-- Tab içeriği --}}
+                </x-tab>
             @endforeach
-        </div>
+        </x-tabs>
 
-        <livewire:settings.admin.settings-form :group="$activeGroup" />
+        {{-- Aktif tab'a göre form göster --}}
+        <div class="mt-4">
+            <livewire:settings.admin.settings-form :group="$activeGroup" :key="'settings-form-' . $activeGroup" />
+        </div>
     </x-card>
 </div>

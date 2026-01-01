@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Livewire\Admin\ComponentsShowcase;
 
 class ComponentController extends Controller
 {
-    public function index(): \Illuminate\Contracts\View\View
+    public function index(): ComponentsShowcase
     {
-        return view('admin.components');
+        return new ComponentsShowcase;
     }
 }

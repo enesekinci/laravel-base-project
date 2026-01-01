@@ -24,10 +24,7 @@ class SettingsIndex extends Component
         //
     }
 
-    public function setGroup(string $group): void
-    {
-        $this->activeGroup = $group;
-    }
+    // setGroup method'u artık gerekli değil, wire:model otomatik olarak güncelliyor
 
     public function render(SettingService $settingService): View
     {

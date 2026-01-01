@@ -25,8 +25,8 @@ Route::post('/logout', function () {
     return redirect('/');
 })->name('logout');
 
-// Admin Component Showcase
-Route::get('/admin/components', [ComponentController::class, 'index'])->name('admin.components')->middleware(['auth', 'admin']);
+// Admin Component Showcase - Livewire component
+Route::get('/admin/components', \App\Livewire\Admin\ComponentsShowcase::class)->name('admin.components')->middleware(['auth', 'admin']);
 
 // Account routes removed for base project
 
