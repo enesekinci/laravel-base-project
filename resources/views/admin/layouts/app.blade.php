@@ -10,7 +10,7 @@
         @livewireStyles
 
         {{-- TinyMCE for Rich Text Editor --}}
-        <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+        <script src="https://cdn.tiny.cloud/1/g7bsmv36wed2nmiog0237qpsvkogi7dfw4ppiv1r79jfnl92/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 
         {{-- Cropper.js for Image Library --}}
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" />
