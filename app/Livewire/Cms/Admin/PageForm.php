@@ -7,6 +7,7 @@ namespace App\Livewire\Cms\Admin;
 use App\Actions\Cms\CreatePageAction;
 use App\Actions\Cms\UpdatePageAction;
 use App\Models\Cms\Page;
+use Illuminate\Support\Str;
 use Livewire\Component;
 use Mary\Traits\Toast;
 
@@ -29,6 +30,8 @@ class PageForm extends Component
     public ?string $meta_title = null;
 
     public ?string $meta_description = null;
+
+    public bool $slugManuallyEdited = false;
 
     protected array $rules = [
         'title' => ['required', 'string', 'max:255'],
@@ -64,10 +67,36 @@ class PageForm extends Component
     public function updated($propertyName): void
     {
         $this->validateOnly($propertyName);
+
+        // Auto-generate slug from title if not manually edited
+        if ($propertyName === 'title' && ! $this->slugManuallyEdited && empty($this->slug)) {
+            $this->slug = Str::slug($this->title);
+        }
+    }
+
+    public function generateSlug(): void
+    {
+        if (! empty($this->title)) {
+            $this->slug = Str::slug($this->title);
+            $this->slugManuallyEdited = false;
+        }
+    }
+
+    public function updatedSlug(): void
+    {
+        $this->slugManuallyEdited = true;
     }
 
     public function save(CreatePageAction $createAction, UpdatePageAction $updateAction): void
     {
+        // Generate slug if empty
+        if (empty($this->slug) && ! empty($this->title)) {
+            $this->slug = Str::slug($this->title);
+        }
+
+        // Normalize slug
+        $this->slug = Str::slug($this->slug);
+
         $this->validate($this->rules, $this->messages);
 
         $data = [

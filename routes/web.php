@@ -55,7 +55,12 @@ if (config('modules.enabled.blog', true)) {
         Route::get('/posts/{id}/edit', function ($id) {
             return view('admin.blog.posts.edit', ['id' => $id]);
         })->name('posts.edit');
-        // Route::resource('categories', \App\Controllers\Blog\Admin\PostCategoryController::class);
+
+        // Categories
+        Route::get('/categories', \App\Livewire\Blog\Admin\PostCategoriesIndex::class)->name('categories.index');
+        Route::get('/categories/create', \App\Livewire\Blog\Admin\PostCategoryForm::class)->name('categories.create');
+        Route::get('/categories/{id}/edit', \App\Livewire\Blog\Admin\PostCategoryForm::class)->name('categories.edit');
+
         // Route::resource('tags', \App\Controllers\Blog\Admin\PostTagController::class);
     });
 }

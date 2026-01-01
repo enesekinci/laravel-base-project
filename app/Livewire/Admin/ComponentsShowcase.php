@@ -78,7 +78,7 @@ class ComponentsShowcase extends Component
 
     public string $selectedTab = 'users-tab';
 
-    public string $accordionGroup = 'group1';
+    public string $accordionGroup = 'forms';
 
     public bool $collapseShow = false;
 

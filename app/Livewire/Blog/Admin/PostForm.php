@@ -9,12 +9,15 @@ use App\Actions\Blog\UpdatePostAction;
 use App\Models\Blog\Post;
 use App\Models\Blog\PostCategory;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use Mary\Traits\Toast;
+use Mary\Traits\WithMediaSync;
 
 class PostForm extends Component
 {
-    use Toast;
+    use Toast, WithFileUploads, WithMediaSync;
 
     public ?int $postId = null;
 
@@ -36,6 +39,13 @@ class PostForm extends Component
 
     public ?string $meta_description = null;
 
+    // Media
+    public array $files = [];
+
+    public \Illuminate\Support\Collection $library;
+
+    public bool $slugManuallyEdited = false;
+
     protected array $rules = [
         'title' => ['required', 'string', 'max:255'],
         'slug' => ['required', 'string', 'max:255'],
@@ -56,6 +66,7 @@ class PostForm extends Component
     public function mount(?int $id = null): void
     {
         $this->postId = $id;
+        $this->library = new \Illuminate\Support\Collection;
 
         if ($this->postId) {
             $post = Post::with('categories')->findOrFail($this->postId);
@@ -68,16 +79,47 @@ class PostForm extends Component
             $this->category_ids = $post->categories->pluck('id')->toArray();
             $this->meta_title = $post->meta_title;
             $this->meta_description = $post->meta_description;
+
+            // Load existing media library if exists
+            if ($post->media_file_id) {
+                // TODO: Load media library from post
+            }
         }
     }
 
     public function updated($propertyName): void
     {
         $this->validateOnly($propertyName);
+
+        // Auto-generate slug from title if not manually edited
+        if ($propertyName === 'title' && ! $this->slugManuallyEdited && empty($this->slug)) {
+            $this->slug = Str::slug($this->title);
+        }
+    }
+
+    public function generateSlug(): void
+    {
+        if (! empty($this->title)) {
+            $this->slug = Str::slug($this->title);
+            $this->slugManuallyEdited = false;
+        }
+    }
+
+    public function updatedSlug(): void
+    {
+        $this->slugManuallyEdited = true;
     }
 
     public function save(CreatePostAction $createAction, UpdatePostAction $updateAction): void
     {
+        // Generate slug if empty
+        if (empty($this->slug) && ! empty($this->title)) {
+            $this->slug = Str::slug($this->title);
+        }
+
+        // Normalize slug
+        $this->slug = Str::slug($this->slug);
+
         $this->validate($this->rules, $this->messages);
 
         $data = [
@@ -96,9 +138,21 @@ class PostForm extends Component
         if ($this->postId) {
             $post = Post::findOrFail($this->postId);
             $updateAction->handle($post, $data);
+
+            // Sync media if exists
+            if (! empty($this->files) || ! $this->library->isEmpty()) {
+                $this->syncMedia($post);
+            }
+
             $this->success('Yazı başarıyla güncellendi.');
         } else {
-            $createAction->handle($data);
+            $post = $createAction->handle($data);
+
+            // Sync media if exists
+            if (! empty($this->files) || ! $this->library->isEmpty()) {
+                $this->syncMedia($post);
+            }
+
             $this->success('Yazı başarıyla oluşturuldu.');
         }
 

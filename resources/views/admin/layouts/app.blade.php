@@ -8,6 +8,17 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @livewireStyles
+
+        {{-- TinyMCE for Rich Text Editor --}}
+        <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+
+        {{-- Cropper.js for Image Library --}}
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+
+        {{-- Sortable.js for Image Library --}}
+        <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.1/Sortable.min.js"></script>
+
         @stack('styles')
     </head>
     <body class="min-h-screen font-sans antialiased bg-base-200" x-data x-init="$store.theme.init()">
@@ -66,7 +77,7 @@
                     @if (config('modules.enabled.blog', true))
                         <x-menu-sub title="Blog" icon="o-document-text">
                             <x-menu-item title="Yazılar" icon="o-document" link="{{ route('admin.blog.posts.index') }}" />
-                            {{-- <x-menu-item title="Kategoriler" icon="o-folder" link="#" /> --}}
+                            <x-menu-item title="Kategoriler" icon="o-folder" link="{{ route('admin.blog.categories.index') }}" />
                         </x-menu-sub>
                     @endif
 

@@ -20,19 +20,32 @@
                     required
                 />
 
-                <x-input 
-                    label="Slug" 
-                    wire:model="slug" 
-                    icon="o-link"
-                    hint="URL slug (otomatik oluşturulur)"
-                    required
-                />
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text">Slug <span class="text-error">*</span></span>
+                    </label>
+                    <div class="join w-full">
+                        <x-input 
+                            wire:model="slug" 
+                            icon="o-link"
+                            hint="URL slug"
+                            class="join-item flex-1"
+                            required
+                        />
+                        <x-button 
+                            type="button"
+                            icon="o-arrow-path" 
+                            class="join-item btn-primary"
+                            wire:click="generateSlug"
+                            tooltip="Başlıktan slug oluştur"
+                        />
+                    </div>
+                </div>
 
-                <x-textarea 
-                    label="İçerik" 
+                <x-editor 
                     wire:model="content" 
-                    hint="Sayfa içeriği (HTML desteklenir)"
-                    rows="10"
+                    label="İçerik"
+                    hint="Sayfa içeriği (zengin metin editörü)"
                 />
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">

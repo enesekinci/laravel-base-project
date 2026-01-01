@@ -60,3 +60,33 @@ label.input > svg {
     align-self: center !important;
     margin: 0 !important;
 }
+
+/* Fix MaryUI Table Pagination UI */
+.mary-table-pagination {
+    @apply flex items-center justify-between gap-4 mt-4;
+}
+
+.mary-table-pagination .mary-pagination-info {
+    @apply text-sm text-base-content/70;
+}
+
+.mary-table-pagination .mary-pagination-links {
+    @apply flex items-center gap-2;
+}
+
+.mary-table-pagination .mary-pagination-links a,
+.mary-table-pagination .mary-pagination-links span {
+    @apply btn btn-sm;
+}
+
+.mary-table-pagination .mary-pagination-links a {
+    @apply btn-ghost;
+}
+
+.mary-table-pagination .mary-pagination-links span.active {
+    @apply btn-primary;
+}
+
+.mary-table-pagination .mary-pagination-links span.disabled {
+    @apply btn-disabled opacity-50 cursor-not-allowed;
+}
