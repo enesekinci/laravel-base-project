@@ -89,9 +89,10 @@
                 </x-menu>
             </x-slot>
 
-            {{-- The `$slot` goes here --}}
+            {{-- The `$slot` goes here (for Livewire components) or @yield('content') for Blade views --}}
             <x-slot:content>
-                {{ $slot }}
+                {{ $slot ?? '' }}
+                @yield('content')
             </x-slot>
         </x-main>
 
