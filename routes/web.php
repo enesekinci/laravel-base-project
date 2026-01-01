@@ -33,7 +33,7 @@ Route::get('/admin/components', [ComponentController::class, 'index'])->name('ad
 // Admin Web Routes (Livewire components)
 // Base project: Only dashboard and components showcase
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', \App\Livewire\Admin\Dashboard::class)->name('dashboard');
     Route::get('/profile', [\App\Livewire\Admin\Profile::class])->name('profile');
     // Components showcase is already defined above
 });
