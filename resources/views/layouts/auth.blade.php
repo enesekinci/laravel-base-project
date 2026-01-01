@@ -22,6 +22,10 @@
         @yield('content')
 
         @livewireScripts
+
+        {{-- MaryUI Toast Component - LivewireScripts'ten sonra eklenmeli --}}
+        <x-toast />
+
         @stack('scripts')
     </body>
 </html>
