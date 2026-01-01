@@ -1,11 +1,59 @@
+/* Tailwind */
 @import 'tailwindcss';
 
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
-@source '../**/*.blade.php';
-@source '../**/*.js';
+/* daisyUI */
+@plugin "daisyui" {
+    themes:
+        light --default,
+        dark --prefersdark;
+}
+
+/* maryUI */
+@source "../../vendor/robsontenorio/mary/src/View/Components/**/*.php";
+
+/* Dark theme variant support */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Laravel 12 defaults */
+@source "../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php";
+@source "../../storage/framework/views/*.php";
+@source "../**/*.blade.php";
+@source "../**/*.js";
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+/* Card theme transition */
+.card,
+.card-body {
+    transition:
+        background-color 0.3s ease,
+        color 0.3s ease;
+}
+
+/* Fix MaryUI input icon alignment */
+/* Both input and icon should be centered in the label flex container */
+label.input {
+    display: inline-flex !important;
+    align-items: center !important;
+}
+
+/* Input elements should not be flex containers - only their parent label should be */
+/* Input should align to center by being a flex item */
+/* Since input center is 8px above label center, move input down by 8px */
+label.input > input {
+    display: block !important;
+    flex: 1;
+    align-self: center !important;
+    transform: translateY(8px) !important;
+}
+
+/* Icon should be flex item centered in label */
+/* MaryUI uses x-mary-icon which renders SVG directly in label */
+label.input > svg {
+    display: block !important;
+    flex-shrink: 0 !important;
+    align-self: center !important;
+    margin: 0 !important;
 }
