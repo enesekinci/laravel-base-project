@@ -65,24 +65,24 @@
 
                     @if (config('modules.enabled.blog', true))
                         <x-menu-sub title="Blog" icon="o-document-text">
-                            <x-menu-item title="Yazılar" icon="o-document" link="#" />
-                            <x-menu-item title="Kategoriler" icon="o-folder" link="#" />
+                            <x-menu-item title="Yazılar" icon="o-document" link="{{ route('admin.blog.posts.index') }}" />
+                            {{-- <x-menu-item title="Kategoriler" icon="o-folder" link="#" /> --}}
                         </x-menu-sub>
                     @endif
 
                     @if (config('modules.enabled.cms', true))
                         <x-menu-sub title="CMS" icon="o-document-duplicate">
-                            <x-menu-item title="Sayfalar" icon="o-document" link="#" />
-                            <x-menu-item title="Slider'lar" icon="o-photo" link="#" />
+                            <x-menu-item title="Sayfalar" icon="o-document" link="{{ route('admin.cms.pages.index') }}" />
+                            {{-- <x-menu-item title="Slider'lar" icon="o-photo" link="#" /> --}}
                         </x-menu-sub>
                     @endif
 
                     @if (config('modules.enabled.crm', true))
-                        <x-menu-item title="Kullanıcılar" icon="o-users" link="#" />
+                        <x-menu-item title="Kullanıcılar" icon="o-users" link="{{ route('admin.crm.users.index') }}" />
                     @endif
 
                     @if (config('modules.enabled.settings', true))
-                        <x-menu-item title="Ayarlar" icon="o-cog-6-tooth" link="#" />
+                        <x-menu-item title="Ayarlar" icon="o-cog-6-tooth" link="{{ route('admin.settings.index') }}" />
                     @endif
 
                     <x-menu-item title="Components" icon="o-squares-2x2" link="{{ route('admin.components') }}" />
