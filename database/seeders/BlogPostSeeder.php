@@ -7,8 +7,8 @@ namespace Database\Seeders;
 use App\Models\Blog\Post;
 use App\Models\Blog\PostCategory;
 use App\Models\Blog\PostTag;
-use App\Models\Crm\User;
 use App\Models\Media\MediaFile;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 

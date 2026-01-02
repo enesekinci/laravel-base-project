@@ -1,7 +1,5 @@
 <?php
 
-use App\Http\Controllers\Admin\ComponentController;
-use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 

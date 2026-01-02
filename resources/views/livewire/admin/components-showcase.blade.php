@@ -168,9 +168,9 @@
                         <div>
                             <h5 class="font-semibold mb-3">Table</h5>
                             <x-table :headers="$tableHeaders" :rows="$tableRows">
-                                <x-slot:actions="{ $row }">
+                                @scope('cell_actions', $row)
                                     <x-button label="Düzenle" icon="o-pencil" class="btn-sm" />
-                                </x-slot>
+                                @endscope
                             </x-table>
                         </div>
 

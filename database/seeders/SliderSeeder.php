@@ -6,8 +6,8 @@ namespace Database\Seeders;
 
 use App\Models\Cms\Slider;
 use App\Models\Cms\SliderItem;
-use App\Models\Crm\User;
 use App\Models\Media\MediaFile;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class SliderSeeder extends Seeder

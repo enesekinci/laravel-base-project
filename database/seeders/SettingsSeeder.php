@@ -13,61 +13,61 @@ class SettingsSeeder extends Seeder
     {
         // General Settings
         $generalSettings = [
-            'site_name' => 'Laravel Base Project',
-            'site_description' => 'Modern Laravel boilerplate',
-            'site_email' => 'info@example.com',
-            'site_phone' => '+90 555 123 4567',
-            'site_address' => 'Istanbul, Turkey',
-            'maintenance_mode' => false,
+            ['key' => 'site_name', 'value' => 'Laravel Base Project', 'type' => 'string'],
+            ['key' => 'site_description', 'value' => 'Modern Laravel boilerplate', 'type' => 'string'],
+            ['key' => 'site_email', 'value' => 'info@example.com', 'type' => 'string'],
+            ['key' => 'site_phone', 'value' => '+90 555 123 4567', 'type' => 'string'],
+            ['key' => 'site_address', 'value' => 'Istanbul, Turkey', 'type' => 'string'],
+            ['key' => 'maintenance_mode', 'value' => false, 'type' => 'boolean'],
         ];
 
-        foreach ($generalSettings as $key => $value) {
+        foreach ($generalSettings as $setting) {
             Setting::updateOrCreate(
-                ['group' => 'general', 'key' => $key],
+                ['group' => 'general', 'key' => $setting['key']],
                 [
-                    'value' => ['value' => $value],
-                    'type' => \is_bool($value) ? 'boolean' : (is_numeric($value) ? 'integer' : 'string'),
+                    'value' => ['value' => $setting['value']],
+                    'type' => $setting['type'],
                 ]
             );
         }
 
         // Mail Settings
         $mailSettings = [
-            'mail_driver' => 'smtp',
-            'mail_host' => 'smtp.mailtrap.io',
-            'mail_port' => 2525,
-            'mail_username' => '',
-            'mail_password' => '',
-            'mail_encryption' => 'tls',
-            'mail_from_address' => 'noreply@example.com',
-            'mail_from_name' => 'Laravel Base Project',
+            ['key' => 'mail_driver', 'value' => 'smtp', 'type' => 'string'],
+            ['key' => 'mail_host', 'value' => 'smtp.mailtrap.io', 'type' => 'string'],
+            ['key' => 'mail_port', 'value' => 2525, 'type' => 'integer'],
+            ['key' => 'mail_username', 'value' => '', 'type' => 'string'],
+            ['key' => 'mail_password', 'value' => '', 'type' => 'string'],
+            ['key' => 'mail_encryption', 'value' => 'tls', 'type' => 'string'],
+            ['key' => 'mail_from_address', 'value' => 'noreply@example.com', 'type' => 'string'],
+            ['key' => 'mail_from_name', 'value' => 'Laravel Base Project', 'type' => 'string'],
         ];
 
-        foreach ($mailSettings as $key => $value) {
+        foreach ($mailSettings as $setting) {
             Setting::updateOrCreate(
-                ['group' => 'mail', 'key' => $key],
+                ['group' => 'mail', 'key' => $setting['key']],
                 [
-                    'value' => ['value' => $value],
-                    'type' => \is_bool($value) ? 'boolean' : (is_numeric($value) ? 'integer' : 'string'),
+                    'value' => ['value' => $setting['value']],
+                    'type' => $setting['type'],
                 ]
             );
         }
 
         // SMS Settings
         $smsSettings = [
-            'sms_provider' => 'twilio',
-            'sms_api_key' => '',
-            'sms_api_secret' => '',
-            'sms_from_number' => '',
-            'enable_sms_notifications' => false,
+            ['key' => 'sms_provider', 'value' => 'twilio', 'type' => 'string'],
+            ['key' => 'sms_api_key', 'value' => '', 'type' => 'string'],
+            ['key' => 'sms_api_secret', 'value' => '', 'type' => 'string'],
+            ['key' => 'sms_from_number', 'value' => '', 'type' => 'string'],
+            ['key' => 'enable_sms_notifications', 'value' => false, 'type' => 'boolean'],
         ];
 
-        foreach ($smsSettings as $key => $value) {
+        foreach ($smsSettings as $setting) {
             Setting::updateOrCreate(
-                ['group' => 'sms', 'key' => $key],
+                ['group' => 'sms', 'key' => $setting['key']],
                 [
-                    'value' => ['value' => $value],
-                    'type' => \is_bool($value) ? 'boolean' : (is_numeric($value) ? 'integer' : 'string'),
+                    'value' => ['value' => $setting['value']],
+                    'type' => $setting['type'],
                 ]
             );
         }

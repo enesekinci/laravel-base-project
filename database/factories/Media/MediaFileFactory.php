@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Database\Factories\Media;
 
-use App\Models\Crm\User;
 use App\Models\Media\MediaFile;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
