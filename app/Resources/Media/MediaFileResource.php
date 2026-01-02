@@ -6,14 +6,8 @@ namespace App\Resources\Media;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-/**
- * @mixin \App\Models\Media\MediaFile
- */
 class MediaFileResource extends JsonResource
 {
-    /**
-     * @return array<string, mixed>
-     */
     public function toArray($request): array
     {
         return [

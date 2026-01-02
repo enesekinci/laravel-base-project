@@ -6,14 +6,8 @@ namespace App\Resources\Cms;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-/**
- * @mixin \App\Models\Cms\Page
- */
 class PageResource extends JsonResource
 {
-    /**
-     * @return array<string, mixed>
-     */
     public function toArray($request): array
     {
         return [

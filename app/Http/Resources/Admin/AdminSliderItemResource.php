@@ -6,14 +6,8 @@ namespace App\Http\Resources\Admin;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-/**
- * @mixin \App\Models\Cms\SliderItem
- */
 class AdminSliderItemResource extends JsonResource
 {
-    /**
-     * @return array<string, mixed>
-     */
     public function toArray($request): array
     {
         return [
