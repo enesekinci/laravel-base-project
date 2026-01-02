@@ -38,11 +38,6 @@ class AfterLocalTime implements ValidationRule
         $this->clientTime = $request->header('client-time') ?? now()->toDateTimeString();
     }
 
-    /**
-     * Run the validation rule.
-     *
-     * @param  \Closure(string, ?string): \Illuminate\Translation\PotentiallyTranslatedString  $fail
-     */
     public function validate(string $attribute, mixed $value, \Closure $fail): void
     {
         // Timezone yoksa validation geç (opsiyonel)
@@ -62,7 +57,7 @@ class AfterLocalTime implements ValidationRule
                 $fail(__('validation.after_or_equal', [
                     'date' => $clientTime->format('Y-m-d H:i:s'),
                     'attribute' => $attribute,
-                ]))->translate();
+                ]), 'after_or_equal', []);
             }
         } catch (\Exception $e) {
             // Parse hatası olursa validation geç (format hatası başka rule'da yakalanır)

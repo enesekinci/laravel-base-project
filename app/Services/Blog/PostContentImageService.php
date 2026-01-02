@@ -15,8 +15,6 @@ class PostContentImageService
 
     /**
      * HTML içeriğinden resim URL'lerini çıkar
-     *
-     * @return array<string> Resim URL'leri
      */
     public function extractImageUrls(?string $content): array
     {
@@ -44,7 +42,7 @@ class PostContentImageService
      */
     public function cleanupAllImages(Post $post): void
     {
-        $this->contentImageService->cleanupAllImages($post, 'blog');
+        $this->contentImageService->cleanupAllImages($post, 'blog', 'content');
     }
 
     /**
@@ -52,7 +50,7 @@ class PostContentImageService
      */
     public function cleanupLibraryImages(Post $post): void
     {
-        $this->contentImageService->cleanupLibraryImages($post);
+        $this->contentImageService->cleanupLibraryImages($post, 'blog');
     }
 
     /**

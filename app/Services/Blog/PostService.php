@@ -14,9 +14,6 @@ class PostService
         protected PostRepositoryInterface $repository,
     ) {}
 
-    /**
-     * Get all published posts.
-     */
     public function getPublished(): Collection
     {
         return Post::where('status', 'published')
@@ -25,25 +22,16 @@ class PostService
             ->get();
     }
 
-    /**
-     * Create a new post.
-     */
     public function create(array $data): Post
     {
         return $this->repository->create($data);
     }
 
-    /**
-     * Update a post.
-     */
     public function update(Post $post, array $data): bool
     {
         return $this->repository->update($post, $data);
     }
 
-    /**
-     * Delete a post.
-     */
     public function delete(Post $post): bool
     {
         return $this->repository->delete($post);

@@ -9,9 +9,6 @@ use Illuminate\Database\Eloquent\Collection;
 
 class PageService
 {
-    /**
-     * Get all active pages.
-     */
     public function getActive(): Collection
     {
         return Page::where('is_active', true)
@@ -19,27 +16,18 @@ class PageService
             ->get();
     }
 
-    /**
-     * Create a new page.
-     */
     public function create(array $data): Page
     {
         return Page::create($data);
     }
 
-    /**
-     * Update a page.
-     */
     public function update(Page $page, array $data): bool
     {
-        return $page->update($data);
+        return (bool) $page->update($data);
     }
 
-    /**
-     * Delete a page.
-     */
     public function delete(Page $page): bool
     {
-        return $page->delete();
+        return (bool) $page->delete();
     }
 }

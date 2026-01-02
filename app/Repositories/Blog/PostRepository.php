@@ -27,11 +27,11 @@ class PostRepository implements PostRepositoryInterface
 
     public function update(Post $post, array $data): bool
     {
-        return $post->update($data);
+        return (bool) $post->update($data);
     }
 
     public function delete(Post $post): bool
     {
-        return $post->delete();
+        return (bool) $post->delete();
     }
 }

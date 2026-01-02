@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Policies\Blog;
 
 use App\Models\Blog\Post;
-use App\Models\Crm\User;
+use App\Models\User;
 
 class PostPolicy
 {

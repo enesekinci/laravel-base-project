@@ -29,7 +29,6 @@ class IsActiveScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        /* @var \Illuminate\Database\Eloquent\Model<TModel> $model */
         $builder->where($model->getTable().'.is_active', true);
     }
 

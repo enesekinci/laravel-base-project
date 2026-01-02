@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Auth;
 
-use App\Models\Crm\User;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 class AuthService
@@ -37,20 +37,13 @@ class AuthService
         ]);
     }
 
-    /**
-     * Token oluştur.
-     */
     public function createToken(User $user, string $name = 'customer'): string
     {
         return $user->createToken($name)->plainTextToken;
     }
 
-    /**
-     * Token'ı sil (logout).
-     */
     public function revokeToken(User $user): void
     {
-        // Tüm token'ları sil (logout tüm cihazlardan çıkış yapar)
         $user->tokens()->delete();
     }
 }
