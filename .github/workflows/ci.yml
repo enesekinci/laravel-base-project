@@ -1,115 +1,217 @@
-name: CI Pipeline
+name: CI
 
 on:
-  push:
-    branches: [main, develop]
   pull_request:
-    branches: [main, develop]
+  push:
+    branches: ["main"]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  test:
+  lint-static-security:
     runs-on: ubuntu-latest
-
     services:
       postgres:
-        image: postgres:16
+        image: postgres:17
         env:
+          POSTGRES_DB: app_test
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: app_test
         ports:
           - 5432:5432
         options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
+          --health-cmd="pg_isready -U postgres -d app_test"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+      - uses: shivammathur/setup-php@v2
         with:
           php-version: "8.3"
-          extensions: pdo, pdo_pgsql, mbstring, xml, ctype, iconv, intl, json, bcmath
           coverage: none
+          tools: composer:v2
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: "20"
+          cache: "npm"
 
-      - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-interaction --no-progress
+      - name: Cache composer
+        uses: actions/cache@v4
+        with:
+          path: |
+            vendor
+            ~/.composer/cache/files
+          key: ${{ runner.os }}-php83-${{ hashFiles('composer.lock') }}
 
-      - name: Install NPM dependencies
+      - name: Install PHP deps
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Install Node deps
         run: npm ci
 
-      - name: Build assets
+      - name: Build frontend (Vite)
         run: npm run build
 
-      - name: Copy environment file
+      - name: Prepare env
         run: |
-          cp .env.example .env || echo "APP_KEY=" > .env
+          cp .env.ci .env
+          php artisan key:generate --force
+          php artisan optimize:clear
 
-      - name: Generate application key
-        run: php artisan key:generate
-
-      - name: Run database migrations
-        env:
-          DB_CONNECTION: pgsql
-          DB_HOST: localhost
-          DB_PORT: 5432
-          DB_DATABASE: app_test
-          DB_USERNAME: postgres
-          DB_PASSWORD: postgres
+      - name: Migrate
         run: php artisan migrate --force
 
-      - name: Run Pint (Code Formatter)
-        run: composer format-test || composer format
+      - name: Lint + Static
+        run: composer lint
 
-      - name: Run PHPStan (Static Analysis)
-        run: composer analyse || true
+      - name: Composer audit
+        run: composer security
 
-      - name: Run Feature/Unit Tests
+  unit-feature:
+    runs-on: ubuntu-latest
+    needs: [lint-static-security]
+    services:
+      postgres:
+        image: postgres:17
         env:
-          DB_CONNECTION: pgsql
-          DB_HOST: localhost
-          DB_PORT: 5432
-          DB_DATABASE: app_test
-          DB_USERNAME: postgres
-          DB_PASSWORD: postgres
+          POSTGRES_DB: app_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres -d app_test"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          coverage: none
+          tools: composer:v2
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            vendor
+            ~/.composer/cache/files
+          key: ${{ runner.os }}-php83-${{ hashFiles('composer.lock') }}
+
+      - name: Install PHP deps
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Install Node deps
+        run: npm ci
+
+      - name: Build frontend
+        run: npm run build
+
+      - name: Prepare env
+        run: |
+          cp .env.ci .env
+          php artisan key:generate --force
+          php artisan optimize:clear
+
+      - name: Migrate fresh
+        run: php artisan migrate:fresh --force
+
+      - name: Run Unit + Feature
         run: composer test
 
-      - name: Setup Chrome for Dusk
-        uses: browser-actions/setup-chrome@latest
-
-      - name: Start Laravel server
+  e2e-dusk:
+    runs-on: ubuntu-latest
+    needs: [unit-feature]
+    services:
+      postgres:
+        image: postgres:17
         env:
-          DB_CONNECTION: pgsql
-          DB_HOST: localhost
-          DB_PORT: 5432
-          DB_DATABASE: app_test
-          DB_USERNAME: postgres
-          DB_PASSWORD: postgres
-          APP_URL: http://127.0.0.1:8000
-        run: php artisan serve --port=8000 &
-        continue-on-error: true
+          POSTGRES_DB: app_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres -d app_test"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+    steps:
+      - uses: actions/checkout@v4
 
-      - name: Wait for server
-        run: sleep 5
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          coverage: none
+          tools: composer:v2
 
-      - name: Run Dusk Smoke Tests
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            vendor
+            ~/.composer/cache/files
+          key: ${{ runner.os }}-php83-${{ hashFiles('composer.lock') }}
+
+      - name: Install PHP deps
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Install Node deps
+        run: npm ci
+
+      - name: Build frontend
+        run: npm run build
+
+      - name: Install Chrome
+        uses: browser-actions/setup-chrome@v1
+
+      - name: Prepare env for Dusk
+        run: |
+          cp .env.dusk.ci .env
+          php artisan key:generate --force
+          php artisan optimize:clear
+          php artisan migrate:fresh --force
+
+      - name: Start server
+        run: php artisan serve --host=127.0.0.1 --port=8000 >/tmp/laravel.log 2>&1 &
+
+      - name: Install matching ChromeDriver
+        run: php artisan dusk:chrome-driver --detect
+
+      - name: Run Dusk
+        run: composer test:e2e
+
+      - name: Upload Dusk artifacts on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dusk-artifacts
+          path: |
+            tests/Browser/screenshots
+            tests/Browser/console
+            /tmp/laravel.log
+
+  secret-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Gitleaks
+        uses: gitleaks/gitleaks-action@v2
         env:
-          DB_CONNECTION: pgsql
-          DB_HOST: localhost
-          DB_PORT: 5432
-          DB_DATABASE: app_test
-          DB_USERNAME: postgres
-          DB_PASSWORD: postgres
-          APP_URL: http://127.0.0.1:8000
-          APP_ENV: dusk
-        run: php artisan dusk --group=smoke || true
-
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
