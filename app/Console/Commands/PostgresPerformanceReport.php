@@ -13,7 +13,7 @@ class PostgresPerformanceReport extends Command
 
     protected $description = 'PostgreSQL performans raporu - README_pg_performance.md\'deki tüm sorguları çalıştırır';
 
-    public function handle()
+    public function handle(): int
     {
         $section = $this->option('section');
 

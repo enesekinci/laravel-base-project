@@ -10,23 +10,10 @@ use Illuminate\Support\Str;
 
 class ModuleRemoveCommand extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'module:remove {module : Modül adı (örn: blog, cms, crm)} {--dry-run : Sadece göster, silme} {--force : Onay istemeden sil}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Bir modülü ve tüm dosyalarını kaldırır';
 
-    /**
-     * Execute the console command.
-     */
     public function handle(): int
     {
         $module = Str::lower($this->argument('module'));
@@ -110,8 +97,8 @@ class ModuleRemoveCommand extends Command
 
         // Route'lardan kaldır (manuel olarak yapılmalı, uyarı ver)
         $this->warn("\n⚠️  Route'ları manuel olarak kaldırmanız gerekiyor:");
-        $this->line("  - routes/web.php");
-        $this->line("  - routes/api.php");
+        $this->line('  - routes/web.php');
+        $this->line('  - routes/api.php');
 
         // ServiceProvider'ı bootstrap/providers.php'den kaldır (eğer varsa)
         $this->removeFromProviders($modulePascal);
@@ -145,7 +132,7 @@ class ModuleRemoveCommand extends Command
         }
 
         if (empty($tables)) {
-            $this->warn("  ⚠️  Migration dosyalarında tablo bulunamadı, migration oluşturulmadı.");
+            $this->warn('  ⚠️  Migration dosyalarında tablo bulunamadı, migration oluşturulmadı.');
 
             return;
         }
@@ -213,7 +200,7 @@ class ModuleRemoveCommand extends Command
         );
 
         File::put($configPath, $content);
-        $this->line("  ✓ config/modules.php güncellendi");
+        $this->line('  ✓ config/modules.php güncellendi');
     }
 
     /**
@@ -221,7 +208,7 @@ class ModuleRemoveCommand extends Command
      */
     protected function removeFromProviders(string $modulePascal): void
     {
-        $providersPath = bootstrap_path('providers.php');
+        $providersPath = base_path('bootstrap/providers.php');
         if (! File::exists($providersPath)) {
             return;
         }
@@ -236,7 +223,7 @@ class ModuleRemoveCommand extends Command
             $content
         );
 
-        File::put($providersPath, $content);
-        $this->line("  ✓ bootstrap/providers.php güncellendi");
+        File::put($providersPath, (string) $content);
+        $this->line('  ✓ bootstrap/providers.php güncellendi');
     }
 }

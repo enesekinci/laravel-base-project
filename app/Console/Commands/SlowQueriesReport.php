@@ -10,23 +10,10 @@ use Illuminate\Support\Facades\Log;
 
 class SlowQueriesReport extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'db:slow-queries-report';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'PostgreSQL slow queries raporu oluştur (pg_stat_statements kullanarak)';
 
-    /**
-     * Execute the console command.
-     */
     public function handle(): int
     {
         $this->info('Slow queries raporu oluşturuluyor...');

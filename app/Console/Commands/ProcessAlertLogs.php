@@ -19,8 +19,6 @@ class ProcessAlertLogs extends Command
 {
     /**
      * The name and signature of the console command.
-     *
-     * @var string
      */
     protected $signature = 'alerts:process-logs
                             {--min-items=5 : Minimum item sayısı - bu kadar item birikmeden email gönderme}
@@ -28,8 +26,6 @@ class ProcessAlertLogs extends Command
 
     /**
      * The console command description.
-     *
-     * @var string
      */
     protected $description = 'Read alert log files (slow requests, 5xx errors, exceptions), send batch emails, and clear log files';
 
@@ -72,23 +68,23 @@ class ProcessAlertLogs extends Command
         }
 
         if (count($requests) < $minItems) {
-            $this->info('Found ' . count($requests) . " slow requests, but minimum is {$minItems}. Skipping email.");
+            $this->info('Found '.count($requests)." slow requests, but minimum is {$minItems}. Skipping email.");
 
             return;
         }
 
-        $filtered = $this->applyDebouncing($requests, 'slow_request', $debounceSeconds, fn($r) => md5($r['url'] . $r['method']));
+        $filtered = $this->applyDebouncing($requests, 'slow_request', $debounceSeconds, fn ($r) => md5($r['url'].$r['method']));
 
         if (empty($filtered)) {
             return;
         }
 
-        $this->info('Processing ' . count($requests) . ' slow requests (after debouncing: ' . count($filtered) . ')...');
+        $this->info('Processing '.count($requests).' slow requests (after debouncing: '.count($filtered).')...');
 
         BatchSendSlowRequestAlertMail::dispatch($filtered)->onQueue('emails');
         File::put($logPath, '');
 
-        $this->info('Slow request batch email sent with ' . count($filtered) . ' requests. Log file cleared.');
+        $this->info('Slow request batch email sent with '.count($filtered).' requests. Log file cleared.');
     }
 
     /**
@@ -109,23 +105,23 @@ class ProcessAlertLogs extends Command
         }
 
         if (count($errors) < $minItems) {
-            $this->info('Found ' . count($errors) . " 5xx errors, but minimum is {$minItems}. Skipping email.");
+            $this->info('Found '.count($errors)." 5xx errors, but minimum is {$minItems}. Skipping email.");
 
             return;
         }
 
-        $filtered = $this->applyDebouncing($errors, '5xx_error', $debounceSeconds, fn($e) => md5($e['exception'] . $e['url']));
+        $filtered = $this->applyDebouncing($errors, '5xx_error', $debounceSeconds, fn ($e) => md5($e['exception'].$e['url']));
 
         if (empty($filtered)) {
             return;
         }
 
-        $this->info('Processing ' . count($errors) . ' 5xx errors (after debouncing: ' . count($filtered) . ')...');
+        $this->info('Processing '.count($errors).' 5xx errors (after debouncing: '.count($filtered).')...');
 
         BatchSend5xxErrorAlertMail::dispatch($filtered)->onQueue('emails');
         File::put($logPath, '');
 
-        $this->info('5xx error batch email sent with ' . count($filtered) . ' errors. Log file cleared.');
+        $this->info('5xx error batch email sent with '.count($filtered).' errors. Log file cleared.');
     }
 
     /**
@@ -146,30 +142,25 @@ class ProcessAlertLogs extends Command
         }
 
         if (count($exceptions) < $minItems) {
-            $this->info('Found ' . count($exceptions) . " exceptions, but minimum is {$minItems}. Skipping email.");
+            $this->info('Found '.count($exceptions)." exceptions, but minimum is {$minItems}. Skipping email.");
 
             return;
         }
 
-        $filtered = $this->applyDebouncing($exceptions, 'exception', $debounceSeconds, fn($e) => md5($e['exception'] . $e['message']));
+        $filtered = $this->applyDebouncing($exceptions, 'exception', $debounceSeconds, fn ($e) => md5($e['exception'].$e['message']));
 
         if (empty($filtered)) {
             return;
         }
 
-        $this->info('Processing ' . count($exceptions) . ' exceptions (after debouncing: ' . count($filtered) . ')...');
+        $this->info('Processing '.count($exceptions).' exceptions (after debouncing: '.count($filtered).')...');
 
         BatchSendExceptionAlertMail::dispatch($filtered)->onQueue('emails');
         File::put($logPath, '');
 
-        $this->info('Exception batch email sent with ' . count($filtered) . ' exceptions. Log file cleared.');
+        $this->info('Exception batch email sent with '.count($filtered).' exceptions. Log file cleared.');
     }
 
-    /**
-     * Slow request log dosyasını parse et.
-     *
-     * @return array<int, array{method: string, url: string, duration: float, status_code: int, ip: string, user_id: int|null}>
-     */
     protected function parseSlowRequestLog(string $logPath): array
     {
         $content = File::get($logPath);
@@ -204,11 +195,6 @@ class ProcessAlertLogs extends Command
         return $requests;
     }
 
-    /**
-     * 5xx error log dosyasını parse et.
-     *
-     * @return array<int, array{exception: string, message: string, status_code: int, url: string, method: string, ip: string, user_id: int|null, file: string, line: int}>
-     */
     protected function parse5xxErrorLog(string $logPath): array
     {
         $content = File::get($logPath);
@@ -246,11 +232,6 @@ class ProcessAlertLogs extends Command
         return $errors;
     }
 
-    /**
-     * Exception log dosyasını parse et.
-     *
-     * @return array<int, array{exception: string, message: string, url: string|null, method: string, ip: string, user_id: int|null, file: string, line: int}>
-     */
     protected function parseExceptionLog(string $logPath): array
     {
         $content = File::get($logPath);
@@ -287,13 +268,6 @@ class ProcessAlertLogs extends Command
         return $exceptions;
     }
 
-    /**
-     * Debouncing uygula.
-     *
-     * @param  array<int, array<string, mixed>>  $items
-     * @param  callable(array<string, mixed>): string  $hashFunction
-     * @return array<int, array<string, mixed>>
-     */
     protected function applyDebouncing(array $items, string $prefix, int $debounceSeconds, callable $hashFunction): array
     {
         $filtered = [];

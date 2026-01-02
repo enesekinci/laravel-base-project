@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Providers\Domains;
 
 use App\Contracts\Blog\PostRepositoryInterface;
+use App\Observers\Blog\PostObserver;
 use App\Repositories\Blog\PostRepository;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
@@ -34,6 +35,9 @@ class BlogServiceProvider extends ServiceProvider
             \App\Models\Blog\Post::class,
             \App\Policies\Blog\PostPolicy::class
         );
+
+        // Register Observers
+        \App\Models\Blog\Post::observe(PostObserver::class);
 
         // Register Event Listeners
         Event::listen(
