@@ -37,12 +37,15 @@ class LoginController extends Controller
     public function logout(Request $request): \Illuminate\Http\JsonResponse
     {
         $user = $request->user();
-        if ($user) {
-            /** @var \Laravel\Sanctum\PersonalAccessToken|null $token */
-            $token = $user->currentAccessToken();
-            if ($token) {
-                $token->delete();
-            }
+
+        if (! $user) {
+            return response()->json(['message' => 'Logged out']);
+        }
+
+        $token = $user->currentAccessToken();
+
+        if ($token) {
+            $token->delete();
         }
 
         return response()->json(['message' => 'Logged out']);

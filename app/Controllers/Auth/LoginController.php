@@ -94,9 +94,13 @@ class LoginController extends Controller
     )]
     public function logout(Request $request): JsonResponse
     {
-        if ($request->user()) {
-            $this->authService->revokeToken($request->user());
+        $user = $request->user();
+
+        if (! $user) {
+            return response()->json(['message' => 'Logged out']);
         }
+
+        $this->authService->revokeToken($user);
 
         return response()->json(['message' => 'Logged out']);
     }

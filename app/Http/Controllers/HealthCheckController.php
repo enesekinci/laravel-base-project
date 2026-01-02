@@ -29,9 +29,6 @@ class HealthCheckController extends Controller
         ], $allHealthy ? 200 : 503);
     }
 
-    /**
-     * @return array{status: string, message: string}
-     */
     private function checkDatabase(): array
     {
         try {
@@ -49,9 +46,6 @@ class HealthCheckController extends Controller
         ];
     }
 
-    /**
-     * @return array{status: string, message: string}
-     */
     private function checkRedis(): array
     {
         try {
@@ -74,9 +68,6 @@ class HealthCheckController extends Controller
         ];
     }
 
-    /**
-     * @return array{status: string, message: string}
-     */
     private function checkQueue(): array
     {
         try {
@@ -95,9 +86,6 @@ class HealthCheckController extends Controller
         ];
     }
 
-    /**
-     * @return array{status: string, message: string}
-     */
     private function checkDisk(): array
     {
         try {
@@ -123,9 +111,6 @@ class HealthCheckController extends Controller
         ];
     }
 
-    /**
-     * @return array{status: string, message: string}
-     */
     private function checkMemory(): array
     {
         try {
