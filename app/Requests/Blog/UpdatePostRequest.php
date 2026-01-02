@@ -5,21 +5,18 @@ declare(strict_types=1);
 namespace App\Requests\Blog;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class UpdatePostRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return auth()->check();
+        return Auth::check();
     }
 
-    /**
-     * @return array<string, array<int, string>>
-     */
     public function rules(): array
     {
-        /** @var \App\Models\Blog\Post|null $post */
         $post = $this->route('post');
         $postId = $post?->id;
 

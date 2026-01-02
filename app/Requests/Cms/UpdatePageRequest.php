@@ -14,12 +14,8 @@ class UpdatePageRequest extends FormRequest
         return auth()->check();
     }
 
-    /**
-     * @return array<string, array<int, string>>
-     */
     public function rules(): array
     {
-        /** @var \App\Models\Cms\Page|null $page */
         $page = $this->route('page');
         $pageId = $page?->id;
 
