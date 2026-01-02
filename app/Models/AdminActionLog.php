@@ -27,17 +27,11 @@ class AdminActionLog extends Model
         'new_values' => 'array',
     ];
 
-    /**
-     * @return BelongsTo<User, AdminActionLog>
-     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\MorphTo<Model, AdminActionLog>
-     */
     public function model(): \Illuminate\Database\Eloquent\Relations\MorphTo
     {
         return $this->morphTo('model', 'model_type', 'model_id');

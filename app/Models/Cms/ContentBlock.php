@@ -8,14 +8,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-/**
- * @method static \Database\Factories\ContentBlockFactory factory()
- */
 class ContentBlock extends Model
 {
-    /** @use HasFactory<\Database\Factories\ContentBlockFactory> */
     use HasFactory;
-
     use SoftDeletes;
 
     protected $fillable = [

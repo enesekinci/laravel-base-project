@@ -35,9 +35,6 @@ class Collection extends Model
         });
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<MediaFile, Collection>
-     */
     public function mediaFiles(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(MediaFile::class, 'collection', 'name');

@@ -9,14 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-/**
- * @method static \Database\Factories\SliderItemFactory factory()
- */
 class SliderItem extends Model
 {
-    /** @use HasFactory<\Database\Factories\SliderItemFactory> */
     use HasFactory;
-
     use SoftDeletes;
 
     protected $fillable = [
@@ -38,17 +33,11 @@ class SliderItem extends Model
         'meta' => 'array',
     ];
 
-    /**
-     * @return BelongsTo<Slider, SliderItem>
-     */
     public function slider(): BelongsTo
     {
         return $this->belongsTo(Slider::class);
     }
 
-    /**
-     * @return BelongsTo<MediaFile, SliderItem>
-     */
     public function media(): BelongsTo
     {
         return $this->belongsTo(MediaFile::class, 'media_file_id');

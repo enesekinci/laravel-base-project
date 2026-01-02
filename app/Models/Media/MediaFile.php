@@ -4,21 +4,16 @@ declare(strict_types=1);
 
 namespace App\Models\Media;
 
-use App\Models\Crm\User;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
 
-/**
- * @method static \Database\Factories\Media\MediaFileFactory factory()
- */
 class MediaFile extends Model
 {
-    /** @use HasFactory<\Database\Factories\Media\MediaFileFactory> */
     use HasFactory;
-
     use SoftDeletes;
 
     protected $fillable = [
@@ -55,9 +50,6 @@ class MediaFile extends Model
         return Storage::disk($this->disk)->url($this->path);
     }
 
-    /**
-     * @return BelongsTo<User, MediaFile>
-     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
