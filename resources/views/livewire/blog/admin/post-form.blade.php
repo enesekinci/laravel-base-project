@@ -27,7 +27,7 @@
 
                 <x-textarea label="Özet" wire:model="excerpt" hint="Yazı özeti" rows="3" />
 
-                <x-editor wire:model="content" label="İçerik" hint="Yazı içeriği (zengin metin editörü)" />
+                <x-editor wire:model="content" label="İçerik" hint="Yazı içeriği (zengin metin editörü)" disk="r2" folder="blog/editor" />
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <x-select

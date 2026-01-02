@@ -32,7 +32,7 @@ class PostCategoryForm extends Component
 
         // Slug unique rule - edit durumunda mevcut kaydı ignore et
         if ($this->categoryId) {
-            $rules['slug'][] = 'unique:post_categories,slug,'.$this->categoryId;
+            $rules['slug'][] = 'unique:post_categories,slug,' . $this->categoryId;
         } else {
             $rules['slug'][] = 'unique:post_categories,slug';
         }

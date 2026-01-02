@@ -46,7 +46,7 @@ class PostsIndex extends Component
                     ->orWhere('slug', 'like', '%'.$this->search.'%');
             })
             ->orderBy('created_at', 'desc')
-            ->paginate(3);
+            ->paginate(15);
 
         return view('livewire.blog.admin.posts-index', [
             'posts' => $posts,

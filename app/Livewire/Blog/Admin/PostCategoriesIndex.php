@@ -39,8 +39,8 @@ class PostCategoriesIndex extends Component
         $categories = PostCategory::query()
             ->withCount('posts')
             ->when($this->search, function ($query) {
-                $query->where('name', 'like', '%'.$this->search.'%')
-                    ->orWhere('slug', 'like', '%'.$this->search.'%');
+                $query->where('name', 'like', '%' . $this->search . '%')
+                    ->orWhere('slug', 'like', '%' . $this->search . '%');
             })
             ->orderBy('name')
             ->paginate(10);

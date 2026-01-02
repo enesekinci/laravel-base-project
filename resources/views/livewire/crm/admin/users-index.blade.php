@@ -15,13 +15,7 @@
 
             @scope('cell_name', $user)
                 <div class="flex items-center gap-3">
-                    <x-avatar 
-                        :image="$user->avatar ?? null" 
-                        :placeholder="strtoupper(substr($user->name, 0, 2))"
-                        :title="$user->name"
-                        :subtitle="$user->email"
-                        class="!w-12 !h-12"
-                    />
+                    <x-avatar :image="$user->avatar ?? null" :placeholder="strtoupper(substr($user->name, 0, 2))" :title="$user->name" :subtitle="$user->email" class="!w-12 !h-12" />
                     <div>
                         <div class="font-bold">{{ $user->name }}</div>
                         <div class="text-sm opacity-50">{{ $user->email }}</div>

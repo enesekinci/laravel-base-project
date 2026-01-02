@@ -25,7 +25,14 @@
                     </div>
                 </div>
 
-                <x-editor wire:model="content" label="İçerik" hint="Sayfa içeriği (zengin metin editörü)" />
+                <x-editor wire:model="content" label="İçerik" hint="Sayfa içeriği (zengin metin editörü)" disk="r2" folder="cms/editor" />
+
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text">Kapak Görseli</span>
+                    </label>
+                    <x-image-library wire:model="files" wire:library="library" :preview="$library" label="Kapak Görseli" hint="Sayfa için kapak görseli seçin" />
+                </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <x-toggle label="Aktif" wire:model="is_active" hint="Sayfa aktif mi?" />

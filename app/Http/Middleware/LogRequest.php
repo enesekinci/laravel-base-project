@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -91,15 +92,20 @@ class LogRequest
         $fileNames = [];
 
         try {
-            foreach ($request->all() as $item) {
-                if (\is_array($item)) {
-                    foreach ($item as $file) {
-                        if (! \is_array($file) && ! empty($file) && is_file($file)) {
-                            $fileNames[] = $file->getClientOriginalName();
+            // Tüm dosyaları al (array veya tek dosya)
+            $files = $request->allFiles();
+
+            foreach ($files as $key => $file) {
+                if (\is_array($file)) {
+                    // Çoklu dosya yükleme durumu
+                    foreach ($file as $singleFile) {
+                        if ($singleFile instanceof UploadedFile) {
+                            $fileNames[] = $singleFile->getClientOriginalName();
                         }
                     }
-                } elseif (! \is_array($item) && ! empty($item) && is_file($item)) {
-                    $fileNames[] = $item->getClientOriginalName();
+                } elseif ($file instanceof UploadedFile) {
+                    // Tek dosya yükleme durumu
+                    $fileNames[] = $file->getClientOriginalName();
                 }
             }
         } catch (\Exception $ex) {

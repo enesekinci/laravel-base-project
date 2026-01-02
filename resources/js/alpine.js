@@ -118,6 +118,11 @@ function initAlpineStores() {
             const savedTheme = localStorage.getItem('theme') || 'light';
             this.current = savedTheme;
             this.apply(savedTheme);
+
+            // Theme değişikliğini dinle
+            window.addEventListener('theme-changed', () => {
+                this.updateTinyMCE();
+            });
         },
 
         toggle() {
@@ -131,7 +136,60 @@ function initAlpineStores() {
         apply(theme) {
             document.documentElement.setAttribute('data-theme', theme);
             document.body.setAttribute('data-theme', theme);
+
+            // TinyMCE için class attribute'unu da ekle/kaldır
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+
             this.current = theme;
+
+            // TinyMCE editörlerini güncelle
+            this.updateTinyMCE();
+        },
+
+        updateTinyMCE() {
+            // TinyMCE editörlerini dark mode'a göre güncelle
+            if (window.tinymce && window.tinymce.editors) {
+                const isDark = this.current === 'dark';
+                window.tinymce.editors.forEach(editor => {
+                    if (editor && !editor.isHidden()) {
+                        // İçeriği kaydet
+                        const content = editor.getContent();
+                        const targetId = editor.id;
+
+                        // Skin ve content_css'i güncelle
+                        editor.settings.skin = isDark ? 'oxide-dark' : 'oxide';
+                        editor.settings.content_css = isDark ? 'dark' : 'default';
+
+                        // Editörü yeniden başlat
+                        editor.remove();
+
+                        // Kısa bir gecikme ile yeniden başlat (DOM'un güncellenmesi için)
+                        setTimeout(() => {
+                            if (document.getElementById(targetId)) {
+                                window.tinymce.init({
+                                    target: targetId,
+                                    ...editor.settings,
+                                    setup: function (ed) {
+                                        // İçeriği geri yükle
+                                        ed.on('init', () => {
+                                            ed.setContent(content);
+                                        });
+
+                                        // Orijinal setup fonksiyonunu çağır
+                                        if (editor.settings.setup) {
+                                            editor.settings.setup(ed);
+                                        }
+                                    }
+                                });
+                            }
+                        }, 100);
+                    }
+                });
+            }
         }
     });
 }
