@@ -16,21 +16,13 @@ class User extends Authenticatable
     use HasFactory;
     use Notifiable;
 
-    /**
-     * Create a new factory instance for the model.
-     *
-     * @return \Illuminate\Database\Eloquent\Factories\Factory
-     */
-    protected static function newFactory()
+    protected static function newFactory(): \Illuminate\Database\Eloquent\Factories\Factory
     {
-        return \Database\Factories\UserFactory::new();
+        $factory = \Database\Factories\UserFactory::new();
+
+        return $factory;
     }
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
         'name',
         'email',
@@ -39,21 +31,11 @@ class User extends Authenticatable
         'is_admin',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -63,19 +45,11 @@ class User extends Authenticatable
         ];
     }
 
-    /**
-     * Kullanıcı admin mi kontrol et.
-     */
     public function isAdmin(): bool
     {
         return (bool) ($this->is_admin ?? false);
     }
 
-    /**
-     * Send the password reset notification.
-     *
-     * @param  string  $token
-     */
     public function sendPasswordResetNotification($token): void
     {
         $this->notify(new \App\Notifications\ResetPasswordNotification($token));
