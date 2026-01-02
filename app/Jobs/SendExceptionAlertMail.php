@@ -26,7 +26,6 @@ class SendExceptionAlertMail implements ShouldQueue
     public function __construct(
         public \Throwable $exception,
         public ?string $url = null,
-        /** @var array<string, mixed> */
         public ?array $context = [],
     ) {
         // Job'un hangi queue'da çalışacağını belirle

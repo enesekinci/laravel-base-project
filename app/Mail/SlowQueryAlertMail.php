@@ -18,7 +18,6 @@ class SlowQueryAlertMail extends Mailable
     public function __construct(
         public string $sql,
         public float $time,
-        /** @var array<int, mixed> */
         public array $bindings,
     ) {}
 

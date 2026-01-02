@@ -18,7 +18,6 @@ class ExceptionAlertMail extends Mailable
     public function __construct(
         public \Throwable $exception,
         public ?string $url = null,
-        /** @var array<string, mixed> */
         public ?array $context = [],
     ) {}
 

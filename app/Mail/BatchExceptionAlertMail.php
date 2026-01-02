@@ -10,17 +10,11 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-/**
- * Birden fazla exception'ı tek bir email'de gösterir.
- */
 class BatchExceptionAlertMail extends Mailable
 {
     use Queueable;
     use SerializesModels;
 
-    /**
-     * @param  array<int, array{exception: string, message: string, url: string|null, method: string, ip: string, user_id: int|null, file: string, line: int}>  $exceptions
-     */
     public function __construct(
         public array $exceptions,
     ) {}

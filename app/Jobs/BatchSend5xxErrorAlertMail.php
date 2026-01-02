@@ -12,9 +12,6 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
 
-/**
- * Birden fazla 5xx error'u toplayıp tek bir email'de gönderir.
- */
 class BatchSend5xxErrorAlertMail implements ShouldQueue
 {
     use Dispatchable;
@@ -26,9 +23,6 @@ class BatchSend5xxErrorAlertMail implements ShouldQueue
 
     public int $timeout = 30;
 
-    /**
-     * @param  array<int, array{exception: string, message: string, status_code: int, url: string, method: string, ip: string, user_id: int|null, file: string, line: int}>  $errors
-     */
     public function __construct(
         public array $errors,
     ) {

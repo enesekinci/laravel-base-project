@@ -15,20 +15,11 @@ class PostgresPerformanceAlertMail extends Mailable
     use Queueable;
     use SerializesModels;
 
-    /**
-     * Create a new message instance.
-     *
-     * @param  array<string, mixed>  $metrics
-     * @param  array<int, array<string, mixed>>  $issues
-     */
     public function __construct(
         public array $metrics,
         public array $issues,
     ) {}
 
-    /**
-     * Get the message envelope.
-     */
     public function envelope(): Envelope
     {
         $issuesCount = \count($this->issues);
@@ -45,9 +36,6 @@ class PostgresPerformanceAlertMail extends Mailable
         );
     }
 
-    /**
-     * Get the message content definition.
-     */
     public function content(): Content
     {
         return new Content(

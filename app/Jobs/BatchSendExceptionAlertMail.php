@@ -12,9 +12,6 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
 
-/**
- * Birden fazla exception'ı toplayıp tek bir email'de gönderir.
- */
 class BatchSendExceptionAlertMail implements ShouldQueue
 {
     use Dispatchable;
@@ -26,9 +23,6 @@ class BatchSendExceptionAlertMail implements ShouldQueue
 
     public int $timeout = 30;
 
-    /**
-     * @param  array<int, array{exception: string, message: string, url: string|null, method: string, ip: string, user_id: int|null, file: string, line: int}>  $exceptions
-     */
     public function __construct(
         public array $exceptions,
     ) {

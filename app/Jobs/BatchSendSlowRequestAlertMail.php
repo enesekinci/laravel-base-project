@@ -12,9 +12,6 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
 
-/**
- * Birden fazla slow request'i toplayıp tek bir email'de gönderir.
- */
 class BatchSendSlowRequestAlertMail implements ShouldQueue
 {
     use Dispatchable;
@@ -26,9 +23,6 @@ class BatchSendSlowRequestAlertMail implements ShouldQueue
 
     public int $timeout = 30;
 
-    /**
-     * @param  array<int, array{method: string, url: string, duration: float, status_code: int, ip: string, user_id: int|null}>  $requests
-     */
     public function __construct(
         public array $requests,
     ) {

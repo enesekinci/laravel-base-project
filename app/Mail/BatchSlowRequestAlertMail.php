@@ -10,28 +10,22 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-/**
- * Birden fazla slow request'i tek bir email'de gösterir.
- */
 class BatchSlowRequestAlertMail extends Mailable
 {
     use Queueable;
     use SerializesModels;
 
-    /**
-     * @param  array<int, array{method: string, url: string, duration: float, status_code: int, ip: string, user_id: int|null}>  $requests
-     */
     public function __construct(
         public array $requests,
     ) {
-        // Requests'i süreye göre sırala (en yavaştan en hızlıya)
         usort($this->requests, fn ($a, $b) => $b['duration'] <=> $a['duration']);
     }
 
     public function envelope(): Envelope
     {
         $count = count($this->requests);
-        $maxDuration = max(array_column($this->requests, 'duration'));
+        $durations = array_column($this->requests, 'duration');
+        $maxDuration = $durations !== [] ? max($durations) : 0.0;
 
         return new Envelope(
             subject: sprintf(
@@ -52,7 +46,7 @@ class BatchSlowRequestAlertMail extends Mailable
                 'requests' => $this->requests,
                 'totalRequests' => count($this->requests),
                 'totalDuration' => array_sum(array_column($this->requests, 'duration')),
-                'maxDuration' => max(array_column($this->requests, 'duration')),
+                'maxDuration' => count($this->requests) > 0 ? max(array_column($this->requests, 'duration')) : 0.0,
                 'avgDuration' => array_sum(array_column($this->requests, 'duration')) / count($this->requests),
                 'appName' => config('app.name'),
                 'appUrl' => config('app.url'),

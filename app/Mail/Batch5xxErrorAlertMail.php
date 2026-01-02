@@ -10,17 +10,11 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-/**
- * Birden fazla 5xx error'u tek bir email'de gösterir.
- */
 class Batch5xxErrorAlertMail extends Mailable
 {
     use Queueable;
     use SerializesModels;
 
-    /**
-     * @param  array<int, array{exception: string, message: string, status_code: int, url: string, method: string, ip: string, user_id: int|null, file: string, line: int}>  $errors
-     */
     public function __construct(
         public array $errors,
     ) {}

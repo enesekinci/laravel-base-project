@@ -26,7 +26,6 @@ class SendSlowQueryAlertMail implements ShouldQueue
     public function __construct(
         public string $sql,
         public float $time,
-        /** @var array<int, mixed> */
         public array $bindings,
     ) {
         // Job'un hangi queue'da çalışacağını belirle
