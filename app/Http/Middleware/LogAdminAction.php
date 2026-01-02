@@ -4,18 +4,13 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
-use App\Models\Crm\AdminActionLog;
+use App\Models\AdminActionLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class LogAdminAction
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(Request): (Response)  $next
-     */
     public function handle(Request $request, \Closure $next): Response
     {
         $response = $next($request);
@@ -158,10 +153,6 @@ class LogAdminAction
                     if (class_exists($modelClass)) {
                         return $modelClass;
                     }
-                }
-
-                if (class_exists($modelClass)) {
-                    return $modelClass;
                 }
             }
         }

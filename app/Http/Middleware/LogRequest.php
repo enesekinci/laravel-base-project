@@ -11,11 +11,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class LogRequest
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(Request): (Response)  $next
-     */
     public function handle(Request $request, \Closure $next): Response
     {
         // Request logging aktif mi kontrol et
@@ -82,11 +77,6 @@ class LogRequest
         return $response;
     }
 
-    /**
-     * Request'ten file name'leri çıkar.
-     *
-     * @return array<int, string>
-     */
     protected function extractFileNames(Request $request): array
     {
         $fileNames = [];

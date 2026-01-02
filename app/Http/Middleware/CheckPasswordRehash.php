@@ -10,16 +10,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CheckPasswordRehash
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(Request): (Response)  $next
-     */
     public function handle(Request $request, \Closure $next): Response
     {
         $response = $next($request);
 
-        // Sadece authenticated kullanıcılar için
         if (! $request->user()) {
             return $response;
         }

@@ -33,7 +33,6 @@ class QueryCountLoggerMiddleware
         // Request attribute'a başlangıç değeri set et
         $request->attributes->set('query_count', 0);
 
-        /** @var Response $response */
         $response = $next($request);
 
         // Query sayısını request attribute'dan al (eğer başka bir middleware set ettiyse)
