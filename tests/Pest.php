@@ -2,12 +2,15 @@
 
 declare(strict_types=1);
 
+use App\Models\User;
+
 uses(
-    Tests\DuskTestCase::class,
-    // Illuminate\Foundation\Testing\DatabaseMigrations::class,
+    Tests\TestCase::class,
+    Illuminate\Foundation\Testing\RefreshDatabase::class,
 )->in('Browser');
 
-use App\Models\User;
+// Browser testleri için timeout ayarla
+pest()->browser()->timeout(10000);
 
 uses(
     Tests\TestCase::class,
@@ -29,9 +32,9 @@ uses()->beforeEach(function (): void {
 
 // Global test helpers
 if (! function_exists('adminUser')) {
-    function adminUser(): \App\Models\User
+    function adminUser(): User
     {
-        $user = \App\Models\User::factory()->create(['is_admin' => true]);
+        $user = User::factory()->create(['is_admin' => true]);
         test()->actingAs($user, 'web');
 
         return $user;
