@@ -6,6 +6,7 @@ namespace App\Livewire\Blog\Admin;
 
 use App\Actions\Blog\CreatePostAction;
 use App\Actions\Blog\UpdatePostAction;
+use App\Livewire\Concerns\SyncsMedia;
 use App\Models\Blog\Post;
 use App\Models\Blog\PostCategory;
 use Illuminate\Support\Facades\Auth;
@@ -13,11 +14,10 @@ use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Mary\Traits\Toast;
-use Mary\Traits\WithMediaSync;
 
 class PostForm extends Component
 {
-    use Toast, WithFileUploads, WithMediaSync;
+    use SyncsMedia, Toast, WithFileUploads;
 
     public ?int $postId = null;
 
@@ -75,17 +75,20 @@ class PostForm extends Component
             $this->excerpt = $post->excerpt;
             $this->content = $post->content;
             $this->status = $post->status ?? 'draft';
-            $this->published_at = $post->published_at?->format('Y-m-d\TH:i');
+            // published_at Carbon instance olarak cast edilmiş (model'de datetime cast)
+            $publishedAt = $post->published_at;
+            $this->published_at = $publishedAt ? $publishedAt->format('Y-m-d\TH:i') : null;
             $this->category_ids = $post->categories->pluck('id')->toArray();
             $this->meta_title = $post->meta_title;
             $this->meta_description = $post->meta_description;
 
-            // Load existing media library if exists
-            $this->library = $post->library ?? new \Illuminate\Support\Collection;
+            // Load existing media library if exists (model'de AsCollection cast)
+            $libraryValue = $post->library;
+            $this->library = $libraryValue ?? new \Illuminate\Support\Collection;
         }
     }
 
-    public function updated($propertyName): void
+    public function updated(string $propertyName): void
     {
         $this->validateOnly($propertyName);
 
@@ -127,7 +130,7 @@ class PostForm extends Component
             'excerpt' => $this->excerpt,
             'content' => $this->content,
             'status' => $this->status,
-            'published_at' => $this->published_at ? date('Y-m-d H:i:s', strtotime($this->published_at)) : null,
+            'published_at' => $this->published_at ? date('Y-m-d H:i:s', (int) strtotime($this->published_at)) : null,
             'category_ids' => $this->category_ids,
             'meta_title' => $this->meta_title,
             'meta_description' => $this->meta_description,
@@ -156,78 +159,7 @@ class PostForm extends Component
         $this->redirect(route('admin.blog.posts.index'), navigate: true);
     }
 
-    /**
-     * Override syncMedia to fix doesntContain issue
-     */
-    public function syncMedia(
-        \Illuminate\Database\Eloquent\Model $model,
-        string $library = 'library',
-        string $files = 'files',
-        string $storage_subpath = '',
-        $model_field = 'library',
-        string $visibility = 'public',
-        string $disk = 'r2'
-    ): void {
-        // Store new files
-        foreach ($this->{$files} as $index => $file) {
-            $media = $this->{$library}->get($index);
-            if (! $media) {
-                continue;
-            }
-
-            $name = $this->getFileName($media);
-            if (! $name) {
-                continue;
-            }
-
-            $filePath = \Illuminate\Support\Facades\Storage::disk($disk)->putFileAs($storage_subpath, $file, $name, $visibility);
-
-            /** @var \Illuminate\Filesystem\FilesystemAdapter $storage */
-            $storage = \Illuminate\Support\Facades\Storage::disk($disk);
-            $url = $storage->url($filePath);
-
-            // Update library
-            $media['url'] = $url . '?updated_at=' . time();
-            $media['path'] = str($storage_subpath)->finish('/')->append($name)->toString();
-            $this->{$library} = $this->{$library}->replace([$index => $media]);
-        }
-
-        // Delete removed files from library
-        $libraryUuids = $this->{$library}->pluck('uuid')->toArray();
-        $diffs = $model->{$model_field}?->reject(fn($item) => \in_array($item['uuid'] ?? null, $libraryUuids, true)) ?? new \Illuminate\Support\Collection;
-
-        foreach ($diffs as $diff) {
-            if (isset($diff['path'])) {
-                \Illuminate\Support\Facades\Storage::disk($disk)->delete($diff['path']);
-            }
-        }
-
-        // Updates model
-        $model->update([$model_field => $this->{$library}]);
-
-        // Resets files
-        $this->{$files} = [];
-    }
-
-    /**
-     * Get file name from media array
-     */
-    private function getFileName(?array $media): ?string
-    {
-        $name = $media['uuid'] ?? null;
-        if (! $name) {
-            return null;
-        }
-
-        $extension = str($media['url'] ?? '')->afterLast('.')->before('?expires')->toString();
-        if (empty($extension)) {
-            $extension = 'jpg'; // Default extension
-        }
-
-        return "$name.$extension";
-    }
-
-    public function render()
+    public function render(): \Illuminate\Contracts\View\View
     {
         $categories = PostCategory::orderBy('name')->get();
 

@@ -6,16 +6,16 @@ namespace App\Livewire\Cms\Admin;
 
 use App\Actions\Cms\CreatePageAction;
 use App\Actions\Cms\UpdatePageAction;
+use App\Livewire\Concerns\SyncsMedia;
 use App\Models\Cms\Page;
 use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Mary\Traits\Toast;
-use Mary\Traits\WithMediaSync;
 
 class PageForm extends Component
 {
-    use Toast, WithFileUploads, WithMediaSync;
+    use SyncsMedia, Toast, WithFileUploads;
 
     public ?int $pageId = null;
 
@@ -70,12 +70,13 @@ class PageForm extends Component
             $this->meta_title = $page->meta_title;
             $this->meta_description = $page->meta_description;
 
-            // Load existing media library if exists
-            $this->library = $page->library ?? new \Illuminate\Support\Collection;
+            // Load existing media library if exists (model'de AsCollection cast)
+            $libraryValue = $page->library;
+            $this->library = $libraryValue ?? new \Illuminate\Support\Collection;
         }
     }
 
-    public function updated($propertyName): void
+    public function updated(string $propertyName): void
     {
         $this->validateOnly($propertyName);
 
@@ -142,78 +143,7 @@ class PageForm extends Component
         $this->redirect(route('admin.cms.pages.index'), navigate: true);
     }
 
-    /**
-     * Override syncMedia to fix doesntContain issue
-     */
-    public function syncMedia(
-        \Illuminate\Database\Eloquent\Model $model,
-        string $library = 'library',
-        string $files = 'files',
-        string $storage_subpath = '',
-        $model_field = 'library',
-        string $visibility = 'public',
-        string $disk = 'r2'
-    ): void {
-        // Store new files
-        foreach ($this->{$files} as $index => $file) {
-            $media = $this->{$library}->get($index);
-            if (! $media) {
-                continue;
-            }
-
-            $name = $this->getFileName($media);
-            if (! $name) {
-                continue;
-            }
-
-            $filePath = \Illuminate\Support\Facades\Storage::disk($disk)->putFileAs($storage_subpath, $file, $name, $visibility);
-
-            /** @var \Illuminate\Filesystem\FilesystemAdapter $storage */
-            $storage = \Illuminate\Support\Facades\Storage::disk($disk);
-            $url = $storage->url($filePath);
-
-            // Update library
-            $media['url'] = $url.'?updated_at='.time();
-            $media['path'] = str($storage_subpath)->finish('/')->append($name)->toString();
-            $this->{$library} = $this->{$library}->replace([$index => $media]);
-        }
-
-        // Delete removed files from library
-        $libraryUuids = $this->{$library}->pluck('uuid')->toArray();
-        $diffs = $model->{$model_field}?->reject(fn ($item) => \in_array($item['uuid'] ?? null, $libraryUuids, true)) ?? new \Illuminate\Support\Collection;
-
-        foreach ($diffs as $diff) {
-            if (isset($diff['path'])) {
-                \Illuminate\Support\Facades\Storage::disk($disk)->delete($diff['path']);
-            }
-        }
-
-        // Updates model
-        $model->update([$model_field => $this->{$library}]);
-
-        // Resets files
-        $this->{$files} = [];
-    }
-
-    /**
-     * Get file name from media array
-     */
-    private function getFileName(?array $media): ?string
-    {
-        $name = $media['uuid'] ?? null;
-        if (! $name) {
-            return null;
-        }
-
-        $extension = str($media['url'] ?? '')->afterLast('.')->before('?expires')->toString();
-        if (empty($extension)) {
-            $extension = 'jpg'; // Default extension
-        }
-
-        return "$name.$extension";
-    }
-
-    public function render()
+    public function render(): \Illuminate\Contracts\View\View
     {
         return view('livewire.cms.admin.page-form');
     }

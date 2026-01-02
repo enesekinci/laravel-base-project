@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire\Crm\Admin;
 
-use App\Models\Crm\User;
+use App\Models\User;
 use App\Services\Crm\UserService;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
@@ -59,7 +59,7 @@ class UserForm extends Component
         }
     }
 
-    public function updated($propertyName): void
+    public function updated(string $propertyName): void
     {
         $this->validateOnly($propertyName);
     }
@@ -106,7 +106,7 @@ class UserForm extends Component
         $this->redirect(route('admin.crm.users.index'), navigate: true);
     }
 
-    public function render()
+    public function render(): \Illuminate\Contracts\View\View
     {
         return view('livewire.crm.admin.user-form');
     }

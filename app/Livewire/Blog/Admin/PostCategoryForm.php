@@ -32,7 +32,7 @@ class PostCategoryForm extends Component
 
         // Slug unique rule - edit durumunda mevcut kaydı ignore et
         if ($this->categoryId) {
-            $rules['slug'][] = 'unique:post_categories,slug,' . $this->categoryId;
+            $rules['slug'][] = 'unique:post_categories,slug,'.$this->categoryId;
         } else {
             $rules['slug'][] = 'unique:post_categories,slug';
         }
@@ -57,7 +57,7 @@ class PostCategoryForm extends Component
         }
     }
 
-    public function updated($propertyName): void
+    public function updated(string $propertyName): void
     {
         $this->validateOnly($propertyName, $this->rules(), $this->messages);
 
@@ -109,7 +109,7 @@ class PostCategoryForm extends Component
         $this->redirect(route('admin.blog.categories.index'), navigate: true);
     }
 
-    public function render()
+    public function render(): \Illuminate\Contracts\View\View
     {
         return view('livewire.blog.admin.post-category-form');
     }

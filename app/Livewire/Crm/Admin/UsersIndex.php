@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire\Crm\Admin;
 
-use App\Models\Crm\User;
+use App\Models\User;
 use App\Services\Crm\UserService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
@@ -43,9 +43,9 @@ class UsersIndex extends Component
     {
         $users = User::query()
             ->when($this->search, function ($query) {
-                $query->where('name', 'like', '%' . $this->search . '%')
-                    ->orWhere('email', 'like', '%' . $this->search . '%')
-                    ->orWhere('phone', 'like', '%' . $this->search . '%');
+                $query->where('name', 'like', '%'.$this->search.'%')
+                    ->orWhere('email', 'like', '%'.$this->search.'%')
+                    ->orWhere('phone', 'like', '%'.$this->search.'%');
             })
             ->orderBy('name')
             ->paginate(15);
@@ -59,9 +59,7 @@ class UsersIndex extends Component
     {
         $user = User::findOrFail($userId);
 
-        // Kendi hesabını silmeye çalışıyorsa engelle
-        $currentUserId = Auth::id();
-        if ($user->id === $currentUserId) {
+        if ($user->id === Auth::id()) {
             $this->dispatch('toast', message: 'Kendi hesabınızı silemezsiniz.', type: 'error');
 
             return;

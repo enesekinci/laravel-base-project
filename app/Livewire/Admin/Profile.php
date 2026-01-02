@@ -93,7 +93,7 @@ class Profile extends Component
         $this->success('Profil bilgileriniz başarıyla güncellendi.');
     }
 
-    public function render()
+    public function render(): \Illuminate\Contracts\View\View
     {
         return view('livewire.admin.profile');
     }

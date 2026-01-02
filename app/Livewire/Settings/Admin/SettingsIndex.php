@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Livewire\Settings\Admin;
 
-use App\Models\Settings\Setting;
 use App\Services\Settings\SettingService;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;

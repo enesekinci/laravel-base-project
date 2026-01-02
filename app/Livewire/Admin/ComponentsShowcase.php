@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace App\Livewire\Admin;
 
+use App\Livewire\Concerns\SyncsMedia;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Mary\Traits\Toast;
-use Mary\Traits\WithMediaSync;
 
 #[Layout('admin.layouts.app')]
 class ComponentsShowcase extends Component
 {
-    use Toast, WithFileUploads, WithMediaSync;
+    use SyncsMedia, Toast, WithFileUploads;
 
     // Modal & Drawer states
     public bool $showModal1 = false;
@@ -52,7 +52,7 @@ class ComponentsShowcase extends Component
 
     public string $date = '';
 
-    public $file;
+    public ?\Illuminate\Http\UploadedFile $file = null;
 
     public array $files = [];
 
@@ -177,7 +177,7 @@ class ComponentsShowcase extends Component
         ];
     }
 
-    public function render()
+    public function render(): \Illuminate\Contracts\View\View
     {
         // Sample users for select/choices
         $users = [

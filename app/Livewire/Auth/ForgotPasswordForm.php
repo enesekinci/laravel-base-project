@@ -50,7 +50,7 @@ class ForgotPasswordForm extends Component
         ];
     }
 
-    public function render()
+    public function render(): \Illuminate\Contracts\View\View
     {
         return view('livewire.auth.forgot-password-form');
     }

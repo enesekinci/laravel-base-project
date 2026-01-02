@@ -8,7 +8,7 @@ use Livewire\Component;
 #[Layout('admin.layouts.app')]
 class Dashboard extends Component
 {
-    public function render()
+    public function render(): \Illuminate\Contracts\View\View
     {
         return view('livewire.admin.dashboard');
     }
