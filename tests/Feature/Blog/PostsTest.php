@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Livewire\Blog\Admin\PostsIndex;
 use App\Livewire\Blog\Admin\PostForm;
+use App\Livewire\Blog\Admin\PostsIndex;
 use App\Models\Blog\Post;
-use App\Models\Blog\PostCategory;
 use App\Models\User;
 use Livewire\Livewire;
 
@@ -33,7 +32,7 @@ it('yeni yazı oluşturur', function () {
         ->call('save')
         ->assertRedirect(route('admin.blog.posts.index'));
 
-    $this->assertDatabaseHas('posts', [
+    test()->assertDatabaseHas('posts', [
         'title' => 'Yeni Yazı',
         'slug' => 'yeni-yazi',
     ]);
@@ -51,7 +50,7 @@ it('yazı düzenler', function () {
         ->call('save')
         ->assertRedirect(route('admin.blog.posts.index'));
 
-    $this->assertDatabaseHas('posts', [
+    test()->assertDatabaseHas('posts', [
         'id' => $post->id,
         'title' => 'Yeni Başlık',
     ]);
@@ -66,13 +65,13 @@ it('yazı siler', function () {
         ->call('delete', $post->id)
         ->assertDispatched('toast');
 
-    $this->assertSoftDeleted('posts', ['id' => $post->id]);
+    test()->assertSoftDeleted('posts', ['id' => $post->id]);
 });
 
 it('admin olmayan kullanıcı erişemez', function () {
     $user = User::factory()->create(['is_admin' => false]);
 
-    $response = $this->actingAs($user)->get(route('admin.blog.posts.index'));
+    $response = test()->actingAs($user)->get(route('admin.blog.posts.index'));
 
     $response->assertForbidden();
 });

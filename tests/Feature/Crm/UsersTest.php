@@ -2,14 +2,13 @@
 
 declare(strict_types=1);
 
-use App\Livewire\Crm\Admin\UsersIndex;
 use App\Livewire\Crm\Admin\UserForm;
-use App\Models\Crm\User;
-use App\Models\User as BaseUser;
+use App\Livewire\Crm\Admin\UsersIndex;
+use App\Models\User;
 use Livewire\Livewire;
 
 it('kullanıcı listesini görüntüler', function () {
-    $admin = BaseUser::factory()->create(['is_admin' => true]);
+    $admin = User::factory()->create(['is_admin' => true]);
     User::factory()->count(5)->create();
 
     Livewire::actingAs($admin)
@@ -20,7 +19,7 @@ it('kullanıcı listesini görüntüler', function () {
 });
 
 it('kullanıcı arama yapar', function () {
-    $admin = BaseUser::factory()->create(['is_admin' => true]);
+    $admin = User::factory()->create(['is_admin' => true]);
     $user = User::factory()->create(['name' => 'Test User']);
 
     Livewire::actingAs($admin)
@@ -31,7 +30,7 @@ it('kullanıcı arama yapar', function () {
 });
 
 it('yeni kullanıcı oluşturur', function () {
-    $admin = BaseUser::factory()->create(['is_admin' => true]);
+    $admin = User::factory()->create(['is_admin' => true]);
 
     Livewire::actingAs($admin)
         ->test(UserForm::class)
@@ -42,14 +41,14 @@ it('yeni kullanıcı oluşturur', function () {
         ->call('save')
         ->assertRedirect(route('admin.crm.users.index'));
 
-    $this->assertDatabaseHas('users', [
+    test()->assertDatabaseHas('users', [
         'name' => 'Yeni Kullanıcı',
         'email' => 'yeni@example.com',
     ]);
 });
 
 it('kullanıcı düzenler', function () {
-    $admin = BaseUser::factory()->create(['is_admin' => true]);
+    $admin = User::factory()->create(['is_admin' => true]);
     $user = User::factory()->create(['name' => 'Eski İsim']);
 
     Livewire::actingAs($admin)
@@ -60,14 +59,14 @@ it('kullanıcı düzenler', function () {
         ->call('save')
         ->assertRedirect(route('admin.crm.users.index'));
 
-    $this->assertDatabaseHas('users', [
+    test()->assertDatabaseHas('users', [
         'id' => $user->id,
         'name' => 'Yeni İsim',
     ]);
 });
 
 it('kullanıcı siler', function () {
-    $admin = BaseUser::factory()->create(['is_admin' => true]);
+    $admin = User::factory()->create(['is_admin' => true]);
     $user = User::factory()->create();
 
     Livewire::actingAs($admin)
@@ -75,15 +74,15 @@ it('kullanıcı siler', function () {
         ->call('delete', $user->id)
         ->assertDispatched('toast');
 
-    $this->assertDatabaseMissing('users', ['id' => $user->id]);
+    test()->assertDatabaseMissing('users', ['id' => $user->id]);
 });
 
 it('kendi hesabını silemez', function () {
-    $admin = BaseUser::factory()->create(['is_admin' => true]);
+    $admin = User::factory()->create(['is_admin' => true]);
     // Admin'in kendi ID'sini silmeye çalışıyor
     $adminCrmUser = User::find($admin->id);
 
-    if (!$adminCrmUser) {
+    if (! $adminCrmUser) {
         // Eğer admin CRM users tablosunda yoksa, oluştur
         $adminCrmUser = User::factory()->create(['id' => $admin->id, 'email' => $admin->email]);
     }
@@ -93,13 +92,13 @@ it('kendi hesabını silemez', function () {
         ->call('delete', $admin->id)
         ->assertDispatched('toast', message: 'Kendi hesabınızı silemezsiniz.', type: 'error');
 
-    $this->assertDatabaseHas('users', ['id' => $admin->id]);
+    test()->assertDatabaseHas('users', ['id' => $admin->id]);
 });
 
 it('admin olmayan kullanıcı erişemez', function () {
-    $user = BaseUser::factory()->create(['is_admin' => false]);
+    $user = User::factory()->create(['is_admin' => false]);
 
-    $response = $this->actingAs($user)->get(route('admin.crm.users.index'));
+    $response = test()->actingAs($user)->get(route('admin.crm.users.index'));
 
     $response->assertForbidden();
 });

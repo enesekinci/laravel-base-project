@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Models\Crm\User;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);

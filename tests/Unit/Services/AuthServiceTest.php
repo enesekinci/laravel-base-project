@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Models\Crm\User;
+use App\Models\User;
 use App\Services\Auth\AuthService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 

@@ -7,7 +7,7 @@ use App\Models\User;
 use Livewire\Livewire;
 
 it('kayıt sayfasını görüntüler', function () {
-    $response = $this->get(route('register'));
+    $response = test()->get(route('register'));
 
     $response->assertSuccessful();
     $response->assertSeeLivewire(RegisterForm::class);
@@ -21,16 +21,16 @@ it('yeni kullanıcı kaydeder', function () {
         ->set('password', 'password123')
         ->set('password_confirmation', 'password123')
         ->call('register')
-        ->assertRedirect(route('account.dashboard'));
+        ->assertRedirect(route('home'));
 
-    $this->assertDatabaseHas('users', [
+    test()->assertDatabaseHas('users', [
         'name' => 'Test User',
         'email' => 'test@example.com',
         'phone' => '+905551234567',
         'is_admin' => false,
     ]);
 
-    $this->assertAuthenticated();
+    test()->assertAuthenticated();
 });
 
 it('geçersiz email ile kayıt yapamaz', function () {
@@ -45,7 +45,7 @@ it('geçersiz email ile kayıt yapamaz', function () {
         ->assertHasErrors(['email'])
         ->assertNoRedirect();
 
-    $this->assertGuest();
+    test()->assertGuest();
 });
 
 it('şifreler eşleşmediğinde kayıt yapamaz', function () {
@@ -58,7 +58,7 @@ it('şifreler eşleşmediğinde kayıt yapamaz', function () {
         ->assertHasErrors(['password'])
         ->assertNoRedirect();
 
-    $this->assertGuest();
+    test()->assertGuest();
 });
 
 it('kısa şifre ile kayıt yapamaz', function () {
@@ -71,5 +71,5 @@ it('kısa şifre ile kayıt yapamaz', function () {
         ->assertHasErrors(['password'])
         ->assertNoRedirect();
 
-    $this->assertGuest();
+    test()->assertGuest();
 });

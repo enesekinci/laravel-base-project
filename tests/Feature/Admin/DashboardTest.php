@@ -9,7 +9,7 @@ use Livewire\Livewire;
 it('dashboard sayfasını görüntüler', function () {
     $user = User::factory()->create(['is_admin' => true]);
 
-    $response = $this->actingAs($user)->get(route('admin.dashboard'));
+    $response = test()->actingAs($user)->get(route('admin.dashboard'));
 
     $response->assertSuccessful();
     $response->assertSeeLivewire(Dashboard::class);
@@ -18,13 +18,13 @@ it('dashboard sayfasını görüntüler', function () {
 it('admin olmayan kullanıcı dashboard\'a erişemez', function () {
     $user = User::factory()->create(['is_admin' => false]);
 
-    $response = $this->actingAs($user)->get(route('admin.dashboard'));
+    $response = test()->actingAs($user)->get(route('admin.dashboard'));
 
     $response->assertForbidden();
 });
 
 it('giriş yapmamış kullanıcı dashboard\'a erişemez', function () {
-    $response = $this->get(route('admin.dashboard'));
+    $response = test()->get(route('admin.dashboard'));
 
     $response->assertRedirect(route('login'));
 });

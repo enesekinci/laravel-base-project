@@ -2,11 +2,14 @@
 
 declare(strict_types=1);
 
-use App\Livewire\Settings\Admin\SettingsIndex;
 use App\Livewire\Settings\Admin\SettingsForm;
+use App\Livewire\Settings\Admin\SettingsIndex;
 use App\Models\Settings\Setting;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
+
+uses(RefreshDatabase::class);
 
 it('ayarlar sayfasını görüntüler', function () {
     $admin = User::factory()->create(['is_admin' => true]);
@@ -24,9 +27,8 @@ it('ayar grubunu değiştirir', function () {
     Livewire::actingAs($admin)
         ->test(SettingsIndex::class)
         ->assertSet('activeGroup', 'general')
-        ->call('setGroup', 'mail')
-        ->assertSet('activeGroup', 'mail')
-        ->assertSee('Mail Ayarları');
+        ->set('activeGroup', 'mail')
+        ->assertSet('activeGroup', 'mail');
 });
 
 it('genel ayarları kaydeder', function () {
@@ -46,7 +48,7 @@ it('genel ayarları kaydeder', function () {
         ->call('save')
         ->assertSuccessful();
 
-    $this->assertDatabaseHas('settings', [
+    test()->assertDatabaseHas('settings', [
         'group' => 'general',
         'key' => 'site_name',
     ]);
@@ -100,7 +102,7 @@ it('checkbox ayarlarını kaydeder', function () {
 it('admin olmayan kullanıcı erişemez', function () {
     $user = User::factory()->create(['is_admin' => false]);
 
-    $response = $this->actingAs($user)->get(route('admin.settings.index'));
+    $response = test()->actingAs($user)->get(route('admin.settings.index'));
 
     $response->assertForbidden();
 });

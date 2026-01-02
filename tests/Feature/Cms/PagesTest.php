@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Livewire\Cms\Admin\PagesIndex;
 use App\Livewire\Cms\Admin\PageForm;
+use App\Livewire\Cms\Admin\PagesIndex;
 use App\Models\Cms\Page;
 use App\Models\User;
 use Livewire\Livewire;
@@ -42,7 +42,7 @@ it('yeni sayfa oluşturur', function () {
         ->call('save')
         ->assertRedirect(route('admin.cms.pages.index'));
 
-    $this->assertDatabaseHas('pages', [
+    test()->assertDatabaseHas('pages', [
         'title' => 'Yeni Sayfa',
         'slug' => 'yeni-sayfa',
     ]);
@@ -60,7 +60,7 @@ it('sayfa düzenler', function () {
         ->call('save')
         ->assertRedirect(route('admin.cms.pages.index'));
 
-    $this->assertDatabaseHas('pages', [
+    test()->assertDatabaseHas('pages', [
         'id' => $page->id,
         'title' => 'Yeni Başlık',
     ]);
@@ -75,13 +75,13 @@ it('sayfa siler', function () {
         ->call('delete', $page->id)
         ->assertDispatched('toast');
 
-    $this->assertSoftDeleted('pages', ['id' => $page->id]);
+    test()->assertSoftDeleted('pages', ['id' => $page->id]);
 });
 
 it('admin olmayan kullanıcı erişemez', function () {
     $user = User::factory()->create(['is_admin' => false]);
 
-    $response = $this->actingAs($user)->get(route('admin.cms.pages.index'));
+    $response = test()->actingAs($user)->get(route('admin.cms.pages.index'));
 
     $response->assertForbidden();
 });
