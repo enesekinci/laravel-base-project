@@ -18,9 +18,7 @@ class User extends Authenticatable
 
     protected static function newFactory(): \Illuminate\Database\Eloquent\Factories\Factory
     {
-        $factory = \Database\Factories\UserFactory::new();
-
-        return $factory;
+        return \Database\Factories\UserFactory::new();
     }
 
     protected $fillable = [
