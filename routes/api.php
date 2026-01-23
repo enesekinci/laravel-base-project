@@ -88,3 +88,54 @@ if (config('modules.enabled.auth', true)) {
 //         });
 //     });
 // }
+
+// FocusFlow Module API Routes
+if (config('modules.enabled.focusflow', true)) {
+    Route::prefix('v1')->middleware(['api', 'auth:sanctum'])->group(function (): void {
+        // Todos
+        Route::get('/todos', [\App\Http\Controllers\FocusFlow\Api\TodoController::class, 'index']);
+        Route::post('/todos', [\App\Http\Controllers\FocusFlow\Api\TodoController::class, 'store']);
+        Route::get('/todos/{todo}', [\App\Http\Controllers\FocusFlow\Api\TodoController::class, 'show']);
+        Route::put('/todos/{todo}', [\App\Http\Controllers\FocusFlow\Api\TodoController::class, 'update']);
+        Route::delete('/todos/{todo}', [\App\Http\Controllers\FocusFlow\Api\TodoController::class, 'destroy']);
+        Route::post('/todos/{todo}/complete', [\App\Http\Controllers\FocusFlow\Api\TodoController::class, 'complete']);
+        Route::post('/todos/reorder', [\App\Http\Controllers\FocusFlow\Api\TodoController::class, 'reorder']);
+
+        // Pomodoro
+        Route::get('/pomodoro/sessions', [\App\Http\Controllers\FocusFlow\Api\PomodoroController::class, 'sessions']);
+        Route::post('/pomodoro/sessions', [\App\Http\Controllers\FocusFlow\Api\PomodoroController::class, 'startSession']);
+        Route::post('/pomodoro/sessions/{session}/complete', [\App\Http\Controllers\FocusFlow\Api\PomodoroController::class, 'completeSession']);
+        Route::get('/pomodoro/settings', [\App\Http\Controllers\FocusFlow\Api\PomodoroController::class, 'settings']);
+        Route::put('/pomodoro/settings', [\App\Http\Controllers\FocusFlow\Api\PomodoroController::class, 'updateSettings']);
+        Route::get('/pomodoro/today-count', [\App\Http\Controllers\FocusFlow\Api\PomodoroController::class, 'todayCount']);
+
+        // Reminders
+        Route::get('/reminders', [\App\Http\Controllers\FocusFlow\Api\ReminderController::class, 'index']);
+        Route::post('/reminders', [\App\Http\Controllers\FocusFlow\Api\ReminderController::class, 'store']);
+        Route::get('/reminders/{reminder}', [\App\Http\Controllers\FocusFlow\Api\ReminderController::class, 'show']);
+        Route::put('/reminders/{reminder}', [\App\Http\Controllers\FocusFlow\Api\ReminderController::class, 'update']);
+        Route::delete('/reminders/{reminder}', [\App\Http\Controllers\FocusFlow\Api\ReminderController::class, 'destroy']);
+        Route::post('/reminders/{reminder}/complete', [\App\Http\Controllers\FocusFlow\Api\ReminderController::class, 'complete']);
+        Route::post('/reminders/{reminder}/snooze', [\App\Http\Controllers\FocusFlow\Api\ReminderController::class, 'snooze']);
+        Route::get('/reminders/upcoming', [\App\Http\Controllers\FocusFlow\Api\ReminderController::class, 'upcoming']);
+
+        // Goals
+        Route::get('/goals', [\App\Http\Controllers\FocusFlow\Api\GoalController::class, 'index']);
+        Route::post('/goals', [\App\Http\Controllers\FocusFlow\Api\GoalController::class, 'store']);
+        Route::get('/goals/{goal}', [\App\Http\Controllers\FocusFlow\Api\GoalController::class, 'show']);
+        Route::put('/goals/{goal}', [\App\Http\Controllers\FocusFlow\Api\GoalController::class, 'update']);
+        Route::delete('/goals/{goal}', [\App\Http\Controllers\FocusFlow\Api\GoalController::class, 'destroy']);
+        Route::post('/goals/{goal}/complete', [\App\Http\Controllers\FocusFlow\Api\GoalController::class, 'complete']);
+
+        // Dashboard
+        Route::get('/dashboard', [\App\Http\Controllers\FocusFlow\Api\DashboardController::class, 'index']);
+
+        // Statistics
+        Route::get('/statistics', [\App\Http\Controllers\FocusFlow\Api\StatisticsController::class, 'index']);
+        Route::get('/statistics/daily', [\App\Http\Controllers\FocusFlow\Api\StatisticsController::class, 'daily']);
+
+        // Achievements
+        Route::get('/achievements', [\App\Http\Controllers\FocusFlow\Api\AchievementController::class, 'index']);
+        Route::get('/achievements/{achievement}', [\App\Http\Controllers\FocusFlow\Api\AchievementController::class, 'show']);
+    });
+}

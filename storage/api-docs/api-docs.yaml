@@ -1,0 +1,1620 @@
+openapi: 3.0.0
+info:
+  title: 'Laravel Base Project API'
+  description: 'Laravel Base Project API Documentation'
+  version: 1.0.0
+servers:
+  -
+    url: 'http://my-default-host.com'
+    description: 'API Server'
+paths:
+  /api/v1/auth/login:
+    post:
+      tags:
+        - Auth
+      summary: 'Kullanıcı girişi'
+      operationId: 2b421df289e7b26ddec519f40b474da4
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: user@example.com
+                password:
+                  type: string
+                  format: password
+                  example: password123
+              type: object
+      responses:
+        200:
+          description: 'Başarılı giriş'
+          content:
+            application/json:
+              schema:
+                properties:
+                  token:
+                    type: string
+                    example: 1|abcdef123456
+                  user:
+                    type: object
+                type: object
+        422:
+          description: 'Geçersiz kimlik bilgileri'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: 'Invalid credentials'
+                type: object
+  /api/v1/auth/logout:
+    post:
+      tags:
+        - Auth
+      summary: 'Kullanıcı çıkışı'
+      operationId: 2158036c2c4a6f3649fa83cd01c67684
+      responses:
+        200:
+          description: 'Başarılı çıkış'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: 'Logged out'
+                type: object
+      security:
+        -
+          sanctum: []
+  /api/v1/auth/me:
+    get:
+      tags:
+        - Auth
+      summary: 'Mevcut kullanıcı bilgilerini getir'
+      operationId: 311695268ea21584c6cadffe24b7b0e0
+      responses:
+        200:
+          description: 'Kullanıcı bilgileri'
+          content:
+            application/json:
+              schema:
+                properties:
+                  user:
+                    type: object
+                type: object
+        401:
+          description: 'Yetkilendirme hatası'
+      security:
+        -
+          sanctum: []
+  /api/v1/auth/register:
+    post:
+      tags:
+        - Auth
+      summary: 'Yeni kullanıcı kaydı'
+      operationId: f782333d320d88c2d89ad6b2292b314b
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - name
+                - email
+                - password
+                - password_confirmation
+              properties:
+                name:
+                  type: string
+                  example: 'John Doe'
+                email:
+                  type: string
+                  format: email
+                  example: user@example.com
+                phone:
+                  type: string
+                  example: '+905551234567'
+                  nullable: true
+                password:
+                  type: string
+                  format: password
+                  example: password123
+                password_confirmation:
+                  type: string
+                  format: password
+                  example: password123
+              type: object
+      responses:
+        201:
+          description: 'Kullanıcı başarıyla oluşturuldu'
+          content:
+            application/json:
+              schema:
+                properties:
+                  token:
+                    type: string
+                    example: 1|abcdef123456
+                  user:
+                    type: object
+                type: object
+        422:
+          description: 'Validasyon hatası'
+  /api/v1/achievements:
+    get:
+      tags:
+        - 'FocusFlow Achievements'
+      summary: 'Get all achievements and user progress'
+      operationId: 53a709ae9c5c6d18249dcb35447954c0
+      responses:
+        200:
+          description: 'Achievements data'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    description:
+                      type: string
+                    icon:
+                      type: string
+                      nullable: true
+                    condition_type:
+                      type: string
+                    condition_value:
+                      type: integer
+                    is_unlocked:
+                      type: boolean
+                    unlocked_at:
+                      type: string
+                      format: date-time
+                      nullable: true
+                  type: object
+      security:
+        -
+          sanctum: []
+  '/api/v1/achievements/{id}':
+    get:
+      tags:
+        - 'FocusFlow Achievements'
+      summary: 'Get a specific achievement'
+      operationId: 26103882964c79164cbc2f1d7b622a89
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: 'Achievement details'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Achievement'
+      security:
+        -
+          sanctum: []
+  /api/v1/dashboard:
+    get:
+      tags:
+        - 'FocusFlow Dashboard'
+      summary: 'Get dashboard overview'
+      operationId: 0af155f4a23523c6cd1d354353465dcb
+      responses:
+        200:
+          description: 'Dashboard data'
+          content:
+            application/json:
+              schema:
+                properties:
+                  today_todos:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Todo'
+                  upcoming_reminders:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Reminder'
+                  today_pomodoro_count:
+                    type: integer
+                  today_stats:
+                    type: object
+                  active_goals:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Goal'
+                type: object
+      security:
+        -
+          sanctum: []
+  /api/v1/goals:
+    get:
+      tags:
+        - 'FocusFlow Goals'
+      summary: 'Get all goals'
+      operationId: 118d00b61f67ab24537caed7cd21b42c
+      parameters:
+        -
+          name: type
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - daily
+              - weekly
+              - monthly
+              - yearly
+        -
+          name: completed
+          in: query
+          required: false
+          schema:
+            type: boolean
+      responses:
+        200:
+          description: 'List of goals'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Goal'
+      security:
+        -
+          sanctum: []
+    post:
+      tags:
+        - 'FocusFlow Goals'
+      summary: 'Create a new goal'
+      operationId: 8c696ef1752aa200023b373435d79320
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - title
+                - type
+                - start_date
+              properties:
+                title:
+                  type: string
+                  example: 'Learn PHP'
+                description:
+                  type: string
+                  nullable: true
+                type:
+                  type: string
+                  enum:
+                    - daily
+                    - weekly
+                    - monthly
+                    - yearly
+                start_date:
+                  type: string
+                  format: date
+                  example: '2025-01-01'
+                target_date:
+                  type: string
+                  format: date
+                  nullable: true
+                notes:
+                  type: string
+                  nullable: true
+                sub_goals:
+                  type: array
+                  items:
+                    properties:
+                      title:
+                        type: string
+                        example: Basics
+                    type: object
+              type: object
+      responses:
+        201:
+          description: 'Goal created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Goal'
+      security:
+        -
+          sanctum: []
+  '/api/v1/goals/{id}':
+    get:
+      tags:
+        - 'FocusFlow Goals'
+      summary: 'Get a specific goal'
+      operationId: 6383c722bd8bb549a8d44d5d6f2e8392
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: 'Goal details'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Goal'
+      security:
+        -
+          sanctum: []
+    put:
+      tags:
+        - 'FocusFlow Goals'
+      summary: 'Update a goal'
+      operationId: cee9c5638ce987bfced6946b7bb2d98f
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                  nullable: true
+                type:
+                  type: string
+                  enum:
+                    - daily
+                    - weekly
+                    - monthly
+                    - yearly
+                target_date:
+                  type: string
+                  format: date
+                  nullable: true
+                notes:
+                  type: string
+                  nullable: true
+                progress:
+                  type: integer
+                  maximum: 100
+                  minimum: 0
+                sub_goals:
+                  type: array
+                  items:
+                    properties:
+                      title:
+                        type: string
+                      completed:
+                        type: boolean
+                    type: object
+              type: object
+      responses:
+        200:
+          description: 'Goal updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Goal'
+      security:
+        -
+          sanctum: []
+    delete:
+      tags:
+        - 'FocusFlow Goals'
+      summary: 'Delete a goal'
+      operationId: f7b1477b3da47afca837913d03a49bc8
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: 'Goal deleted'
+      security:
+        -
+          sanctum: []
+  '/api/v1/goals/{id}/complete':
+    post:
+      tags:
+        - 'FocusFlow Goals'
+      summary: 'Complete a goal'
+      operationId: 81207e9aad94949a9ff9c8091d24c1cd
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: 'Goal completed'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Goal'
+      security:
+        -
+          sanctum: []
+  /api/v1/pomodoro/sessions:
+    get:
+      tags:
+        - 'FocusFlow Pomodoro'
+      summary: 'Get pomodoro sessions'
+      operationId: 99aed8072ea2a96e1db549cca0506cc0
+      parameters:
+        -
+          name: date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+        -
+          name: type
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - work
+              - short-break
+              - long-break
+      responses:
+        200:
+          description: 'List of sessions'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PomodoroSession'
+      security:
+        -
+          sanctum: []
+    post:
+      tags:
+        - 'FocusFlow Pomodoro'
+      summary: 'Start a new pomodoro session'
+      operationId: ebf527fbf34819b32550ebdadeda9c23
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                todo_id:
+                  type: integer
+                  nullable: true
+                task_title:
+                  type: string
+                  nullable: true
+                duration:
+                  type: integer
+                  example: 25
+                type:
+                  type: string
+                  enum:
+                    - work
+                    - short-break
+                    - long-break
+                  example: work
+              type: object
+      responses:
+        201:
+          description: 'Session started'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PomodoroSession'
+      security:
+        -
+          sanctum: []
+  '/api/v1/pomodoro/sessions/{id}/complete':
+    post:
+      tags:
+        - 'FocusFlow Pomodoro'
+      summary: 'Complete a pomodoro session'
+      operationId: 27379ee5d77b836defd371b5cf830ecf
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: 'Session completed'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PomodoroSession'
+      security:
+        -
+          sanctum: []
+  /api/v1/pomodoro/settings:
+    get:
+      tags:
+        - 'FocusFlow Pomodoro'
+      summary: 'Get pomodoro settings'
+      operationId: 6fbcd961b3a40f70f4abae1551713ed4
+      responses:
+        200:
+          description: 'User settings'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PomodoroSetting'
+      security:
+        -
+          sanctum: []
+    put:
+      tags:
+        - 'FocusFlow Pomodoro'
+      summary: 'Update pomodoro settings'
+      operationId: ea845661a9ffbcf62449cc434d3a1aab
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                work_duration:
+                  type: integer
+                short_break_duration:
+                  type: integer
+                long_break_duration:
+                  type: integer
+                pomodoros_until_long_break:
+                  type: integer
+                auto_start_breaks:
+                  type: boolean
+                auto_start_pomodoros:
+                  type: boolean
+                sound_enabled:
+                  type: boolean
+                notification_enabled:
+                  type: boolean
+                sound_volume:
+                  type: number
+                  format: float
+              type: object
+      responses:
+        200:
+          description: 'Settings updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PomodoroSetting'
+      security:
+        -
+          sanctum: []
+  /api/v1/pomodoro/today-count:
+    get:
+      tags:
+        - 'FocusFlow Pomodoro'
+      summary: "Get today's pomodoro count"
+      operationId: 975ac9c4d4429588547754da471b687a
+      responses:
+        200:
+          description: "Today's count"
+          content:
+            application/json:
+              schema:
+                properties:
+                  count:
+                    type: integer
+                    example: 5
+                type: object
+      security:
+        -
+          sanctum: []
+  /api/v1/reminders:
+    get:
+      tags:
+        - 'FocusFlow Reminders'
+      summary: 'Get all reminders'
+      operationId: ce75d32c6d8d9238db7cdc92cc0c0a4b
+      parameters:
+        -
+          name: completed
+          in: query
+          required: false
+          schema:
+            type: boolean
+        -
+          name: upcoming
+          in: query
+          required: false
+          schema:
+            type: boolean
+        -
+          name: category
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: 'List of reminders'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Reminder'
+      security:
+        -
+          sanctum: []
+    post:
+      tags:
+        - 'FocusFlow Reminders'
+      summary: 'Create a new reminder'
+      operationId: 95a1cbacbb5e88e4002b73df3cc0ae3a
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - title
+                - datetime
+              properties:
+                title:
+                  type: string
+                  example: 'New Reminder'
+                description:
+                  type: string
+                  nullable: true
+                datetime:
+                  type: string
+                  format: date-time
+                  example: '2025-01-21T14:30:00Z'
+                priority:
+                  type: string
+                  enum:
+                    - Düşük
+                    - Orta
+                    - Yüksek
+                    - Kritik
+                category:
+                  type: string
+                  example: Kişisel
+                recurring_config:
+                  type: object
+                  nullable: true
+              type: object
+      responses:
+        201:
+          description: 'Reminder created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reminder'
+      security:
+        -
+          sanctum: []
+  '/api/v1/reminders/{id}':
+    get:
+      tags:
+        - 'FocusFlow Reminders'
+      summary: 'Get a specific reminder'
+      operationId: 038eaab92e569aeb9eeab50025f39197
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: 'Reminder details'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reminder'
+      security:
+        -
+          sanctum: []
+    put:
+      tags:
+        - 'FocusFlow Reminders'
+      summary: 'Update a reminder'
+      operationId: cdc1dee7ff68bf76e2783864988686ec
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                  nullable: true
+                datetime:
+                  type: string
+                  format: date-time
+                priority:
+                  type: string
+                  enum:
+                    - Düşük
+                    - Orta
+                    - Yüksek
+                    - Kritik
+                category:
+                  type: string
+                recurring_config:
+                  type: object
+                  nullable: true
+              type: object
+      responses:
+        200:
+          description: 'Reminder updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reminder'
+      security:
+        -
+          sanctum: []
+    delete:
+      tags:
+        - 'FocusFlow Reminders'
+      summary: 'Delete a reminder'
+      operationId: 5c5dbac557110ec550d5f94b8d05da6b
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: 'Reminder deleted'
+      security:
+        -
+          sanctum: []
+  '/api/v1/reminders/{id}/complete':
+    post:
+      tags:
+        - 'FocusFlow Reminders'
+      summary: 'Complete a reminder'
+      operationId: 850684f5dc02b19cd0b624b8fb97a6c7
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: 'Reminder completed'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reminder'
+      security:
+        -
+          sanctum: []
+  '/api/v1/reminders/{id}/snooze':
+    post:
+      tags:
+        - 'FocusFlow Reminders'
+      summary: 'Snooze a reminder'
+      operationId: 3cf6d967b6c0ee9bbad8d840cc035245
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - minutes
+              properties:
+                minutes:
+                  type: integer
+                  enum:
+                    - 5
+                    - 10
+                    - 30
+                  example: 10
+              type: object
+      responses:
+        200:
+          description: 'Reminder snoozed'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reminder'
+      security:
+        -
+          sanctum: []
+  /api/v1/reminders/upcoming:
+    get:
+      tags:
+        - 'FocusFlow Reminders'
+      summary: 'Get upcoming reminders'
+      operationId: ee243091a741df38b26c2eecdd93bf8a
+      parameters:
+        -
+          name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+      responses:
+        200:
+          description: 'Upcoming reminders'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Reminder'
+      security:
+        -
+          sanctum: []
+  /api/v1/statistics:
+    get:
+      tags:
+        - 'FocusFlow Statistics'
+      summary: 'Get statistics for a period'
+      operationId: cf55e13c4b9ad35f0e8b383cd76c26bd
+      parameters:
+        -
+          name: period
+          in: query
+          required: false
+          schema:
+            type: string
+            default: week
+            enum:
+              - week
+              - month
+        -
+          name: year
+          in: query
+          required: false
+          schema:
+            type: integer
+        -
+          name: month
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        200:
+          description: 'Statistics data'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Statistic'
+      security:
+        -
+          sanctum: []
+  /api/v1/statistics/daily:
+    get:
+      tags:
+        - 'FocusFlow Statistics'
+      summary: 'Get daily statistics'
+      operationId: fd0e06b86d249eaafd1930c959b56921
+      parameters:
+        -
+          name: date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+      responses:
+        200:
+          description: 'Daily statistics'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Statistic'
+      security:
+        -
+          sanctum: []
+  /api/v1/todos:
+    get:
+      tags:
+        - 'FocusFlow Todos'
+      summary: 'Get all todos'
+      operationId: efcabe2a320c2121610cfe7c5970060c
+      parameters:
+        -
+          name: completed
+          in: query
+          description: 'Filter by completion status'
+          required: false
+          schema:
+            type: boolean
+      responses:
+        200:
+          description: 'List of todos'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Todo'
+      security:
+        -
+          sanctum: []
+    post:
+      tags:
+        - 'FocusFlow Todos'
+      summary: 'Create a new todo'
+      operationId: 0bef9d64d28d338779319486730dee88
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - title
+              properties:
+                title:
+                  type: string
+                  example: 'New Task'
+                description:
+                  type: string
+                  nullable: true
+                category:
+                  type: string
+                  example: İş
+                priority:
+                  type: string
+                  enum:
+                    - Düşük
+                    - Orta
+                    - Yüksek
+                    - Kritik
+                  example: Orta
+                deadline:
+                  type: string
+                  format: date-time
+                  nullable: true
+                order:
+                  type: integer
+                  example: 0
+                subtasks:
+                  type: array
+                  items:
+                    properties:
+                      title:
+                        type: string
+                        example: 'Subtask 1'
+                      order:
+                        type: integer
+                        example: 0
+                    type: object
+              type: object
+      responses:
+        201:
+          description: 'Todo created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+      security:
+        -
+          sanctum: []
+  '/api/v1/todos/{id}':
+    get:
+      tags:
+        - 'FocusFlow Todos'
+      summary: 'Get a specific todo'
+      operationId: 905e163a9a4d2daee09e5cf98d263d85
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: 'Todo details'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+      security:
+        -
+          sanctum: []
+    put:
+      tags:
+        - 'FocusFlow Todos'
+      summary: 'Update a todo'
+      operationId: 60bac12653e45fc8a2f89bf107c119a9
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                  nullable: true
+                category:
+                  type: string
+                priority:
+                  type: string
+                  enum:
+                    - Düşük
+                    - Orta
+                    - Yüksek
+                    - Kritik
+                deadline:
+                  type: string
+                  format: date-time
+                  nullable: true
+                order:
+                  type: integer
+                subtasks:
+                  type: array
+                  items:
+                    properties:
+                      title:
+                        type: string
+                      completed:
+                        type: boolean
+                      order:
+                        type: integer
+                    type: object
+              type: object
+      responses:
+        200:
+          description: 'Todo updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+      security:
+        -
+          sanctum: []
+    delete:
+      tags:
+        - 'FocusFlow Todos'
+      summary: 'Delete a todo'
+      operationId: ecc770bd143004375538946adb23157a
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: 'Todo deleted'
+      security:
+        -
+          sanctum: []
+  '/api/v1/todos/{id}/complete':
+    post:
+      tags:
+        - 'FocusFlow Todos'
+      summary: 'Complete a todo'
+      operationId: b8ac4b96a9690b487ecaa7521034fc5b
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: 'Todo completed'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+      security:
+        -
+          sanctum: []
+  /api/v1/todos/reorder:
+    post:
+      tags:
+        - 'FocusFlow Todos'
+      summary: 'Reorder todos'
+      operationId: 0ba7ad9065e7836e693f092722ec7165
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                todo_ids:
+                  type: array
+                  items:
+                    type: integer
+              type: object
+      responses:
+        200:
+          description: 'Todos reordered'
+      security:
+        -
+          sanctum: []
+components:
+  schemas:
+    Achievement:
+      title: Achievement
+      description: 'Achievement model'
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+        description:
+          type: string
+        icon:
+          type: string
+          nullable: true
+        condition_type:
+          type: string
+        condition_value:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      type: object
+    Goal:
+      title: 'Goal Model'
+      description: 'FocusFlow Goal model'
+      required:
+        - title
+        - user_id
+        - type
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          example: 1
+        user_id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: 'Learn Laravel'
+        description:
+          type: string
+          example: 'Master the Laravel framework'
+          nullable: true
+        type:
+          type: string
+          enum:
+            - daily
+            - weekly
+            - monthly
+            - yearly
+          example: monthly
+        progress:
+          description: 'Progress percentage 0-100'
+          type: integer
+          example: 50
+        start_date:
+          type: string
+          format: date
+          example: '2025-01-01'
+        target_date:
+          type: string
+          format: date
+          example: '2025-01-31'
+        completed:
+          type: boolean
+          example: false
+        notes:
+          type: string
+          nullable: true
+        sub_goals:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoalSubGoal'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      type: object
+    GoalSubGoal:
+      title: 'GoalSubGoal Model'
+      description: 'FocusFlow Goal Subgoal model'
+      required:
+        - title
+        - goal_id
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          example: 1
+        goal_id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: 'Check emails'
+        completed:
+          type: boolean
+          example: false
+        order:
+          type: integer
+          example: 0
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      type: object
+    PomodoroSession:
+      title: 'PomodoroSession Model'
+      description: 'FocusFlow Pomodoro Session model'
+      required:
+        - user_id
+        - duration
+        - type
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          example: 1
+        user_id:
+          type: integer
+          example: 1
+        todo_id:
+          type: integer
+          example: 1
+          nullable: true
+        task_title:
+          type: string
+          example: Development
+          nullable: true
+        start_time:
+          type: string
+          format: date-time
+          example: '2025-01-21T10:00:00Z'
+        end_time:
+          type: string
+          format: date-time
+          nullable: true
+        duration:
+          type: integer
+          example: 25
+        type:
+          type: string
+          enum:
+            - work
+            - short-break
+            - long-break
+          example: work
+        completed:
+          type: boolean
+          example: false
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      type: object
+    PomodoroSetting:
+      title: 'PomodoroSetting Model'
+      description: 'FocusFlow Pomodoro Setting model'
+      required:
+        - user_id
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          example: 1
+        user_id:
+          type: integer
+          example: 1
+        work_duration:
+          type: integer
+          example: 25
+        short_break_duration:
+          type: integer
+          example: 5
+        long_break_duration:
+          type: integer
+          example: 15
+        pomodoros_until_long_break:
+          type: integer
+          example: 4
+        auto_start_breaks:
+          type: boolean
+          example: false
+        auto_start_pomodoros:
+          type: boolean
+          example: false
+        sound_enabled:
+          type: boolean
+          example: true
+        notification_enabled:
+          type: boolean
+          example: true
+        sound_volume:
+          type: number
+          format: float
+          example: 0.7
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      type: object
+    Reminder:
+      title: 'Reminder Model'
+      description: 'FocusFlow Reminder model'
+      required:
+        - title
+        - user_id
+        - datetime
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          example: 1
+        user_id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: 'Take medicine'
+        description:
+          type: string
+          example: 'Health is priority'
+          nullable: true
+        datetime:
+          type: string
+          format: date-time
+          example: '2025-01-21T14:30:00Z'
+        priority:
+          type: string
+          enum:
+            - Düşük
+            - Orta
+            - Yüksek
+            - Kritik
+          example: Orta
+        category:
+          type: string
+          example: Sağlık
+        completed:
+          type: boolean
+          example: false
+        snoozed_until:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      type: object
+    Statistic:
+      title: Statistic
+      description: 'Statistic model'
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user_id:
+          type: integer
+        date:
+          type: string
+          format: date
+        completed_todos_count:
+          type: integer
+        pomodoro_count:
+          type: integer
+        focus_duration_minutes:
+          type: integer
+        streak_days:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      type: object
+    Todo:
+      title: 'Todo Model'
+      description: 'FocusFlow Todo model'
+      required:
+        - title
+        - user_id
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          example: 1
+        user_id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: 'Buy milk'
+        description:
+          type: string
+          example: 'Go to the grocery store'
+          nullable: true
+        category:
+          type: string
+          example: Shopping
+        priority:
+          type: string
+          enum:
+            - Düşük
+            - Orta
+            - Yüksek
+            - Kritik
+          example: Orta
+        completed:
+          type: boolean
+          example: false
+        deadline:
+          type: string
+          format: date-time
+          nullable: true
+        order:
+          type: integer
+          example: 0
+        subtasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/TodoSubtask'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      type: object
+    TodoSubtask:
+      title: 'TodoSubtask Model'
+      description: 'FocusFlow Todo Subtask model'
+      required:
+        - title
+        - todo_id
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          example: 1
+        todo_id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: 'Check emails'
+        completed:
+          type: boolean
+          example: false
+        order:
+          type: integer
+          example: 0
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      type: object
+  securitySchemes:
+    sanctum:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'Laravel Sanctum token authentication. Enter token in format (Bearer <token>)'
+tags:
+  -
+    name: 'FocusFlow Achievements'
+    description: 'FocusFlow Achievement endpoints'
+  -
+    name: 'FocusFlow Dashboard'
+    description: 'FocusFlow Dashboard endpoints'
+  -
+    name: 'FocusFlow Goals'
+    description: 'FocusFlow Goal management endpoints'
+  -
+    name: 'FocusFlow Pomodoro'
+    description: 'FocusFlow Pomodoro management endpoints'
+  -
+    name: 'FocusFlow Reminders'
+    description: 'FocusFlow Reminder management endpoints'
+  -
+    name: 'FocusFlow Statistics'
+    description: 'FocusFlow Statistics endpoints'
+  -
+    name: 'FocusFlow Todos'
+    description: 'FocusFlow Todo management endpoints'
+  -
+    name: Auth
+    description: Auth

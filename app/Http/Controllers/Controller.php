@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use OpenApi\Attributes as OA;
 
 /**
@@ -26,4 +27,7 @@ use OpenApi\Attributes as OA;
  *     description="Laravel Sanctum token authentication"
  * )
  */
-abstract class Controller {}
+abstract class Controller
+{
+    use AuthorizesRequests;
+}
