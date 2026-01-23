@@ -109,8 +109,6 @@ APP_SUPPORTED_LOCALES=tr,en
     "response_time_ms": 125.5,
     "user_agent": "Mozilla/5.0...",
     "timezone": "Europe/Istanbul",
-    "urs_id": "123",
-    "urss_id": "456",
     "request": {
         "name": "Product Name",
         "price": 99.99
