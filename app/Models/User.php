@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -45,5 +46,15 @@ class User extends Authenticatable
     public function sendPasswordResetNotification($token): void
     {
         $this->notify(new \App\Notifications\ResetPasswordNotification($token));
+    }
+
+    public function achievements(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            \App\Models\FocusFlow\Achievement::class,
+            'user_achievements',
+            'user_id',
+            'achievement_id'
+        )->withPivot('unlocked_at')->withTimestamps();
     }
 }

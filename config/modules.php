@@ -20,6 +20,7 @@ return [
         'media' => env('MODULE_MEDIA_ENABLED', true),
         'settings' => env('MODULE_SETTINGS_ENABLED', true),
         'ecommerce' => env('MODULE_ECOMMERCE_ENABLED', false), // Gelecekte eklenecek
+        'focusflow' => env('MODULE_FOCUSFLOW_ENABLED', true),
     ],
 
     /*
@@ -40,6 +41,7 @@ return [
         'media' => 'App\Models\Media',
         'settings' => 'App\Models\Settings',
         'ecommerce' => 'App\Controllers\Ecommerce',
+        'focusflow' => 'App\Controllers\FocusFlow',
     ],
 
     /*
@@ -60,6 +62,7 @@ return [
         'media' => 'media',
         'settings' => 'settings',
         'ecommerce' => 'ecommerce',
+        'focusflow' => 'focusflow',
     ],
 
     /*
@@ -79,5 +82,6 @@ return [
         'media' => database_path('migrations/media'),
         'settings' => database_path('migrations/settings'),
         'ecommerce' => database_path('migrations/ecommerce'),
+        'focusflow' => database_path('migrations/focusflow'),
     ],
 ];
