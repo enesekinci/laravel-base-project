@@ -41,8 +41,6 @@ class LogRequest
             'response_time_ms' => round($duration, 2),
             'user_agent' => $request->userAgent(),
             'timezone' => $request->header('client-time-zone'),
-            'urs_id' => $request->header('urs-id'),
-            'urss_id' => $request->header('urss-id'),
         ];
 
         // Request body'yi logla (password alanları hariç)

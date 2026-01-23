@@ -66,6 +66,30 @@ Schedule::command('alerts:process-logs --min-items=5')
 // Bu yüzden burada queue:work komutu yok.
 
 // ----------------------------------------------------------------------------
+// FOCUSFLOW İŞLER
+// ----------------------------------------------------------------------------
+
+// Tekrarlayan görevleri işle (her gün saat 00:00'da)
+Schedule::command('focusflow:process-recurring-todos')
+    ->daily()
+    ->at('00:00')
+    ->withoutOverlapping()
+    ->onOneServer();
+
+// Hatırlatıcıları kontrol et ve bildirim gönder (her dakika)
+Schedule::command('focusflow:process-reminders')
+    ->everyMinute()
+    ->withoutOverlapping()
+    ->onOneServer();
+
+// İstatistikleri güncelle (her gün saat 01:00'da)
+Schedule::command('focusflow:update-statistics')
+    ->daily()
+    ->at('01:00')
+    ->withoutOverlapping()
+    ->onOneServer();
+
+// ----------------------------------------------------------------------------
 // NOTLAR
 // ----------------------------------------------------------------------------
 // - withoutOverlapping(): Aynı komutun aynı anda birden fazla çalışmasını engeller
