@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire\Blog\Admin;
 
-use App\Models\Blog\PostCategory;
+use App\Services\Blog\PostCategoryService;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -32,7 +32,7 @@ class PostCategoryForm extends Component
 
         // Slug unique rule - edit durumunda mevcut kaydı ignore et
         if ($this->categoryId) {
-            $rules['slug'][] = 'unique:post_categories,slug,'.$this->categoryId;
+            $rules['slug'][] = 'unique:post_categories,slug,' . $this->categoryId;
         } else {
             $rules['slug'][] = 'unique:post_categories,slug';
         }
@@ -46,12 +46,26 @@ class PostCategoryForm extends Component
         'slug.unique' => 'Bu slug zaten kullanılıyor.',
     ];
 
+    protected PostCategoryService $service;
+
+    public function boot(PostCategoryService $service): void
+    {
+        $this->service = $service;
+    }
+
     public function mount(?int $id = null): void
     {
         $this->categoryId = $id;
 
         if ($this->categoryId) {
-            $category = PostCategory::findOrFail($this->categoryId);
+            $category = $this->service->findCategory($this->categoryId);
+
+            if (! $category) {
+                // Eğer kategori bulunamazsa listeye yönlendir
+                $this->redirect(route('admin.blog.categories.index'), navigate: true);
+                return;
+            }
+
             $this->name = $category->name;
             $this->slug = $category->slug;
         }
@@ -92,17 +106,16 @@ class PostCategoryForm extends Component
 
         $this->validate($this->rules(), $this->messages);
 
-        $data = [
-            'name' => $this->name,
-            'slug' => $this->slug,
-        ];
+        $data = new \App\DTO\Blog\PostCategoryData(
+            name: $this->name,
+            slug: $this->slug
+        );
 
         if ($this->categoryId) {
-            $category = PostCategory::findOrFail($this->categoryId);
-            $category->update($data);
+            $this->service->updateCategory($this->categoryId, $data);
             $this->success('Kategori başarıyla güncellendi.');
         } else {
-            PostCategory::create($data);
+            $this->service->createCategory($data);
             $this->success('Kategori başarıyla oluşturuldu.');
         }
 

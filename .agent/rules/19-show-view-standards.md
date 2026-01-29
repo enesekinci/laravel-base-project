@@ -1,0 +1,315 @@
+---
+alwaysApply: true
+---
+
+# SHOW VIEW STANDARTLARI
+
+## Genel Kural
+
+**Tüm admin show view dosyaları aynı yapı ve standartları kullanmalıdır.**
+
+Show view'ları, bir model'in detay bilgilerini ve ilişkili verilerini göstermek için kullanılır.
+
+## Standart Yapı
+
+```blade
+@extends('admin.layouts.app')
+
+@section('title', '{Model} Detay')
+
+@push('styles')
+    {{-- Cork CSS asset'leri --}}
+    <link href="{{ asset('cork/src/plugins/...') }}" rel="stylesheet" />
+@endpush
+
+@section('content')
+    {{-- Breadcrumb --}}
+    <div class="page-meta">
+        <nav class="breadcrumb-style-one" aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Panel</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('admin.{module}.index') }}">{Module}</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Detay</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="row layout-top-spacing">
+        {{-- Model Bilgileri --}}
+        <div class="col-xl-8 col-lg-8 col-sm-12 layout-spacing">
+            <div class="widget-content widget-content-area br-8 p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="mb-0">{Model} Bilgileri</h4>
+                    <div>
+                        <a href="{{ route('admin.{module}.edit', $model) }}" class="btn btn-primary">Düzenle</a>
+                        <a href="{{ route('admin.{module}.index') }}" class="btn btn-secondary">Geri Dön</a>
+                    </div>
+                </div>
+                {{-- Model bilgileri burada --}}
+            </div>
+        </div>
+
+        {{-- İlişkili Veriler veya Ek Bilgiler --}}
+        <div class="col-xl-4 col-lg-4 col-sm-12 layout-spacing">
+            <div class="widget-content widget-content-area br-8 p-4">
+                <h4 class="mb-4">Ek Bilgiler</h4>
+                {{-- İlişkili veriler veya ek bilgiler burada --}}
+            </div>
+        </div>
+    </div>
+@endsection
+
+@push('scripts')
+    {{-- Cork JS asset'leri --}}
+    <script src="{{ asset('cork/src/plugins/...') }}"></script>
+@endpush
+```
+
+## Bölümler
+
+### 1. Breadcrumb Navigation
+
+Her show view'da breadcrumb olmalı:
+
+- Panel → {Module} Listesi → Detay
+
+```blade
+<div class="page-meta">
+    <nav class="breadcrumb-style-one" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Panel</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('admin.{module}.index') }}">{Module}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Detay</li>
+        </ol>
+    </nav>
+</div>
+```
+
+### 2. Model Bilgileri
+
+Model bilgileri card yapısında gösterilir:
+
+```blade
+<div class="widget-content widget-content-area br-8 p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="mb-0">{Model} Bilgileri</h4>
+        <div>
+            <a href="{{ route('admin.{module}.edit', $model) }}" class="btn btn-primary">Düzenle</a>
+            <a href="{{ route('admin.{module}.index') }}" class="btn btn-secondary">Geri Dön</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <p>
+                <strong>ID:</strong>
+                {{ $model->id }}
+            </p>
+            <p>
+                <strong>Ad:</strong>
+                {{ $model->name }}
+            </p>
+        </div>
+        <div class="col-md-6">
+            <p>
+                <strong>Durum:</strong>
+                <span class="badge badge-{{ $model->is_active ? 'success' : 'danger' }}">
+                    {{ $model->is_active ? 'Aktif' : 'Pasif' }}
+                </span>
+            </p>
+            <p>
+                <strong>Oluşturulma:</strong>
+                {{ $model->created_at->format('d.m.Y H:i') }}
+            </p>
+        </div>
+    </div>
+</div>
+```
+
+### 3. İlişkili Veriler
+
+İlişkili veriler (hasMany, belongsTo, manyToMany) gösterilir:
+
+#### HasMany İlişkileri (DataTable ile)
+
+```blade
+<div class="widget-content widget-content-area br-8 p-4">
+    <h4 class="mb-4">İlişkili Veriler</h4>
+    <div class="table-responsive">
+        <table id="related-table" class="table table-hover" style="width: 100%">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Ad</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- DataTable ile doldurulacak -->
+            </tbody>
+        </table>
+    </div>
+</div>
+```
+
+#### BelongsTo İlişkileri
+
+```blade
+<div class="widget-content widget-content-area br-8 p-4">
+    <h4 class="mb-4">İlişkili Veri</h4>
+    <p>
+        <strong>Kategori:</strong>
+        <a href="{{ route('admin.categories.show', $model->category) }}">
+            {{ $model->category->name }}
+        </a>
+    </p>
+</div>
+```
+
+### 4. Action Butonları
+
+Her show view'da şu butonlar olmalı:
+
+- **Düzenle**: `route('admin.{module}.edit', $model)`
+- **Geri Dön**: `route('admin.{module}.index')`
+- **Sil**: Form ile DELETE request (isteğe bağlı)
+
+```blade
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0">{Model} Bilgileri</h4>
+    <div>
+        <a href="{{ route('admin.{module}.edit', $model) }}" class="btn btn-primary">
+            <svg>...</svg>
+            Düzenle
+        </a>
+        <a href="{{ route('admin.{module}.index') }}" class="btn btn-secondary">
+            <svg>...</svg>
+            Geri Dön
+        </a>
+    </div>
+</div>
+```
+
+## Cork Template Kullanımı
+
+### Widget Yapısı
+
+Tüm içerik `widget-content widget-content-area br-8 p-4` class'ları ile sarılmalı:
+
+```blade
+<div class="widget-content widget-content-area br-8 p-4">
+    {{-- İçerik --}}
+</div>
+```
+
+### Responsive Tasarım
+
+- Ana içerik: `col-xl-8 col-lg-8 col-sm-12`
+- Yan panel: `col-xl-4 col-lg-4 col-sm-12`
+- Mobilde tek sütun: `col-sm-12`
+
+## DataTable Kullanımı
+
+İlişkili veriler için DataTable kullanılır:
+
+```blade
+@push('scripts')
+    <script src="{{ asset('cork/src/plugins/src/table/datatable/datatables.js') }}"></script>
+    <script>
+        $('#related-table').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: '{{ route('admin.{module}.related', $model) }}',
+            columns: [
+                { data: 'id', name: 'id' },
+                { data: 'name', name: 'name' },
+                { data: 'actions', name: 'actions', orderable: false, searchable: false },
+            ],
+        })
+    </script>
+@endpush
+```
+
+## Örnek: Post Show View
+
+```blade
+@extends('admin.layouts.app')
+
+@section('title', 'Yazı Detay')
+
+@section('content')
+    <div class="page-meta">
+        <nav class="breadcrumb-style-one" aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Panel</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('admin.posts.index') }}">Yazılar</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Detay</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="row layout-top-spacing">
+        <div class="col-xl-8 col-lg-8 col-sm-12 layout-spacing">
+            <div class="widget-content widget-content-area br-8 p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="mb-0">{{ $post->title }}</h4>
+                    <div>
+                        <a href="{{ route('admin.posts.edit', $post) }}" class="btn btn-primary">Düzenle</a>
+                        <a href="{{ route('admin.posts.index') }}" class="btn btn-secondary">Geri Dön</a>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <p>
+                            <strong>ID:</strong>
+                            {{ $post->id }}
+                        </p>
+                        <p>
+                            <strong>Slug:</strong>
+                            {{ $post->slug }}
+                        </p>
+                        <p>
+                            <strong>Durum:</strong>
+                            <span class="badge badge-{{ $post->status === 'published' ? 'success' : 'warning' }}">
+                                {{ $post->status === 'published' ? 'Yayında' : 'Taslak' }}
+                            </span>
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <p>
+                            <strong>Oluşturulma:</strong>
+                            {{ $post->created_at->format('d.m.Y H:i') }}
+                        </p>
+                        <p>
+                            <strong>Yayınlanma:</strong>
+                            {{ $post->published_at ? $post->published_at->format('d.m.Y H:i') : '-' }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-lg-4 col-sm-12 layout-spacing">
+            <div class="widget-content widget-content-area br-8 p-4">
+                <h4 class="mb-4">Kategoriler</h4>
+                @foreach ($post->categories as $category)
+                    <p><a href="{{ route('admin.post-categories.show', $category) }}">{{ $category->name }}</a></p>
+                @endforeach
+            </div>
+        </div>
+    </div>
+@endsection
+```
+
+## Kontrol Listesi
+
+Yeni bir show view oluştururken:
+
+- [ ] Breadcrumb navigation var mı?
+- [ ] Model bilgileri card yapısında mı?
+- [ ] Action butonları (Düzenle, Geri Dön) var mı?
+- [ ] İlişkili veriler gösteriliyor mu?
+- [ ] Cork template widget yapısı kullanılıyor mu?
+- [ ] Responsive tasarım uygulanmış mı?
+- [ ] DataTable kullanılıyor mu? (gerekirse)

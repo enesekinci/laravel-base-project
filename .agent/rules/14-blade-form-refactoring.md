@@ -1,0 +1,209 @@
+---
+alwaysApply: true
+---
+
+# BLADE FORM REFACTORING RULES
+
+## Genel Kural
+
+**Tüm Blade form sayfalarındaki JavaScript kodları MUTLAKA ayrı JavaScript dosyalarına taşınmalıdır.**
+
+- ❌ **ASLA** 200+ satır JavaScript kodu Blade template içinde inline yazma
+- ✅ **HER ZAMAN** JavaScript kodunu `resources/js/admin/{module}/form.js` dosyasına taşı
+- ✅ **HER ZAMAN** Blade template'de sadece import ve minimal registration kodu bırak
+
+## Dosya Yapısı
+
+### JavaScript Dosyası
+
+Her form için ayrı JavaScript dosyası oluştur:
+
+```
+resources/js/admin/
+├── products/
+│   └── form.js          # Product form component
+├── categories/
+│   └── form.js          # Category form component
+├── brands/
+│   └── form.js          # Brand form component
+└── ...
+```
+
+### Blade Template
+
+Blade template sadece şunları içermeli:
+
+```blade
+@push('scripts')
+    @vite(['resources/js/admin/products/form.js'])
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('productForm', () => window.initProductForm({{ $id ?? 'null' }}))
+        })
+    </script>
+@endpush
+```
+
+## JavaScript Dosya Yapısı
+
+### 1. Function Export Pattern
+
+```javascript
+/**
+ * {Module} Form Component
+ * Handles {module} create/edit form logic
+ */
+
+function init{Module}Form(id) {
+    return {
+        // Alpine.js data object
+        loading: false,
+        formData: {},
+        errors: {},
+
+        async init() {
+            // Initialization logic
+        },
+
+        // Other methods...
+    }
+}
+
+// Make it available globally for Alpine.js
+window.init{Module}Form = init{Module}Form
+
+// Also export for ES modules
+export { init{Module}Form }
+```
+
+### 2. Vite Config
+
+Her yeni form dosyasını `vite.config.js`'e ekle:
+
+```javascript
+input: [
+    'resources/js/admin/products/form.js',
+    'resources/js/admin/categories/form.js',
+    // ...
+],
+```
+
+## Refactoring Checklist
+
+Bir form sayfasını refactor ederken şu adımları takip et:
+
+1. **JavaScript kodunu çıkar**
+    - [ ] Blade template'deki tüm JavaScript kodunu kopyala
+    - [ ] `resources/js/admin/{module}/form.js` dosyası oluştur
+    - [ ] Function pattern'ini uygula
+
+2. **Blade template'i sadeleştir**
+    - [ ] Inline JavaScript kodunu kaldır
+    - [ ] Sadece `@vite` directive ve Alpine registration ekle
+    - [ ] Template sadece HTML içermeli
+
+3. **Vite config'i güncelle**
+    - [ ] Yeni JavaScript dosyasını `vite.config.js`'e ekle
+
+4. **Test et**
+    - [ ] Form sayfasının çalıştığını kontrol et
+    - [ ] JavaScript hatalarını kontrol et
+
+## Örnekler
+
+### ❌ Kötü - Inline JavaScript
+
+```blade
+@push('scripts')
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('productForm', () => ({
+                // 300+ satır JavaScript kodu...
+            }))
+        })
+    </script>
+@endpush
+```
+
+### ✅ İyi - Modüler JavaScript
+
+```blade
+@push('scripts')
+    @vite(['resources/js/admin/products/form.js'])
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('productForm', () => window.initProductForm({{ $id ?? 'null' }}))
+        })
+    </script>
+@endpush
+```
+
+```javascript
+// resources/js/admin/products/form.js
+function initProductForm(productId) {
+    return {
+        // Form logic...
+    }
+}
+
+window.initProductForm = initProductForm
+export { initProductForm }
+```
+
+## Modülerleştirme Kuralları
+
+### 1. Tek Sorumluluk Prensibi
+
+Her JavaScript dosyası sadece bir form'un logic'ini içermeli:
+
+- Product form → `products/form.js`
+- Category form → `categories/form.js`
+- Brand form → `brands/form.js`
+
+### 2. Reusability
+
+JavaScript fonksiyonları reusable olmalı:
+
+- Parametrelerle çalışmalı (örn: `productId`)
+- Bağımlılıkları minimize etmeli
+- Global state'e bağımlı olmamalı
+
+### 3. Maintainability
+
+- Kod yorumları ekle
+- Fonksiyon isimleri açıklayıcı olsun
+- Karmaşık logic'i küçük fonksiyonlara böl
+
+### 4. Testability
+
+- Ayrı dosya olduğu için test yazılabilir
+- Pure fonksiyonlar tercih et
+- Side effect'leri minimize et
+
+## Önemli Notlar
+
+1. **Alpine.js Entegrasyonu**: JavaScript fonksiyonu Alpine.js data object döndürmeli
+2. **Global Scope**: `window` objesine ekle ki Alpine.js erişebilsin
+3. **ES Modules**: Export ekle ki gelecekte module system kullanılabilir
+4. **Vite Build**: Her yeni dosyayı `vite.config.js`'e ekle
+5. **Blade Variables**: PHP değişkenlerini JavaScript'e geçir (örn: `{{ $id ?? 'null' }}`)
+
+## Uygulanacak Sayfalar
+
+Aşağıdaki form sayfaları refactor edilmeli:
+
+- [x] Products form (`admin/products/form.blade.php`)
+- [ ] Categories form (`admin/categories/form.blade.php`)
+- [ ] Brands form (`admin/brands/form.blade.php`)
+- [ ] Tags form (`admin/tags/form.blade.php`)
+- [ ] Attributes form (`admin/attributes/form.blade.php`)
+- [ ] Options form (`admin/options/form.blade.php`)
+- [ ] Pages form (`admin/pages/form.blade.php`)
+- [ ] Posts form (`admin/posts/form.blade.php`)
+- [ ] Content Blocks form (`admin/content-blocks/form.blade.php`)
+- [ ] Post Categories form (`admin/post-categories/form.blade.php`)
+- [ ] Post Tags form (`admin/post-tags/form.blade.php`)
+- [ ] Coupons form (`admin/coupons/form.blade.php`)
+- [ ] Payment Methods form (`admin/payment-methods/form.blade.php`)
+- [ ] Shipping Methods form (`admin/shipping-methods/form.blade.php`)
+- [ ] Tax Classes form (`admin/tax-classes/form.blade.php`)

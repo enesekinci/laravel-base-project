@@ -23,6 +23,11 @@ class BlogServiceProvider extends ServiceProvider
             PostRepositoryInterface::class,
             PostRepository::class
         );
+
+        $this->app->bind(
+            \App\Contracts\Repositories\Blog\PostCategoryRepositoryInterface::class,
+            \App\Repositories\Blog\PostCategoryRepository::class
+        );
     }
 
     /**
