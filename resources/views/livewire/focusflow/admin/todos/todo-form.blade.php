@@ -9,7 +9,7 @@
             <x-select wire:model="priority" label="Öncelik" :options="['Düşük', 'Orta', 'Yüksek', 'Kritik']" />
             <x-datetime wire:model="deadline" label="Son Tarih" />
 
-            <x-divider label="Alt Görevler" />
+            <div class="divider">Alt Görevler</div>
 
             @foreach($subtasks as $index => $subtask)
                 <div class="flex gap-2 mb-2">
